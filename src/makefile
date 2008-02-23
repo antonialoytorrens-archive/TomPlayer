@@ -3,7 +3,7 @@ CFLAGS+=-DUSE_MINIMIG -Wall
 
 
 gmplayer: config.o engine.o gui.o widescreen.o
-	$(CC) $(LDFLAGS) -o gmplayer widescreen.o config.o engine.o gui.o  -lminigui -lpthread -lc -lm  -ljpeg
+	$(CC) $(LDFLAGS) -o gmplayer widescreen.o config.o engine.o gui.o  -lminigui -lpthread -lc -lm
 
 config.o: config.c config.h engine.h widescreen.h
 	$(CC) $(CFLAGS) -c config.c
