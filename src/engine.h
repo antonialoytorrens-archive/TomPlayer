@@ -74,5 +74,7 @@ void launch_mplayer( char * filename );
 void handle_mouse_event( int x, int y );
 int get_command_from_xy( int x, int y, int * p );
 
+/* This function is GUI library dependent, it's not defined in engine.c but in gui.c */
+void gui_buffer_rgb(char * buffer,int width, int height, int x, int y);
 
 #endif /* __ENGINE_H__ */
