@@ -1,0 +1,16 @@
+February, 17th 2008 V1.3
+Wolfgar udaptes : 
+*Add progress bar on audio and vido skin
+*Add automatic screen size probe to display correctly skins and pictures on widescreen
+*Includes new video skin (thanks to clint)
+
+February, 14th 2008 V1.2
+Two skins used : the first for video playing and the second for audio playback
+Code cleanup
+
+February, 10th 2008 V1.1
+Added support of Go model (screen rotated)
+Improve MP3 controls
+
+February, 4th 2008 V1.0
+First public version

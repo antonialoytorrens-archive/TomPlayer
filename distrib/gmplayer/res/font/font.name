@@ -1,0 +1,8 @@
+Font File			Font Type 			Font Name in MiniGUI.cfg
+
+8x16-iso8859-1.bin		Raw Bitmap Font			rbf-fixed-rrncnn-8-16-ISO8859-1
+
+Courier-rr-10-15.vbf	Var Bitmap Font			vbf-Courier-rrncnn-10-15-ISO8859-1
+Helvetica-rr-15-16.vbf	Var Bitmap Font			vbf-Helvetica-rrncnn-15-16-ISO8859-1
+Times-rr-13-15.vbf		Var Bitmap Font			vbf-Times-rrncnn-13-15-ISO8859-1
+

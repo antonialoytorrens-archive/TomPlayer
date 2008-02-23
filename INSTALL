@@ -1,0 +1,17 @@
+In english :
+Extract the content of the distrib folder into the root of your tomtom (sdcard or hard disk).
+
+If you experience reboot, then you have to create a "nowatchdog" file at the base of 
+your sdcard (or depending of your device, on your hardisk). You have to reset your device too.
+
+For those who have a tomtom with a rotated screen :
+ - delete the Minigui.cfg file, and rename the Minigui_rotated.cfg file to MiniGUI.cfg
+ - delete the mplayer.conf file, and rename the mplayer_rotated.conf file to mplayer.conf
+
+En francais:
+Extraire le contenu du répertoire distrib à la racine de votre tomtom (sdcard ou disque dur).
+Si votre tomtom redémarre tout seul, il vous faut créer un fichier "nowatchdog" à la racine de votre sdcard (ou suivant votre modèle, de votre disque dur). Il vous faut aussi faire un reset.
+
+Pour ceux qui ont un modèle de tomtom avec l'écran tourné à 90°:
+ - supprimer le fichier MiniGUI.cfg, et renommer le fichier MiniGUI_rotated.cfg en MiniGUI.cfg
+ - supprimer le fichier mplayer.conf, et renommer le fichier mplayer_rotated.conf en mplayer.conf
