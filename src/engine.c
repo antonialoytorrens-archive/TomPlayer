@@ -35,6 +35,7 @@
 #include <pthread.h>
 #include <fcntl.h>
 #include <signal.h>
+#include <math.h>
 
 
 #include "config.h"
@@ -60,6 +61,7 @@ static BOOL is_paused = FALSE;
  * or the percent that has to be reached*/
 static int current_seek = -1;
 
+extern char *strcasestr (const char *, const char *);
 
 static void display_progress_bar(int current)
 {
@@ -259,7 +261,7 @@ BOOL is_video_file( char * file ){
     
     if( ext == NULL ) return FALSE;
     if( strlen( ext ) > 0 )
-        if( strstr( config.filter_video_ext, ext ) != NULL ) return TRUE;
+        if( strcasestr( config.filter_video_ext, ext ) != NULL ) return TRUE;
     return FALSE;
 }
 
@@ -270,7 +272,7 @@ BOOL is_audio_file( char * file ){
     
     if( ext == NULL ) return FALSE;
     if( strlen( ext ) > 0 )
-        if( strstr( config.filter_audio_ext, ext ) != NULL ) return TRUE;
+        if( strcasestr( config.filter_audio_ext, ext ) != NULL ) return TRUE;
     return FALSE; 
 }
 
@@ -328,6 +330,8 @@ void * update_thread(void *cmd){
 */   
     usleep(250000);    
   }
+  
+  pthread_exit(NULL);
 }
 
 
