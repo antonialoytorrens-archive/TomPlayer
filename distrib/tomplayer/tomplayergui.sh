@@ -15,9 +15,19 @@ killall -9 ttsserver
 killall -9 suntime 
 
 echo "Running the application"
-cd /mnt/sdcard/gmplayer/
+
+#Entering tomplayer directory installation
+TOMPLAYER_DIR=`dirname $0`
+cd $TOMPLAYER_DIR
+
+#To be sure to get absolute path
+TOMPLAYER_DIR=`pwd`
+
+#Create a symbolic link to enable generic minigui configuration file
+ln -sf ${TOMPLAYER_DIR}/res /etc/res
+
 export FRAMEBUFFER=/dev/fb
-./gmplayer
+./tomplayer
 
 ttn_file=/bin/ttn
 

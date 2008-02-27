@@ -129,16 +129,23 @@ int ws_probe(void){
 *
 *\return None
 */
-void ws_translate(struct gmplayer_config * conf){
+void ws_translate(struct tomplayer_config * conf){
 
   /* Prepend "ws_" to picture filenames */
   transform_filename(conf->bmp_loading_file);
   transform_filename(conf->bmp_exiting_file);
   transform_filename(conf->video_config.image_file);
   transform_filename(conf->audio_config.image_file);
-  /* Adapt controls coordinates */
+  /* Prepend "ws_" to config filenames */
+  /*  
+  transform_filename(conf->video_config.conf_file);
+  transform_filename(conf->video_config.conf_file);
+  */
+
+  /* Adapt controls coordinates  */
   transform_controls(conf->video_config.controls);
   transform_controls(conf->audio_config.controls);
+  
   
 }
 

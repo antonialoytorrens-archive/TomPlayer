@@ -48,7 +48,7 @@
 #define CMD_BACKWARD                13
 
 
-extern struct gmplayer_config config;
+extern struct tomplayer_config config;
 extern BOOL is_menu_showed;
 extern BOOL is_mplayer_finished;
 extern BOOL is_playing_video;
@@ -59,7 +59,7 @@ char * get_file_extension( char * file );
 BOOL is_video_file( char * file );
 BOOL is_audio_file( char * file );
 
-void send_command( char * cmd );
+void send_command(const char * cmd );
 void send_menu( char * cmd );
 
 void show_menu( void );

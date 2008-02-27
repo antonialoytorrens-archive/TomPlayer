@@ -1,5 +1,5 @@
 /***************************************************************************
- *            gmplayer.c
+ *           GUI based on minigui for Tomplayer
  *
  *  Sun Jan  6 14:15:55 2008
  *  Copyright  2008  nullpointer
@@ -58,18 +58,18 @@ static BITMAP loading_bmp;
 static BITMAP exiting_bmp;
 
 
-static DLGTEMPLATE DlgGMplayer =
+static DLGTEMPLATE DlgTomPlayer =
 {
     WS_BORDER | WS_CAPTION,
     WS_EX_NONE,
     8, 7, 304, 225,
-    "MPlayer v"VERSION" by nullpointer",
+    "TomPlayer v"VERSION,
     0, 0,
     5, NULL,
     0
 };
 
-static CTRLDATA CtrlGMplayer[] =
+static CTRLDATA CtrlTomPlayer[] =
 { 
     {
         CTRL_STATIC,
@@ -217,7 +217,7 @@ static void play (HWND hDlg)
     
     i = SendDlgItemMessage (hDlg, IDL_FILE, LB_GETCURSEL, 0, 0);
     if( i == LB_ERR ){
-        MessageBox (hDlg, "No file selected", "GMPlayer", MB_OK | MB_ICONINFORMATION);      
+        MessageBox (hDlg, "No file selected", "TomPlayer", MB_OK | MB_ICONINFORMATION);      
     }
     else{
         SendDlgItemMessage (hDlg, IDL_FILE, LB_GETTEXT, i, (LPARAM)filename) ;
@@ -285,7 +285,7 @@ static int load_bmp( void ){
     return TRUE;
 }
 
-static int GMplayerBoxProc (HWND hDlg, int message, WPARAM wParam, LPARAM lParam)
+static int TomPlayerBoxProc (HWND hDlg, int message, WPARAM wParam, LPARAM lParam)
 {
     switch (message) {
         case MSG_INITDIALOG:
@@ -373,11 +373,11 @@ int MiniGUIMain (int argc, const char* argv[])
     SetWindowBkColor( HWND_DESKTOP, 0 );
     RegisterMouseMsgHook(HWND_DESKTOP, mouse_hook);
     
-    DlgGMplayer.controls = CtrlGMplayer;
+    DlgTomPlayer.controls = CtrlTomPlayer;
     
-    ExtendDialogBoxToScreen( &DlgGMplayer );
+    ExtendDialogBoxToScreen( &DlgTomPlayer );
     
-    DialogBoxIndirectParam (&DlgGMplayer, HWND_DESKTOP, GMplayerBoxProc, 0L);
+    DialogBoxIndirectParam (&DlgTomPlayer, HWND_DESKTOP, TomPlayerBoxProc, 0L);
 
     return 0;
 }

@@ -1,11 +1,13 @@
 /***************************************************************************
- *            gmplayer_config.c
+ *            tomplayer_config.c
  *
  *  Sun Jan  6 14:15:55 2008
  *  Copyright  2008  nullpointer
  *  Email
  *
  * 14.02.08 wolfgar : Add progress bar index detection, progress bar colour config and ws adaptation
+ *
+ * 
  ****************************************************************************/
 /*
  *  This program is free software; you can redistribute it and/or modify
@@ -99,10 +101,10 @@ int load_skin_config( char * filename, struct skin_config * skin_conf ){
     return TRUE;
 }
 
-int load_config( struct gmplayer_config * conf ){
+int load_config( struct tomplayer_config * conf ){
     GHANDLE gh_config;
     
-    memset( conf, 0, sizeof( struct gmplayer_config ) );
+    memset( conf, 0, sizeof( struct tomplayer_config ) );
         
     gh_config = LoadEtcFile( CONFIG_FILE );
     
@@ -126,10 +128,12 @@ int load_config( struct gmplayer_config * conf ){
     
     UnloadEtcFile( gh_config );
     
+
+
     load_skin_config( conf->video_config.conf_file, &conf->video_config );
     load_skin_config( conf->audio_config.conf_file, &conf->audio_config );
     
-    /* Configuration adpatation for widescreen */
+        /* Configuration adpatation for widescreen */
     if (ws_probe()){
 	ws_translate(conf);	
     }

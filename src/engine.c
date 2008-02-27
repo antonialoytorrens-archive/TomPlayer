@@ -50,7 +50,7 @@ static int fifo_command;
 static int fifo_menu;
 static int fifo_out;
 
-struct gmplayer_config config;
+struct tomplayer_config config;
 BOOL is_menu_showed = FALSE;
 BOOL is_mplayer_finished = FALSE;
 BOOL is_playing_video = FALSE;
@@ -237,19 +237,39 @@ int get_int_from_stdout(void){
 
 }
 
-/** Return the current file position as a percent 
+
+/** Send a command to mplayer and wait for a positive int answer
+*
+* \param cmd the command to send 
+* 
+* \reval >0 : The int returned by mplayer
+* \reval -1 : An error occured 
 *
 */
-int get_file_position(void){  
+static int send_command_wait_int(const char * cmd){
   int value; 
-  int timeout = 0;
-  send_command("pausing_keep get_property percent_pos\n");
+  int nb_try = 0;
+
+  send_command(cmd);
   do {
     value = get_int_from_stdout();
-    timeout++;
-  }while (( value == -1) && (timeout < 50));
+    nb_try++;
+  }while (( value == -1) && (nb_try < 25));
   return value;  
 }
+
+/** Return the current file position as a percent 
+*/
+static int get_file_position_percent(void){  
+  return send_command_wait_int("pausing_keep get_property percent_pos\n");
+}
+
+/** Return the current file position in seconds 
+*/
+static int get_file_position_seconds(void){  
+  return send_command_wait_int("pausing_keep get_property time_pos\n");
+}
+
 
 char * get_file_extension( char * file ){
     return strrchr( file, '.');
@@ -277,7 +297,7 @@ BOOL is_audio_file( char * file ){
 }
 
 
-void send_command( char * cmd ){
+void send_command( const char * cmd ){
     write( fifo_command, cmd, strlen( cmd ) );
 }
 
@@ -309,7 +329,7 @@ void * update_thread(void *cmd){
 
     if (((is_menu_showed == TRUE) ||  ( is_playing_video == FALSE ))  && 
        (is_paused == FALSE)) {
-      pos = get_file_position();
+      pos = get_file_position_percent();
       if (pos >= 0){
         display_progress_bar(pos);  
       } else {
@@ -323,7 +343,7 @@ void * update_thread(void *cmd){
  
 /* FIXME check if useful     
    if (current_seek != -1){
-      if (get_file_position() == current_seek){
+      if (get_file_position_percent() == current_seek){
 	current_seek = -1;
       }
     }

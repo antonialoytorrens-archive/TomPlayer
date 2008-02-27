@@ -1,5 +1,5 @@
 /***************************************************************************
- *            gmplayer_config.h
+ *            config.h
  *
  *  Sun Jan  6 14:15:55 2008
  *  Copyright  2008  nullpointer
@@ -21,15 +21,15 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __GMPLAYER_CONFIG_H__
-#define __GMPLAYER_CONFIG_H__
+#ifndef __TOMPLAYER_CONFIG_H__
+#define __TOMPLAYER_CONFIG_H__
 
 #include <linux/limits.h>
 
 #define MAX_CONTROLS	            20
 
 
-#define CONFIG_FILE                 "gmplayer.ini"
+#define CONFIG_FILE                 "tomplayer.ini"
 
 /* Definition of section in the config file */
 #define SECTION_GENERAL             "general"
@@ -120,7 +120,7 @@ struct skin_config{
 
 
 
-struct gmplayer_config{
+struct tomplayer_config{
     char bmp_loading_file[PATH_MAX];
     char bmp_exiting_file[PATH_MAX];
     
@@ -133,7 +133,7 @@ struct gmplayer_config{
 };
 
 
-int load_config( struct gmplayer_config * conf );
+int load_config( struct tomplayer_config * conf );
 int load_skin_config( char *, struct skin_config * );
 
-#endif /* __GMPLAYER_CONFIG_H__ */
+#endif /* __TOMPLAYER_CONFIG_H__ */

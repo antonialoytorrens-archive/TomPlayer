@@ -20,8 +20,8 @@
 
 
 
-#ifndef __GMPLAYER_WIDESCRREN_H__
-#define __GMPLAYER_WIDESCRREN_H__
+#ifndef __TOMPLAYER_WIDESCRREN_H__
+#define __TOMPLAYER_WIDESCRREN_H__
 
 #include "config.h"
 
@@ -37,6 +37,6 @@
 #define WS_FILENAME_PREFIX "ws_"
 
 extern int ws_probe(void);
-extern void ws_translate(struct gmplayer_config *);
+extern void ws_translate(struct tomplayer_config *);
 
 #endif
