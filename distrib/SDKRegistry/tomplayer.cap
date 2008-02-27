@@ -1,0 +1,7 @@
+Version|100|
+AppName|tomplayergui.sh|
+AppPath|/mnt/sdcard/tomplayer/|
+AppIconFile|tomplayer.bmp|
+AppMainTitle|tomplayer|
+AppPort|2001|
+COMMAND|CMD||tomplayer.bmp|tomplayer|

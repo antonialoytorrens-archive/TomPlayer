@@ -1,7 +1,0 @@
-Version|100|
-AppName|gmplayergui.sh|
-AppPath|/mnt/sdcard/gmplayer/|
-AppIconFile|gmplayer.bmp|
-AppMainTitle|gmplayer|
-AppPort|2001|
-COMMAND|CMD||gmplayer.bmp|gmplayer|
