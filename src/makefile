@@ -3,7 +3,7 @@ CFLAGS+=-DUSE_MINIMIG -Wall
 
 
 tomplayer: config.o engine.o gui.o widescreen.o
-	$(CC) $(LDFLAGS) -o tomplayer widescreen.o config.o engine.o gui.o  -lminigui -lpthread -lc -lm -ljpeg
+	$(CC) $(LDFLAGS) -o tomplayer widescreen.o config.o engine.o gui.o  -lminigui -lpthread -lc -lm 
 	mv tomplayer ../distrib/tomplayer/
 
 config.o: config.c config.h engine.h widescreen.h
