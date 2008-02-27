@@ -345,7 +345,7 @@ void ExtendDialogBoxToScreen( DLGTEMPLATE * dlg ){
     #define EXTEND_X(a) EXTEND(a, w, 320 )
     #define EXTEND_Y(a) EXTEND(a, h, 240 )
     
-    w = GetGDCapability( HDC_SCREEN, GDCAP_VPIXEL);
+    w = GetGDCapability( HDC_SCREEN, GDCAP_HPIXEL);
     h = GetGDCapability( HDC_SCREEN, GDCAP_VPIXEL);
 
     EXTEND_X( dlg->x );
