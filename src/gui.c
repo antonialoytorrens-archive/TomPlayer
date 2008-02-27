@@ -337,12 +337,45 @@ static int GMplayerBoxProc (HWND hDlg, int message, WPARAM wParam, LPARAM lParam
     return DefaultDialogProc (hDlg, message, wParam, lParam);
 }
 
+void ExtendDialogBoxToScreen( DLGTEMPLATE * dlg ){
+    int i;
+    int w, h;
+
+    #define EXTEND(a,b,c) (a) = (a) * (1.0 * b) /c
+    #define EXTEND_X(a) EXTEND(a, w, 320 )
+    #define EXTEND_Y(a) EXTEND(a, h, 240 )
+    
+    w = GetGDCapability( HDC_SCREEN, GDCAP_VPIXEL);
+    h = GetGDCapability( HDC_SCREEN, GDCAP_VPIXEL);
+
+    EXTEND_X( dlg->x );
+    EXTEND_Y( dlg->y );    
+    
+    EXTEND_X( dlg->w );
+    EXTEND_Y( dlg->h );
+    
+    for( i = 0; i < dlg->controlnr; i++ ){
+        EXTEND_X( dlg->controls[i].x );
+        EXTEND_Y( dlg->controls[i].y );    
+        
+        EXTEND_X( dlg->controls[i].w );
+        EXTEND_Y( dlg->controls[i].h );
+    }
+    
+    #undef EXTEND
+    #undef EXTEND_X
+    #undef EXTEND_Y
+    
+}
+
 int MiniGUIMain (int argc, const char* argv[])
 {
     SetWindowBkColor( HWND_DESKTOP, 0 );
     RegisterMouseMsgHook(HWND_DESKTOP, mouse_hook);
     
     DlgGMplayer.controls = CtrlGMplayer;
+    
+    ExtendDialogBoxToScreen( &DlgGMplayer );
     
     DialogBoxIndirectParam (&DlgGMplayer, HWND_DESKTOP, GMplayerBoxProc, 0L);
 
