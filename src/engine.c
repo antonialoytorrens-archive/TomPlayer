@@ -40,6 +40,7 @@
 
 #include "config.h"
 #include "engine.h"
+#include "resume.h"
 
 char * cmd_mplayer = "./mplayer -quiet -include mplayer.conf -slave -input file=%s \"%s/%s\" > %s";
 static char * fifo_command_name = "/tmp/mplayer-cmd.fifo";
@@ -390,6 +391,7 @@ void launch_mplayer( char * filename ){
     
     if( is_video_file( filename ) ){
         is_playing_video = TRUE;
+        resume_file_init(filename);
     }
     else{
         is_playing_audio = TRUE;
@@ -409,6 +411,7 @@ void launch_mplayer( char * filename ){
 void handle_mouse_event( int x, int y )
 {
     int p;
+    int pos;
     char buffer[200];
     
     if( is_menu_showed == FALSE && is_playing_video == TRUE){
@@ -422,6 +425,10 @@ void handle_mouse_event( int x, int y )
 	    is_paused ^=  TRUE;
             break;
         case CMD_STOP:
+            pos = get_file_position_seconds();
+            if (pos > 0){
+              resume_write_pos(pos);
+            }
             send_command( "quit\n" );
             break;
         case CMD_MUTE:

@@ -15,7 +15,7 @@ tomplayer: $(OBJ)
 
 #Explicit non trivial dependencies
 config.o: config.c config.h engine.h widescreen.h
-engine.o: engine.c config.h engine.h
+engine.o: engine.c config.h engine.h resume.h
 gui.o: gui.c config.h engine.h version.h
 widescreen.o:  widescreen.c config.h widescreen.h
 
