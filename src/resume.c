@@ -69,22 +69,37 @@ int resume_write_pos(int value){
   return 0;
 }
 
-/** Get position entry in resume file 
+/** Get media file and position entry in resume file 
 *
-* \retval >=0 : The position in seconds
+*\param filename[out] Buffer where the media filename has to be stored
+*\param len Length of the buffer where thefilename has to be copied 
+*\param pos[out] Last position in seconds
+*
+* \retval 0  : OK
 * \retval -1 :  An error occured 
 */
-int resume_get_pos(void){
-  char buffer[100];
-  int ret;
+int resume_get_file_infos(char * filename, int len , int * pos){
+  char buffer[100];  
+
+
+  *pos = 0;
+  if (len <= 0){
+    return -1;
+  }
+  filename[0] = 0;
 
   if (GetValueFromEtcFile( RESUME_FILENAME, RESUME_SECTION_KEY, RESUME_POS_KEY, buffer, sizeof(buffer)) != ETC_OK){
     fprintf(stderr,"Error while getting position value in resume file : %s \n ", RESUME_FILENAME);
     return -1;
   }
-  if (sscanf(buffer,"%i", &ret) != 1){
+  if (sscanf(buffer,"%i", pos) != 1){
     fprintf(stderr,"Error while parsing position value : %s \n ", buffer);
     return -1;
   }  
-  return ret;
+  if (GetValueFromEtcFile( RESUME_FILENAME, RESUME_SECTION_KEY, RESUME_FILENAME_KEY, filename, len) != ETC_OK){
+    fprintf(stderr,"Error while getting media filename in : %s \n ", RESUME_FILENAME);
+    return -1;
+  }
+
+  return 0;
 }

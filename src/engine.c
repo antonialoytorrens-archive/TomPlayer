@@ -42,7 +42,7 @@
 #include "engine.h"
 #include "resume.h"
 
-char * cmd_mplayer = "./mplayer -quiet -include mplayer.conf -slave -input file=%s \"%s/%s\" > %s";
+char * cmd_mplayer = "./mplayer -quiet -include mplayer.conf -ss %i -slave -input file=%s \"%s/%s\" > %s";
 static char * fifo_command_name = "/tmp/mplayer-cmd.fifo";
 static char * fifo_menu_name = "/tmp/mplayer-menu.fifo";
 static char * fifo_stdout_name = "/tmp/mplayer-out.fifo";
@@ -366,9 +366,10 @@ void * mplayer_thread(void *cmd){
     pthread_exit(NULL);
 }
 
-void launch_mplayer( char * filename ){
+void launch_mplayer( char * filename, int pos ){
     pthread_t t;
     char cmd[500];   
+    int resume_pos;
 
     /* Dont want to be killed by SIGPIPE */
     signal (SIGPIPE, SIG_IGN);
@@ -397,7 +398,12 @@ void launch_mplayer( char * filename ){
         is_playing_audio = TRUE;
     }
     
-    sprintf( cmd, cmd_mplayer, fifo_command_name, config.folder , filename, fifo_stdout_name );  
+    if (pos > 2)
+      resume_pos = pos - 2;
+    else 
+      resume_pos = 0;
+        
+    sprintf( cmd, cmd_mplayer, resume_pos, fifo_command_name, config.folder , filename, fifo_stdout_name );  
     pthread_create(&t, NULL, mplayer_thread, cmd);
     
     usleep( 500000 );

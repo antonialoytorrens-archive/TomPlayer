@@ -27,6 +27,6 @@
 
 int resume_file_init(char * file); 
 int resume_write_pos(int value);
-int resume_get_pos(void);
+int resume_get_file_infos(char * filename, int len , int * pos);
 
 #endif

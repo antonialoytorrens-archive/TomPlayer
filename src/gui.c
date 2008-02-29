@@ -43,14 +43,13 @@
 #include "config.h"
 #include "engine.h"
 #include "version.h"
-
+#include "resume.h"
 
 #define IDL_DIR    100
 #define IDL_FILE   110
 #define IDC_PATH   120
 #define ID_TIMER   130
-
-
+#define IDRESUME   140
 
 static BITMAP video_skin_bmp;
 static BITMAP audio_skin_bmp;
@@ -62,10 +61,10 @@ static DLGTEMPLATE DlgTomPlayer =
 {
     WS_BORDER | WS_CAPTION,
     WS_EX_NONE,
-    8, 7, 304, 225,
+    8, 7, 308, 225,
     "TomPlayer v"VERSION,
     0, 0,
-    5, NULL,
+    6, NULL,
     0
 };
 
@@ -98,25 +97,32 @@ static CTRLDATA CtrlTomPlayer[] =
     },
 
     {
-        "button",
+        CTRL_BUTTON,
         WS_VISIBLE | BS_DEFPUSHBUTTON | WS_TABSTOP | WS_GROUP,
-        10, 170, 130, 25,
+        8, 170, 92, 25,
         IDOK, 
         "Play",
         0
     },
     {
-        "button",
+        CTRL_BUTTON,
         WS_VISIBLE | BS_PUSHBUTTON | WS_TABSTOP,
-        150, 170, 130, 25,
+        208, 170, 92, 25,
         IDCANCEL,
         "Exit",
+        0
+    },
+    {
+        CTRL_BUTTON,
+        WS_VISIBLE | BS_PUSHBUTTON | WS_TABSTOP,
+        108, 170, 92, 25,
+        IDRESUME,
+        "Resume",
         0
     },
 };
 
 /** Display a rectangular buffer on screen using a specific gui.
-*
 *
 */
 void gui_buffer_rgb(char * buffer,int width, int height, int x, int y){
@@ -174,6 +180,7 @@ void blit_video_menu( int fifo, struct skin_config * conf )
 }
 
 
+
 static void fill_boxes (HWND hDlg, const char* path)
 {
     struct dirent* dir_ent;
@@ -209,41 +216,47 @@ static void file_notif_proc (HWND hwnd, int id, int nc, DWORD add_data)
 {
 }
 
-static void play (HWND hDlg)
+static void play (HWND hDlg, BOOL resume)
 {
+    RECT rc;
     int i;
     char filename [MAX_NAME + 1];
-    RECT rc;
+    int pos = 0;
     
-    i = SendDlgItemMessage (hDlg, IDL_FILE, LB_GETCURSEL, 0, 0);
-    if( i == LB_ERR ){
-        MessageBox (hDlg, "No file selected", "TomPlayer", MB_OK | MB_ICONINFORMATION);      
+    
+    if (resume == FALSE){
+      i = SendDlgItemMessage (hDlg, IDL_FILE, LB_GETCURSEL, 0, 0);
+      if( i == LB_ERR ){
+         MessageBox (hDlg, "No file selected", "TomPlayer", MB_OK | MB_ICONINFORMATION);      
+         return;
+      } else {
+        SendDlgItemMessage (hDlg, IDL_FILE, LB_GETTEXT, i, (LPARAM)filename) ;
+      }
+    } else {
+      if (resume_get_file_infos(filename, sizeof(filename), &pos) != 0){
+        MessageBox (hDlg, "Unable to retrieve resume informations", "TomPlayer", MB_OK | MB_ICONINFORMATION);      
+        return;
+      }       
+    }
+
+    ShowWindow( hDlg, SW_HIDE );
+
+    if( is_video_file( filename ) ){
+        FillBoxWithBitmap( HDC_SCREEN, 0, 0, loading_bmp.bmWidth, loading_bmp.bmHeight, &loading_bmp );
+        rc.left = config.video_config.text_x1;
+        rc.right = config.video_config.text_x2;
+        rc.top = config.video_config.text_y1;
+        rc.bottom = config.video_config.text_y2;
     }
     else{
-        SendDlgItemMessage (hDlg, IDL_FILE, LB_GETTEXT, i, (LPARAM)filename) ;
-        ShowWindow( hDlg, SW_HIDE );
-
-        if( is_video_file( filename ) ){
-            FillBoxWithBitmap( HDC_SCREEN, 0, 0, loading_bmp.bmWidth, loading_bmp.bmHeight, &loading_bmp );
-            rc.left = config.video_config.text_x1;
-            rc.right = config.video_config.text_x2;
-            rc.top = config.video_config.text_y1;
-            rc.bottom = config.video_config.text_y2;
-        }
-        else{
-            FillBoxWithBitmap( HDC_SCREEN, 0, 0, audio_skin_bmp.bmWidth, audio_skin_bmp.bmHeight, &audio_skin_bmp );
-            rc.left = config.audio_config.text_x1;
-            rc.right = config.audio_config.text_x2;
-            rc.top = config.audio_config.text_y1;
-            rc.bottom = config.audio_config.text_y2;
-        }
-
-        DrawText (HDC_SCREEN, filename, -1, &rc, DT_CENTER );
-
-        
-        launch_mplayer( filename );
-
+        FillBoxWithBitmap( HDC_SCREEN, 0, 0, audio_skin_bmp.bmWidth, audio_skin_bmp.bmHeight, &audio_skin_bmp );
+        rc.left = config.audio_config.text_x1;
+        rc.right = config.audio_config.text_x2;
+        rc.top = config.audio_config.text_y1;
+        rc.bottom = config.audio_config.text_y2;
     }
+    DrawText (HDC_SCREEN, filename, -1, &rc, DT_CENTER );   
+    launch_mplayer( filename, pos );   
 }
 
 static int mouse_hook (void* context, HWND dst_wnd, int msg, WPARAM wParam, LPARAM lParam)
@@ -287,6 +300,7 @@ static int load_bmp( void ){
 
 static int TomPlayerBoxProc (HWND hDlg, int message, WPARAM wParam, LPARAM lParam)
 {
+
     switch (message) {
         case MSG_INITDIALOG:
             if( load_config(&config) == FALSE ){
@@ -306,12 +320,15 @@ static int TomPlayerBoxProc (HWND hDlg, int message, WPARAM wParam, LPARAM lPara
         case MSG_COMMAND:
             switch (wParam) {
                 case IDOK:
-                    play (hDlg);
+                    play (hDlg, FALSE);
                     break;
                 case IDCANCEL:
                     EndDialog (hDlg, wParam);
                     FillBoxWithBitmap( HDC_SCREEN, 0, 0, exiting_bmp.bmWidth, exiting_bmp.bmHeight, &exiting_bmp );
                     exit(0);
+                    break;
+                case IDRESUME:
+                    play (hDlg, TRUE);
                     break;
             }
             break;

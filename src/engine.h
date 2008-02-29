@@ -68,7 +68,7 @@ void hide_menu( void );
 void blit_video_menu( int fifo, struct skin_config * conf );
 
 void * mplayer_thread(void *cmd);
-void launch_mplayer( char * filename );
+void launch_mplayer( char * filename, int pos );
 
 
 void handle_mouse_event( int x, int y );
