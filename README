@@ -1,30 +1,38 @@
-This is my (i.e. nullpointer) port of MPlayer with a graphical user interface for the
-tomtom GPS.
+** http://www.tomplayer.net **
+
+This is TomPlayer, a port of MPlayer with a graphical user interface for the tomtom GPS.
 
 All this project is under the GPL, so you are free to edit/modify/fix the source code :)
 
 For the installation, check the INSTALL file.
 
-I wish to thanks :
+We wish to thank :
  - clint03 for audio and video skins
  - chen for hours of beta testing.
  - toto740 for some gfx
- - cyph who allowed me to use his script to kill and restart the ttn application.
+ - paris2016
+ - All the users around the net
+ 
+Have fun with it :)
 
-I wish you have fun with it :)
-nulpointer (http://nullpointer.110mb.com)
 
 
 En francais :
-Ceci est mon portage de mplayer avec une interface graphique pour les GPS tomtom.
+Ceci est TomPlayer, un portage de mplayer avec une interface graphique pour les GPS tomtom.
 
 Le projet est sous licence GPL, vous êtes donc libre de éditer/modifier/corriger le code source.
 
-Concernant l'installation, 
+Concernant l'installation, Lisez le fihier INSTALL
 
-Je souhaite remercier :
+Nous  souhaitons remercier :
  - clint03 pour les skins audio et video
  - chen pour les heures qu'il a passer à tester ce programme
  - toto740 pour certains graphismes
  - Alexandre Bais pour son skin (http://www.abais-3d.fr/)
- - cyph qui m'a autorisé à utiliser son script d'arrêt et de redémarrage de l'application ttn
+ - paris2016
+ - Tous les utilisateurs enthousisates croisés sur le net
+
+
+A vous de jouer !
+
+** http://www.tomplayer.net **
