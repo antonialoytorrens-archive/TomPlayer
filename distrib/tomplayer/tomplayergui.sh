@@ -7,8 +7,6 @@ cd $TOMPLAYER_DIR
 #To be sure to get absolute path
 TOMPLAYER_DIR=`pwd`
 
-killall -9 refresh_wdg 
-./refresh_wdg &
 
 echo "Killing ttn..."
 
@@ -24,6 +22,10 @@ rm /mnt/sdcard/dirty_fs
 killall -9 clmapp
 killall -9 ttsserver 
 killall -9 suntime 
+
+
+killall -9 refresh_wdg 
+./refresh_wdg &
 
 echo "Running the application"
 
