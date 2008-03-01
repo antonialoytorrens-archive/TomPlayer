@@ -1,3 +1,18 @@
+More informations on http://www.tomplayer.net
+
+March, 1st 2008 TomPlayer V0.1 is born
+* Extension are now case insensitive
+* Initial IHM is resized according to screen size
+* Auto cropping (according to screen size =>  manual edition of mpalyer.conf no longer needed)
+* Can be installed anywhere 
+* Video resume function
+* nowatchdog file no longer needed
+* dedicated config file for ws skins
+* New ws skins (especially designed for ws screen)
+
+
+Legacy Gmplayer history :
+
 February, 17th 2008 V1.3
 Wolfgar udaptes : 
 *Add progress bar on audio and vido skin
