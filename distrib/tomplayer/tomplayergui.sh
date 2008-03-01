@@ -1,4 +1,15 @@
 #!/bin/sh
+
+#Entering tomplayer directory installation
+TOMPLAYER_DIR=`dirname $0`
+cd $TOMPLAYER_DIR
+
+#To be sure to get absolute path
+TOMPLAYER_DIR=`pwd`
+
+killall -9 refresh_wdg 
+./refresh_wdg &
+
 echo "Killing ttn..."
 
 killall -9 mplayer
@@ -15,13 +26,6 @@ killall -9 ttsserver
 killall -9 suntime 
 
 echo "Running the application"
-
-#Entering tomplayer directory installation
-TOMPLAYER_DIR=`dirname $0`
-cd $TOMPLAYER_DIR
-
-#To be sure to get absolute path
-TOMPLAYER_DIR=`pwd`
 
 #Create a symbolic link to enable generic minigui configuration file
 ln -sf ${TOMPLAYER_DIR}/res /etc/res
