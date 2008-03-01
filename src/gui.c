@@ -44,6 +44,7 @@
 #include "engine.h"
 #include "version.h"
 #include "resume.h"
+#include "watchdog.h"
 
 #define IDL_DIR    100
 #define IDL_FILE   110
@@ -387,6 +388,7 @@ void ExtendDialogBoxToScreen( DLGTEMPLATE * dlg ){
 
 int MiniGUIMain (int argc, const char* argv[])
 {
+  
     SetWindowBkColor( HWND_DESKTOP, 0 );
     RegisterMouseMsgHook(HWND_DESKTOP, mouse_hook);
     

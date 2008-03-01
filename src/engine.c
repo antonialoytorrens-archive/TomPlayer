@@ -36,13 +36,14 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <math.h>
-
+#include <time.h>
 
 #include "config.h"
 #include "engine.h"
 #include "resume.h"
+#include "widescreen.h"
 
-char * cmd_mplayer = "./mplayer -quiet -include mplayer.conf -ss %i -slave -input file=%s \"%s/%s\" > %s";
+char * cmd_mplayer = "./mplayer -quiet -include mplayer.conf -vf expand=:%i,bmovl=1:0:/tmp/mplayer-menu.fifo -ss %i -slave -input file=%s \"%s/%s\" > %s";
 static char * fifo_command_name = "/tmp/mplayer-cmd.fifo";
 static char * fifo_menu_name = "/tmp/mplayer-menu.fifo";
 static char * fifo_stdout_name = "/tmp/mplayer-out.fifo";
@@ -61,6 +62,11 @@ static BOOL is_paused = FALSE;
 /* Hold -1 if the file is not being seeked 
  * or the percent that has to be reached*/
 static int current_seek = -1;
+
+/* To protect communication with mplayer - 
+ * update thread and gui event thread both perform requests...
+ */
+static pthread_mutex_t request_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 extern char *strcasestr (const char *, const char *);
 
@@ -191,11 +197,26 @@ static void flush_stdout(void){
 */
 static int read_line_from_stdout(char * buffer, int len){
   int total_read = 0;
+  fd_set rfds;
+  struct timeval tv;
+
+
+  
+  
 
   do {
     if  (total_read>=len){
       return -1;
     }
+    FD_ZERO(&rfds);
+    FD_SET(fifo_out, &rfds);     
+    tv.tv_sec = 0;
+    tv.tv_usec = 300000;    
+    if (select(fifo_out+1, &rfds, NULL, NULL, &tv) == 0){
+      /* Time out */
+      return -1;
+    }
+
     if (read(fifo_out, &buffer[total_read], 1) != 1){
       return -1;
     }
@@ -250,12 +271,14 @@ int get_int_from_stdout(void){
 static int send_command_wait_int(const char * cmd){
   int value; 
   int nb_try = 0;
-
+  
+  pthread_mutex_lock(&request_mutex);
   send_command(cmd);
   do {
     value = get_int_from_stdout();
     nb_try++;
-  }while (( value == -1) && (nb_try < 25));
+  }while (( value == -1) && (nb_try < 5));
+  pthread_mutex_unlock(&request_mutex);
   return value;  
 }
 
@@ -391,19 +414,22 @@ void launch_mplayer( char * filename, int pos ){
     is_playing_audio = FALSE;
     
     if( is_video_file( filename ) ){
-        is_playing_video = TRUE;
-        resume_file_init(filename);
+      is_playing_video = TRUE;
+      resume_file_init(filename);
+      if (pos > 5){
+        resume_pos = pos - 5;
+      } else {
+        resume_pos = 0;
+      }
     }
     else{
-        is_playing_audio = TRUE;
+      is_playing_audio = TRUE;
+      resume_pos = 0;
     }
     
-    if (pos > 2)
-      resume_pos = pos - 2;
-    else 
-      resume_pos = 0;
+
         
-    sprintf( cmd, cmd_mplayer, resume_pos, fifo_command_name, config.folder , filename, fifo_stdout_name );  
+    sprintf( cmd, cmd_mplayer, (ws_probe()? WS_YMAX : WS_NOXL_YMAX), resume_pos, fifo_command_name, config.folder , filename, fifo_stdout_name );  
     pthread_create(&t, NULL, mplayer_thread, cmd);
     
     usleep( 500000 );
@@ -431,9 +457,11 @@ void handle_mouse_event( int x, int y )
 	    is_paused ^=  TRUE;
             break;
         case CMD_STOP:
-            pos = get_file_position_seconds();
-            if (pos > 0){
-              resume_write_pos(pos);
+            if ( is_playing_video == TRUE ){
+              pos = get_file_position_seconds();
+              if (pos > 0){
+                resume_write_pos(pos);
+              }
             }
             send_command( "quit\n" );
             break;
@@ -477,6 +505,7 @@ void handle_mouse_event( int x, int y )
             else{
                 sprintf( buffer, "seek %d 1\n",p );
                 send_command( buffer );
+                fprintf(stderr,"send command : %s\n",buffer);
             }
             break;
         case CMD_BACKWARD:
@@ -519,6 +548,7 @@ int get_command_from_xy( int x, int y, int * p ){
                     if( *p >=100 ) *p=99;
                     cmd = c->controls[i].cmd;
 		    current_seek = *p;
+                    
                 }
                 break;
             case PROGRESS_CONTROL_Y:
@@ -527,6 +557,8 @@ int get_command_from_xy( int x, int y, int * p ){
                     if( *p >=100 ) *p=99;
                     cmd = c->controls[i].cmd;
                     current_seek = *p;
+                    
+          
                 }
                 break;
             default:

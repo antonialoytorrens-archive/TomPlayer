@@ -67,8 +67,11 @@ int load_skin_config( char * filename, struct skin_config * skin_conf ){
     
     for( i = 0; i < MAX_CONTROLS; i++ ){
         sprintf( section_control, SECTION_CONTROL_FMT_STR, i );
-        if( GetIntValueFromEtc( gh_config, section_control, KEY_TYPE_CONTROL, (int *) &(skin_conf->controls[i].type) ) != ETC_OK  ) break;
-        GetIntValueFromEtc( gh_config, section_control, KEY_CMD_CONTROL, &skin_conf->controls[i].cmd );
+        if( GetIntValueFromEtc( gh_config, section_control, KEY_TYPE_CONTROL, (int *) &(skin_conf->controls[i].type) ) != ETC_OK  ){
+           fprintf( stderr, "Warning : no section  <%s>\n", section_control );
+           break;
+        }
+        GetIntValueFromEtc( gh_config, section_control, KEY_CMD_CONTROL, &skin_conf->controls[i].cmd );       
         switch( skin_conf->controls[i].type ){
             case CIRCULAR_CONTROL:
                 GetIntValueFromEtc( gh_config, section_control, KEY_CIRCULAR_CONTROL_X, &skin_conf->controls[i].area.circular.x );
@@ -85,8 +88,8 @@ int load_skin_config( char * filename, struct skin_config * skin_conf ){
 
 		if ((skin_conf->controls[i].type == PROGRESS_CONTROL_X) ||
 		    (skin_conf->controls[i].type == PROGRESS_CONTROL_Y)){
-		  skin_conf->progress_bar_index = i;
-		}
+		  skin_conf->progress_bar_index = i;		
+                }
                 break;
             default:
                 fprintf( stderr, "Type not defined correctly for %s\n", section_control );
@@ -128,15 +131,15 @@ int load_config( struct tomplayer_config * conf ){
     
     UnloadEtcFile( gh_config );
     
+    /* Configuration adpatation for widescreen */
+    if (ws_probe()){
+	ws_translate(conf);	
+    }
 
 
     load_skin_config( conf->video_config.conf_file, &conf->video_config );
     load_skin_config( conf->audio_config.conf_file, &conf->audio_config );
     
-        /* Configuration adpatation for widescreen */
-    if (ws_probe()){
-	ws_translate(conf);	
-    }
 
     return TRUE;
 }

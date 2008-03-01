@@ -66,7 +66,7 @@
 #define KEY_B_PROGRESSBAR           "pb_b"
 
 #define KEY_TYPE_CONTROL            "type"
-#define KEY_CMD_CONTROL             "cmd"
+#define KEY_CMD_CONTROL             "ctrl"
 
 #define KEY_CIRCULAR_CONTROL_X      "x"
 #define KEY_CIRCULAR_CONTROL_Y      "y"

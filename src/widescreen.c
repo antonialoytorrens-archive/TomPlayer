@@ -55,39 +55,6 @@ static void transform_filename(char * filename){
 }
 
 
-/** Adapt controls coordinates 
-*
-*/
-static void transform_controls(struct control ctl[]){
-  int i;
-
-  /* adapt coordinates */
-  for (i=0; i<MAX_CONTROLS; i++){
-    switch (ctl[i].type){
-      case CIRCULAR_CONTROL :
-        ctl[i].area.circular.x = ctl[i].area.circular.x*WS_XMAX/WS_NOXL_XMAX;
-	ctl[i].area.circular.y = ctl[i].area.circular.y*WS_YMAX/WS_NOXL_YMAX;
-	/* Most restrictive : not perfect , in fact on a ws, circles turn ellipses...	*/
-	ctl[i].area.circular.r = ctl[i].area.circular.r*WS_YMAX/WS_NOXL_YMAX; 
-      break;
-
-      case RECTANGULAR_CONTROL :
-      case PROGRESS_CONTROL_X :
-      case PROGRESS_CONTROL_Y :
- 	ctl[i].area.rectangular.x1 = ctl[i].area.rectangular.x1*WS_XMAX/WS_NOXL_XMAX;
-	ctl[i].area.rectangular.y1 = ctl[i].area.rectangular.y1*WS_YMAX/WS_NOXL_YMAX;
-	ctl[i].area.rectangular.x2 = ctl[i].area.rectangular.x2*WS_XMAX/WS_NOXL_XMAX;
-	ctl[i].area.rectangular.y2 = ctl[i].area.rectangular.y2*WS_YMAX/WS_NOXL_YMAX;	
-      break;
-
-      default :
-      break;
-    }
-  }
-
-}
-
-
 /** Returns wether the device is equiped with a widescreen or not
 *
 *\retval 0 no widescreen 
@@ -136,15 +103,12 @@ void ws_translate(struct tomplayer_config * conf){
   transform_filename(conf->bmp_exiting_file);
   transform_filename(conf->video_config.image_file);
   transform_filename(conf->audio_config.image_file);
-  /* Prepend "ws_" to config filenames */
-  /*  
-  transform_filename(conf->video_config.conf_file);
-  transform_filename(conf->video_config.conf_file);
-  */
 
-  /* Adapt controls coordinates  */
-  transform_controls(conf->video_config.controls);
-  transform_controls(conf->audio_config.controls);
+  /* Prepend "ws_" to config filenames */  
+  transform_filename(conf->video_config.conf_file);
+  transform_filename(conf->audio_config.conf_file);
+  
+
   
   
 }
