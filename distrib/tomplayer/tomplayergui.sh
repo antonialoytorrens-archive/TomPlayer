@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #Entering tomplayer directory installation
-TOMPLAYER_DIR=`dirname $0`
+TOMPLAYER_DIR=`echo $0 | sed 's/tomplayergui.sh//'` 
 cd $TOMPLAYER_DIR
 
 #To be sure to get absolute path
