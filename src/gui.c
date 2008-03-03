@@ -44,7 +44,6 @@
 #include "engine.h"
 #include "version.h"
 #include "resume.h"
-#include "watchdog.h"
 
 #define IDL_DIR    100
 #define IDL_FILE   110

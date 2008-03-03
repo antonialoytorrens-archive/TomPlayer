@@ -23,7 +23,7 @@ refresh_wdg : watchdog.o
 #Explicit non trivial dependencies
 config.o: config.c config.h engine.h widescreen.h
 engine.o: engine.c config.h engine.h resume.h widescreen.h
-gui.o: gui.c config.h engine.h version.h resume.h watchdog.h
+gui.o: gui.c config.h engine.h version.h resume.h 
 widescreen.o:  widescreen.c config.h widescreen.h
 
 %.o : %.c

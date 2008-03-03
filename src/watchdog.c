@@ -25,7 +25,6 @@
 #include <unistd.h>
 #include <pthread.h>
 
-#include "watchdog.h"
 
 
 /** Periocally refresh the wdg */
