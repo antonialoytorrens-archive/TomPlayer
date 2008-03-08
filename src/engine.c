@@ -42,6 +42,15 @@
 #include "engine.h"
 #include "resume.h"
 #include "widescreen.h"
+#include "pwm.h"
+
+/* Progress bar update period in us */
+#define PB_UPDATE_PERIOD_US 250000
+/* Timout in seconds before turning OFF screen while playing audio */
+#define SCREEN_SAVER_TO_S 6
+/* Timout in cycles before turning OFF screen while playing audio */
+#define SCREEN_SAVER_TO_CYCLES ((SCREEN_SAVER_TO_S * 1000000) / PB_UPDATE_PERIOD_US)
+#define SCREEN_SAVER_ACTIVE (-1)
 
 char * cmd_mplayer = "./mplayer -quiet -include mplayer.conf -vf expand=:%i,bmovl=1:0:/tmp/mplayer-menu.fifo -ss %i -slave -input file=%s \"%s/%s\" > %s";
 static char * fifo_command_name = "/tmp/mplayer-cmd.fifo";
@@ -68,6 +77,11 @@ static int current_seek = -1;
  */
 static pthread_mutex_t request_mutex = PTHREAD_MUTEX_INITIALIZER;
 
+/* number of progress bar cycle without any activity on screen while screen in ON
+ * if (no_user_interaction_cycles == SCREEN_SAVER_ACTIVE) then screen is OFF 
+ * and we do not count any longer */
+static int no_user_interaction_cycles;
+
 extern char *strcasestr (const char *, const char *);
 
 static void display_progress_bar(int current)
@@ -87,9 +101,14 @@ static void display_progress_bar(int current)
             
     if( is_playing_video == TRUE ) 
       c = &config.video_config;
-    else 
-      c = &config.audio_config;
+    else {
+      c = &config.audio_config;      
+    } 
 
+    if (no_user_interaction_cycles == SCREEN_SAVER_ACTIVE){
+    	/* No need to display progress bar as screen is off*/	
+    	return;    	      	
+    }    
     if (c->progress_bar_index < 0){
 	/* No progress bar on skin nothing to do */
 	return;
@@ -359,12 +378,19 @@ void * update_thread(void *cmd){
       } else {
          fprintf(stderr, "error while trying to retrieve current position\n");
       }
-
     }
-
+        
+	/* Handle screen saver */
     
-    
- 
+	if ((is_playing_video == FALSE) && 
+		(no_user_interaction_cycles != SCREEN_SAVER_ACTIVE)){    
+		no_user_interaction_cycles++;
+		if (no_user_interaction_cycles >= SCREEN_SAVER_TO_CYCLES){
+			no_user_interaction_cycles = SCREEN_SAVER_ACTIVE;
+			pwm_off();    		  	 
+		}
+	}
+	
 /* FIXME check if useful     
    if (current_seek != -1){
       if (get_file_position_percent() == current_seek){
@@ -372,7 +398,7 @@ void * update_thread(void *cmd){
       }
     }
 */   
-    usleep(250000);    
+    usleep(PB_UPDATE_PERIOD_US);    
   }
   
   pthread_exit(NULL);
@@ -394,6 +420,8 @@ void launch_mplayer( char * filename, int pos ){
     char cmd[500];   
     int resume_pos;
 
+     
+    
     /* Dont want to be killed by SIGPIPE */
     signal (SIGPIPE, SIG_IGN);
 
@@ -445,6 +473,16 @@ void handle_mouse_event( int x, int y )
     int p;
     int pos;
     char buffer[200];
+    
+    
+    if (no_user_interaction_cycles == SCREEN_SAVER_ACTIVE){
+    	/* If screen is OFF, turn it ON */    	
+    	pwm_resume();
+    	no_user_interaction_cycles = 0;
+    	/*Do not handle event as we touch the screen while it was OFF*/
+    	return; 
+    }
+    no_user_interaction_cycles = 0;    
     
     if( is_menu_showed == FALSE && is_playing_video == TRUE){
         show_menu();        

@@ -1,9 +1,15 @@
+
+ifndef INC_KERNEL
+	INC_KERNEL=../../../../golinux/include
+endif
+
 CC=arm-linux-gcc
 STRIP=arm-linux-strip
-CFLAGS+=-DUSE_MINIMIG -Wall
+CFLAGS+=-DUSE_MINIMIG -Wall -I$(INC_KERNEL) 
 INSTALL_DIR=../distrib/tomplayer/
 
-SRC = config.c engine.c gui.c widescreen.c resume.c 
+
+SRC = config.c engine.c gui.c widescreen.c resume.c pwm.c
 
 OBJ = $(subst .c,.o,$(SRC))
 

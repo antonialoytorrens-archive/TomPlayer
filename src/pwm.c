@@ -33,7 +33,9 @@
 
 #include "pwm.h"
 
-static  int previous_setting =  PWM_BACKLIGHT_MAX;
+
+#define PWM_DEFAULT_LIGHT (PWM_BACKLIGHT_MAX - 20)
+static  int previous_setting =  PWM_DEFAULT_LIGHT;
 
 /** Turn OFF the screen and save the current state to be able to restore
  */
@@ -50,6 +52,7 @@ int pwm_off(void) {
 	previous_setting = ioctl (fd, IOR_BACKLIGHT_CURRENT);
 	if ( previous_setting < 0){
 	    perror("Error while trying to get current backlight value : ");
+	    previous_setting =  PWM_DEFAULT_LIGHT;
 	    res = -1;
 	    goto out_pwm_off;		        
 	}	
@@ -66,27 +69,62 @@ out_pwm_off:
 
 /** Restore screen to its previous state
  * 
+ * \Note Do Nothing if the screen is not OFF
  */
 int pwm_resume(void) {
 	int fd;
 	int res = 0;
+	int current_val;
 	
 	fd = open("/dev/" PWM_DEVNAME, O_RDWR);
 	if (fd < 0){
 	    perror("Error while trying to open PWM module : ");
 	    return -1;
 	}
-	if (ioctl (fd, IOW_BACKLIGHT_ON) != 0){
-	    perror("Error while trying to turn on backlight : ");
-	    res = -1;
-	    goto out_pwm_resume;		        
+	current_val = ioctl (fd, IOR_BACKLIGHT_CURRENT);
+	if ( current_val < 0){
+	    perror("Error while trying to get current backlight value : ");
+	    res = -1;	   
+	    goto out_pwm_resume;		  
 	}
-	if (ioctl (fd, IOW_BACKLIGHT_UPDATE , previous_setting) != 0){
-	    perror("Error while turning to restore previous setting : ");
-	    res = -1;
+	if (current_val == PWM_BACKLIGHT_MIN) {
+		/* Turn ON screen only if it is OFF */		
+		if (ioctl (fd, IOW_BACKLIGHT_UPDATE , previous_setting) != 0){
+		    perror("Error while turning to restore previous setting : ");
+		    res = -1;
+		}
 	}
 
 out_pwm_resume:
 	close(fd);
 	return res;		
+}
+
+
+/** Indicates wether the screen is OFF or not.
+ * 
+ * \note if an error occurs, the screen is supposed ON
+ */ 
+int pwm_is_on(void){
+	int fd;
+	int res = 1;
+	int current_val;
+	
+	
+	fd = open("/dev/" PWM_DEVNAME, O_RDWR);
+	if (fd < 0){
+	    perror("Error while trying to open PWM module : ");
+	    return -1;
+	} 	
+	current_val = ioctl (fd, IOR_BACKLIGHT_CURRENT);
+	if ( current_val < 0){
+	    perror("Error while trying to get current backlight value : ");
+	    res = -1;	   
+	}		
+	if (current_val == 0) {
+		res = 0;
+	} 	
+
+	close(fd);
+	return res;			
 }

@@ -44,6 +44,7 @@
 #include "engine.h"
 #include "version.h"
 #include "resume.h"
+#include "pwm.h"
 
 #define IDL_DIR    100
 #define IDL_FILE   110
@@ -340,6 +341,9 @@ static int TomPlayerBoxProc (HWND hDlg, int message, WPARAM wParam, LPARAM lPara
                 is_mplayer_finished = FALSE;
                 ShowWindow( hDlg, SW_SHOW );
                 UpdateWindow( hDlg, TRUE );
+                /* Turn ON screen if it is not */
+                pwm_resume();
+                                
             }
             break;
     
@@ -387,8 +391,12 @@ void ExtendDialogBoxToScreen( DLGTEMPLATE * dlg ){
 
 int MiniGUIMain (int argc, const char* argv[])
 {
-  
-    SetWindowBkColor( HWND_DESKTOP, 0 );
+	
+	/* Turn ON screen if it is not */
+	pwm_resume();
+	
+	
+	SetWindowBkColor( HWND_DESKTOP, 0 );
     RegisterMouseMsgHook(HWND_DESKTOP, mouse_hook);
     
     DlgTomPlayer.controls = CtrlTomPlayer;
