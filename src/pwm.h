@@ -23,8 +23,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TOMPLAYER_RESUME_H__
-#define __TOMPLAYER_RESUME_H__
+#ifndef __TOMPLAYER_PWM_H__
+#define __TOMPLAYER_PWM_H__
 
 int pwm_off(void);
 int pwm_resume(void);
