@@ -47,12 +47,13 @@ int pwm_off(void) {
 	    perror("Error while trying to open PWM module : ");
 	    return -1;
 	} 	
-	if (ioctl (fd, IOR_BACKLIGHT_CURRENT, &previous_setting) != 0){
+	previous_setting = ioctl (fd, IOR_BACKLIGHT_CURRENT);
+	if ( previous_setting < 0){
 	    perror("Error while trying to get current backlight value : ");
 	    res = -1;
 	    goto out_pwm_off;		        
 	}	
-	if (ioctl (fd, IOW_BACKLIGHT_OFF, NULL) != 0){
+	if (ioctl (fd, IOW_BACKLIGHT_OFF) != 0){
 	    perror("Error while turning OFF the screen : ");
 	    res = -1;
 	}
@@ -75,12 +76,12 @@ int pwm_resume(void) {
 	    perror("Error while trying to open PWM module : ");
 	    return -1;
 	}
-	if (ioctl (fd, IOW_BACKLIGHT_ON, &previous_setting) != 0){
+	if (ioctl (fd, IOW_BACKLIGHT_ON) != 0){
 	    perror("Error while trying to turn on backlight : ");
 	    res = -1;
 	    goto out_pwm_resume;		        
 	}
-	if (ioctl (fd, IOW_BACKLIGHT_UPDATE , &previous_setting) != 0){
+	if (ioctl (fd, IOW_BACKLIGHT_UPDATE , previous_setting) != 0){
 	    perror("Error while turning to restore previous setting : ");
 	    res = -1;
 	}
