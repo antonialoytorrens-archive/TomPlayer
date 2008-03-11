@@ -45,12 +45,36 @@
 #include "version.h"
 #include "resume.h"
 #include "pwm.h"
+#include "playlist.h"
 
-#define IDL_DIR    100
-#define IDL_FILE   110
-#define IDC_PATH   120
-#define ID_TIMER   130
-#define IDRESUME   140
+#define DEFAULT_PLAYLIST "tomplayer.m3u"
+
+#define EXTEND(a,b,c) (a) = (a) * (1.0 * b) /c
+#define EXTEND_X(a) EXTEND(a, w, 320 )
+#define EXTEND_Y(a) EXTEND(a, h, 240 )
+
+
+#define ID_TIMER            100
+#define IDC_PROPSHEET       110
+
+#define IDL_DIR_VIDEO       200
+#define IDL_FILE_VIDEO      210
+#define IDC_PATH_VIDEO      220
+#define IDB_PLAY_VIDEO      230
+#define IDB_EXIT_VIDEO      240
+#define IDB_RESUME_VIDEO    250
+#define IDC_STATIC_VIDEO    260
+
+
+
+#define IDL_DIR_AUDIO       300
+#define IDL_FILE_AUDIO      310
+#define IDC_PATH_AUDIO      320
+#define IDB_PLAY_AUDIO      330
+#define IDB_EXIT_AUDIO      340
+#define IDB_RANDOM_AUDIO    350
+#define IDC_STATIC_AUDIO    360
+
 
 static BITMAP video_skin_bmp;
 static BITMAP audio_skin_bmp;
@@ -58,32 +82,57 @@ static BITMAP loading_bmp;
 static BITMAP exiting_bmp;
 
 
-static DLGTEMPLATE DlgTomPlayer =
+
+static DLGTEMPLATE DlgTomPlayerPropSheet =
 {
     WS_BORDER | WS_CAPTION,
     WS_EX_NONE,
-    8, 7, 308, 225,
+    1, 1, 318, 238,
     "TomPlayer v"VERSION,
+    0, 0,
+    1, NULL,
+    0
+};
+
+static CTRLDATA CtrlTomPlayerPropSheet[] =
+{ 
+    {
+        CTRL_PROPSHEET,
+        WS_VISIBLE | PSS_COMPACTTAB, 
+        5, 5, 310, 220,
+        IDC_PROPSHEET,
+        "",
+        0
+    },
+};
+
+
+static DLGTEMPLATE DlgTomPlayerAudio =
+{
+    WS_BORDER | WS_CAPTION,
+    WS_EX_NONE,
+    0, 0, 0, 0,
+    "Audio",
     0, 0,
     6, NULL,
     0
 };
 
-static CTRLDATA CtrlTomPlayer[] =
+static CTRLDATA CtrlTomPlayerAudio[] =
 { 
     {
         CTRL_STATIC,
         WS_VISIBLE | SS_SIMPLE, 
-        10, 10, 290, 15, 
-        IDC_STATIC, 
+        10, 10, 260, 15, 
+        IDC_STATIC_AUDIO, 
        "Files:",
         0
     },
     {
         CTRL_LISTBOX,
         WS_VISIBLE | WS_VSCROLL | WS_BORDER | LBS_SORT | LBS_NOTIFY,
-        10, 30, 290, 100,
-        IDL_FILE,
+        10, 30, 260, 100,
+        IDL_FILE_AUDIO,
         "",
         0
     },
@@ -91,8 +140,8 @@ static CTRLDATA CtrlTomPlayer[] =
     {
         CTRL_STATIC,
         WS_VISIBLE | SS_SIMPLE, 
-        10, 150, 290, 15, 
-        IDC_PATH, 
+        10, 130, 260, 15, 
+        IDC_PATH_AUDIO, 
        "Path: ",
         0
     },
@@ -100,28 +149,117 @@ static CTRLDATA CtrlTomPlayer[] =
     {
         CTRL_BUTTON,
         WS_VISIBLE | BS_DEFPUSHBUTTON | WS_TABSTOP | WS_GROUP,
-        8, 170, 92, 25,
-        IDOK, 
+        8, 150, 92, 25,
+        IDB_PLAY_AUDIO, 
         "Play",
         0
     },
     {
         CTRL_BUTTON,
         WS_VISIBLE | BS_PUSHBUTTON | WS_TABSTOP,
-        208, 170, 92, 25,
-        IDCANCEL,
+        208, 150, 92, 25,
+        IDB_EXIT_AUDIO,
         "Exit",
         0
     },
     {
         CTRL_BUTTON,
         WS_VISIBLE | BS_PUSHBUTTON | WS_TABSTOP,
-        108, 170, 92, 25,
-        IDRESUME,
+        108, 150, 92, 25,
+        IDB_RANDOM_AUDIO,
+        "Play dir.",
+        0
+    },
+};
+
+static DLGTEMPLATE DlgTomPlayerVideo =
+{
+    WS_BORDER | WS_CAPTION,
+    WS_EX_NONE,
+    0, 0, 0, 0,
+    "Video",
+    0, 0,
+    6, NULL,
+    0
+};
+
+static CTRLDATA CtrlTomPlayerVideo[] =
+{ 
+    {
+        CTRL_STATIC,
+        WS_VISIBLE | SS_SIMPLE, 
+        10, 10, 260, 15, 
+        IDC_STATIC_VIDEO, 
+       "Files:",
+        0
+    },
+    {
+        CTRL_LISTBOX,
+        WS_VISIBLE | WS_VSCROLL | WS_BORDER | LBS_SORT | LBS_NOTIFY,
+        10, 30, 260, 100,
+        IDL_FILE_VIDEO,
+        "",
+        0
+    },
+
+    {
+        CTRL_STATIC,
+        WS_VISIBLE | SS_SIMPLE, 
+        10, 130, 260, 15, 
+        IDC_PATH_VIDEO, 
+       "Path: ",
+        0
+    },
+
+    {
+        CTRL_BUTTON,
+        WS_VISIBLE | BS_DEFPUSHBUTTON | WS_TABSTOP | WS_GROUP,
+        8, 150, 92, 25,
+        IDB_PLAY_VIDEO, 
+        "Play",
+        0
+    },
+    {
+        CTRL_BUTTON,
+        WS_VISIBLE | BS_PUSHBUTTON | WS_TABSTOP,
+        208, 150, 92, 25,
+        IDB_EXIT_VIDEO,
+        "Exit",
+        0
+    },
+    {
+        CTRL_BUTTON,
+        WS_VISIBLE | BS_PUSHBUTTON | WS_TABSTOP,
+        108, 150, 92, 25,
+        IDB_RESUME_VIDEO,
         "Resume",
         0
     },
 };
+
+
+void ExtendDialogBoxToScreen( DLGTEMPLATE * dlg ){
+    int i;
+    int w, h;
+
+    w = GetGDCapability( HDC_SCREEN, GDCAP_HPIXEL);
+    h = GetGDCapability( HDC_SCREEN, GDCAP_VPIXEL);
+
+    EXTEND_X( dlg->x );
+    EXTEND_Y( dlg->y );    
+    
+    EXTEND_X( dlg->w );
+    EXTEND_Y( dlg->h );
+    
+    for( i = 0; i < dlg->controlnr; i++ ){
+        EXTEND_X( dlg->controls[i].x );
+        EXTEND_Y( dlg->controls[i].y );    
+        
+        EXTEND_X( dlg->controls[i].w );
+        EXTEND_Y( dlg->controls[i].h );
+    }
+}
+
 
 /** Display a rectangular buffer on screen using a specific gui.
 *
@@ -182,20 +320,21 @@ void blit_video_menu( int fifo, struct skin_config * conf )
 
 
 
-static void fill_boxes (HWND hDlg, const char* path)
+static void fill_boxes (HWND hDlg, int list_box_id, int text_path_id, char * extension, const char* path)
 {
+
     struct dirent* dir_ent;
     DIR*   dir;
     struct stat ftype;
     char   fullpath [PATH_MAX + 1];
-    //char   extension [PATH_MAX + 1];
 
-    SendDlgItemMessage (hDlg, IDL_FILE, LB_RESETCONTENT, 0, (LPARAM)0);
-    SetWindowText (GetDlgItem (hDlg, IDC_PATH), path);
-    
     if ((dir = opendir (path)) == NULL)
          return;
 
+    SendDlgItemMessage (hDlg, list_box_id, LB_RESETCONTENT, 0, (LPARAM)0);
+    SetWindowText (GetDlgItem (hDlg, text_path_id), path);
+
+    
     while ( (dir_ent = readdir ( dir )) != NULL ) {
         strncpy (fullpath, path, PATH_MAX);
         strcat (fullpath, "/");
@@ -205,41 +344,78 @@ static void fill_boxes (HWND hDlg, const char* path)
            continue;
         }
 
-        if (S_ISREG (ftype.st_mode) ) 
-            if( is_video_file( dir_ent->d_name ) || is_audio_file( dir_ent->d_name ) )
-                SendDlgItemMessage (hDlg, IDL_FILE, LB_ADDSTRING, 0, (LPARAM)dir_ent->d_name);
+        if (S_ISDIR (ftype.st_mode) ) 
+            SendDlgItemMessage (hDlg, list_box_id, LB_ADDSTRING, 0, (LPARAM)dir_ent->d_name);
+        else if (S_ISREG (ftype.st_mode) ) 
+            if( has_extension(dir_ent->d_name, extension ) )
+                SendDlgItemMessage (hDlg, list_box_id, LB_ADDSTRING, 0, (LPARAM)dir_ent->d_name);
     }
 
     closedir (dir);
 }
 
-static void file_notif_proc (HWND hwnd, int id, int nc, DWORD add_data)
+static void dir_notif_proc (HWND hwnd, int id, int nc, int text_path_id, char * extensions)
 {
+   /* When the user double clicked the directory name or
+    * pressed the ENTER key, he will enter the corresponding directory */
+   if (nc == LBN_CLICKED || nc == LBN_ENTER) {
+       int cur_sel = SendMessage (hwnd, LB_GETCURSEL, 0, 0L);
+       if (cur_sel >= 0) {
+           char cwd [MAX_PATH + 1];
+           char dir [MAX_NAME + 1];
+           GetWindowText (GetDlgItem (GetParent (hwnd), text_path_id), cwd, MAX_PATH);
+           SendMessage (hwnd, LB_GETTEXT, cur_sel, (LPARAM)dir);
+           if (strcmp (dir, ".") == 0)
+               return;
+           
+           if( strcmp( dir, ".." ) == 0 ){
+               int i;
+               i = strlen( cwd );
+               while( --i > 0 )
+                   if( cwd[i] == '/' ){
+                       cwd[i] = 0;
+                       break;
+                   }
+           }
+           else{
+               strcat (cwd, "/");
+               strcat (cwd, dir);
+           }
+
+           fill_boxes (GetParent (hwnd), id, text_path_id, extensions, cwd);
+       }
+   }
 }
 
-static void play (HWND hDlg, BOOL resume)
+
+static void video_file_notif_proc (HWND hwnd, int id, int nc, DWORD add_data)
 {
+    dir_notif_proc (hwnd, IDL_FILE_VIDEO, nc, IDC_PATH_VIDEO, config.filter_video_ext );
+}
+
+static void audio_file_notif_proc (HWND hwnd, int id, int nc, DWORD add_data)
+{
+    char extensions[PATH_MAX+1];
+    strcpy( extensions, config.filter_audio_ext );
+    strcat( extensions, " .m3u" );
+    dir_notif_proc (hwnd, IDL_FILE_AUDIO, nc, IDC_PATH_AUDIO, extensions );
+}
+
+
+static void play (HWND hDlg, char * folder, char * filename, BOOL resume)
+{
+
     RECT rc;
-    int i;
-    char filename [MAX_NAME + 1];
     int pos = 0;
     
-    
-    if (resume == FALSE){
-      i = SendDlgItemMessage (hDlg, IDL_FILE, LB_GETCURSEL, 0, 0);
-      if( i == LB_ERR ){
-         MessageBox (hDlg, "No file selected", "TomPlayer", MB_OK | MB_ICONINFORMATION);      
-         return;
-      } else {
-        SendDlgItemMessage (hDlg, IDL_FILE, LB_GETTEXT, i, (LPARAM)filename) ;
-      }
-    } else {
-      if (resume_get_file_infos(filename, sizeof(filename), &pos) != 0){
-        MessageBox (hDlg, "Unable to retrieve resume informations", "TomPlayer", MB_OK | MB_ICONINFORMATION);      
-        return;
-      }       
-    }
 
+    if (resume == TRUE) {
+        if (resume_get_file_infos(filename, PATH_MAX, &pos) != 0){
+            MessageBox (hDlg, "Unable to retrieve resume informations", "TomPlayer", MB_OK | MB_ICONINFORMATION);      
+            return;
+        }
+    }
+    
     ShowWindow( hDlg, SW_HIDE );
 
     if( is_video_file( filename ) ){
@@ -257,7 +433,7 @@ static void play (HWND hDlg, BOOL resume)
         rc.bottom = config.audio_config.text_y2;
     }
     DrawText (HDC_SCREEN, filename, -1, &rc, DT_CENTER );   
-    launch_mplayer( filename, pos );   
+    launch_mplayer( folder, filename, pos );   
 }
 
 static int mouse_hook (void* context, HWND dst_wnd, int msg, WPARAM wParam, LPARAM lParam)
@@ -299,7 +475,102 @@ static int load_bmp( void ){
     return TRUE;
 }
 
-static int TomPlayerBoxProc (HWND hDlg, int message, WPARAM wParam, LPARAM lParam)
+
+static int TomPlayerVideoProc (HWND hDlg, int message, WPARAM wParam, LPARAM lParam)
+{
+    char folder[MAX_PATH+1];
+    int i;
+    char filename[MAX_NAME+1];
+    
+    switch (message) {
+        case MSG_INITPAGE:
+            fill_boxes (hDlg, IDL_FILE_VIDEO, IDC_PATH_VIDEO, config.filter_video_ext, config.video_folder);
+            SetNotificationCallback (GetDlgItem (hDlg, IDL_FILE_VIDEO), video_file_notif_proc);
+            break;
+    
+        case MSG_SHOWPAGE:
+            return 1;
+    
+        case MSG_COMMAND:
+            switch (wParam) {
+                case IDB_PLAY_VIDEO:
+                    GetWindowText (GetDlgItem (hDlg, IDC_PATH_VIDEO), folder, MAX_PATH);
+                    strcat( folder, "/" );
+                    i = SendDlgItemMessage (hDlg, IDL_FILE_VIDEO, LB_GETCURSEL, 0, 0);
+                    if( i == LB_ERR ){
+                        MessageBox (hDlg, "No file selected", "TomPlayer", MB_OK | MB_ICONINFORMATION);      
+                        break;
+                    } else {
+                        SendDlgItemMessage (hDlg, IDL_FILE_VIDEO, LB_GETTEXT, i, (LPARAM)filename) ;
+                    }
+                    play (GetParent(hDlg), folder, filename, FALSE);
+                    break;
+                case IDB_EXIT_VIDEO:
+                    EndDialog (GetParent(hDlg), wParam);
+                    FillBoxWithBitmap( HDC_SCREEN, 0, 0, exiting_bmp.bmWidth, exiting_bmp.bmHeight, &exiting_bmp );
+                    exit(0);
+                    break;
+                case IDB_RESUME_VIDEO:
+                    play (GetParent(hDlg), "",filename,TRUE);
+                    break;
+            }
+            break;
+
+    }
+    
+    return DefaultPageProc (hDlg, message, wParam, lParam);
+}
+
+
+static int TomPlayerAudioProc (HWND hDlg, int message, WPARAM wParam, LPARAM lParam)
+{
+    char folder[MAX_PATH+1];
+    int i;
+    char filename[MAX_NAME+1];
+    
+    switch (message) {
+        case MSG_INITPAGE:
+            fill_boxes (hDlg, IDL_FILE_AUDIO, IDC_PATH_AUDIO, config.filter_audio_ext, config.audio_folder);
+            SetNotificationCallback (GetDlgItem (hDlg, IDL_FILE_AUDIO), audio_file_notif_proc);        
+            break;
+    
+        case MSG_SHOWPAGE:
+            return 1;
+    
+        case MSG_COMMAND:
+            switch (wParam) {
+                case IDB_PLAY_AUDIO:
+                    GetWindowText (GetDlgItem (hDlg, IDC_PATH_AUDIO), folder, MAX_PATH);
+                    strcat( folder, "/" );
+                    i = SendDlgItemMessage (hDlg, IDL_FILE_AUDIO, LB_GETCURSEL, 0, 0);
+                    if( i == LB_ERR ){
+                        MessageBox (hDlg, "No file selected", "TomPlayer", MB_OK | MB_ICONINFORMATION);      
+                        break;
+                    } else {
+                        SendDlgItemMessage (hDlg, IDL_FILE_AUDIO, LB_GETTEXT, i, (LPARAM)filename) ;
+                    }
+                    play (GetParent(hDlg), folder, filename, FALSE);
+                    break;
+                case IDB_EXIT_AUDIO:
+                    EndDialog (GetParent(hDlg), wParam);
+                    FillBoxWithBitmap( HDC_SCREEN, 0, 0, exiting_bmp.bmWidth, exiting_bmp.bmHeight, &exiting_bmp );
+                    exit(0);
+                    break;
+                case IDB_RANDOM_AUDIO:
+                    GetWindowText (GetDlgItem (hDlg, IDC_PATH_AUDIO), folder, MAX_PATH);
+                    if( generate_playlist( folder, DEFAULT_PLAYLIST ) == TRUE )
+                        play (GetParent(hDlg), "",DEFAULT_PLAYLIST, FALSE);
+                    else MessageBox (hDlg, "Unable to create playlist", "TomPlayer", MB_OK | MB_ICONINFORMATION);
+                    break;
+            }
+    }
+    
+    return DefaultPageProc (hDlg, message, wParam, lParam);
+}
+
+
+
+static int TomPlayerPropSheetProc (HWND hDlg, int message, WPARAM wParam, LPARAM lParam)
 {
 
     switch (message) {
@@ -312,27 +583,22 @@ static int TomPlayerBoxProc (HWND hDlg, int message, WPARAM wParam, LPARAM lPara
                 fprintf( stderr, "Error while loading bitmap\n" );
                 exit(1);
             }
-            SetNotificationCallback (GetDlgItem (hDlg, IDL_FILE), file_notif_proc);
+            
+            
+            HWND pshwnd = GetDlgItem (hDlg, IDC_PROPSHEET);
+
+            DlgTomPlayerVideo.controls = CtrlTomPlayerVideo;
+            ExtendDialogBoxToScreen( &DlgTomPlayerVideo );
+            SendMessage (pshwnd, PSM_ADDPAGE, (WPARAM)&DlgTomPlayerVideo, (LPARAM)TomPlayerVideoProc);
+
+            DlgTomPlayerAudio.controls = CtrlTomPlayerAudio;
+            ExtendDialogBoxToScreen( &DlgTomPlayerAudio );
+            SendMessage (pshwnd, PSM_ADDPAGE, (WPARAM)&DlgTomPlayerAudio, (LPARAM)TomPlayerAudioProc);
+            
             ShowCursor(FALSE);
-            fill_boxes (hDlg, config.folder);
             SetTimer (hDlg, ID_TIMER, 100);
     
             return 1;
-        case MSG_COMMAND:
-            switch (wParam) {
-                case IDOK:
-                    play (hDlg, FALSE);
-                    break;
-                case IDCANCEL:
-                    EndDialog (hDlg, wParam);
-                    FillBoxWithBitmap( HDC_SCREEN, 0, 0, exiting_bmp.bmWidth, exiting_bmp.bmHeight, &exiting_bmp );
-                    exit(0);
-                    break;
-                case IDRESUME:
-                    play (hDlg, TRUE);
-                    break;
-            }
-            break;
             
         case MSG_TIMER:
             if( ( is_playing_video == TRUE || is_playing_audio == TRUE ) && is_mplayer_finished == TRUE ){
@@ -340,70 +606,39 @@ static int TomPlayerBoxProc (HWND hDlg, int message, WPARAM wParam, LPARAM lPara
                 is_playing_audio = FALSE;
                 is_mplayer_finished = FALSE;
                 ShowWindow( hDlg, SW_SHOW );
+                ShowWindow( GetDlgItem (hDlg, IDC_PROPSHEET), SW_SHOW );
                 UpdateWindow( hDlg, TRUE );
+                UpdateWindow( GetDlgItem (hDlg, IDC_PROPSHEET), TRUE );
+
                 /* Turn ON screen if it is not */
                 pwm_resume();
-                                
             }
             break;
-    
+
         case MSG_CLOSE:
-            // Destroy the main window
-            DestroyMainWindow (hDlg);
-            // Post a MSG_QUIT message
-            PostQuitMessage(hDlg);
-            return 0;
+            EndDialog (hDlg, wParam);
+            FillBoxWithBitmap( HDC_SCREEN, 0, 0, exiting_bmp.bmWidth, exiting_bmp.bmHeight, &exiting_bmp );
+            exit(0);
     }
     
     return DefaultDialogProc (hDlg, message, wParam, lParam);
 }
 
-void ExtendDialogBoxToScreen( DLGTEMPLATE * dlg ){
-    int i;
-    int w, h;
-
-    #define EXTEND(a,b,c) (a) = (a) * (1.0 * b) /c
-    #define EXTEND_X(a) EXTEND(a, w, 320 )
-    #define EXTEND_Y(a) EXTEND(a, h, 240 )
-    
-    w = GetGDCapability( HDC_SCREEN, GDCAP_HPIXEL);
-    h = GetGDCapability( HDC_SCREEN, GDCAP_VPIXEL);
-
-    EXTEND_X( dlg->x );
-    EXTEND_Y( dlg->y );    
-    
-    EXTEND_X( dlg->w );
-    EXTEND_Y( dlg->h );
-    
-    for( i = 0; i < dlg->controlnr; i++ ){
-        EXTEND_X( dlg->controls[i].x );
-        EXTEND_Y( dlg->controls[i].y );    
-        
-        EXTEND_X( dlg->controls[i].w );
-        EXTEND_Y( dlg->controls[i].h );
-    }
-    
-    #undef EXTEND
-    #undef EXTEND_X
-    #undef EXTEND_Y
-    
-}
 
 int MiniGUIMain (int argc, const char* argv[])
 {
 	
 	/* Turn ON screen if it is not */
-	pwm_resume();
+    pwm_resume();
 	
-	
-	SetWindowBkColor( HWND_DESKTOP, 0 );
+    SetWindowBkColor( HWND_DESKTOP, 0 );
     RegisterMouseMsgHook(HWND_DESKTOP, mouse_hook);
     
-    DlgTomPlayer.controls = CtrlTomPlayer;
+    DlgTomPlayerPropSheet.controls = CtrlTomPlayerPropSheet;
     
-    ExtendDialogBoxToScreen( &DlgTomPlayer );
+    ExtendDialogBoxToScreen( &DlgTomPlayerPropSheet );
     
-    DialogBoxIndirectParam (&DlgTomPlayer, HWND_DESKTOP, TomPlayerBoxProc, 0L);
+    DialogBoxIndirectParam (&DlgTomPlayerPropSheet, HWND_DESKTOP, TomPlayerPropSheetProc, 0L);
 
     return 0;
 }
