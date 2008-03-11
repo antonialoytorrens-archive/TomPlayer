@@ -58,6 +58,7 @@ extern BOOL is_playing_audio;
 char * get_file_extension( char * file );
 BOOL is_video_file( char * file );
 BOOL is_audio_file( char * file );
+BOOL has_extension( char * file, char * extensions );
 
 void send_command(const char * cmd );
 void send_menu( char * cmd );
@@ -68,7 +69,7 @@ void hide_menu( void );
 void blit_video_menu( int fifo, struct skin_config * conf );
 
 void * mplayer_thread(void *cmd);
-void launch_mplayer( char * filename, int pos );
+void launch_mplayer( char * folder, char * filename, int pos );
 
 
 void handle_mouse_event( int x, int y );

@@ -52,7 +52,7 @@
 #define SCREEN_SAVER_TO_CYCLES ((SCREEN_SAVER_TO_S * 1000000) / PB_UPDATE_PERIOD_US)
 #define SCREEN_SAVER_ACTIVE (-1)
 
-char * cmd_mplayer = "./mplayer -quiet -include mplayer.conf -vf expand=:%i,bmovl=1:0:/tmp/mplayer-menu.fifo -ss %i -slave -input file=%s \"%s/%s\" > %s";
+char * cmd_mplayer = "./mplayer -quiet -include mplayer.conf -vf expand=:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -ss %i -slave -input file=%s %s \"%s%s\" > %s";
 static char * fifo_command_name = "/tmp/mplayer-cmd.fifo";
 static char * fifo_menu_name = "/tmp/mplayer-menu.fifo";
 static char * fifo_stdout_name = "/tmp/mplayer-out.fifo";
@@ -83,6 +83,7 @@ static pthread_mutex_t request_mutex = PTHREAD_MUTEX_INITIALIZER;
 static int no_user_interaction_cycles;
 
 extern char *strcasestr (const char *, const char *);
+extern int coor_trans;
 
 static void display_progress_bar(int current)
 {
@@ -317,27 +318,25 @@ static int get_file_position_seconds(void){
 char * get_file_extension( char * file ){
     return strrchr( file, '.');
 }
-BOOL is_video_file( char * file ){
+
+BOOL has_extension( char * file, char * extensions ){
     char * ext;
     
     ext = get_file_extension( file );
     
     if( ext == NULL ) return FALSE;
     if( strlen( ext ) > 0 )
-        if( strcasestr( config.filter_video_ext, ext ) != NULL ) return TRUE;
+        if( strcasestr( extensions, ext ) != NULL ) return TRUE;
     return FALSE;
+    
+}
+
+BOOL is_video_file( char * file ){
+    return has_extension( file, config.filter_video_ext );
 }
 
 BOOL is_audio_file( char * file ){
-    char * ext;
-    
-    ext = get_file_extension( file );
-    
-    if( ext == NULL ) return FALSE;
-    if( strlen( ext ) > 0 )
-        if( strcasestr( config.filter_audio_ext, ext ) != NULL ) return TRUE;
-    return FALSE; 
-}
+    return has_extension( file, config.filter_audio_ext );}
 
 
 void send_command( const char * cmd ){
@@ -415,13 +414,24 @@ void * mplayer_thread(void *cmd){
     pthread_exit(NULL);
 }
 
-void launch_mplayer( char * filename, int pos ){
+void launch_mplayer( char * folder, char * filename, int pos ){
     pthread_t t;
     char cmd[500];   
     int resume_pos;
+    char file[PATH_MAX+1];
+    char rotated_param[10];
+    char playlist_param[10];
 
-     
-    
+
+    if( coor_trans != 0 ) strcpy(rotated_param, ",rotate=1" );
+    else  strcpy(rotated_param, "" );
+
+    if( has_extension( filename, ".m3u" ) ) strcpy(playlist_param, "-playlist" );
+    else strcpy(playlist_param, "" );
+
+    if( strlen( folder ) > 0 ) sprintf( file, "%s/%s", folder,filename );
+    else strcpy( file, filename );
+
     /* Dont want to be killed by SIGPIPE */
     signal (SIGPIPE, SIG_IGN);
 
@@ -443,7 +453,7 @@ void launch_mplayer( char * filename, int pos ){
     
     if( is_video_file( filename ) ){
       is_playing_video = TRUE;
-      resume_file_init(filename);
+      resume_file_init(file);
       if (pos > 5){
         resume_pos = pos - 5;
       } else {
@@ -457,7 +467,8 @@ void launch_mplayer( char * filename, int pos ){
     
 
         
-    sprintf( cmd, cmd_mplayer, (ws_probe()? WS_YMAX : WS_NOXL_YMAX), resume_pos, fifo_command_name, config.folder , filename, fifo_stdout_name );  
+    sprintf( cmd, cmd_mplayer, (ws_probe()? WS_YMAX : WS_NOXL_YMAX), rotated_param, resume_pos, fifo_command_name, playlist_param, folder , filename, fifo_stdout_name );  
+
     pthread_create(&t, NULL, mplayer_thread, cmd);
     
     usleep( 500000 );
