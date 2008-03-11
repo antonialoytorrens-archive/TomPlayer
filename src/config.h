@@ -45,8 +45,8 @@
 
 #define KEY_FILTER_VIDEO_EXT        "filter_video"
 #define KEY_FILTER_AUDIO_EXT        "filter_audio"
-#define KEY_FILE_DIRECTORY          "dir"
-/*#define KEY_AUDIO_FILE_DIRECTORY    "audio_dir"*/
+#define KEY_VIDEO_FILE_DIRECTORY    "video_dir"
+#define KEY_AUDIO_FILE_DIRECTORY    "audio_dir"
 
 #define KEY_SKIN_BMP                "image"
 #define KEY_SKIN_CONF               "conf"
@@ -126,8 +126,8 @@ struct tomplayer_config{
     
     char filter_video_ext[PATH_MAX];
     char filter_audio_ext[PATH_MAX];
-    char folder[PATH_MAX];
-/*    char audio_folder[PATH_MAX];*/
+    char video_folder[PATH_MAX];
+    char audio_folder[PATH_MAX];
     struct skin_config video_config;
     struct skin_config audio_config;
 };

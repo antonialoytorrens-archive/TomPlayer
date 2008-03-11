@@ -118,8 +118,8 @@ int load_config( struct tomplayer_config * conf ){
     
     GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_LOADING_BMP,  conf->bmp_loading_file, PATH_MAX );
     GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_EXITING_BMP,  conf->bmp_exiting_file, PATH_MAX );
-    GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_FILE_DIRECTORY,  conf->folder, PATH_MAX );
-    /*GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_AUDIO_FILE_DIRECTORY,conf->audio_folder, PATH_MAX);*/
+    GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_VIDEO_FILE_DIRECTORY,conf->video_folder, PATH_MAX);
+    GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_AUDIO_FILE_DIRECTORY,conf->audio_folder, PATH_MAX);
     GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_FILTER_VIDEO_EXT,  conf->filter_video_ext, PATH_MAX );
     GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_FILTER_AUDIO_EXT,  conf->filter_audio_ext, PATH_MAX );
 
