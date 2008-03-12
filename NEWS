@@ -1,5 +1,13 @@
 More informations on http://www.tomplayer.net
 
+March, 12th 2008 Tomplayer V0.11 is out
+* add screen saver in audio mode
+* Automatic detection of rotated screen (no more extra MiniGUI_rotated.cfg and mplayer_rotated.conf are needed)
+* Separation between audio and video file using tabs
+* Support of audio playlist
+* Now we can move in the tree file
+
+
 March, 1st 2008 TomPlayer V0.1 is born
 * Extension are now case insensitive
 * Initial IHM is resized according to screen size
