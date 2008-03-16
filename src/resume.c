@@ -24,10 +24,20 @@
 #include <minigui/common.h>
 #include <minigui/minigui.h>
 
+#include "resume.h"
+
 #define RESUME_FILENAME "./resume.ini"
+
 #define RESUME_SECTION_KEY "RESUME"
+#define RESUME_VIDEO_SETTINGS_SECTION_KEY "VIDEO SETTINGS"
+#define RESUME_AUDIO_SETTINGS_SECTION_KEY "AUDIO SETTINGS"
+
 #define RESUME_FILENAME_KEY "file"
 #define RESUME_POS_KEY "pos"
+#define RESUME_CONTRAST_KEY "contrast"
+#define RESUME_BRIGHTNESS_KEY "brightness"
+#define RESUME_VOLUME_KEY "volume"
+#define RESUME_AUDIO_DELAY_KEY "audio_delay"
 
 /** Reinit the resume file 
 *
@@ -102,4 +112,124 @@ int resume_get_file_infos(char * filename, int len , int * pos){
   }
 
   return 0;
+}
+
+
+/** Read video settings from resume file
+ * \param settings[out] read settings 
+ * 
+ *\retval  0  OK
+ *\retval -1  KO
+ */
+int resume_get_audio_settings(struct audio_settings * settings){
+	GHANDLE gh_resume;
+	int res = 0;
+	 
+	gh_resume = LoadEtcFile( RESUME_FILENAME );	
+	if( gh_resume == ETC_FILENOTFOUND ){
+       fprintf(stderr, "Warning : Unable to load resume file <%s>\n", RESUME_FILENAME );
+       return -1;
+	}		
+    if (GetIntValueFromEtc( gh_resume, RESUME_AUDIO_SETTINGS_SECTION_KEY, RESUME_VOLUME_KEY, &settings->volume ) != ETC_OK ){
+    	res = -1;
+    	goto out_audio_settings;
+    }	
+     
+out_audio_settings: 
+    UnloadEtcFile( gh_resume);
+    return res;
+}
+
+
+/** Read audio settings from resume file
+ * \param settings[out] read settings 
+ * 
+ *\retval  0  OK
+ *\retval -1  KO
+ */
+int resume_get_video_settings(struct video_settings * settings) {
+	GHANDLE gh_resume;
+	char buffer[256];
+	int res = 0;
+	 
+	gh_resume = LoadEtcFile( RESUME_FILENAME );	
+	if( gh_resume == ETC_FILENOTFOUND ){
+       fprintf(stderr, "Warning : Unable to load resume file <%s>\n", RESUME_FILENAME );
+       return -1;
+	}
+
+    if (GetIntValueFromEtc( gh_resume, RESUME_VIDEO_SETTINGS_SECTION_KEY, RESUME_CONTRAST_KEY, &settings->contrast ) != ETC_OK ){
+    	res = -1;
+    	goto out_video_settings;
+    }
+    if (GetIntValueFromEtc( gh_resume, RESUME_VIDEO_SETTINGS_SECTION_KEY, RESUME_BRIGHTNESS_KEY, &settings->brightness ) != ETC_OK ){
+    	res = -1;
+    	goto out_video_settings;
+    }	
+    if (GetIntValueFromEtc( gh_resume, RESUME_VIDEO_SETTINGS_SECTION_KEY, RESUME_VOLUME_KEY, &settings->volume ) != ETC_OK ){
+    	res = -1;
+    	goto out_video_settings;
+    }    
+        
+    if (GetValueFromEtc( gh_resume, RESUME_VIDEO_SETTINGS_SECTION_KEY, RESUME_AUDIO_DELAY_KEY, buffer, sizeof(buffer) ) != ETC_OK ){
+    	res = -1;
+    	goto out_video_settings;
+    }
+    if (sscanf(buffer,"%f",&settings->audio_delay) != 1){
+    	res = -1;
+    }
+
+    
+out_video_settings: 
+    UnloadEtcFile( gh_resume);
+    return res;
+}
+
+
+/** Write audio settings to resume file
+ * \param settings[in] settings to be written to the file
+ * 
+ *\retval  0  OK
+ *\retval -1  KO
+ */
+int resume_set_audio_settings(const struct audio_settings * settings){	
+	char buffer[256];
+	
+    snprintf(buffer,sizeof(buffer),"%i",settings->volume);
+    if (SetValueToEtcFile( RESUME_FILENAME, RESUME_AUDIO_SETTINGS_SECTION_KEY, RESUME_VOLUME_KEY,buffer) != ETC_OK ){
+    	return -1;
+    }
+    		        
+    return 0;
+	
+}
+
+/** Write video settings to resume file
+ * \param settings[in] settings to be written to the file
+ * 
+ *\retval  0  OK
+ *\retval -1  KO
+ */
+int resume_set_video_settings(const struct video_settings * settings) {
+	
+	char buffer[256];	
+	
+	snprintf(buffer,sizeof(buffer),"%i",settings->contrast);	 
+    if (SetValueToEtcFile( RESUME_FILENAME, RESUME_VIDEO_SETTINGS_SECTION_KEY, RESUME_CONTRAST_KEY, buffer )  != ETC_OK ){
+    	return -1;
+    }
+    snprintf(buffer,sizeof(buffer),"%i",settings->brightness);
+    if (SetValueToEtcFile( RESUME_FILENAME, RESUME_VIDEO_SETTINGS_SECTION_KEY, RESUME_BRIGHTNESS_KEY, buffer ) != ETC_OK ){    	
+    	return -1;
+    }	
+    snprintf(buffer,sizeof(buffer),"%i",settings->volume);
+    if (SetValueToEtcFile( RESUME_FILENAME, RESUME_VIDEO_SETTINGS_SECTION_KEY, RESUME_VOLUME_KEY,buffer) != ETC_OK ){
+    	return -1;
+    }    
+    snprintf(buffer,sizeof(buffer),"%f",settings->audio_delay);    
+    if (SetValueToEtcFile( RESUME_FILENAME, RESUME_VIDEO_SETTINGS_SECTION_KEY, RESUME_AUDIO_DELAY_KEY, buffer ) != ETC_OK ){    	
+    	return -1;
+    }
+    		        
+    return 0;
 }

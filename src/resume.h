@@ -25,8 +25,27 @@
 #ifndef __TOMPLAYER_RESUME_H__
 #define __TOMPLAYER_RESUME_H__
 
+
+struct video_settings {
+	int contrast;
+	int brightness;
+	float audio_delay;
+	int volume; /* In fact mplayer property type is float but we always work with int on it*/	
+};
+
+
+struct audio_settings {	
+	int volume; /* In fact mplayer property type is float but we always work with int on it*/	
+};
+
+
+
 int resume_file_init(char * file); 
 int resume_write_pos(int value);
 int resume_get_file_infos(char * filename, int len , int * pos);
+int resume_get_audio_settings(struct audio_settings * settings);
+int resume_get_video_settings(struct video_settings * settings);
+int resume_set_audio_settings(const struct audio_settings * settings);
+int resume_set_video_settings(const struct video_settings * settings);
 
 #endif
