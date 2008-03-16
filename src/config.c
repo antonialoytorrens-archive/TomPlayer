@@ -35,6 +35,9 @@
 #include <minigui/minigui.h>
 #include "widescreen.h"
 
+/* Timout in seconds before turning OFF screen while playing audio */
+#define SCREEN_SAVER_TO_S 6
+
 
 int load_skin_config( char * filename, struct skin_config * skin_conf ){
     GHANDLE gh_config;
@@ -122,12 +125,17 @@ int load_config( struct tomplayer_config * conf ){
     GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_AUDIO_FILE_DIRECTORY,conf->audio_folder, PATH_MAX);
     GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_FILTER_VIDEO_EXT,  conf->filter_video_ext, PATH_MAX );
     GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_FILTER_AUDIO_EXT,  conf->filter_audio_ext, PATH_MAX );
-
+    if (GetIntValueFromEtc(gh_config, SECTION_GENERAL, KEY_SCREEN_SAVER_TO,   &conf->screen_saver_to) != ETC_OK){
+    	conf->screen_saver_to = SCREEN_SAVER_TO_S;
+    }
+    
     GetValueFromEtc( gh_config, SECTION_VIDEO_SKIN, KEY_SKIN_BMP,  conf->video_config.image_file, PATH_MAX );
     GetValueFromEtc( gh_config, SECTION_VIDEO_SKIN, KEY_SKIN_CONF,  conf->video_config.conf_file, PATH_MAX );
 
     GetValueFromEtc( gh_config, SECTION_AUDIO_SKIN, KEY_SKIN_BMP,  conf->audio_config.image_file, PATH_MAX );
     GetValueFromEtc( gh_config, SECTION_AUDIO_SKIN, KEY_SKIN_CONF,  conf->audio_config.conf_file, PATH_MAX );
+
+  
     
     UnloadEtcFile( gh_config );
     

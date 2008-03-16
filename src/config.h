@@ -62,8 +62,10 @@
 
 
 #define KEY_R_PROGRESSBAR           "pb_r"
-#define KEY_G_PROGRESSBAR	    "pb_g"
+#define KEY_G_PROGRESSBAR	    	"pb_g"
 #define KEY_B_PROGRESSBAR           "pb_b"
+
+#define KEY_SCREEN_SAVER_TO			"screen_saver_to"
 
 #define KEY_TYPE_CONTROL            "type"
 #define KEY_CMD_CONTROL             "ctrl"
@@ -122,7 +124,7 @@ struct skin_config{
 
 struct tomplayer_config{
     char bmp_loading_file[PATH_MAX];
-    char bmp_exiting_file[PATH_MAX];
+    char bmp_exiting_file[PATH_MAX];    
     
     char filter_video_ext[PATH_MAX];
     char filter_audio_ext[PATH_MAX];
@@ -130,7 +132,10 @@ struct tomplayer_config{
     char audio_folder[PATH_MAX];
     struct skin_config video_config;
     struct skin_config audio_config;
+    int screen_saver_to;
 };
+
+
 
 
 int load_config( struct tomplayer_config * conf );
