@@ -40,7 +40,7 @@
 #define DEVICE_NOT_OPENED -2
 static int snd_fd = DEVICE_NOT_OPENED;
 
-static int mute_internal = 0;
+
 
 /** Check for headphones presence to turn off/on internal speaker accordingly
  */
@@ -65,27 +65,20 @@ int snd_check_headphone(void){
 	}
 	
 	
-	if (is_headphone){
-		if  (!mute_internal){
-			/* Mute internal speaker when headphones are plugged */
-			res = ioctl (snd_fd,COOLSOUND_MUTE_INTERNAL);
-			if ( res != 0){
-				perror("Error while trying to  mute internal : ");
-			   	return -1;
-			}
-			mute_internal = 1;
-		}
-	} else {
-		if  (mute_internal){
-			/* Unmute internal speaker when headphones are not plugged */
-			res = ioctl (snd_fd,COOLSOUND_UNMUTE_INTERNAL);
-			if ( res != 0){
-				perror("Error while trying to unmute internal : ");
-			   	return -1;
-			}			
-			mute_internal = 0;
-		}
-		
+	if (is_headphone){		
+		/* Mute internal speaker when headphones are plugged */
+		res = ioctl (snd_fd,COOLSOUND_MUTE_INTERNAL);
+		if ( res != 0){
+			perror("Error while trying to  mute internal : ");
+		   	return -1;
+		}		
+	} else {		
+		/* Unmute internal speaker when headphones are not plugged */
+		res = ioctl (snd_fd,COOLSOUND_UNMUTE_INTERNAL);
+		if ( res != 0){
+			perror("Error while trying to unmute internal : ");
+		   	return -1;
+		}				
 	}
 
 	return res;
