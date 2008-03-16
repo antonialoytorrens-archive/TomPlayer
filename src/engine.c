@@ -43,13 +43,11 @@
 #include "resume.h"
 #include "widescreen.h"
 #include "pwm.h"
+#include "sound.h"
+
 
 /* Progress bar update period in us */
 #define PB_UPDATE_PERIOD_US 250000
-/* Timout in seconds before turning OFF screen while playing audio */
-#define SCREEN_SAVER_TO_S 6
-/* Timout in cycles before turning OFF screen while playing audio */
-#define SCREEN_SAVER_TO_CYCLES ((SCREEN_SAVER_TO_S * 1000000) / PB_UPDATE_PERIOD_US)
 #define SCREEN_SAVER_ACTIVE (-1)
 
 char * cmd_mplayer = "./mplayer -quiet -include mplayer.conf -vf expand=:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -ss %i -slave -input file=%s %s \"%s%s\" > %s";
@@ -81,6 +79,10 @@ static pthread_mutex_t request_mutex = PTHREAD_MUTEX_INITIALIZER;
  * if (no_user_interaction_cycles == SCREEN_SAVER_ACTIVE) then screen is OFF 
  * and we do not count any longer */
 static int no_user_interaction_cycles;
+
+/* current settings */
+static struct video_settings current_video_settings;
+static struct audio_settings current_audio_settings;
 
 extern char *strcasestr (const char *, const char *);
 extern int coor_trans;
@@ -220,10 +222,6 @@ static int read_line_from_stdout(char * buffer, int len){
   fd_set rfds;
   struct timeval tv;
 
-
-  
-  
-
   do {
     if  (total_read>=len){
       return -1;
@@ -253,13 +251,14 @@ static int read_line_from_stdout(char * buffer, int len){
 
 /** retrieve an int value from mplayer stdout
 *
-*
+* \param val[out] 
+*\retval 0 : OK
+*\retval -1 : KO
 */
-int get_int_from_stdout(void){
+static int get_int_from_stdout(int *val){
   char * value_pos=NULL;
   char buffer[200];
-  int value;
-
+  
   if (read_line_from_stdout(buffer, sizeof(buffer)) > 0){
     value_pos=strrchr(buffer,'=');
     if (value_pos == NULL){
@@ -267,8 +266,8 @@ int get_int_from_stdout(void){
       fprintf(stderr, "error parsing output : %s", buffer);
       return -1;
     }
-    if (sscanf(value_pos+1, "%i", &value) == 1){
-      return value;
+    if (sscanf(value_pos+1, "%i", val) == 1){
+      return 0;
     } else {
       return -1;
     }
@@ -280,40 +279,161 @@ int get_int_from_stdout(void){
 }
 
 
-/** Send a command to mplayer and wait for a positive int answer
+/** retrieve an float value from mplayer stdout
 *
-* \param cmd the command to send 
+* \param val[out] 
+*\retval 0 : OK
+*\retval -1 : KO
+*/
+static int get_float_from_stdout(float *val){
+  char * value_pos=NULL;
+  char buffer[200];
+  
+  if (read_line_from_stdout(buffer, sizeof(buffer)) > 0){
+    value_pos=strrchr(buffer,'=');
+    if (value_pos == NULL){
+      /*FIXME*/
+      fprintf(stderr, "error parsing output : %s", buffer);
+      return -1;
+    }
+    if (sscanf(value_pos+1, "%f", val) == 1){
+      return 0;
+    } else {
+      return -1;
+    }
+  } else {
+    return -1;
+  }
+
+
+}
+
+/** Send a command to mplayer and wait for an int answer
+*
+* \param cmd the command to send
+* \param val[out] the int value returned by mplayer 
 * 
-* \reval >0 : The int returned by mplayer
+* \reval 0 : OK
 * \reval -1 : An error occured 
 *
 */
-static int send_command_wait_int(const char * cmd){
-  int value; 
+static int send_command_wait_int(const char * cmd, int *val ){  
   int nb_try = 0;
+  int res = 0;
   
   pthread_mutex_lock(&request_mutex);
   send_command(cmd);
   do {
-    value = get_int_from_stdout();
+    res = get_int_from_stdout(val);
     nb_try++;
-  }while (( value == -1) && (nb_try < 5));
+  }while (( res == -1) && (nb_try < 5));
   pthread_mutex_unlock(&request_mutex);
-  return value;  
+  return res;  
 }
+
+
+/** Send a command to mplayer and wait for a float answer
+*
+* \param cmd the command to send
+* \param val[out] the float value returned by mplayer 
+* 
+* \reval 0 : OK
+* \reval -1 : An error occured 
+*
+*/
+static int send_command_wait_float(const char * cmd, float *val ){  
+  int nb_try = 0;
+  int res = 0;
+  
+  pthread_mutex_lock(&request_mutex);
+  send_command(cmd);
+  do {
+    res = get_float_from_stdout(val);
+    nb_try++;
+  }while (( res == -1) && (nb_try < 5));
+  pthread_mutex_unlock(&request_mutex);
+  return res;  
+}
+
 
 /** Return the current file position as a percent 
 */
-static int get_file_position_percent(void){  
-  return send_command_wait_int("pausing_keep get_property percent_pos\n");
+static int get_file_position_percent(void){
+	int val = 0;
+    if (send_command_wait_int("pausing_keep get_property percent_pos\n", &val) == 0){
+    	return val;
+    } else {
+    	/* Return 0 if command failed */
+    	return 0;
+    }
 }
 
 /** Return the current file position in seconds 
 */
-static int get_file_position_seconds(void){  
-  return send_command_wait_int("pausing_keep get_property time_pos\n");
+static int get_file_position_seconds(void){
+  int val = 0;
+  if (send_command_wait_int("pausing_keep get_property time_pos\n",&val) == 0){
+	  return val;
+  } else {
+  	/* Return 0 if command failed */
+  	return 0;
+  }
 }
 
+
+/** Ask mplayer for the curent video settings  
+ */
+static int get_audio_settings( struct audio_settings * settings){
+	
+	return send_command_wait_int("pausing_keep get_property volume\n", &settings->volume);
+	
+}
+
+/** Ask mplayer for the curent audio settings  
+ */
+static int get_video_settings( struct video_settings * settings){
+	int res = 0;
+	
+	res  = send_command_wait_int("pausing_keep get_property brightness\n", &settings->brightness);
+	//fprintf(stderr,"lumi : %i\n res :%i\n",settings->brightness,res);
+	res |= send_command_wait_int("pausing_keep get_property contrast\n", &settings->contrast);
+	//fprintf(stderr,"contrast : %i\n res :%i\n",settings->contrast,res);
+	res |= send_command_wait_float("pausing_keep get_property audio_delay\n", &settings->audio_delay);
+	//fprintf(stderr,"delay : %f\n res :%i\n",settings->audio_delay,res);
+	res |= send_command_wait_int("pausing_keep get_property volume\n", &settings->volume);
+	//fprintf(stderr,"volume  : %i\n res :%i\n",settings->volume,res);
+	
+	return res;
+}
+
+/** Set audio settings
+ */
+static void set_audio_settings(const struct audio_settings * settings){
+	char buffer[256];	
+
+	snprintf(buffer, sizeof(buffer),"volume  %i 1\n",settings->volume);	
+	send_command(buffer);
+	
+	return;
+}
+
+
+/** Set audio settings 
+ */
+static void set_video_settings(const struct video_settings * settings){	
+	char buffer[256];
+		
+	snprintf(buffer, sizeof(buffer),"audio_delay  %f 1\n",settings->audio_delay);	
+	send_command(buffer);
+	snprintf(buffer, sizeof(buffer),"contrast  %i 1\n",settings->contrast);	
+	send_command(buffer);
+	snprintf(buffer, sizeof(buffer),"brightness  %i 1\n",settings->brightness);	
+	send_command(buffer);
+	snprintf(buffer, sizeof(buffer),"volume  %i 1\n",settings->volume);	
+	send_command(buffer);
+	
+	return;
+}
 
 char * get_file_extension( char * file ){
     return strrchr( file, '.');
@@ -362,8 +482,12 @@ void hide_menu( void ){
 * \note it also flushes mplayer stdout 
 */
 void * update_thread(void *cmd){
-  int pos ;
-
+  int pos ;  
+  int screen_saver_to_cycles;
+  
+  /* Timout in cycles before turning OFF screen while playing audio */
+  screen_saver_to_cycles = ((config.screen_saver_to * 1000000) / PB_UPDATE_PERIOD_US);
+  
   fprintf(stderr, "starting thread update ...\n");
   
   while (is_mplayer_finished == FALSE){
@@ -384,11 +508,14 @@ void * update_thread(void *cmd){
 	if ((is_playing_video == FALSE) && 
 		(no_user_interaction_cycles != SCREEN_SAVER_ACTIVE)){    
 		no_user_interaction_cycles++;
-		if (no_user_interaction_cycles >= SCREEN_SAVER_TO_CYCLES){
+		if (no_user_interaction_cycles >= screen_saver_to_cycles){
 			no_user_interaction_cycles = SCREEN_SAVER_ACTIVE;
 			pwm_off();    		  	 
 		}
 	}
+	
+	/* Check for headphones presnce to turn on/off internal speaker */
+	snd_check_headphone();
 	
 /* FIXME check if useful     
    if (current_seek != -1){
@@ -406,11 +533,18 @@ void * update_thread(void *cmd){
 
 void * mplayer_thread(void *cmd){
     pthread_t t;
-
+   
     is_mplayer_finished = FALSE; 
     pthread_create(&t, NULL, update_thread, NULL);   
     system( (char *) cmd );
     is_mplayer_finished = TRUE;
+    
+    /* Save settings to resume file */   
+    if ( is_playing_video == TRUE ){	
+	   	resume_set_video_settings(&current_video_settings);            	  	
+    } else {    	
+    	resume_set_audio_settings(&current_audio_settings);          	            	      	            	
+    }
     pthread_exit(NULL);
 }
 
@@ -421,6 +555,8 @@ void launch_mplayer( char * folder, char * filename, int pos ){
     char file[PATH_MAX+1];
     char rotated_param[10];
     char playlist_param[10];
+    struct video_settings v_settings;
+    struct audio_settings a_settings;
 
 
     if( coor_trans != 0 ) strcpy(rotated_param, ",rotate=1" );
@@ -450,6 +586,7 @@ void launch_mplayer( char * folder, char * filename, int pos ){
     is_menu_showed = FALSE;
     is_playing_video = FALSE;
     is_playing_audio = FALSE;
+    no_user_interaction_cycles = 0;
     
     if( is_video_file( filename ) ){
       is_playing_video = TRUE;
@@ -458,9 +595,9 @@ void launch_mplayer( char * folder, char * filename, int pos ){
         resume_pos = pos - 5;
       } else {
         resume_pos = 0;
-      }
+      }      
     }
-    else{
+    else{     
       is_playing_audio = TRUE;
       resume_pos = 0;
     }
@@ -473,9 +610,33 @@ void launch_mplayer( char * folder, char * filename, int pos ){
     
     usleep( 500000 );
       
-    if( is_video_file( filename ) ) 
+    if( is_video_file( filename ) ){ 
         blit_video_menu( fifo_menu, &config.video_config );
-	
+        /* Restore video settings */
+        if (resume_get_video_settings(&v_settings) == 0){
+        	set_video_settings(&v_settings);
+        	current_video_settings = v_settings;
+        } else {
+        	 if (get_video_settings(&v_settings) == 0){
+        		current_video_settings = v_settings;
+        	 } else {
+        		 memset (&current_video_settings,0,sizeof(current_video_settings));
+        	 }        	
+        }
+    } else {
+    	/* Restore audio settings */	
+    	if (resume_get_audio_settings(&a_settings) == 0){
+    		set_audio_settings(&a_settings);
+    		current_audio_settings = a_settings;    	
+    	} else {
+    		 if (get_audio_settings(&a_settings) == 0){
+        		current_audio_settings = a_settings;
+        	 } else {
+        		 memset (&current_audio_settings,0,sizeof(current_audio_settings));
+        	 }
+    	}
+    }
+    
 }
 
 
@@ -484,6 +645,8 @@ void handle_mouse_event( int x, int y )
     int p;
     int pos;
     char buffer[200];
+    struct video_settings v_settings;
+    struct audio_settings a_settings;
     
     
     if (no_user_interaction_cycles == SCREEN_SAVER_ACTIVE){
@@ -568,6 +731,19 @@ void handle_mouse_event( int x, int y )
         default:
             if( is_playing_video == TRUE ) hide_menu();
     }
+    
+    
+    /* Update in-memory settings */
+    if ( is_playing_video == TRUE ){
+	    if (get_video_settings(&v_settings) == 0){
+	    	current_video_settings = v_settings;
+	    }
+    } else {
+	  	if (get_audio_settings( &a_settings) == 0){
+	  		current_audio_settings = a_settings;    	            	  
+	  	}            	
+    }
+
 }
 
 
