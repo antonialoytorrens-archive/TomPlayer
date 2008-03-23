@@ -9,7 +9,7 @@ CFLAGS+=-DUSE_MINIMIG -Wall -I$(INC_KERNEL)
 INSTALL_DIR=../distrib/tomplayer/
 
 
-SRC = config.c engine.c gui.c widescreen.c resume.c pwm.c playlist.c
+SRC = config.c engine.c gui.c widescreen.c resume.c pwm.c playlist.c sound.c
 
 OBJ = $(subst .c,.o,$(SRC))
 
@@ -39,3 +39,5 @@ playlist.o: playlist.c playlist.h config.h
 clean:
 	rm -f $(INSTALL_DIR)/tomplayer
 	rm -f *.o
+
+
