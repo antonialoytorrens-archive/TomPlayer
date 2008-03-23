@@ -460,6 +460,8 @@ BOOL is_audio_file( char * file ){
 
 
 void send_command( const char * cmd ){
+	/* FIXME pour debug
+	fprintf(stderr,"Commande envoyée : %s",cmd);*/
     write( fifo_command, cmd, strlen( cmd ) );
 }
 
@@ -538,7 +540,7 @@ void * mplayer_thread(void *cmd){
     pthread_create(&t, NULL, update_thread, NULL);   
     system( (char *) cmd );
     is_mplayer_finished = TRUE;
-    
+    printf("\nmplayer has exited\n");
     /* Save settings to resume file */   
     if ( is_playing_video == TRUE ){	
 	   	resume_set_video_settings(&current_video_settings);            	  	
@@ -647,6 +649,7 @@ void handle_mouse_event( int x, int y )
     char buffer[200];
     struct video_settings v_settings;
     struct audio_settings a_settings;
+    BOOL update_settings = FALSE;
     
     
     if (no_user_interaction_cycles == SCREEN_SAVER_ACTIVE){
@@ -686,6 +689,7 @@ void handle_mouse_event( int x, int y )
                 sprintf( buffer, "volume %d 1\n",p );
                 send_command( buffer );
             }
+            update_settings = TRUE;
         break;
         case CMD_VOL_MOINS:
             if( p == -1 ) send_command( "volume -1 0\n" );
@@ -693,24 +697,32 @@ void handle_mouse_event( int x, int y )
                 sprintf( buffer, "volume %d 1\n",p );
                 send_command( buffer );
             }
+            update_settings = TRUE;
             break;
+            
         case CMD_LIGHT_PLUS:
             send_command( "brightness +5\n" );
+            update_settings = TRUE;
             break;
         case CMD_LIGHT_MOINS:
             send_command( "brightness -5\n" );
+            update_settings = TRUE;
             break; 
         case CMD_DELAY_PLUS:
             send_command( "audio_delay  +0.1\n" );
+            update_settings = TRUE;
             break;
         case CMD_DELAY_MOINS:
             send_command( "audio_delay  -0.1\n" );
+            update_settings = TRUE;
             break;
         case CMD_GAMMA_PLUS:
             send_command( "contrast +5\n" );
+            update_settings = TRUE;
             break;
         case CMD_GAMMA_MOINS:
             send_command( "contrast -5\n" );
+            update_settings = TRUE;
             break; 
         case CMD_FORWARD:
             if( p == -1 ) send_command( "seek 10 0\n" );
@@ -734,14 +746,16 @@ void handle_mouse_event( int x, int y )
     
     
     /* Update in-memory settings */
-    if ( is_playing_video == TRUE ){
-	    if (get_video_settings(&v_settings) == 0){
-	    	current_video_settings = v_settings;
+    if (update_settings == TRUE) {
+	    if ( is_playing_video == TRUE ){
+		    if (get_video_settings(&v_settings) == 0){
+		    	current_video_settings = v_settings;
+		    }
+	    } else {
+		  	if (get_audio_settings( &a_settings) == 0){
+		  		current_audio_settings = a_settings;    	            	  
+		  	}            	
 	    }
-    } else {
-	  	if (get_audio_settings( &a_settings) == 0){
-	  		current_audio_settings = a_settings;    	            	  
-	  	}            	
     }
 
 }
@@ -756,7 +770,8 @@ int get_command_from_xy( int x, int y, int * p ){
     if( is_playing_video == TRUE ) c = &config.video_config;
     else c = &config.audio_config;
 
-    
+    /* Init cmd !! */
+    cmd = CMD_EXIT_MENU;
     for( i = 0; i < c->nb; i++ ){
         switch( c->controls[i].type ){
             case CIRCULAR_CONTROL:

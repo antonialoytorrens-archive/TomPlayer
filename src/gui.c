@@ -604,7 +604,8 @@ static int TomPlayerPropSheetProc (HWND hDlg, int message, WPARAM wParam, LPARAM
             if( ( is_playing_video == TRUE || is_playing_audio == TRUE ) && is_mplayer_finished == TRUE ){
                 is_playing_video = FALSE;
                 is_playing_audio = FALSE;
-                is_mplayer_finished = FALSE;
+                /* wolf : will be reinit on mplayer launch => Harmfull for udpate thread exit for now...
+                 * is_mplayer_finished = FALSE;*/
                 ShowWindow( hDlg, SW_SHOW );
                 ShowWindow( GetDlgItem (hDlg, IDC_PROPSHEET), SW_SHOW );
                 UpdateWindow( hDlg, TRUE );
