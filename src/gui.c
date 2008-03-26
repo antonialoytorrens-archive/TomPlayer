@@ -47,7 +47,12 @@
 #include "pwm.h"
 #include "playlist.h"
 
-#define DEFAULT_PLAYLIST "tomplayer.m3u"
+#define DEBUG 0
+
+#define DEFAULT_PLAYLIST        "tomplayer.m3u"
+#define ICON_FOLDER_FILENAME    "./res/icon/folder.ico"
+#define ICON_FILE_FILENAME      "./res/icon/file.ico"
+
 
 #define EXTEND(a,b,c) (a) = (a) * (1.0 * b) /c
 #define EXTEND_X(a) EXTEND(a, w, 320 )
@@ -75,12 +80,14 @@
 #define IDB_RANDOM_AUDIO    350
 #define IDC_STATIC_AUDIO    360
 
-
+static HICON hicon_folder;
+static HICON hicon_file;
 static BITMAP video_skin_bmp;
 static BITMAP audio_skin_bmp;
 static BITMAP loading_bmp;
 static BITMAP exiting_bmp;
-
+static HWND hlb_video;
+static HWND hlb_audio;
 
 
 static DLGTEMPLATE DlgTomPlayerPropSheet =
@@ -130,7 +137,7 @@ static CTRLDATA CtrlTomPlayerAudio[] =
     },
     {
         CTRL_LISTBOX,
-        WS_VISIBLE | WS_VSCROLL | WS_BORDER | LBS_SORT | LBS_NOTIFY,
+        WS_VISIBLE | WS_VSCROLL | WS_BORDER | LBS_SORT | LBS_NOTIFY | LBS_USEICON,
         10, 30, 260, 100,
         IDL_FILE_AUDIO,
         "",
@@ -195,7 +202,7 @@ static CTRLDATA CtrlTomPlayerVideo[] =
     },
     {
         CTRL_LISTBOX,
-        WS_VISIBLE | WS_VSCROLL | WS_BORDER | LBS_SORT | LBS_NOTIFY,
+        WS_VISIBLE | WS_VSCROLL | WS_BORDER | LBS_SORT | LBS_NOTIFY | LBS_USEICON,
         10, 30, 260, 100,
         IDL_FILE_VIDEO,
         "",
@@ -327,7 +334,9 @@ static void fill_boxes (HWND hDlg, int list_box_id, int text_path_id, char * ext
     DIR*   dir;
     struct stat ftype;
     char   fullpath [PATH_MAX + 1];
-
+    LISTBOXITEMINFO lbii;
+    
+    if( DEBUG ) fprintf( stderr, "fill_boxes\n" );
     if ((dir = opendir (path)) == NULL)
          return;
 
@@ -343,15 +352,21 @@ static void fill_boxes (HWND hDlg, int list_box_id, int text_path_id, char * ext
         if (stat (fullpath, &ftype) < 0 ) {
            continue;
         }
-
-        if (S_ISDIR (ftype.st_mode) ) 
-            SendDlgItemMessage (hDlg, list_box_id, LB_ADDSTRING, 0, (LPARAM)dir_ent->d_name);
+        
+        lbii.string = dir_ent->d_name;
+        if (S_ISDIR (ftype.st_mode) ){
+            lbii.hIcon = hicon_folder; 
+            SendDlgItemMessage (hDlg, list_box_id, LB_ADDSTRING, 0, (LPARAM)&lbii);
+        }
         else if (S_ISREG (ftype.st_mode) ) 
-            if( has_extension(dir_ent->d_name, extension ) )
-                SendDlgItemMessage (hDlg, list_box_id, LB_ADDSTRING, 0, (LPARAM)dir_ent->d_name);
+            if( has_extension(dir_ent->d_name, extension ) ){
+                lbii.hIcon = hicon_file;
+                SendDlgItemMessage (hDlg, list_box_id, LB_ADDSTRING, 0, (LPARAM)&lbii);
+            }
     }
 
     closedir (dir);
+    if( DEBUG ) fprintf( stderr, "fill_boxes : ok\n" );
 }
 
 static void dir_notif_proc (HWND hwnd, int id, int nc, int text_path_id, char * extensions)
@@ -449,6 +464,10 @@ static int mouse_hook (void* context, HWND dst_wnd, int msg, WPARAM wParam, LPAR
 static int load_bmp( void ){
     int i;
 
+    hicon_folder = LoadIconFromFile( HDC_SCREEN, ICON_FOLDER_FILENAME, 0 );
+	if( !hicon_folder ) fprintf( stderr, "Erreur chargement folder.ico\n" );    
+hicon_file = LoadIconFromFile( HDC_SCREEN, ICON_FILE_FILENAME, 0 );
+if( !hicon_file ) fprintf( stderr, "Erreur chargement file.ico\n" );
     i = LoadBitmap( HDC_SCREEN, &video_skin_bmp, config.video_config.image_file );
     if( i != ERR_BMP_OK){
         fprintf( stderr, "Error while loading bitmap file %s <%d>\n",config.video_config.image_file, i);
@@ -475,6 +494,46 @@ static int load_bmp( void ){
     return TRUE;
 }
 
+static int listbox_cmp( char * path, char * v1, char * v2 ){
+    struct stat ftype1,ftype2;
+    char f_v1[MAX_PATH+1];
+    char f_v2[MAX_PATH+1];
+
+
+    sprintf( f_v1, "%s/%s", path, v1 );
+    sprintf( f_v2, "%s/%s", path, v2 );
+    if( DEBUG ) fprintf( stderr, "Comparaison de :\n" );
+    if( DEBUG ) fprintf( stderr, f_v1 );
+    if( DEBUG ) fprintf( stderr, "\n" );
+    if( DEBUG ) fprintf( stderr, f_v2 );
+    if( DEBUG ) fprintf( stderr, "\n" );    
+    stat (f_v1, &ftype1);
+    stat (f_v2, &ftype2);
+    
+    if( S_ISDIR (ftype1.st_mode) && S_ISDIR (ftype2.st_mode) ) return strcasecmp( v1, v2 );
+    else if( S_ISDIR (ftype1.st_mode) ) return -1;
+    else if( S_ISDIR (ftype2.st_mode) ) return +1;
+    else return strcasecmp( v1, v2 );
+}
+
+static int listbox_video_cmp( char * v1, char * v2, size_t n ){
+    char path[MAX_PATH+1];
+
+    if( DEBUG ) fprintf( stderr, "listbox_video_cmp\n" );
+    GetWindowText (GetDlgItem (GetParent (hlb_video), IDC_PATH_VIDEO), path, MAX_PATH);
+    if( DEBUG ) fprintf( stderr, "Path <%s>\n", path );
+    return listbox_cmp( path, v1, v2 );
+}
+
+static int listbox_audio_cmp( char * v1, char * v2, size_t n ){
+    char path[MAX_PATH+1];
+
+    if( DEBUG ) fprintf( stderr, "listbox_audio_cmp\n" );
+    GetWindowText (GetDlgItem (GetParent (hlb_audio), IDC_PATH_AUDIO), path, MAX_PATH);
+    if( DEBUG ) fprintf( stderr, "Path <%s>\n", path );
+    return listbox_cmp( path, v1, v2 );
+}
+
 
 static int TomPlayerVideoProc (HWND hDlg, int message, WPARAM wParam, LPARAM lParam)
 {
@@ -484,6 +543,8 @@ static int TomPlayerVideoProc (HWND hDlg, int message, WPARAM wParam, LPARAM lPa
     
     switch (message) {
         case MSG_INITPAGE:
+            hlb_video = GetDlgItem (hDlg, IDL_FILE_VIDEO);
+            SendMessage (hlb_video, LB_SETSTRCMPFUNC, 0, (LPARAM)listbox_video_cmp);
             fill_boxes (hDlg, IDL_FILE_VIDEO, IDC_PATH_VIDEO, config.filter_video_ext, config.video_folder);
             SetNotificationCallback (GetDlgItem (hDlg, IDL_FILE_VIDEO), video_file_notif_proc);
             break;
@@ -530,6 +591,8 @@ static int TomPlayerAudioProc (HWND hDlg, int message, WPARAM wParam, LPARAM lPa
     
     switch (message) {
         case MSG_INITPAGE:
+            hlb_audio = GetDlgItem (hDlg, IDL_FILE_AUDIO);
+            SendMessage (hlb_audio, LB_SETSTRCMPFUNC, 0, (LPARAM)listbox_audio_cmp);
             fill_boxes (hDlg, IDL_FILE_AUDIO, IDC_PATH_AUDIO, config.filter_audio_ext, config.audio_folder);
             SetNotificationCallback (GetDlgItem (hDlg, IDL_FILE_AUDIO), audio_file_notif_proc);        
             break;
@@ -567,6 +630,7 @@ static int TomPlayerAudioProc (HWND hDlg, int message, WPARAM wParam, LPARAM lPa
     
     return DefaultPageProc (hDlg, message, wParam, lParam);
 }
+
 
 
 
