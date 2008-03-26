@@ -46,7 +46,8 @@
 #define CMD_GAMMA_PLUS              11
 #define CMD_FORWARD                 12
 #define CMD_BACKWARD                13
-
+#define CMD_NEXT                    14
+#define CMD_PREVIOUS                15
 
 extern struct tomplayer_config config;
 extern BOOL is_menu_showed;

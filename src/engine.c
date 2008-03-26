@@ -739,6 +739,14 @@ void handle_mouse_event( int x, int y )
                 send_command( buffer );
             }
             break;
+        case CMD_PREVIOUS:
+fprintf( stderr, "precedent\n" );
+            send_command( "pt_step -1" );
+            break;
+        case CMD_NEXT:
+fprintf( stderr, "suivant\n" );
+            send_command( "pt_step 1" );
+            break;
         case CMD_EXIT_MENU:
         default:
             if( is_playing_video == TRUE ) hide_menu();
