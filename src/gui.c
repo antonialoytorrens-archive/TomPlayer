@@ -621,7 +621,7 @@ static int TomPlayerAudioProc (HWND hDlg, int message, WPARAM wParam, LPARAM lPa
                     break;
                 case IDB_RANDOM_AUDIO:
                     GetWindowText (GetDlgItem (hDlg, IDC_PATH_AUDIO), folder, MAX_PATH);
-                    if( generate_playlist( folder, DEFAULT_PLAYLIST ) == TRUE )
+                    if( generate_random_playlist( folder, DEFAULT_PLAYLIST ) == TRUE )
                         play (GetParent(hDlg), "",DEFAULT_PLAYLIST, FALSE);
                     else MessageBox (hDlg, "Unable to create playlist", "TomPlayer", MB_OK | MB_ICONINFORMATION);
                     break;
@@ -692,7 +692,8 @@ static int TomPlayerPropSheetProc (HWND hDlg, int message, WPARAM wParam, LPARAM
 
 int MiniGUIMain (int argc, const char* argv[])
 {
-	
+
+    srand( time(NULL) );	
 	/* Turn ON screen if it is not */
     pwm_resume();
 	

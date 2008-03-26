@@ -20,6 +20,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
+#include <unistd.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <dirent.h>
@@ -67,3 +69,73 @@ BOOL generate_playlist( char * folder, char * filename )
     return TRUE;
 }
 
+static void get_line_file( FILE * fp, int n, char * buffer, int size  )
+{
+    int count = 0;
+    
+    rewind( fp );
+    
+    while( fgets( buffer, size, fp ) && count != n ) count++;
+}
+
+
+static int get_nb_line_file( FILE * fp  )
+{
+    char buffer[1000];
+    int count = 0;
+    
+    rewind( fp );
+    
+    while( fgets( buffer, sizeof( buffer ), fp ) )
+        if( strlen( buffer ) > 0 ) count++;
+    
+    return count;
+    
+}
+
+BOOL generate_random_playlist( char * folder, char * filename )
+{
+    FILE * fp, *fp_random;
+    char filename_tmp[MAX_PATH+1];
+    int count, i, nb;
+    unsigned char * flags;
+    char buffer[1000];
+    
+    strcpy( filename_tmp, filename );
+    strcat( filename_tmp, ".tmp" );
+
+    if( generate_playlist( folder, filename_tmp ) != TRUE ) return FALSE;
+
+    
+    fp_random = fopen( filename, "w+" );
+    fp = fopen( filename_tmp, "r" );
+
+    count = get_nb_line_file( fp );
+    flags = (unsigned char * ) malloc( count * sizeof( unsigned char ) );
+    if( flags == NULL ){
+        fclose( fp );
+        fclose( fp_random );
+        return FALSE;
+    }
+        
+    memset( flags, 0, count * sizeof( unsigned char ) );
+
+    nb = count;
+    while( nb ){
+        while( 1 ){
+            i = rand() % count;
+            if( flags[i] == 0 ) break;
+        }
+        
+        flags[i] = 1;
+        get_line_file( fp, i, buffer, sizeof( buffer ) );
+        fputs( buffer, fp_random );
+        nb--;
+    }
+    fclose( fp );
+    fclose( fp_random );
+    free( flags );
+    unlink( filename_tmp );
+
+    return TRUE;
+}

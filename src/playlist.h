@@ -24,5 +24,6 @@
 #define __TOMPLAYER_PLAYLIST_H__
 
 BOOL generate_playlist( char * folder, char * filename );
+BOOL generate_random_playlist( char * folder, char * filename );
 
 #endif /* __TOMPLAYER_PLAYLIST_H__ */
