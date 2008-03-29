@@ -714,27 +714,7 @@ void launch_mplayer( char * folder, char * filename, int pos ){
     
     usleep( 500000 );
       
-    if( is_video_file( filename ) ){
-#if 0    	
-    		char * buffer;
-    		int buffer_size;
-    		char str[100];
-    		int i,x,y ;
-           		
-	       ilBindImage(skin_id);	  
-	       buffer_size = 3* ilGetInteger(IL_IMAGE_WIDTH)*ilGetInteger(IL_IMAGE_HEIGHT);
-	       buffer = malloc(buffer_size);    		   
-		   
-			   	ilCopyPixels(0, 0, 0,
-					     ilGetInteger(IL_IMAGE_WIDTH),ilGetInteger(IL_IMAGE_HEIGHT) , 1,
-						 IL_RGB, IL_UNSIGNED_BYTE, buffer);    		      		
-
-			sprintf(str, "RGB24 %d %d %d %d %d %d\n", 480 , 272, 0, 0, 0, 1);
-			write(fifo_menu, str, strlen(str));
-			write(fifo_menu, buffer,buffer_size);
-			free(buffer);
-#endif
-    			
+    if( is_video_file( filename ) ){   			
     	blit_video_menu( fifo_menu, &config.video_config );		
         /* Restore video settings */
         if (resume_get_video_settings(&v_settings) == 0){
