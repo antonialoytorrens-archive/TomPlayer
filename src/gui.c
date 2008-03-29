@@ -286,8 +286,8 @@ void gui_buffer_rgb(char * buffer,int width, int height, int x, int y){
       i++;       
       SetPixelRGB(HDC_SCREEN, x + x1, y +y1, r,g,b);	
     }
-  }
-  Rectangle(HDC_SCREEN,x,y,x+width, y+height);
+  }  
+  Rectangle(HDC_SCREEN,0,y,GetGDCapability( HDC_SCREEN, GDCAP_HPIXEL),GetGDCapability( HDC_SCREEN, GDCAP_VPIXEL));  
 }
 
 void blit_video_menu( int fifo, struct skin_config * conf )

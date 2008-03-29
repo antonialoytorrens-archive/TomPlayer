@@ -37,6 +37,8 @@
 #include <signal.h>
 #include <math.h>
 #include <time.h>
+#include <IL/il.h>
+#include <IL/ilu.h>
 
 #include "config.h"
 #include "engine.h"
@@ -87,6 +89,65 @@ static struct audio_settings current_audio_settings;
 extern char *strcasestr (const char *, const char *);
 extern int coor_trans;
 
+/* Image name of progress bar cursor */
+static ILuint pb_cursor_id;
+/* Image name of skin */
+static ILuint skin_id;
+/* Previous coord of progress bar cursor */
+static struct{
+		int x,y;
+} prev_coords = {-1,-1};  
+
+/** Load bitmaps associated with controls
+ * \note For now only Progress bar bitmap is involved */
+static void init_ctrl_bitmaps(void){
+	struct skin_config * c;
+	
+	prev_coords.x = -1;
+	prev_coords.y = -1;	
+	
+	if (is_playing_video == TRUE ) 
+		c = &config.video_config;
+	else
+		c = &config.audio_config;
+	
+	// Initialize DevIL.
+	ilInit();
+	
+	/* Will prevent any loaded image from being flipped dependent on its format */
+	ilEnable(IL_ORIGIN_SET); 
+	ilOriginFunc(IL_ORIGIN_UPPER_LEFT);
+			
+	if (c->controls[c->progress_bar_index].bitmap != NULL){ 
+		// Generate the progress bar image name to use.
+		ilGenImages(1, &pb_cursor_id);
+		ilBindImage(pb_cursor_id);		
+		printf("\ncursor id : %i - num image : %i - active layer : %i \n",pb_cursor_id, ilGetInteger(IL_NUM_IMAGES),ilGetInteger(IL_ACTIVE_LAYER));
+		if (!ilLoadImage(c->controls[c->progress_bar_index].bitmap)) {
+			fprintf(stderr, "Could not load image file %s.\n", c->controls[c->progress_bar_index].bitmap);
+			return;
+		}
+		ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);  
+		
+		// Generate the skin image name to use.
+		ilGenImages(1, &skin_id);	
+		printf("skin id : %i \n", skin_id);
+		ilBindImage(skin_id);
+		if (!ilLoadImage(c->image_file)) {
+			fprintf(stderr, "Could not load image file %s.\n", c->image_file);
+			return;
+		}				
+	}	
+	
+	return;
+}
+
+static void release_ctrl_bitmaps(void){	
+	ilShutDown();
+	pb_cursor_id = 0;
+}
+
+
 static void display_progress_bar(int current)
 {
 
@@ -95,13 +156,10 @@ static void display_progress_bar(int current)
     int x,y;  
     int height, width;
     unsigned char * buffer;
+    int buffer_size;
     struct skin_config * c;
-
-    int step1,step2;
-    unsigned char col1r, col1g, col1b;
-    unsigned char col2r, col2g, col2b;
-        
             
+    
     if( is_playing_video == TRUE ) 
       c = &config.video_config;
     else {
@@ -116,82 +174,134 @@ static void display_progress_bar(int current)
 	/* No progress bar on skin nothing to do */
 	return;
     }
-    height = c->controls[c->progress_bar_index].area.rectangular.y2 -  c->controls[c->progress_bar_index].area.rectangular.y1;
-    width =  c->controls[c->progress_bar_index].area.rectangular.x2 -  c->controls[c->progress_bar_index].area.rectangular.x1;
-    if ((height== 0) || (width == 0)){
-       /*dont care if progress bar not visible */
-       return;
-    }
+      
 
-    
-
-    buffer = malloc( height * width * 4 );           
-    if (buffer == NULL){
-      fprintf(stderr, "Allocation error\n");
-      return;
-    }
-
-/* FIXME test if useful on large movie : disable for now...
-    if (current_seek != -1){
-	if (current_seek > current){ 	  
-	  col1r = c->pb_r;
-          col1g = c->pb_g;
-          col1b = c->pb_b;
-	  col2r = SEEK_POS_COLOR_R;
-          col2g = SEEK_POS_COLOR_G;
-          col2b = SEEK_POS_COLOR_B;
-          step1 = current * width / 100;
-          step2 = current_seek * width / 100;
-        } else {
-          col1r = SEEK_POS_COLOR_R;
-          col1g = SEEK_POS_COLOR_G;
-          col1b = SEEK_POS_COLOR_B;
-	  col2r = c->pb_r;
-          col2g = c->pb_g;
-          col2b = c->pb_b;
-          step2 = current * width / 100;
-          step1 = current_seek * width / 100;
-        }    	
-    } else {
-*/
-      col1r = c->pb_r;
-      col1g = c->pb_g;
-      col1b = c->pb_b;
-      step1 = step2 = current * width / 100;
-  //  }
-
-/*fprintf(stderr, "pbr : %i , pbg %i  pbb : %i \n", c->pb_r, c->pb_g, c->pb_b);*/
-    i = 0;
-    for( y = 0; y < height; y++ ){
-        for( x = 0; x < width ; x++ ){           
-            if (x <= step1) {
-              buffer[i++] = (unsigned char )col1r;
-              buffer[i++] = (unsigned char )col1g;
-              buffer[i++] = (unsigned char )col1b;
-              buffer[i++] = 255;
-            } else {
-            if ( (x > step1) && (x <= step2)){
-              buffer[i++] = (unsigned char )col2r;
-              buffer[i++] = (unsigned char )col2g;
-              buffer[i++] = (unsigned char )col2b;
-              buffer[i++] = 255;               
-            } else {
-              buffer[i++] = 0;
-              buffer[i++] = 0;
-              buffer[i++] = 0;
-              buffer[i++] = 0;
-            }
+    if (pb_cursor_id == 0) {
+    	/* No cursor bitmap : just fill progress bar */    	
+    	int step1;
+    	unsigned char col1r, col1g, col1b;     
+    	
+    	height = c->controls[c->progress_bar_index].area.rectangular.y2 -  c->controls[c->progress_bar_index].area.rectangular.y1;
+	    width =  c->controls[c->progress_bar_index].area.rectangular.x2 -  c->controls[c->progress_bar_index].area.rectangular.x1;
+	    if ((height== 0) || (width == 0)){
+	       /*dont care if progress bar not visible */
+	       return;
 	    }
-        }
-    }
-    if( is_playing_video == TRUE ) {
-      sprintf(str, "RGBA32 %d %d %d %d %d %d\n", width, height, c->controls[c->progress_bar_index].area.rectangular.x1, c->controls[c->progress_bar_index].area.rectangular.y1, 0, 0);
-      write(fifo_menu, str, strlen(str));
-      write(fifo_menu, buffer, height * width * 4);
-    } else {    
-      gui_buffer_rgb(buffer,width, height, c->controls[c->progress_bar_index].area.rectangular.x1, c->controls[c->progress_bar_index].area.rectangular.y1);
-    }
+	    buffer_size = height * width * 4;
+	    buffer = malloc( buffer_size );           
+	    if (buffer == NULL){
+	      fprintf(stderr, "Allocation error\n");
+	      return;
+	    }
+	    
+		col1r = c->pb_r;
+		col1g = c->pb_g;
+		col1b = c->pb_b;
+		step1 =  current * width / 100;
+	
+	    i = 0;
+	    for( y = 0; y < height; y++ ){
+	        for( x = 0; x < width ; x++ ){           
+	            if (x <= step1) {
+	              buffer[i++] = (unsigned char )col1r;
+	              buffer[i++] = (unsigned char )col1g;
+	              buffer[i++] = (unsigned char )col1b;
+	              buffer[i++] = 255;
+	            } else {    
+	              buffer[i++] = 0;
+	              buffer[i++] = 0;
+	              buffer[i++] = 0;
+	              buffer[i++] = 0;
+	            }
+		    }        
+	    }
+	    if( is_playing_video == TRUE ) {
+	          sprintf(str, "RGBA32 %d %d %d %d %d %d\n", width, height, c->controls[c->progress_bar_index].area.rectangular.x1, c->controls[c->progress_bar_index].area.rectangular.y1, 0, 0);
+	          write(fifo_menu, str, strlen(str));
+	          write(fifo_menu, buffer,buffer_size);
+	        } else {    
+	          gui_buffer_rgb(buffer,width, height, c->controls[c->progress_bar_index].area.rectangular.x1, c->controls[c->progress_bar_index].area.rectangular.y1);
+	    }
+	    
+    } else {
+    	/* A cursor bitmap is available */    	
+    	int new_x;
+    	int erase_width;
+    	int erase_x;
+    	ILuint tmp_img_id;
+    	
+    	/* Get cusor infos and compute new coordinate */
+    	ilBindImage(pb_cursor_id);
+    	width  = ilGetInteger(IL_IMAGE_WIDTH);
+    	height = ilGetInteger(IL_IMAGE_HEIGHT);    	
+    	if (prev_coords.y == -1){
+    		prev_coords.y = c->controls[c->progress_bar_index].area.rectangular.y1 + (c->controls[c->progress_bar_index].area.rectangular.y2 -  c->controls[c->progress_bar_index].area.rectangular.y1) / 2 - height/2;
+    		prev_coords.x = c->controls[c->progress_bar_index].area.rectangular.x1 - width/2;
+    	}
+    	new_x = c->controls[c->progress_bar_index].area.rectangular.x1 + current * (c->controls[c->progress_bar_index].area.rectangular.x2 -  c->controls[c->progress_bar_index].area.rectangular.x1) / 100 - width/2;
+    	
+    	/* Alloc buffer for RBGA conversion */
+    	buffer_size = width * height * 4;
+	    buffer = malloc( buffer_size );           
+	    if (buffer == NULL){
+	      fprintf(stderr, "Allocation error\n");
+	      return;
+	    }
+	    
+	    /* Restore Background */
+	    ilBindImage(skin_id);	
+	    if (((new_x + width) < prev_coords.x)||
+	    	((prev_coords.x + width) < new_x)){
+	    	/* No intersection between new image and old image */
+	    	erase_width = width;
+	    	erase_x = prev_coords.x;	    		    		    		
+	    } else {
+	    	if (prev_coords.x < new_x){	    		
+	    		/* New image is ahead of previous one with an intersection */
+	    		erase_width = new_x-prev_coords.x;
+	    		erase_x = prev_coords.x;	    		
+	    	} else {	    		
+	    		/* New image is behind previous one with an intersection */
+	    		erase_width =  prev_coords.x - new_x;
+	    		erase_x = new_x + width;	    		
+	    	}
+	    }
+	    ilCopyPixels(erase_x, prev_coords.y, 0,
+	    	         erase_width, height , 1,
+	    	    	 IL_RGBA, IL_UNSIGNED_BYTE, buffer);
+	    if( is_playing_video == TRUE ) {	    		    	    
+	    	sprintf(str, "RGBA32 %d %d %d %d %d %d\n", erase_width, height, erase_x, prev_coords.y , 0, 0);
+		    write(fifo_menu, str, strlen(str));
+		    write(fifo_menu, buffer,4*erase_width*height);
+        } else {    
+   	        gui_buffer_rgb(buffer,erase_width, height, erase_x, prev_coords.y);
+	    }
+	    
+	    		
+		/* Display cursor at its new position after overlaying cursor bitmap on skin background */	    
+	    ilCopyPixels(new_x, prev_coords.y, 0, width, height, 1,
+	    			  IL_RGBA, IL_UNSIGNED_BYTE, buffer);	    			  
+		ilGenImages(1, &tmp_img_id);	
+		ilBindImage(tmp_img_id);
+		ilTexImage(width, height, 1, 4,IL_RGBA, IL_UNSIGNED_BYTE, buffer);		  
+		ilOverlayImage(pb_cursor_id,0,0,0);					  
 
+		ilCopyPixels(0, 0, 0,
+				 width, height, 1,
+				 IL_RGBA, IL_UNSIGNED_BYTE, buffer);		
+		if( is_playing_video == TRUE ) {
+			sprintf(str, "RGBA32 %d %d %d %d %d %d\n", width, height, new_x, prev_coords.y , 0, 0);
+			write(fifo_menu, str, strlen(str));
+			write(fifo_menu, buffer,buffer_size);
+		} else {
+			gui_buffer_rgb(buffer,width, height, new_x, prev_coords.y);
+		}
+			   
+	 					
+		ilDeleteImages( 1, &tmp_img_id);
+		prev_coords.x = new_x;		
+		
+    }    
     free( buffer );    
 }
 
@@ -304,8 +414,6 @@ static int get_float_from_stdout(float *val){
   } else {
     return -1;
   }
-
-
 }
 
 /** Send a command to mplayer and wait for an int answer
@@ -495,6 +603,7 @@ void * update_thread(void *cmd){
   while (is_mplayer_finished == FALSE){
     flush_stdout();
 
+    /* Update progress bar */
     if (((is_menu_showed == TRUE) ||  ( is_playing_video == FALSE ))  && 
        (is_paused == FALSE)) {
       pos = get_file_position_percent();
@@ -505,8 +614,7 @@ void * update_thread(void *cmd){
       }
     }
         
-	/* Handle screen saver */
-    
+	/* Handle screen saver */    
 	if ((is_playing_video == FALSE) && 
 		(no_user_interaction_cycles != SCREEN_SAVER_ACTIVE)){    
 		no_user_interaction_cycles++;
@@ -516,19 +624,13 @@ void * update_thread(void *cmd){
 		}
 	}
 	
-	/* Check for headphones presnce to turn on/off internal speaker */
+	/* Check for headphones presence to turn on/off internal speaker */
 	snd_check_headphone();
-	
-/* FIXME check if useful     
-   if (current_seek != -1){
-      if (get_file_position_percent() == current_seek){
-	current_seek = -1;
-      }
-    }
-*/   
+	  
     usleep(PB_UPDATE_PERIOD_US);    
   }
   
+  release_ctrl_bitmaps();
   pthread_exit(NULL);
 }
 
@@ -546,7 +648,7 @@ void * mplayer_thread(void *cmd){
 	   	resume_set_video_settings(&current_video_settings);            	  	
     } else {    	
     	resume_set_audio_settings(&current_audio_settings);          	            	      	            	
-    }
+    }          
     pthread_exit(NULL);
 }
 
@@ -604,7 +706,7 @@ void launch_mplayer( char * folder, char * filename, int pos ){
       resume_pos = 0;
     }
     
-
+    init_ctrl_bitmaps();
         
     sprintf( cmd, cmd_mplayer, (ws_probe()? WS_YMAX : WS_NOXL_YMAX), rotated_param, resume_pos, fifo_command_name, playlist_param, folder , filename, fifo_stdout_name );  
 
@@ -612,8 +714,28 @@ void launch_mplayer( char * folder, char * filename, int pos ){
     
     usleep( 500000 );
       
-    if( is_video_file( filename ) ){ 
-        blit_video_menu( fifo_menu, &config.video_config );
+    if( is_video_file( filename ) ){
+#if 0    	
+    		char * buffer;
+    		int buffer_size;
+    		char str[100];
+    		int i,x,y ;
+           		
+	       ilBindImage(skin_id);	  
+	       buffer_size = 3* ilGetInteger(IL_IMAGE_WIDTH)*ilGetInteger(IL_IMAGE_HEIGHT);
+	       buffer = malloc(buffer_size);    		   
+		   
+			   	ilCopyPixels(0, 0, 0,
+					     ilGetInteger(IL_IMAGE_WIDTH),ilGetInteger(IL_IMAGE_HEIGHT) , 1,
+						 IL_RGB, IL_UNSIGNED_BYTE, buffer);    		      		
+
+			sprintf(str, "RGB24 %d %d %d %d %d %d\n", 480 , 272, 0, 0, 0, 1);
+			write(fifo_menu, str, strlen(str));
+			write(fifo_menu, buffer,buffer_size);
+			free(buffer);
+#endif
+    			
+    	blit_video_menu( fifo_menu, &config.video_config );		
         /* Restore video settings */
         if (resume_get_video_settings(&v_settings) == 0){
         	set_video_settings(&v_settings);

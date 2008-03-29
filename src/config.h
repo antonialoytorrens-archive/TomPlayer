@@ -79,6 +79,7 @@
 #define KEY_RECTANGULAR_CONTROL_Y1  "y1"
 #define KEY_RECTANGULAR_CONTROL_Y2  "y2"
 
+#define KEY_CTRL_BITMAP_FILENAME "bitmap"
 
 /* Define the shape of control */
 enum E_TYPE_CONTROL {
@@ -106,6 +107,7 @@ struct control{
     enum E_TYPE_CONTROL type;
     int cmd;
     union control_type area;		
+    char * bitmap; // Optional bitmap filename associated with the control
 };
 
 

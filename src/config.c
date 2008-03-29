@@ -42,6 +42,7 @@
 int load_skin_config( char * filename, struct skin_config * skin_conf ){
     GHANDLE gh_config;
     char section_control[PATH_MAX + 1];
+    char bitmap_filename[PATH_MAX + 1];
     int i;
 
     skin_conf->progress_bar_index = -1;
@@ -71,9 +72,17 @@ int load_skin_config( char * filename, struct skin_config * skin_conf ){
     for( i = 0; i < MAX_CONTROLS; i++ ){
         sprintf( section_control, SECTION_CONTROL_FMT_STR, i );
         if( GetIntValueFromEtc( gh_config, section_control, KEY_TYPE_CONTROL, (int *) &(skin_conf->controls[i].type) ) != ETC_OK  ){
-           fprintf( stderr, "Warning : no section  <%s>\n", section_control );
+           fprintf( stderr, "Warning : no section  <%s>\n", section_control );            
            break;
         }
+        if ((GetValueFromEtc( gh_config, section_control, KEY_CTRL_BITMAP_FILENAME,  bitmap_filename, PATH_MAX ) == ETC_OK ) &&
+        	(strlen(bitmap_filename)>0)){
+        	skin_conf->controls[i].bitmap = strdup(bitmap_filename);
+        	/*printf("control bitmap filename :%s\n", bitmap_filename);*/
+        } else {
+        	skin_conf->controls[i].bitmap = NULL;
+        }
+        
         GetIntValueFromEtc( gh_config, section_control, KEY_CMD_CONTROL, &skin_conf->controls[i].cmd );       
         switch( skin_conf->controls[i].type ){
             case CIRCULAR_CONTROL:
@@ -98,6 +107,8 @@ int load_skin_config( char * filename, struct skin_config * skin_conf ){
                 fprintf( stderr, "Type not defined correctly for %s\n", section_control );
                 return FALSE;
         }
+        
+        
     }
     
     skin_conf->nb = i;
