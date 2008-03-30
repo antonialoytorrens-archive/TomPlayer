@@ -32,6 +32,10 @@ echo "Running the application"
 #Create a symbolic link to enable generic minigui configuration file
 ln -sf ${TOMPLAYER_DIR}/res /etc/res
 
+#convert in UNIX text format the used configuration file
+cp -f tomplayer.ini /tmp/tomplayer.ini
+dos2unix /tmp/tomplayer.ini
+
 export FRAMEBUFFER=/dev/fb
 ./tomplayer
 
