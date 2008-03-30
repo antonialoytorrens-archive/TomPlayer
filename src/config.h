@@ -29,7 +29,7 @@
 #define MAX_CONTROLS	            20
 
 
-#define CONFIG_FILE                 "tomplayer.ini"
+#define CONFIG_FILE                 "/tmp/tomplayer.ini"
 
 /* Definition of section in the config file */
 #define SECTION_GENERAL             "general"
