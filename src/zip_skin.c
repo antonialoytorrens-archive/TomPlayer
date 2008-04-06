@@ -16,7 +16,7 @@ int load_bitmap( ILuint * bitmap_obj, char * filename ){
 
     ilBindImage(*bitmap_obj);
     if (!ilLoadImage(filename)) {
-        fprintf(stderr, "Could not load image file %s.\n", filename);
+        fprintf(stderr, "Could not load image file %s.\nError : %s\n", filename, iluErrorString(ilGetError()));        
         return FALSE;
     }	
 		
