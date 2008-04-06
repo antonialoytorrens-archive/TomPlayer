@@ -33,6 +33,28 @@
 #include "config.h"
 
 
+/** Adapt filename
+*
+*
+*/
+static void transform_filename(char * filename){
+  char temp_buf[PATH_MAX];
+  char * slash_pos;
+  int slash_off;
+
+  slash_pos=strrchr(filename,'/');
+  if (slash_pos == NULL){ 
+    slash_off = 0;
+  } else {
+    slash_off = (slash_pos - filename)+1;
+  }
+
+  memcpy(temp_buf, filename, slash_off);
+  snprintf(&temp_buf[slash_off], PATH_MAX,"%s%s", WS_FILENAME_PREFIX, &filename[slash_off]);
+  strncpy(filename, temp_buf, PATH_MAX);
+}
+
+
 /** Returns wether the device is equiped with a widescreen or not
 *
 *\retval 0 no widescreen 
@@ -67,3 +89,19 @@ int ws_probe(void){
 
   return is_ws;
 }
+
+/** Modify configuration to be widescreen compliant
+*
+*\param[in,out]  conf the configuration to adapt for a widescreen
+*
+*\return None
+*/
+void ws_translate(struct tomplayer_config * conf){
+
+  /* Prepend "ws_" to picture filenames */
+  transform_filename(conf->bitmap_loading_filename);
+  transform_filename(conf->bitmap_exiting_filename);
+}
+
+
+

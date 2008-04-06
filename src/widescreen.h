@@ -41,5 +41,6 @@
 #define WS_FILENAME_PREFIX "ws_"
 
 extern int ws_probe(void);
+extern void ws_translate(struct tomplayer_config *);
 
 #endif
