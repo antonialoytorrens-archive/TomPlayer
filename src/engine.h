@@ -90,7 +90,7 @@ int get_command_from_xy( int x, int y, int * p );
 void display_image_to_fb( ILuint );
 
 /* This function is GUI library dependent, it's not defined in engine.c but in gui.c */
-void display_current_file( char * , struct skin_config * );
+void display_current_file( char * , struct skin_config *, ILuint );
 
 
 void gui_buffer_rgb(char * buffer,int width, int height, int x, int y);

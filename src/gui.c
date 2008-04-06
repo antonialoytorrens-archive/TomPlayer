@@ -494,21 +494,19 @@ static void play (HWND hDlg, char * folder, char * filename, BOOL resume)
     ShowWindow( hDlg, SW_HIDE );
 
     if( is_video_file( filename ) ){
-        display_image_to_fb( config.bitmap_loading );
-        display_current_file( filename, &config.video_config );
+        display_current_file( filename, &config.video_config, config.bitmap_loading );
     }
     else{
-        display_image_to_fb( config.audio_config.bitmap );
-        display_current_file( filename, &config.audio_config );
+        display_current_file( filename, &config.audio_config, config.audio_config.bitmap );
     }
     launch_mplayer( folder, filename, pos );   
 }
 
-void display_current_file( char * filename, struct skin_config * skin_conf )
+void display_current_file( char * filename, struct skin_config *skin_conf, ILuint bitmap )
 {
     RECT rc;
     
-    display_image_to_fb( skin_conf->bitmap );
+    display_image_to_fb( bitmap );
     
     rc.left = skin_conf->text_x1;
     rc.right = skin_conf->text_x2;
