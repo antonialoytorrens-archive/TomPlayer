@@ -33,10 +33,13 @@
 #define WS_NOXL_YMAX 240
 #define WS_NOXL_XMAX 320
 
+#define EXTEND(a,b,c) (a) = (a) * (1.0 * b) /c
+#define EXTEND_X(a) EXTEND(a, ws_probe()?WS_XMAX:WS_NOXL_XMAX, 320 )
+#define EXTEND_Y(a) EXTEND(a, ws_probe()?WS_YMAX:WS_NOXL_YMAX, 240 )
+
 /*Prefix for widescreen filenames*/
 #define WS_FILENAME_PREFIX "ws_"
 
 extern int ws_probe(void);
-extern void ws_translate(struct tomplayer_config *);
 
 #endif
