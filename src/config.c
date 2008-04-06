@@ -150,6 +150,7 @@ int load_config( struct tomplayer_config * conf ){
 
     UnloadEtcFile( gh_config );
 
+    if( ws_probe() ) ws_translate( conf );
     load_bitmap( &conf->bitmap_loading, conf->bitmap_loading_filename );
     load_bitmap( &conf->bitmap_exiting, conf->bitmap_exiting_filename );
 
