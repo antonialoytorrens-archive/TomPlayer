@@ -127,6 +127,7 @@ void blit_video_menu( int fifo, struct skin_config * conf )
     int height, width;
     unsigned char * buffer;
     int buffer_size;
+    int i;
     
     ilBindImage(conf->bitmap);
     width  = ilGetInteger(IL_IMAGE_WIDTH);
@@ -142,6 +143,16 @@ void blit_video_menu( int fifo, struct skin_config * conf )
 	
 	
     ilCopyPixels(0, 0, 0, width, height, 1, IL_RGBA, IL_UNSIGNED_BYTE, buffer);
+    PRINTD(" couleur transparence %d, %d, %d \n", conf->r,conf->g,conf->b);
+    /* Aplly manually transparency */
+    for (i=0; i < buffer_size; i+=4){
+    	if ((buffer[i] == conf->r) &&
+    		(buffer[i+1] == conf->g) &&
+    		(buffer[i+2] == conf->b)){
+    		PRINTD("pixel transparence %i \n",i);
+    		buffer[i+3] = 0;
+    	}
+    }
     sprintf(str, "RGBA32 %d %d %d %d %d %d\n", width, height, 0, 0 , 0, 0);
     write(fifo_menu, str, strlen(str));
     write(fifo_menu, buffer,buffer_size);
