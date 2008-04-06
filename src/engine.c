@@ -39,7 +39,7 @@
 #include <time.h>
 #include <IL/il.h>
 #include <IL/ilu.h>
-
+ #include <sys/mman.h>
 #include "config.h"
 #include "engine.h"
 #include "resume.h"
@@ -100,6 +100,55 @@ static struct{
 		int x,y;
 } prev_coords = {-1,-1};  
 
+
+
+int init_engine( void ){
+	// Initialize DevIL.
+	ilInit();
+	iluInit();
+	
+	/* Will prevent any loaded image from being flipped dependent on its format */
+	ilEnable(IL_ORIGIN_SET); 
+	ilOriginFunc(IL_ORIGIN_UPPER_LEFT);
+
+    srand( time(NULL) );	
+    
+    return TRUE;    
+}
+
+int release_engine( void ){
+    ilShutDown();
+    return TRUE;    
+}
+
+void blit_video_menu( int fifo, struct skin_config * conf )
+{
+    char str[100];
+    int height, width;
+    unsigned char * buffer;
+    int buffer_size;
+    
+    ilBindImage(conf->bitmap);
+    width  = ilGetInteger(IL_IMAGE_WIDTH);
+    height = ilGetInteger(IL_IMAGE_HEIGHT);  
+    	
+    /* Alloc buffer for RBGA conversion */
+    buffer_size = width * height * 4;
+    buffer = malloc( buffer_size );
+    if (buffer == NULL){
+        fprintf(stderr, "Allocation error\n");
+        return;
+	}
+	
+	
+    ilCopyPixels(0, 0, 0, width, height, 1, IL_RGBA, IL_UNSIGNED_BYTE, buffer);
+    sprintf(str, "RGBA32 %d %d %d %d %d %d\n", width, height, 0, 0 , 0, 0);
+    write(fifo_menu, str, strlen(str));
+    write(fifo_menu, buffer,buffer_size);
+    
+    free( buffer );
+}
+
 /** Load bitmaps associated with controls
  * \note For now only Progress bar bitmap is involved */
 static void init_ctrl_bitmaps(void){
@@ -111,61 +160,15 @@ static void init_ctrl_bitmaps(void){
 	if (is_playing_video == TRUE ) 
 		c = &config.video_config;
 	else
-		c = &config.audio_config;
-	
-	// Initialize DevIL.
-	ilInit();
-	
-	/* Will prevent any loaded image from being flipped dependent on its format */
-	ilEnable(IL_ORIGIN_SET); 
-	ilOriginFunc(IL_ORIGIN_UPPER_LEFT);
-			
-	if (c->controls[c->progress_bar_index].bitmap != NULL){ 
-		// Generate the progress bar image name to use.
-		ilGenImages(1, &pb_cursor_id);
-		ilBindImage(pb_cursor_id);		
-		PRINTD("\nProgress bar cursor id : %i - num image : %i - active layer : %i \n",pb_cursor_id, ilGetInteger(IL_NUM_IMAGES),ilGetInteger(IL_ACTIVE_LAYER));
-		if (!ilLoadImage(c->controls[c->progress_bar_index].bitmap)) {
-			fprintf(stderr, "Could not load image file %s.\n", c->controls[c->progress_bar_index].bitmap);
-			return;
-		}
-		ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);  
-	}
-	
-	if (c->controls[c->bat_index].bitmap != NULL){ 
-		// Generate thebattery state image name to use.
-		ilGenImages(1, &bat_cursor_id);
-		ilBindImage(bat_cursor_id);		
-		if (!ilLoadImage(c->controls[c->bat_index].bitmap)) {
-			fprintf(stderr, "Could not load image file %s.\n", c->controls[c->bat_index].bitmap);
-			return;
-		}
-		PRINTD("\nbattery cursor id : %i - num image : %i - active layer : %i \n",bat_cursor_id, ilGetInteger(IL_NUM_IMAGES),ilGetInteger(IL_ACTIVE_LAYER));
-		ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);  
-	}
-	
-	if ((c->controls[c->bat_index].bitmap != NULL) || 
-		(c->controls[c->progress_bar_index].bitmap != NULL)){
-		// Generate the skin image name to use.
-		ilGenImages(1, &skin_id);	
-		PRINTD("skin id : %i \n", skin_id);
-		ilBindImage(skin_id);
-		if (!ilLoadImage(c->image_file)) {
-			fprintf(stderr, "Could not load image file %s.\n", c->image_file);
-			return;
-		}				
-	}
-		
-	
-	return;
+		c = &config.audio_config;    
+    
+    pb_cursor_id = c->controls[c->progress_bar_index].bitmap;
+    bat_cursor_id = c->controls[c->bat_index].bitmap;
+    skin_id = c->bitmap;
+    
+    /* Turn ON screen if it is not */
+    pwm_resume();
 }
-
-static void release_ctrl_bitmaps(void){	
-	ilShutDown();
-	pb_cursor_id = 0;
-	bat_cursor_id = 0;
-}
-
 
 
 /** Display a cursor over the skin 
@@ -283,7 +286,6 @@ static void display_bat_state(bool force){
 
 static void display_progress_bar(int current)
 {
-
     char str[100];
     int i;
     int x,y;  
@@ -291,8 +293,7 @@ static void display_progress_bar(int current)
     unsigned char * buffer;
     int buffer_size;
     struct skin_config * c;
-            
-    
+
     if( is_playing_video == TRUE ) 
       c = &config.video_config;
     else {
@@ -414,7 +415,7 @@ static void display_progress_bar(int current)
 
 	    prev_coords.x = new_x;				
     }    
-    free( buffer );    
+    free( buffer );
 }
 
 /** Flush any data from mplayer stdout 
@@ -496,10 +497,26 @@ static int get_int_from_stdout(int *val){
   } else {
     return -1;
   }
-
-
 }
 
+
+/** retrieve a string value from mplayer stdout
+*
+* \param val[out] 
+*\retval 0 : OK
+*\retval -1 : KO
+*/
+static int get_string_from_stdout(char *val){
+  char buffer[200];
+  fprintf( stderr, "get_string_from_stdout\n");
+    if (read_line_from_stdout(buffer, sizeof(buffer)) > 0){
+        strcpy( val, buffer );
+        fprintf( stderr, "Fichier courant <%s>\n",buffer );
+        return 0;
+    } 
+    
+    return -1;
+}
 
 /** retrieve an float value from mplayer stdout
 *
@@ -526,6 +543,29 @@ static int get_float_from_stdout(float *val){
   } else {
     return -1;
   }
+}
+
+/** Send a command to mplayer and wait for an int answer
+*
+* \param cmd the command to send
+* \param val[out] the int value returned by mplayer 
+* 
+* \reval 0 : OK
+* \reval -1 : An error occured 
+*
+*/
+static int send_command_wait_string(const char * cmd, char *val ){  
+  int nb_try = 0;
+  int res = 0;
+  fprintf( stderr, "send_command_wait_string\n");
+  pthread_mutex_lock(&request_mutex);
+  send_command(cmd);
+  do {
+    res = get_string_from_stdout(val);
+    nb_try++;
+  }while (( res == -1) && (nb_try < 5));
+  pthread_mutex_unlock(&request_mutex);
+  return res;  
 }
 
 /** Send a command to mplayer and wait for an int answer
@@ -586,6 +626,16 @@ static int get_file_position_percent(void){
     	/* Return 0 if command failed */
     	return 0;
     }
+}
+
+/** Return the current file been playing
+*/
+static BOOL get_current_file_name(char * filename){
+	fprintf( stderr, "get_current_file_name\n");
+    if (send_command_wait_string("pausing_keep get_file_name\n", filename) == 0){
+    	return TRUE;
+    }
+    return FALSE;
 }
 
 /** Return the current file position in seconds 
@@ -718,6 +768,11 @@ static void quit_mplayer(void){
 void * update_thread(void *cmd){
   int pos ;  
   int screen_saver_to_cycles;
+  char current_filename[200];
+  char old_current_filename[200];
+  char *p;
+  
+  strcpy( old_current_filename, "" );
   
   /* Timout in cycles before turning OFF screen while playing audio */
   screen_saver_to_cycles = ((config.screen_saver_to * 1000000) / PB_UPDATE_PERIOD_US);
@@ -742,7 +797,20 @@ void * update_thread(void *cmd){
       /* Display battery state */
       display_bat_state(false);
     }
-        
+    
+    if( is_playing_audio == TRUE ){
+        if( get_current_file_name( current_filename ) == TRUE ){
+            if( !strncmp( "ANS_FILENAME='", current_filename, strlen( "ANS_FILENAME='" ) ) ){
+                p=current_filename + strlen( "ANS_FILENAME='" );
+                p[strlen(p)-2] = 0;
+                if( strcmp( p, old_current_filename ) ){
+                    strcpy( old_current_filename, p);
+                    display_current_file( p, &config.audio_config );
+                }
+            }
+        }
+    }
+    
 	/* Handle screen saver */    
 	if ((is_playing_video == FALSE) && 
 		(no_user_interaction_cycles != SCREEN_SAVER_ACTIVE)){    
@@ -765,7 +833,6 @@ void * update_thread(void *cmd){
     usleep(PB_UPDATE_PERIOD_US);    
   }
   
-  release_ctrl_bitmaps();
   pthread_exit(NULL);
 }
 
@@ -774,7 +841,7 @@ void * mplayer_thread(void *cmd){
     pthread_t t;
    
     is_mplayer_finished = FALSE; 
-    pthread_create(&t, NULL, update_thread, NULL);   
+    pthread_create(&t, NULL, update_thread, NULL);
     system( (char *) cmd );
     is_mplayer_finished = TRUE;
     printf("\nmplayer has exited\n");
@@ -971,11 +1038,9 @@ void handle_mouse_event( int x, int y )
             }
             break;
         case CMD_PREVIOUS:
-fprintf( stderr, "precedent\n" );
             send_command( "pt_step -1" );
             break;
         case CMD_NEXT:
-fprintf( stderr, "suivant\n" );
             send_command( "pt_step 1" );
             break;
         case CMD_BATTERY_STATUS:
@@ -1049,4 +1114,56 @@ int get_command_from_xy( int x, int y, int * p ){
     }
     
     return cmd;
+}
+
+
+void display_image_to_fb( ILuint img){
+    int height, width;
+    unsigned char  *buffer24;
+    unsigned short * buffer16;
+    int buffer_size;
+    int i;
+    int src;
+    unsigned int r,g,b;
+    unsigned char * adr;
+    int fb;
+    
+    
+    ilBindImage(img);
+    width  = ilGetInteger(IL_IMAGE_WIDTH);
+    height = ilGetInteger(IL_IMAGE_HEIGHT); 
+    
+    
+    /* Alloc buffer for RBG conversion */
+    buffer_size = width * height * 3;
+    buffer24 = malloc( buffer_size );
+    if (buffer24 == NULL){
+        fprintf(stderr, "Allocation error\n");
+        return;
+	}
+
+    /* Alloc buffer for RBG conversion */
+    buffer_size = width * height * 2;
+    buffer16 = malloc( buffer_size );
+    if (buffer16 == NULL){
+        fprintf(stderr, "Allocation error\n");
+        return;
+	}	
+	
+    ilCopyPixels(0, 0, 0, width, height, 1, IL_RGB, IL_UNSIGNED_BYTE, buffer24);
+    for( i = 0; i < (width * height); i++ ){
+        src = 0x010000 * buffer24[3*i] | 0x0100 * buffer24[3*i+1] | buffer24[3*i+2];
+        r = ((src&0xFF0000)>>19);
+        g = ((src&0xFF00)>>10);
+        b = ((src&0xFF)>>3);
+        
+        buffer16[i] = (unsigned short) (r<<11) | (g<<5) | b;
+    }
+    
+    fb = open( getenv( "FRAMEBUFFER" ), O_RDWR);
+    adr = mmap(NULL, buffer_size, PROT_READ|PROT_WRITE,MAP_SHARED, fb, 0);
+    memcpy( adr, buffer16, buffer_size);
+    munmap( adr, buffer_size );
+    free( buffer16 ); 
+    free( buffer24 ); 
 }

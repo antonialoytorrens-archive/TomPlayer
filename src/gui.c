@@ -47,23 +47,20 @@
 #include "pwm.h"
 #include "power.h"
 #include "playlist.h"
+#include "widescreen.h"
+#include "zip_skin.h"
 
-#define DEBUG 0
 
-#define DEFAULT_PLAYLIST        "tomplayer.m3u"
+#define DEFAULT_PLAYLIST        "/tmp/tomplayer.m3u"
 #define ICON_FOLDER_FILENAME    "./res/icon/folder.ico"
 #define ICON_FILE_FILENAME      "./res/icon/file.ico"
 
-
-#define EXTEND(a,b,c) (a) = (a) * (1.0 * b) /c
-#define EXTEND_X(a) EXTEND(a, w, 320 )
-#define EXTEND_Y(a) EXTEND(a, h, 240 )
-
+#define VIDEO_SKIN_FOLDER   "./skins/video"
+#define AUDIO_SKIN_FOLDER   "./skins/audio"
 
 #define ID_TIMER            100
 #define IDC_PROPSHEET       110
 
-#define IDL_DIR_VIDEO       200
 #define IDL_FILE_VIDEO      210
 #define IDC_PATH_VIDEO      220
 #define IDB_PLAY_VIDEO      230
@@ -71,9 +68,6 @@
 #define IDB_RESUME_VIDEO    250
 #define IDC_STATIC_VIDEO    260
 
-
-
-#define IDL_DIR_AUDIO       300
 #define IDL_FILE_AUDIO      310
 #define IDC_PATH_AUDIO      320
 #define IDB_PLAY_AUDIO      330
@@ -81,12 +75,18 @@
 #define IDB_RANDOM_AUDIO    350
 #define IDC_STATIC_AUDIO    360
 
+#define IDL_FILE_AUDIO_SKIN     410
+#define IDC_PATH_AUDIO_SKIN     420
+#define IDB_SELECT_AUDIO_SKIN   430
+#define IDC_STATIC_AUDIO_SKIN   440
+
+#define IDL_FILE_VIDEO_SKIN     410
+#define IDC_PATH_VIDEO_SKIN     420
+#define IDB_SELECT_VIDEO_SKIN   430
+#define IDC_STATIC_VIDEO_SKIN   440
+
 static HICON hicon_folder;
 static HICON hicon_file;
-static BITMAP video_skin_bmp;
-static BITMAP audio_skin_bmp;
-static BITMAP loading_bmp;
-static BITMAP exiting_bmp;
 static HWND hlb_video;
 static HWND hlb_audio;
 
@@ -246,12 +246,108 @@ static CTRLDATA CtrlTomPlayerVideo[] =
 };
 
 
+
+static DLGTEMPLATE DlgTomPlayerAudioSkin =
+{
+    WS_BORDER | WS_CAPTION,
+    WS_EX_NONE,
+    0, 0, 0, 0,
+    "Audio skin",
+    0, 0,
+    4, NULL,
+    0
+};
+
+static CTRLDATA CtrlTomPlayerAudioSkin[] =
+{ 
+    {
+        CTRL_STATIC,
+        WS_VISIBLE | SS_SIMPLE, 
+        10, 10, 260, 15, 
+        IDC_STATIC_AUDIO_SKIN, 
+       "Files:",
+        0
+    },
+    {
+        CTRL_LISTBOX,
+        WS_VISIBLE | WS_VSCROLL | WS_BORDER | LBS_SORT | LBS_NOTIFY | LBS_USEICON,
+        10, 30, 260, 100,
+        IDL_FILE_AUDIO_SKIN,
+        "",
+        0
+    },
+
+    {
+        CTRL_STATIC,
+        WS_VISIBLE | SS_SIMPLE, 
+        10, 130, 260, 15, 
+        IDC_PATH_AUDIO_SKIN, 
+       "Path: ",
+        0
+    },
+    {
+        CTRL_BUTTON,
+        WS_VISIBLE | BS_PUSHBUTTON | WS_TABSTOP,
+        108, 150, 92, 25,
+        IDB_SELECT_AUDIO_SKIN,
+        "Select this skin",
+        0
+    },
+};
+
+
+
+static DLGTEMPLATE DlgTomPlayerVideoSkin =
+{
+    WS_BORDER | WS_CAPTION,
+    WS_EX_NONE,
+    0, 0, 0, 0,
+    "Video skin",
+    0, 0,
+    4, NULL,
+    0
+};
+
+static CTRLDATA CtrlTomPlayerVideoSkin[] =
+{ 
+    {
+        CTRL_STATIC,
+        WS_VISIBLE | SS_SIMPLE, 
+        10, 10, 260, 15, 
+        IDC_STATIC_VIDEO_SKIN, 
+       "Files:",
+        0
+    },
+    {
+        CTRL_LISTBOX,
+        WS_VISIBLE | WS_VSCROLL | WS_BORDER | LBS_SORT | LBS_NOTIFY | LBS_USEICON,
+        10, 30, 260, 100,
+        IDL_FILE_VIDEO_SKIN,
+        "",
+        0
+    },
+
+    {
+        CTRL_STATIC,
+        WS_VISIBLE | SS_SIMPLE, 
+        10, 130, 260, 15, 
+        IDC_PATH_VIDEO_SKIN, 
+       "Path: ",
+        0
+    },
+    {
+        CTRL_BUTTON,
+        WS_VISIBLE | BS_PUSHBUTTON | WS_TABSTOP,
+        108, 150, 92, 25,
+        IDB_SELECT_VIDEO_SKIN,
+        "Select this skin",
+        0
+    },
+};
+
+
 void ExtendDialogBoxToScreen( DLGTEMPLATE * dlg ){
     int i;
-    int w, h;
-
-    w = GetGDCapability( HDC_SCREEN, GDCAP_HPIXEL);
-    h = GetGDCapability( HDC_SCREEN, GDCAP_VPIXEL);
 
     EXTEND_X( dlg->x );
     EXTEND_Y( dlg->y );    
@@ -291,40 +387,7 @@ void gui_buffer_rgb(char * buffer,int width, int height, int x, int y){
   Rectangle(HDC_SCREEN,0,y,GetGDCapability( HDC_SCREEN, GDCAP_HPIXEL),GetGDCapability( HDC_SCREEN, GDCAP_VPIXEL));  
 }
 
-void blit_video_menu( int fifo, struct skin_config * conf )
-{
-    char str[100];
-    int x,y;
-    HDC hdc;
-    int r,g,b,a;
-    unsigned char * buffer;
-    int i = 0;
-    
-    
-    buffer = malloc( video_skin_bmp.bmWidth * video_skin_bmp.bmHeight * 4 );
-    
-    hdc = CreateCompatibleDC( HDC_SCREEN );
-    FillBoxWithBitmap( hdc, 0,0,video_skin_bmp.bmWidth, video_skin_bmp.bmHeight, &video_skin_bmp );
-    
-    sprintf(str, "RGBA32 %d %d %d %d %d %d\n",video_skin_bmp.bmWidth, video_skin_bmp.bmHeight, 0, 0, 0, 0);
-    write(fifo, str, strlen(str));
-    for( y = 0; y < video_skin_bmp.bmHeight; y++ ){
-        for( x = 0; x < video_skin_bmp.bmWidth; x++ ){
-            GetPixelRGB( hdc, x, y, &r,&g,&b);
-            if( r == conf->r && g == conf->g && b == conf->b ) a = 0;           
-            else a = 255;
 
-            buffer[i++] = (unsigned char )r;
-            buffer[i++] = (unsigned char )g;
-            buffer[i++] = (unsigned char )b;
-            buffer[i++] = (unsigned char )a;
-        }
-    }
-    
-    write(fifo, buffer, video_skin_bmp.bmWidth * video_skin_bmp.bmHeight * 4);
-    free( buffer );
-    DeleteCompatibleDC( hdc );
-}
 
 
 
@@ -337,7 +400,6 @@ static void fill_boxes (HWND hDlg, int list_box_id, int text_path_id, char * ext
     char   fullpath [PATH_MAX + 1];
     LISTBOXITEMINFO lbii;
     
-    if( DEBUG ) fprintf( stderr, "fill_boxes\n" );
     if ((dir = opendir (path)) == NULL)
          return;
 
@@ -367,7 +429,6 @@ static void fill_boxes (HWND hDlg, int list_box_id, int text_path_id, char * ext
     }
 
     closedir (dir);
-    if( DEBUG ) fprintf( stderr, "fill_boxes : ok\n" );
 }
 
 static void dir_notif_proc (HWND hwnd, int id, int nc, int text_path_id, char * extensions)
@@ -420,8 +481,6 @@ static void audio_file_notif_proc (HWND hwnd, int id, int nc, DWORD add_data)
 
 static void play (HWND hDlg, char * folder, char * filename, BOOL resume)
 {
-
-    RECT rc;
     int pos = 0;
     
 
@@ -435,22 +494,31 @@ static void play (HWND hDlg, char * folder, char * filename, BOOL resume)
     ShowWindow( hDlg, SW_HIDE );
 
     if( is_video_file( filename ) ){
-        FillBoxWithBitmap( HDC_SCREEN, 0, 0, loading_bmp.bmWidth, loading_bmp.bmHeight, &loading_bmp );
-        rc.left = config.video_config.text_x1;
-        rc.right = config.video_config.text_x2;
-        rc.top = config.video_config.text_y1;
-        rc.bottom = config.video_config.text_y2;
+        display_image_to_fb( config.bitmap_loading );
+        display_current_file( filename, &config.video_config );
     }
     else{
-        FillBoxWithBitmap( HDC_SCREEN, 0, 0, audio_skin_bmp.bmWidth, audio_skin_bmp.bmHeight, &audio_skin_bmp );
-        rc.left = config.audio_config.text_x1;
-        rc.right = config.audio_config.text_x2;
-        rc.top = config.audio_config.text_y1;
-        rc.bottom = config.audio_config.text_y2;
+        display_image_to_fb( config.audio_config.bitmap );
+        display_current_file( filename, &config.audio_config );
     }
-    DrawText (HDC_SCREEN, filename, -1, &rc, DT_CENTER );   
     launch_mplayer( folder, filename, pos );   
 }
+
+void display_current_file( char * filename, struct skin_config * skin_conf )
+{
+    RECT rc;
+    
+    display_image_to_fb( skin_conf->bitmap );
+    
+    rc.left = skin_conf->text_x1;
+    rc.right = skin_conf->text_x2;
+    rc.top = skin_conf->text_y1;
+    rc.bottom = skin_conf->text_y2;
+    SetBkMode(HDC_SCREEN, BM_TRANSPARENT);
+    TextOut( HDC_SCREEN, rc.left, rc.top, filename );
+    //DrawText (HDC_SCREEN, filename, -1, &rc, DT_CENTER );  
+}
+
 
 static int mouse_hook (void* context, HWND dst_wnd, int msg, WPARAM wParam, LPARAM lParam)
 {
@@ -462,33 +530,16 @@ static int mouse_hook (void* context, HWND dst_wnd, int msg, WPARAM wParam, LPAR
        return HOOK_GOON;
 }
 
-static int load_bmp( void ){
-    int i;
-
+static int load_icons( void ){
     hicon_folder = LoadIconFromFile( HDC_SCREEN, ICON_FOLDER_FILENAME, 0 );
-	if( !hicon_folder ) fprintf( stderr, "Erreur chargement folder.ico\n" );    
-hicon_file = LoadIconFromFile( HDC_SCREEN, ICON_FILE_FILENAME, 0 );
-if( !hicon_file ) fprintf( stderr, "Erreur chargement file.ico\n" );
-    i = LoadBitmap( HDC_SCREEN, &video_skin_bmp, config.video_config.image_file );
-    if( i != ERR_BMP_OK){
-        fprintf( stderr, "Error while loading bitmap file %s <%d>\n",config.video_config.image_file, i);
-        return FALSE;
-    }
-
-    i = LoadBitmap( HDC_SCREEN, &audio_skin_bmp, config.audio_config.image_file );
-    if( i != ERR_BMP_OK){
-        fprintf( stderr, "Error while loading bitmap file %s <%d>\n",config.audio_config.image_file, i);
-        return FALSE;
-    }
-    i = LoadBitmap( HDC_SCREEN, &exiting_bmp, config.bmp_exiting_file );
-    if( i != ERR_BMP_OK){
-        fprintf( stderr, "Error while loading bitmap file %s <%d>\n",config.bmp_exiting_file, i);
-        return FALSE;
-    }
-    
-    i = LoadBitmap( HDC_SCREEN, &loading_bmp, config.bmp_loading_file );
-    if( i != ERR_BMP_OK){
-        fprintf( stderr, "Error while loading bitmap file %s <%d>\n",config.bmp_loading_file, i);
+	if( !hicon_folder ){
+	    fprintf( stderr, "Erreur chargement folder.ico\n" );
+	    return FALSE;
+	}
+	
+    hicon_file = LoadIconFromFile( HDC_SCREEN, ICON_FILE_FILENAME, 0 );
+    if( !hicon_file ){
+        fprintf( stderr, "Erreur chargement file.ico\n" );
         return FALSE;
     }
 
@@ -500,14 +551,8 @@ static int listbox_cmp( char * path, char * v1, char * v2 ){
     char f_v1[MAX_PATH+1];
     char f_v2[MAX_PATH+1];
 
-
     sprintf( f_v1, "%s/%s", path, v1 );
     sprintf( f_v2, "%s/%s", path, v2 );
-    if( DEBUG ) fprintf( stderr, "Comparaison de :\n" );
-    if( DEBUG ) fprintf( stderr, f_v1 );
-    if( DEBUG ) fprintf( stderr, "\n" );
-    if( DEBUG ) fprintf( stderr, f_v2 );
-    if( DEBUG ) fprintf( stderr, "\n" );    
     stat (f_v1, &ftype1);
     stat (f_v2, &ftype2);
     
@@ -520,18 +565,14 @@ static int listbox_cmp( char * path, char * v1, char * v2 ){
 static int listbox_video_cmp( char * v1, char * v2, size_t n ){
     char path[MAX_PATH+1];
 
-    if( DEBUG ) fprintf( stderr, "listbox_video_cmp\n" );
     GetWindowText (GetDlgItem (GetParent (hlb_video), IDC_PATH_VIDEO), path, MAX_PATH);
-    if( DEBUG ) fprintf( stderr, "Path <%s>\n", path );
     return listbox_cmp( path, v1, v2 );
 }
 
 static int listbox_audio_cmp( char * v1, char * v2, size_t n ){
     char path[MAX_PATH+1];
 
-    if( DEBUG ) fprintf( stderr, "listbox_audio_cmp\n" );
     GetWindowText (GetDlgItem (GetParent (hlb_audio), IDC_PATH_AUDIO), path, MAX_PATH);
-    if( DEBUG ) fprintf( stderr, "Path <%s>\n", path );
     return listbox_cmp( path, v1, v2 );
 }
 
@@ -569,7 +610,7 @@ static int TomPlayerVideoProc (HWND hDlg, int message, WPARAM wParam, LPARAM lPa
                     break;
                 case IDB_EXIT_VIDEO:
                     EndDialog (GetParent(hDlg), wParam);
-                    FillBoxWithBitmap( HDC_SCREEN, 0, 0, exiting_bmp.bmWidth, exiting_bmp.bmHeight, &exiting_bmp );
+                    display_image_to_fb( config.bitmap_exiting );
                     exit(0);
                     break;
                 case IDB_RESUME_VIDEO:
@@ -617,7 +658,7 @@ static int TomPlayerAudioProc (HWND hDlg, int message, WPARAM wParam, LPARAM lPa
                     break;
                 case IDB_EXIT_AUDIO:
                     EndDialog (GetParent(hDlg), wParam);
-                    FillBoxWithBitmap( HDC_SCREEN, 0, 0, exiting_bmp.bmWidth, exiting_bmp.bmHeight, &exiting_bmp );
+                    display_image_to_fb( config.bitmap_exiting );
                     exit(0);
                     break;
                 case IDB_RANDOM_AUDIO:
@@ -633,7 +674,94 @@ static int TomPlayerAudioProc (HWND hDlg, int message, WPARAM wParam, LPARAM lPa
 }
 
 
+static int TomPlayerAudioSkinProc (HWND hDlg, int message, WPARAM wParam, LPARAM lParam)
+{
+    char zip_file[MAX_PATH+1];
+    int i;
+    char filename[MAX_NAME+1];
 
+    switch (message) {
+        case MSG_INITPAGE:
+            fill_boxes (hDlg, IDL_FILE_AUDIO_SKIN, IDC_PATH_AUDIO_SKIN, ".zip", AUDIO_SKIN_FOLDER);
+            break;
+    
+        case MSG_SHOWPAGE:
+            return 1;
+    
+        case MSG_COMMAND:
+            switch (wParam) {
+                case IDB_SELECT_AUDIO_SKIN:
+                    GetWindowText (GetDlgItem (hDlg, IDC_PATH_AUDIO_SKIN), zip_file, MAX_PATH);
+                    strcat( zip_file, "/" );
+                    i = SendDlgItemMessage (hDlg, IDL_FILE_AUDIO_SKIN, LB_GETCURSEL, 0, 0);
+                    if( i == LB_ERR ){
+                        MessageBox (hDlg, "No file selected", "TomPlayer", MB_OK | MB_ICONINFORMATION);      
+                        break;
+                    } else {
+                        SendDlgItemMessage (hDlg, IDL_FILE_AUDIO_SKIN, LB_GETTEXT, i, (LPARAM)filename) ;
+                    }
+                    strcat( zip_file, filename );
+                    unload_skin( &config.audio_config );
+                    
+                    if( load_skin_from_zip( zip_file, &config.audio_config ) == FALSE ){
+                        MessageBox (hDlg, "Unable to load this skin", "Error", MB_OK | MB_ICONINFORMATION);
+                        load_skin_from_zip( config.audio_skin_filename, &config.audio_config );
+                    }
+                    else{
+                        strcpy( config.audio_skin_filename, zip_file );
+                        SetValueToEtcFile (CONFIG_FILE, SECTION_AUDIO_SKIN, KEY_SKIN_FILENAME, zip_file);
+                    }
+                    break;
+            }
+    }
+    
+    return DefaultPageProc (hDlg, message, wParam, lParam);
+}
+
+static int TomPlayerVideoSkinProc (HWND hDlg, int message, WPARAM wParam, LPARAM lParam)
+{
+    char zip_file[MAX_PATH+1];
+    int i;
+    char filename[MAX_NAME+1];
+
+    switch (message) {
+        case MSG_INITPAGE:
+            fill_boxes (hDlg, IDL_FILE_VIDEO_SKIN, IDC_PATH_VIDEO_SKIN, ".zip", VIDEO_SKIN_FOLDER);
+            break;
+    
+        case MSG_SHOWPAGE:
+            return 1;
+    
+        case MSG_COMMAND:
+            switch (wParam) {
+                case IDB_SELECT_VIDEO_SKIN:
+                    GetWindowText (GetDlgItem (hDlg, IDC_PATH_VIDEO_SKIN), zip_file, MAX_PATH);
+                    strcat( zip_file, "/" );
+                    i = SendDlgItemMessage (hDlg, IDL_FILE_VIDEO_SKIN, LB_GETCURSEL, 0, 0);
+                    if( i == LB_ERR ){
+                        MessageBox (hDlg, "No file selected", "TomPlayer", MB_OK | MB_ICONINFORMATION);      
+                        break;
+                    } else {
+                        SendDlgItemMessage (hDlg, IDL_FILE_VIDEO_SKIN, LB_GETTEXT, i, (LPARAM)filename) ;
+                    }
+                    strcat( zip_file, filename );
+                    unload_skin( &config.video_config );
+                    load_skin_from_zip( zip_file, &config.video_config );
+                    
+                    if( load_skin_from_zip( zip_file, &config.video_config ) == FALSE ){
+                        MessageBox (hDlg, "Unable to load this skin", "Error", MB_OK | MB_ICONINFORMATION);
+                        load_skin_from_zip( config.video_skin_filename, &config.video_config );
+                    }
+                    else{
+                        strcpy( config.video_skin_filename, zip_file );
+                        SetValueToEtcFile (CONFIG_FILE, SECTION_VIDEO_SKIN, KEY_SKIN_FILENAME, zip_file);
+                    }
+                    break;
+            }
+    }
+    
+    return DefaultPageProc (hDlg, message, wParam, lParam);
+}
 
 static int TomPlayerPropSheetProc (HWND hDlg, int message, WPARAM wParam, LPARAM lParam)
 {
@@ -644,8 +772,8 @@ static int TomPlayerPropSheetProc (HWND hDlg, int message, WPARAM wParam, LPARAM
                 fprintf( stderr, "Error while loading config\n" );
                 exit(1);
             }
-            if( load_bmp() == FALSE ){
-                fprintf( stderr, "Error while loading bitmap\n" );
+            if( load_icons() == FALSE ){
+                fprintf( stderr, "Error while loading icons\n" );
                 exit(1);
             }
             
@@ -659,6 +787,16 @@ static int TomPlayerPropSheetProc (HWND hDlg, int message, WPARAM wParam, LPARAM
             DlgTomPlayerAudio.controls = CtrlTomPlayerAudio;
             ExtendDialogBoxToScreen( &DlgTomPlayerAudio );
             SendMessage (pshwnd, PSM_ADDPAGE, (WPARAM)&DlgTomPlayerAudio, (LPARAM)TomPlayerAudioProc);
+            
+            DlgTomPlayerAudioSkin.controls = CtrlTomPlayerAudioSkin;
+            ExtendDialogBoxToScreen( &DlgTomPlayerAudioSkin );
+            SendMessage (pshwnd, PSM_ADDPAGE, (WPARAM)&DlgTomPlayerAudioSkin, (LPARAM)TomPlayerAudioSkinProc);
+
+            DlgTomPlayerVideoSkin.controls = CtrlTomPlayerVideoSkin;
+            ExtendDialogBoxToScreen( &DlgTomPlayerVideoSkin );
+            SendMessage (pshwnd, PSM_ADDPAGE, (WPARAM)&DlgTomPlayerVideoSkin, (LPARAM)TomPlayerVideoSkinProc);
+            
+            SendMessage (pshwnd, PSM_SETACTIVEINDEX, (WPARAM)0, (LPARAM)0);
             
             ShowCursor(FALSE);
             SetTimer (hDlg, ID_TIMER, 100);
@@ -682,14 +820,14 @@ static int TomPlayerPropSheetProc (HWND hDlg, int message, WPARAM wParam, LPARAM
             /* Test OFF butto, */
             if (power_is_off_button_pushed()){
             	EndDialog (hDlg, wParam);
-            	FillBoxWithBitmap( HDC_SCREEN, 0, 0, exiting_bmp.bmWidth, exiting_bmp.bmHeight, &exiting_bmp );
+            	display_image_to_fb( config.bitmap_exiting );
             	exit(0);
             }
             break;
 
         case MSG_CLOSE:
             EndDialog (hDlg, wParam);
-            FillBoxWithBitmap( HDC_SCREEN, 0, 0, exiting_bmp.bmWidth, exiting_bmp.bmHeight, &exiting_bmp );
+            display_image_to_fb( config.bitmap_exiting );
             exit(0);
     }
     
@@ -700,9 +838,7 @@ static int TomPlayerPropSheetProc (HWND hDlg, int message, WPARAM wParam, LPARAM
 int MiniGUIMain (int argc, const char* argv[])
 {
 
-    srand( time(NULL) );	
-	/* Turn ON screen if it is not */
-    pwm_resume();
+    init_engine();
 	
     SetWindowBkColor( HWND_DESKTOP, 0 );
     RegisterMouseMsgHook(HWND_DESKTOP, mouse_hook);
@@ -713,5 +849,7 @@ int MiniGUIMain (int argc, const char* argv[])
     
     DialogBoxIndirectParam (&DlgTomPlayerPropSheet, HWND_DESKTOP, TomPlayerPropSheetProc, 0L);
 
+    release_engine();
+    
     return 0;
 }

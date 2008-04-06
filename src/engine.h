@@ -24,6 +24,8 @@
 #ifndef __ENGINE_H__
 #define __ENGINE_H__
 
+#include "config.h"
+
 #ifdef DEBUG
 #define PRINTD(s, ...) fprintf (stderr, (s), __VA_ARGS__)
 #else
@@ -61,6 +63,8 @@ extern BOOL is_mplayer_finished;
 extern BOOL is_playing_video;
 extern BOOL is_playing_audio;
 
+int init_engine( void );
+int release_engine( void );
 
 char * get_file_extension( char * file );
 BOOL is_video_file( char * file );
@@ -82,7 +86,13 @@ void launch_mplayer( char * folder, char * filename, int pos );
 void handle_mouse_event( int x, int y );
 int get_command_from_xy( int x, int y, int * p );
 
+
+void display_image_to_fb( ILuint );
+
 /* This function is GUI library dependent, it's not defined in engine.c but in gui.c */
+void display_current_file( char * , struct skin_config * );
+
+
 void gui_buffer_rgb(char * buffer,int width, int height, int x, int y);
 
 #endif /* __ENGINE_H__ */
