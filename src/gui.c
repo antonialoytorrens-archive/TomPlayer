@@ -290,7 +290,7 @@ static CTRLDATA CtrlTomPlayerAudioSkin[] =
         WS_VISIBLE | BS_PUSHBUTTON | WS_TABSTOP,
         108, 150, 92, 25,
         IDB_SELECT_AUDIO_SKIN,
-        "Select this skin",
+        "Select skin",
         0
     },
 };
@@ -340,7 +340,7 @@ static CTRLDATA CtrlTomPlayerVideoSkin[] =
         WS_VISIBLE | BS_PUSHBUTTON | WS_TABSTOP,
         108, 150, 92, 25,
         IDB_SELECT_VIDEO_SKIN,
-        "Select this skin",
+        "Select skin",
         0
     },
 };
