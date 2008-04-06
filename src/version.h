@@ -1,2 +1,2 @@
-#define VERSION "svn-r60"
+#define VERSION "0.12"
 

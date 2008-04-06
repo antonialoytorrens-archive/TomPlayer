@@ -24,6 +24,15 @@ calib : $(CALIB_OBJ)
 	$(CC) $(LDFLAGS) -o $@ $^  -lc 
 	$(STRIP) $@
 
+test_lcd : test_lcd.o
+	$(CC) $(LDFLAGS) -o $@ $^  -lc 
+	$(STRIP) $@
+
+
+test_bat : test_bat.o
+	$(CC) $(LDFLAGS) -o $@ $^  -lc -lminigui -lpthread -ljpeg
+	$(STRIP) $@
+
 %.o : %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 	

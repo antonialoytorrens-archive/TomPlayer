@@ -46,7 +46,7 @@
 #include "widescreen.h"
 #include "pwm.h"
 #include "sound.h"
-
+#include "power.h"
 
 /* Progress bar update period in us */
 #define PB_UPDATE_PERIOD_US 250000
@@ -93,6 +93,8 @@ extern int coor_trans;
 static ILuint pb_cursor_id;
 /* Image name of skin */
 static ILuint skin_id;
+/* Image name of battery cursor */
+static ILuint bat_cursor_id;
 /* Previous coord of progress bar cursor */
 static struct{
 		int x,y;
@@ -122,22 +124,38 @@ static void init_ctrl_bitmaps(void){
 		// Generate the progress bar image name to use.
 		ilGenImages(1, &pb_cursor_id);
 		ilBindImage(pb_cursor_id);		
-		printf("\ncursor id : %i - num image : %i - active layer : %i \n",pb_cursor_id, ilGetInteger(IL_NUM_IMAGES),ilGetInteger(IL_ACTIVE_LAYER));
+		PRINTD("\nProgress bar cursor id : %i - num image : %i - active layer : %i \n",pb_cursor_id, ilGetInteger(IL_NUM_IMAGES),ilGetInteger(IL_ACTIVE_LAYER));
 		if (!ilLoadImage(c->controls[c->progress_bar_index].bitmap)) {
 			fprintf(stderr, "Could not load image file %s.\n", c->controls[c->progress_bar_index].bitmap);
 			return;
 		}
 		ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);  
-		
+	}
+	
+	if (c->controls[c->bat_index].bitmap != NULL){ 
+		// Generate thebattery state image name to use.
+		ilGenImages(1, &bat_cursor_id);
+		ilBindImage(bat_cursor_id);		
+		if (!ilLoadImage(c->controls[c->bat_index].bitmap)) {
+			fprintf(stderr, "Could not load image file %s.\n", c->controls[c->bat_index].bitmap);
+			return;
+		}
+		PRINTD("\nbattery cursor id : %i - num image : %i - active layer : %i \n",bat_cursor_id, ilGetInteger(IL_NUM_IMAGES),ilGetInteger(IL_ACTIVE_LAYER));
+		ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);  
+	}
+	
+	if ((c->controls[c->bat_index].bitmap != NULL) || 
+		(c->controls[c->progress_bar_index].bitmap != NULL)){
 		// Generate the skin image name to use.
 		ilGenImages(1, &skin_id);	
-		printf("skin id : %i \n", skin_id);
+		PRINTD("skin id : %i \n", skin_id);
 		ilBindImage(skin_id);
 		if (!ilLoadImage(c->image_file)) {
 			fprintf(stderr, "Could not load image file %s.\n", c->image_file);
 			return;
 		}				
-	}	
+	}
+		
 	
 	return;
 }
@@ -145,8 +163,123 @@ static void init_ctrl_bitmaps(void){
 static void release_ctrl_bitmaps(void){	
 	ilShutDown();
 	pb_cursor_id = 0;
+	bat_cursor_id = 0;
 }
 
+
+
+/** Display a cursor over the skin 
+ * 
+ * \par cursor_id[in] Image name (Devil) to display
+ * \par frame_id[in] Imagenumber to display in case of animation (0 if not used)
+ * \par x[in] x coordinate where the image has to be displayed
+ * \par y[in] y coordinate where the image has to be displayed
+ * 
+ */
+static void display_cursor_over_skin (ILuint cursor_id, ILuint frame_id, int x, int y ){
+	ILuint tmp_skin_id = 0;
+	ILuint tmp_cursor_id = 0;
+	int height, width;
+	int buffer_size;
+	unsigned char * buffer;
+	char str[100];	
+	
+	/* Get cusor infos */
+	ilBindImage(cursor_id);
+	width  = ilGetInteger(IL_IMAGE_WIDTH);
+	height = ilGetInteger(IL_IMAGE_HEIGHT);   
+	/* Alloc buffer for RBGA conversion */
+	buffer_size = width * height * 4;
+    buffer = malloc( buffer_size );           
+    if (buffer == NULL){
+      fprintf(stderr, "Allocation error\n");
+      return;
+    }	
+    
+	if (frame_id != 0){		
+		/* If we select a particular frame in an animation,
+		 *  we have to copy that impage into a dedicated name id*/		
+		ilActiveImage(frame_id);		
+		PRINTD("Frame id : %i active image : %i origin mode : %i\n",frame_id, ilGetInteger(IL_ACTIVE_IMAGE), ilGetInteger(IL_ORIGIN_MODE));
+		ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);  
+		ilCopyPixels(0, 0, 0, width, height, 1,
+		    	     IL_RGBA, IL_UNSIGNED_BYTE, buffer);	    			  
+		ilGenImages(1, &tmp_cursor_id);	
+		ilBindImage(tmp_cursor_id);		
+		ilTexImage(width, height, 1, 4,IL_RGBA, IL_UNSIGNED_BYTE, buffer);
+		/* Flip image because an ilTexImage is always LOWER_LEFT */
+		iluFlipImage();			
+		cursor_id = tmp_cursor_id;				    			
+	}
+	
+    /* copy the relevant skin background zone */	
+	ilBindImage(skin_id);   
+    ilCopyPixels(x, y, 0, width, height, 1,
+    			  IL_RGBA, IL_UNSIGNED_BYTE, buffer);	    			  
+	ilGenImages(1, &tmp_skin_id);	
+	ilBindImage(tmp_skin_id);
+	ilTexImage(width, height, 1, 4,IL_RGBA, IL_UNSIGNED_BYTE, buffer);
+	/* Flip image because an ilTexImage is always LOWER_LEFT */
+	iluFlipImage();
+	
+	/* Overlay cursor on background */
+	ilOverlayImage(cursor_id,0,0,0);				  
+
+	/* Update display zone */
+	ilCopyPixels(0, 0, 0,
+			 	width, height, 1,
+			 	IL_RGBA, IL_UNSIGNED_BYTE, buffer);
+
+	if( is_playing_video == TRUE ) {
+		sprintf(str, "RGBA32 %d %d %d %d %d %d\n", width, height, x, y , 0, 0);
+		write(fifo_menu, str, strlen(str));
+		write(fifo_menu, buffer,buffer_size);
+	} else {
+		gui_buffer_rgb(buffer,width, height, x, y);
+	}
+	
+	/* Cleanup */
+	ilDeleteImages( 1, &tmp_skin_id);
+	if (tmp_cursor_id != 0){
+		ilDeleteImages( 1, &tmp_cursor_id);
+	}
+	free(buffer);
+}
+	
+
+
+static void display_bat_state(bool force){
+	static enum power_level previous_state = POWER_BAT_UNKNOWN;
+	enum power_level state;
+	struct skin_config * c;
+	int x = -1;
+	int y = -1;
+	
+	if (bat_cursor_id != 0){	   	    
+		state = power_get_bat_state();		
+		if ((state != previous_state) ||
+			(force == true )){
+			if( is_playing_video == TRUE ) 
+		    	c = &config.video_config;
+		    else {
+		    	c = &config.audio_config;      
+		    } 
+			if (c->controls[c->bat_index].type == CIRCULAR_CONTROL){
+				x = c->controls[c->bat_index].area.circular.x - c->controls[c->bat_index].area.circular.r;
+				y = c->controls[c->bat_index].area.circular.y - c->controls[c->bat_index].area.circular.r;
+			}
+			if (c->controls[c->bat_index].type == RECTANGULAR_CONTROL){
+				x = c->controls[c->bat_index].area.rectangular.x1;
+				y = c->controls[c->bat_index].area.rectangular.y1;
+			}
+			PRINTD("New battery state : %i \n", state);
+			display_cursor_over_skin(bat_cursor_id,state,x,y);
+			previous_state = state;
+		}
+	}
+}
+	
+	
 
 static void display_progress_bar(int current)
 {
@@ -228,7 +361,6 @@ static void display_progress_bar(int current)
     	int new_x;
     	int erase_width;
     	int erase_x;
-    	ILuint tmp_img_id;
     	
     	/* Get cusor infos and compute new coordinate */
     	ilBindImage(pb_cursor_id);
@@ -276,31 +408,11 @@ static void display_progress_bar(int current)
         } else {    
    	        gui_buffer_rgb(buffer,erase_width, height, erase_x, prev_coords.y);
 	    }
-	    
-	    		
-		/* Display cursor at its new position after overlaying cursor bitmap on skin background */	    
-	    ilCopyPixels(new_x, prev_coords.y, 0, width, height, 1,
-	    			  IL_RGBA, IL_UNSIGNED_BYTE, buffer);	    			  
-		ilGenImages(1, &tmp_img_id);	
-		ilBindImage(tmp_img_id);
-		ilTexImage(width, height, 1, 4,IL_RGBA, IL_UNSIGNED_BYTE, buffer);		  
-		ilOverlayImage(pb_cursor_id,0,0,0);					  
+	    	    		
+		/* Display cursor at its new position after overlaying cursor bitmap on skin background */
+	    display_cursor_over_skin (pb_cursor_id, 0, new_x, prev_coords.y);
 
-		ilCopyPixels(0, 0, 0,
-				 width, height, 1,
-				 IL_RGBA, IL_UNSIGNED_BYTE, buffer);		
-		if( is_playing_video == TRUE ) {
-			sprintf(str, "RGBA32 %d %d %d %d %d %d\n", width, height, new_x, prev_coords.y , 0, 0);
-			write(fifo_menu, str, strlen(str));
-			write(fifo_menu, buffer,buffer_size);
-		} else {
-			gui_buffer_rgb(buffer,width, height, new_x, prev_coords.y);
-		}
-			   
-	 					
-		ilDeleteImages( 1, &tmp_img_id);
-		prev_coords.x = new_x;		
-		
+	    prev_coords.x = new_x;				
     }    
     free( buffer );    
 }
@@ -587,6 +699,18 @@ void hide_menu( void ){
     send_menu( "HIDE\n" );
 }
 
+static void quit_mplayer(void){
+	int pos;
+	
+	if ( is_playing_video == TRUE ){
+	  pos = get_file_position_seconds();
+	  if (pos > 0){
+	    resume_write_pos(pos);
+	  }
+	}
+	send_command( "quit\n" );
+}
+
 /** Thread that updates peridocally OSD if needed
 *
 * \note it also flushes mplayer stdout 
@@ -603,15 +727,20 @@ void * update_thread(void *cmd){
   while (is_mplayer_finished == FALSE){
     flush_stdout();
 
-    /* Update progress bar */
+   
     if (((is_menu_showed == TRUE) ||  ( is_playing_video == FALSE ))  && 
        (is_paused == FALSE)) {
+    	
+      /* Update progress bar */
       pos = get_file_position_percent();
       if (pos >= 0){
         display_progress_bar(pos);  
       } else {
          fprintf(stderr, "error while trying to retrieve current position\n");
       }
+      
+      /* Display battery state */
+      display_bat_state(false);
     }
         
 	/* Handle screen saver */    
@@ -626,7 +755,13 @@ void * update_thread(void *cmd){
 	
 	/* Check for headphones presence to turn on/off internal speaker */
 	snd_check_headphone();
-	  
+	
+	/* Handle power button*/ 
+	if (power_is_off_button_pushed() == true){
+		quit_mplayer();
+	}
+	
+	
     usleep(PB_UPDATE_PERIOD_US);    
   }
   
@@ -713,7 +848,7 @@ void launch_mplayer( char * folder, char * filename, int pos ){
     pthread_create(&t, NULL, mplayer_thread, cmd);
     
     usleep( 500000 );
-      
+          
     if( is_video_file( filename ) ){   			
     	blit_video_menu( fifo_menu, &config.video_config );		
         /* Restore video settings */
@@ -740,14 +875,14 @@ void launch_mplayer( char * folder, char * filename, int pos ){
         	 }
     	}
     }
+    display_bat_state(true);
     
 }
 
 
 void handle_mouse_event( int x, int y )
 {
-    int p;
-    int pos;
+    int p;    
     char buffer[200];
     struct video_settings v_settings;
     struct audio_settings a_settings;
@@ -774,13 +909,7 @@ void handle_mouse_event( int x, int y )
 	    is_paused ^=  TRUE;
             break;
         case CMD_STOP:
-            if ( is_playing_video == TRUE ){
-              pos = get_file_position_seconds();
-              if (pos > 0){
-                resume_write_pos(pos);
-              }
-            }
-            send_command( "quit\n" );
+        	quit_mplayer();            
             break;
         case CMD_MUTE:
             send_command( "mute\n" );
@@ -849,6 +978,8 @@ fprintf( stderr, "precedent\n" );
 fprintf( stderr, "suivant\n" );
             send_command( "pt_step 1" );
             break;
+        case CMD_BATTERY_STATUS:
+        	break;
         case CMD_EXIT_MENU:
         default:
             if( is_playing_video == TRUE ) hide_menu();

@@ -23,11 +23,14 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- */
- 
+ */ 
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include <string.h>
 #include "config.h"
-
+#include "engine.h"
 
 #ifdef USE_MINIMIG
 
@@ -37,6 +40,7 @@
 
 /* Timout in seconds before turning OFF screen while playing audio */
 #define SCREEN_SAVER_TO_S 6
+#define DEFAULT_FOLDER "/mnt"
 
 
 int load_skin_config( char * filename, struct skin_config * skin_conf ){
@@ -83,7 +87,10 @@ int load_skin_config( char * filename, struct skin_config * skin_conf ){
         	skin_conf->controls[i].bitmap = NULL;
         }
         
-        GetIntValueFromEtc( gh_config, section_control, KEY_CMD_CONTROL, &skin_conf->controls[i].cmd );       
+        GetIntValueFromEtc( gh_config, section_control, KEY_CMD_CONTROL, &skin_conf->controls[i].cmd );
+        if (skin_conf->controls[i].cmd == CMD_BATTERY_STATUS){
+        	skin_conf->bat_index = i;
+        }
         switch( skin_conf->controls[i].type ){
             case CIRCULAR_CONTROL:
                 GetIntValueFromEtc( gh_config, section_control, KEY_CIRCULAR_CONTROL_X, &skin_conf->controls[i].area.circular.x );
@@ -98,9 +105,9 @@ int load_skin_config( char * filename, struct skin_config * skin_conf ){
                 GetIntValueFromEtc( gh_config, section_control, KEY_RECTANGULAR_CONTROL_Y1, &skin_conf->controls[i].area.rectangular.y1 );
                 GetIntValueFromEtc( gh_config, section_control, KEY_RECTANGULAR_CONTROL_Y2, &skin_conf->controls[i].area.rectangular.y2 );
 
-		if ((skin_conf->controls[i].type == PROGRESS_CONTROL_X) ||
-		    (skin_conf->controls[i].type == PROGRESS_CONTROL_Y)){
-		  skin_conf->progress_bar_index = i;		
+                if ((skin_conf->controls[i].type == PROGRESS_CONTROL_X) ||
+                	(skin_conf->controls[i].type == PROGRESS_CONTROL_Y)){
+                	skin_conf->progress_bar_index = i;		
                 }
                 break;
             default:
@@ -120,6 +127,7 @@ int load_skin_config( char * filename, struct skin_config * skin_conf ){
 
 int load_config( struct tomplayer_config * conf ){
     GHANDLE gh_config;
+    struct stat folder_stats; 
     
     memset( conf, 0, sizeof( struct tomplayer_config ) );
         
@@ -133,7 +141,13 @@ int load_config( struct tomplayer_config * conf ){
     GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_LOADING_BMP,  conf->bmp_loading_file, PATH_MAX );
     GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_EXITING_BMP,  conf->bmp_exiting_file, PATH_MAX );
     GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_VIDEO_FILE_DIRECTORY,conf->video_folder, PATH_MAX);
+    if (stat(conf->video_folder, &folder_stats) != 0){
+    	strcpy(conf->video_folder,DEFAULT_FOLDER); 
+    }    
     GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_AUDIO_FILE_DIRECTORY,conf->audio_folder, PATH_MAX);
+    if (stat(conf->audio_folder, &folder_stats) != 0){
+    	strcpy(conf->audio_folder,DEFAULT_FOLDER); 
+    }
     GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_FILTER_VIDEO_EXT,  conf->filter_video_ext, PATH_MAX );
     GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_FILTER_AUDIO_EXT,  conf->filter_audio_ext, PATH_MAX );
     if (GetIntValueFromEtc(gh_config, SECTION_GENERAL, KEY_SCREEN_SAVER_TO,   &conf->screen_saver_to) != ETC_OK){

@@ -31,7 +31,6 @@
 #ifndef POWER_H_
 #define POWER_H_
 
-
 enum power_level { 
       POWER_BAT_PLUG, /* TomTom has an alternative power source */
 	  POWER_BAT_100,  /* Battery is full */
@@ -41,11 +40,7 @@ enum power_level {
 	  POWER_BAT_UNKNOWN
 } ;
 
-struct power_states {
-	enum power_level battery_state;
-	bool is_power_off_pushed;	
-};
-
-void power_get_states(struct power_states * states);
+bool power_is_off_button_pushed(void);
+enum power_level power_get_bat_state(void);
 
 #endif /*POWER_H_*/

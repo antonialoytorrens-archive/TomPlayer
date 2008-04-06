@@ -118,8 +118,9 @@ struct skin_config{
     int text_x1,text_y1,text_x2,text_y2;
     char image_file[PATH_MAX];
     char conf_file[PATH_MAX];    
-    int progress_bar_index; /**< index of progress bar object in controls table*/
+    int progress_bar_index; /**< index of progress bar object in controls table*/    
     int pb_r, pb_g, pb_b;
+    int bat_index; /**< index of Battery object in controls table*/
 };
 
 

@@ -45,6 +45,7 @@
 #include "version.h"
 #include "resume.h"
 #include "pwm.h"
+#include "power.h"
 #include "playlist.h"
 
 #define DEBUG 0
@@ -676,7 +677,13 @@ static int TomPlayerPropSheetProc (HWND hDlg, int message, WPARAM wParam, LPARAM
                 UpdateWindow( GetDlgItem (hDlg, IDC_PROPSHEET), TRUE );
 
                 /* Turn ON screen if it is not */
-                pwm_resume();
+                pwm_resume();                               
+            }
+            /* Test OFF butto, */
+            if (power_is_off_button_pushed()){
+            	EndDialog (hDlg, wParam);
+            	FillBoxWithBitmap( HDC_SCREEN, 0, 0, exiting_bmp.bmWidth, exiting_bmp.bmHeight, &exiting_bmp );
+            	exit(0);
             }
             break;
 

@@ -24,6 +24,11 @@
 #ifndef __ENGINE_H__
 #define __ENGINE_H__
 
+#ifdef DEBUG
+#define PRINTD(s, ...) fprintf (stderr, (s), __VA_ARGS__)
+#else
+#define PRINTD(s, ...)  
+#endif
 
 #ifndef BOOL
 #define BOOL int
@@ -48,6 +53,7 @@
 #define CMD_BACKWARD                13
 #define CMD_NEXT                    14
 #define CMD_PREVIOUS                15
+#define CMD_BATTERY_STATUS          16
 
 extern struct tomplayer_config config;
 extern BOOL is_menu_showed;

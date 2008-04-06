@@ -8,15 +8,18 @@ STRIP=arm-linux-strip
 CFLAGS+=-DUSE_MINIMIG -Wall -I$(INC_KERNEL) 
 INSTALL_DIR=../distrib/tomplayer/
 
+ifdef DEBUG
+CFLAGS+=-DDEBUG
+endif
 
-SRC = config.c engine.c gui.c widescreen.c resume.c pwm.c playlist.c sound.c
+SRC = config.c engine.c gui.c widescreen.c resume.c pwm.c playlist.c sound.c power.c
 
 OBJ = $(subst .c,.o,$(SRC))
 
 all : tomplayer refresh_wdg
 
 tomplayer: $(OBJ)
-	$(CC) $(LDFLAGS) -o tomplayer $^ -lc -lm -lpthread -lIL -lpng -lz -lminigui -ljpeg $(ADD_LIBS)
+	$(CC) $(LDFLAGS) -o tomplayer $^ -lc -lm -lpthread -lIL -lILU -lpng -lz -lminigui -ljpeg $(ADD_LIBS)
 	$(STRIP) tomplayer
 	mv tomplayer $(INSTALL_DIR)
 
