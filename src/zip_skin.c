@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <zip.h>
 #include "zip_skin.h"
 #include "widescreen.h"
