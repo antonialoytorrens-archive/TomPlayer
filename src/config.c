@@ -30,6 +30,7 @@
 #include <unistd.h>
 #include <string.h>
 #include "config.h"
+#include "zip_skin.h"
 #include "engine.h"
 
 #ifdef USE_MINIMIG
@@ -46,7 +47,6 @@
 int load_skin_config( char * filename, struct skin_config * skin_conf ){
     GHANDLE gh_config;
     char section_control[PATH_MAX + 1];
-    char bitmap_filename[PATH_MAX + 1];
     int i;
 
     skin_conf->progress_bar_index = -1;
@@ -56,8 +56,6 @@ int load_skin_config( char * filename, struct skin_config * skin_conf ){
         fprintf( stderr, "Unable to load file <%s>\n", filename );
         return FALSE;
     }
-    
-    /* GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_SKIN_BMP,  skin_conf->image_file, PATH_MAX ); */
     
     GetIntValueFromEtc( gh_config, SECTION_GENERAL, KEY_TEXT_X1, &(skin_conf->text_x1) );
     GetIntValueFromEtc( gh_config, SECTION_GENERAL, KEY_TEXT_X2, &(skin_conf->text_x2) );
@@ -71,6 +69,8 @@ int load_skin_config( char * filename, struct skin_config * skin_conf ){
     GetIntValueFromEtc( gh_config, SECTION_GENERAL, KEY_R_PROGRESSBAR, &(skin_conf->pb_r) );
     GetIntValueFromEtc( gh_config, SECTION_GENERAL, KEY_G_PROGRESSBAR, &(skin_conf->pb_g) );
     GetIntValueFromEtc( gh_config, SECTION_GENERAL, KEY_B_PROGRESSBAR, &(skin_conf->pb_b) );
+    
+    GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_SKIN_BMP,  skin_conf->bitmap_filename, PATH_MAX );
 
     
     for( i = 0; i < MAX_CONTROLS; i++ ){
@@ -78,13 +78,6 @@ int load_skin_config( char * filename, struct skin_config * skin_conf ){
         if( GetIntValueFromEtc( gh_config, section_control, KEY_TYPE_CONTROL, (int *) &(skin_conf->controls[i].type) ) != ETC_OK  ){
            fprintf( stderr, "Warning : no section  <%s>\n", section_control );            
            break;
-        }
-        if ((GetValueFromEtc( gh_config, section_control, KEY_CTRL_BITMAP_FILENAME,  bitmap_filename, PATH_MAX ) == ETC_OK ) &&
-        	(strlen(bitmap_filename)>0)){
-        	skin_conf->controls[i].bitmap = strdup(bitmap_filename);
-        	/*printf("control bitmap filename :%s\n", bitmap_filename);*/
-        } else {
-        	skin_conf->controls[i].bitmap = NULL;
         }
         
         GetIntValueFromEtc( gh_config, section_control, KEY_CMD_CONTROL, &skin_conf->controls[i].cmd );
@@ -114,8 +107,6 @@ int load_skin_config( char * filename, struct skin_config * skin_conf ){
                 fprintf( stderr, "Type not defined correctly for %s\n", section_control );
                 return FALSE;
         }
-        
-        
     }
     
     skin_conf->nb = i;
@@ -138,8 +129,8 @@ int load_config( struct tomplayer_config * conf ){
         return FALSE;
     }
     
-    GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_LOADING_BMP,  conf->bmp_loading_file, PATH_MAX );
-    GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_EXITING_BMP,  conf->bmp_exiting_file, PATH_MAX );
+    GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_LOADING_BMP,  conf->bitmap_loading_filename, PATH_MAX );
+    GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_EXITING_BMP,  conf->bitmap_exiting_filename, PATH_MAX );
     GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_VIDEO_FILE_DIRECTORY,conf->video_folder, PATH_MAX);
     if (stat(conf->video_folder, &folder_stats) != 0){
     	strcpy(conf->video_folder,DEFAULT_FOLDER); 
@@ -154,24 +145,16 @@ int load_config( struct tomplayer_config * conf ){
     	conf->screen_saver_to = SCREEN_SAVER_TO_S;
     }
     
-    GetValueFromEtc( gh_config, SECTION_VIDEO_SKIN, KEY_SKIN_BMP,  conf->video_config.image_file, PATH_MAX );
-    GetValueFromEtc( gh_config, SECTION_VIDEO_SKIN, KEY_SKIN_CONF,  conf->video_config.conf_file, PATH_MAX );
+    GetValueFromEtc( gh_config, SECTION_VIDEO_SKIN, KEY_SKIN_FILENAME,  conf->video_skin_filename, PATH_MAX );
+    GetValueFromEtc( gh_config, SECTION_AUDIO_SKIN, KEY_SKIN_FILENAME,  conf->audio_skin_filename, PATH_MAX );
 
-    GetValueFromEtc( gh_config, SECTION_AUDIO_SKIN, KEY_SKIN_BMP,  conf->audio_config.image_file, PATH_MAX );
-    GetValueFromEtc( gh_config, SECTION_AUDIO_SKIN, KEY_SKIN_CONF,  conf->audio_config.conf_file, PATH_MAX );
-
-  
-    
     UnloadEtcFile( gh_config );
-    
-    /* Configuration adpatation for widescreen */
-    if (ws_probe()){
-	ws_translate(conf);	
-    }
 
+    load_bitmap( &conf->bitmap_loading, conf->bitmap_loading_filename );
+    load_bitmap( &conf->bitmap_exiting, conf->bitmap_exiting_filename );
 
-    load_skin_config( conf->video_config.conf_file, &conf->video_config );
-    load_skin_config( conf->audio_config.conf_file, &conf->audio_config );
+    if( load_skin_from_zip( conf->video_skin_filename, &conf->video_config ) == FALSE ) return FALSE;
+    if( load_skin_from_zip( conf->audio_skin_filename, &conf->audio_config ) == FALSE ) return FALSE;
     
 
     return TRUE;

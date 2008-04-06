@@ -25,6 +25,8 @@
 #define __TOMPLAYER_CONFIG_H__
 
 #include <linux/limits.h>
+#include <IL/il.h>
+#include <IL/ilu.h>
 
 #define MAX_CONTROLS	            20
 
@@ -38,7 +40,7 @@
 #define SECTION_CONTROL_FMT_STR     "CONTROL_%d"
 
 
-
+#define KEY_SKIN_FILENAME           "filename"
 #define KEY_LOADING_BMP             "loading"
 #define KEY_EXITING_BMP             "exiting"
 
@@ -107,7 +109,8 @@ struct control{
     enum E_TYPE_CONTROL type;
     int cmd;
     union control_type area;		
-    char * bitmap; // Optional bitmap filename associated with the control
+    char bitmap_filename[PATH_MAX]; // Optional bitmap filename associated with the control
+    ILuint bitmap;
 };
 
 
@@ -116,7 +119,8 @@ struct skin_config{
     struct control controls[MAX_CONTROLS];
     int r,g,b;    
     int text_x1,text_y1,text_x2,text_y2;
-    char image_file[PATH_MAX];
+    char bitmap_filename[PATH_MAX];
+    ILuint bitmap;
     char conf_file[PATH_MAX];    
     int progress_bar_index; /**< index of progress bar object in controls table*/    
     int pb_r, pb_g, pb_b;
@@ -126,13 +130,17 @@ struct skin_config{
 
 
 struct tomplayer_config{
-    char bmp_loading_file[PATH_MAX];
-    char bmp_exiting_file[PATH_MAX];    
+    char bitmap_loading_filename[PATH_MAX];
+    char bitmap_exiting_filename[PATH_MAX];
+    ILuint bitmap_loading;
+    ILuint bitmap_exiting;    
     
     char filter_video_ext[PATH_MAX];
     char filter_audio_ext[PATH_MAX];
     char video_folder[PATH_MAX];
     char audio_folder[PATH_MAX];
+    char video_skin_filename[PATH_MAX];
+    char audio_skin_filename[PATH_MAX];
     struct skin_config video_config;
     struct skin_config audio_config;
     int screen_saver_to;
