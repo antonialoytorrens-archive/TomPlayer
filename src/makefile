@@ -12,14 +12,14 @@ ifdef DEBUG
 CFLAGS+=-DDEBUG
 endif
 
-SRC = config.c engine.c gui.c widescreen.c resume.c pwm.c playlist.c sound.c power.c
+SRC = config.c engine.c gui.c widescreen.c resume.c pwm.c playlist.c sound.c zip_skin.c power.c
 
 OBJ = $(subst .c,.o,$(SRC))
 
 all : tomplayer refresh_wdg
 
 tomplayer: $(OBJ)
-	$(CC) $(LDFLAGS) -o tomplayer $^ -lc -lm -lpthread -lIL -lILU -lpng -lz -lminigui -ljpeg $(ADD_LIBS)
+	$(CC) $(LDFLAGS) -o tomplayer $^ -lc -lm -lpthread -lIL -lILU -lpng -lz -lminigui -ljpeg -lzip $(ADD_LIBS)
 	$(STRIP) tomplayer
 	mv tomplayer $(INSTALL_DIR)
 
