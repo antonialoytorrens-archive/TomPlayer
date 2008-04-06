@@ -148,8 +148,7 @@ void blit_video_menu( int fifo, struct skin_config * conf )
     for (i=0; i < buffer_size; i+=4){
     	if ((buffer[i] == conf->r) &&
     		(buffer[i+1] == conf->g) &&
-    		(buffer[i+2] == conf->b)){
-    		PRINTD("pixel transparence %i \n",i);
+    		(buffer[i+2] == conf->b)){    	
     		buffer[i+3] = 0;
     	}
     }
