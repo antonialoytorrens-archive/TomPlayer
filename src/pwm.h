@@ -2,10 +2,11 @@
  /***************************************************************************
  *  Enable to turn off/on screen for power consumption savings
  *
+ * $URL$
+ * $Rev$
+ * $Author$
+ * $Date$
  * 
- *  Copyright  2008  Stéphan Rafin
- *  Email* 
- *
  ****************************************************************************/
 /*
  *  This program is free software; you can redistribute it and/or modify
@@ -28,6 +29,5 @@
 
 int pwm_off(void);
 int pwm_resume(void);
-int pwm_is_on(void);
 
 #endif
