@@ -677,6 +677,7 @@ static int TomPlayerAudioSkinProc (HWND hDlg, int message, WPARAM wParam, LPARAM
     char zip_file[MAX_PATH+1];
     int i;
     char filename[MAX_NAME+1];
+    char cmd[200];
 
     switch (message) {
         case MSG_INITPAGE:
@@ -708,6 +709,10 @@ static int TomPlayerAudioSkinProc (HWND hDlg, int message, WPARAM wParam, LPARAM
                     else{
                         strcpy( config.audio_skin_filename, zip_file );
                         SetValueToEtcFile (CONFIG_FILE, SECTION_AUDIO_SKIN, KEY_SKIN_FILENAME, zip_file);
+                        sprintf( cmd, "cp -f %s .", CONFIG_FILE );
+                        system( cmd );
+                        system( "unix2dos tomplayer.ini" );
+                        
                     }
                     break;
             }
@@ -721,6 +726,7 @@ static int TomPlayerVideoSkinProc (HWND hDlg, int message, WPARAM wParam, LPARAM
     char zip_file[MAX_PATH+1];
     int i;
     char filename[MAX_NAME+1];
+    char cmd[200];
 
     switch (message) {
         case MSG_INITPAGE:
@@ -753,6 +759,9 @@ static int TomPlayerVideoSkinProc (HWND hDlg, int message, WPARAM wParam, LPARAM
                     else{
                         strcpy( config.video_skin_filename, zip_file );
                         SetValueToEtcFile (CONFIG_FILE, SECTION_VIDEO_SKIN, KEY_SKIN_FILENAME, zip_file);
+                        sprintf( cmd, "cp -f %s .", CONFIG_FILE );
+                        system( cmd );
+                        system( "unix2dos tomplayer.ini" );
                     }
                     break;
             }
