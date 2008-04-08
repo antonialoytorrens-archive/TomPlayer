@@ -48,6 +48,8 @@ int load_skin_config( char * filename, struct skin_config * skin_conf ){
     GHANDLE gh_config;
     char section_control[PATH_MAX + 1];
     int i;
+   
+
 
     skin_conf->progress_bar_index = -1;
     gh_config = LoadEtcFile( filename );
@@ -79,6 +81,18 @@ int load_skin_config( char * filename, struct skin_config * skin_conf ){
            fprintf( stderr, "Warning : no section  <%s>\n", section_control );            
            break;
         }
+        
+        /* Read filename to load 
+         *   
+         * Wolf  : suppress dynamic allocation is not such a good idea : it wastes about 80Ko
+         * But now,  with mulitple config during the same session, a conf cleanup is needed (in unload_skin ?  Todo later)... 
+         * 
+         * Dont know why but violent crash if uncomment that line on skin selection ...
+         * */                
+     /*if (  GetValueFromEtc( gh_config, section_control, KEY_CTRL_BITMAP_FILENAME,  &skin_conf->controls[i].bitmap_filename[0] , PATH_MAX )!= ETC_OK ){              
+        	skin_conf->controls[i].bitmap_filename[0] = 0;
+        }*/
+        
         
         GetIntValueFromEtc( gh_config, section_control, KEY_CMD_CONTROL, &skin_conf->controls[i].cmd );
         if (skin_conf->controls[i].cmd == CMD_BATTERY_STATUS){

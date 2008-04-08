@@ -739,6 +739,7 @@ static int TomPlayerVideoSkinProc (HWND hDlg, int message, WPARAM wParam, LPARAM
         case MSG_COMMAND:
             switch (wParam) {
                 case IDB_SELECT_VIDEO_SKIN:
+                	
                     GetWindowText (GetDlgItem (hDlg, IDC_PATH_VIDEO_SKIN), zip_file, MAX_PATH);
                     strcat( zip_file, "/" );
                     i = SendDlgItemMessage (hDlg, IDL_FILE_VIDEO_SKIN, LB_GETCURSEL, 0, 0);
@@ -750,7 +751,8 @@ static int TomPlayerVideoSkinProc (HWND hDlg, int message, WPARAM wParam, LPARAM
                     }
                     strcat( zip_file, filename );
                     unload_skin( &config.video_config );
-                    load_skin_from_zip( zip_file, &config.video_config );
+                    /* repeated below ???!!!
+                     * load_skin_from_zip( zip_file, &config.video_config );*/
                     
                     if( load_skin_from_zip( zip_file, &config.video_config ) == FALSE ){
                         MessageBox (hDlg, "Unable to load this skin", "Error", MB_OK | MB_ICONINFORMATION);
@@ -824,7 +826,7 @@ static int TomPlayerPropSheetProc (HWND hDlg, int message, WPARAM wParam, LPARAM
                 /* Turn ON screen if it is not */
                 pwm_resume();                               
             }
-            /* Test OFF butto, */
+            /* Test OFF button */
             if (power_is_off_button_pushed()){
             	EndDialog (hDlg, wParam);
             	display_image_to_fb( config.bitmap_exiting );
