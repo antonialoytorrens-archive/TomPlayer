@@ -510,18 +510,19 @@ static int get_int_from_stdout(int *val){
 }
 
 
-/** retrieve a string value from mplayer stdout
+/** retrieve any RAW string from mplayer stdout
 *
 * \param val[out] 
 *\retval 0 : OK
 *\retval -1 : KO
 */
 static int get_string_from_stdout(char *val){
-  char buffer[200];
-  fprintf( stderr, "get_string_from_stdout\n");
-    if (read_line_from_stdout(buffer, sizeof(buffer)) > 0){
+	
+	char buffer[200];
+  	PRINTD( stderr, "get_string_from_stdout %s\n","");
+    if (read_line_from_stdout(buffer, sizeof(buffer)) > 0){    	
         strcpy( val, buffer );
-        fprintf( stderr, "Fichier courant <%s>\n",buffer );
+        PRINTD( "Fichier courant <%s>\n",buffer );
         return 0;
     } 
     
@@ -555,10 +556,10 @@ static int get_float_from_stdout(float *val){
   }
 }
 
-/** Send a command to mplayer and wait for an int answer
+/** Send a command to mplayer and return any line from stdout 
 *
 * \param cmd the command to send
-* \param val[out] the int value returned by mplayer 
+* \param val[out] the string returned by mplayer 
 * 
 * \reval 0 : OK
 * \reval -1 : An error occured 
@@ -567,7 +568,7 @@ static int get_float_from_stdout(float *val){
 static int send_command_wait_string(const char * cmd, char *val ){  
   int nb_try = 0;
   int res = 0;
-  fprintf( stderr, "send_command_wait_string\n");
+  PRINTD("send_command_wait_string : %s \n", cmd);
   pthread_mutex_lock(&request_mutex);
   send_command(cmd);
   do {
@@ -641,7 +642,7 @@ static int get_file_position_percent(void){
 /** Return the current file been playing
 */
 static BOOL get_current_file_name(char * filename){
-	fprintf( stderr, "get_current_file_name\n");
+	PRINTD("get_current_file_name %s\n","");
     if (send_command_wait_string("pausing_keep get_file_name\n", filename) == 0){
     	return TRUE;
     }
@@ -782,7 +783,7 @@ void * update_thread(void *cmd){
   char old_current_filename[200];
   char *p;
   
-  strcpy( old_current_filename, "" );
+  old_current_filename[0] = '\0';
   
   /* Timout in cycles before turning OFF screen while playing audio */
   screen_saver_to_cycles = ((config.screen_saver_to * 1000000) / PB_UPDATE_PERIOD_US);
@@ -1133,8 +1134,6 @@ void display_image_to_fb( ILuint img){
     unsigned short * buffer16;
     int buffer_size;
     int i;
-    int src;
-    unsigned int r,g,b;
     unsigned char * adr;
     int fb;
     
@@ -1153,7 +1152,7 @@ void display_image_to_fb( ILuint img){
 	}
 
     /* Alloc buffer for RBG conversion */
-    buffer_size = width * height * 2;
+    buffer_size = width * height * 2 ;
     buffer16 = malloc( buffer_size );
     if (buffer16 == NULL){
         fprintf(stderr, "Allocation error\n");
@@ -1161,13 +1160,11 @@ void display_image_to_fb( ILuint img){
 	}	
 	
     ilCopyPixels(0, 0, 0, width, height, 1, IL_RGB, IL_UNSIGNED_BYTE, buffer24);
-    for( i = 0; i < (width * height); i++ ){
-        src = 0x010000 * buffer24[3*i] | 0x0100 * buffer24[3*i+1] | buffer24[3*i+2];
-        r = ((src&0xFF0000)>>19);
-        g = ((src&0xFF00)>>10);
-        b = ((src&0xFF)>>3);
-        
-        buffer16[i] = (unsigned short) (r<<11) | (g<<5) | b;
+    for( i = 0; i < (width * height); i++ ){           
+        /* RGB 565 */   
+        buffer16[i] =  ( (buffer24[3*i] & 0xF8)  <<  8 | /* R 5 bits*/ 
+            		     (buffer24[3*i+1] & 0xFC) << 3 | /* G 6 bits */   
+            			 (buffer24[3*i+2]>>3));          /* B 5 bits*/
     }
     
     fb = open( getenv( "FRAMEBUFFER" ), O_RDWR);
