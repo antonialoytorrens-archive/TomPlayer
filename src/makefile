@@ -19,7 +19,7 @@ OBJ = $(subst .c,.o,$(SRC))
 all : tomplayer refresh_wdg
 
 tomplayer: $(OBJ)
-	$(CC) $(LDFLAGS) -o tomplayer $^ -lc -lm -lpthread -lIL -lILU -lpng -lz -lminigui -ljpeg -lzip $(ADD_LIBS)
+	$(CC) $(LDFLAGS) -o tomplayer $^  -lzip -lz  -lc -lm -lpthread    -lminigui -ljpeg -lILU  -lIL -lpng $(ADD_LIBS)
 	$(STRIP) tomplayer
 	mv tomplayer $(INSTALL_DIR)
 
