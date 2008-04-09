@@ -34,8 +34,8 @@
 #define WS_NOXL_XMAX 320
 
 #define EXTEND(a,b,c) (a) = (a) * (1.0 * b) /c
-#define EXTEND_X(a) EXTEND(a, ws_probe()?WS_XMAX:WS_NOXL_XMAX, 320 )
-#define EXTEND_Y(a) EXTEND(a, ws_probe()?WS_YMAX:WS_NOXL_YMAX, 240 )
+#define EXTEND_X(a) EXTEND(a, ws_probe()?WS_XMAX:WS_NOXL_XMAX, WS_NOXL_XMAX )
+#define EXTEND_Y(a) EXTEND(a, ws_probe()?WS_YMAX:WS_NOXL_YMAX, WS_NOXL_YMAX )
 
 /*Prefix for widescreen filenames*/
 #define WS_FILENAME_PREFIX "ws_"

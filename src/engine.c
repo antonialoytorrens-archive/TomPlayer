@@ -39,7 +39,9 @@
 #include <time.h>
 #include <IL/il.h>
 #include <IL/ilu.h>
- #include <sys/mman.h>
+#include <sys/mman.h>
+#include <linux/fb.h>
+#include <sys/ioctl.h>
 #include "config.h"
 #include "engine.h"
 #include "resume.h"
@@ -101,6 +103,7 @@ static struct{
 } prev_coords = {-1,-1};  
 
 
+static void display_RGB_to_fb(unsigned char * buffer, int x, int y, int w, int h, bool transparency);
 
 int init_engine( void ){
 	// Initialize DevIL.
@@ -248,7 +251,8 @@ static void display_cursor_over_skin (ILuint cursor_id, ILuint frame_id, int x, 
 		write(fifo_menu, str, strlen(str));
 		write(fifo_menu, buffer,buffer_size);
 	} else {
-		gui_buffer_rgb(buffer,width, height, x, y);
+		/*gui_buffer_rgb(buffer,width, height, x, y);*/
+		display_RGB_to_fb(buffer,x,y,width, height, true);
 	}
 	
 	/* Cleanup */
@@ -364,7 +368,9 @@ static void display_progress_bar(int current)
 	          write(fifo_menu, str, strlen(str));
 	          write(fifo_menu, buffer,buffer_size);
 	        } else {    
-	          gui_buffer_rgb(buffer,width, height, c->controls[c->progress_bar_index].area.rectangular.x1, c->controls[c->progress_bar_index].area.rectangular.y1);
+/*	          gui_buffer_rgb(buffer,width, height, c->controls[c->progress_bar_index].area.rectangular.x1, c->controls[c->progress_bar_index].area.rectangular.y1);*/
+	          display_RGB_to_fb(buffer, c->controls[c->progress_bar_index].area.rectangular.x1, c->controls[c->progress_bar_index].area.rectangular.y1, width, height,true);
+	          
 	    }
 	    
     } else {
@@ -417,7 +423,9 @@ static void display_progress_bar(int current)
 		    write(fifo_menu, str, strlen(str));
 		    write(fifo_menu, buffer,4*erase_width*height);
         } else {    
-   	        gui_buffer_rgb(buffer,erase_width, height, erase_x, prev_coords.y);
+   	        /*gui_buffer_rgb(buffer,erase_width, height, erase_x, prev_coords.y);*/
+   	        display_RGB_to_fb(buffer, erase_x, prev_coords.y, erase_width, height,true);
+
 	    }
 	    	    		
 		/* Display cursor at its new position after overlaying cursor bitmap on skin background */
@@ -519,10 +527,10 @@ static int get_int_from_stdout(int *val){
 static int get_string_from_stdout(char *val){
 	
 	char buffer[200];
-  	PRINTD( stderr, "get_string_from_stdout %s\n","");
+  	//PRINTD("get_string_from_stdout %s\n","");
     if (read_line_from_stdout(buffer, sizeof(buffer)) > 0){    	
         strcpy( val, buffer );
-        PRINTD( "Fichier courant <%s>\n",buffer );
+       // PRINTD( "Fichier courant <%s>\n",buffer );
         return 0;
     } 
     
@@ -568,7 +576,7 @@ static int get_float_from_stdout(float *val){
 static int send_command_wait_string(const char * cmd, char *val ){  
   int nb_try = 0;
   int res = 0;
-  PRINTD("send_command_wait_string : %s \n", cmd);
+  //PRINTD("send_command_wait_string : %s \n", cmd);
   pthread_mutex_lock(&request_mutex);
   send_command(cmd);
   do {
@@ -642,7 +650,7 @@ static int get_file_position_percent(void){
 /** Return the current file been playing
 */
 static BOOL get_current_file_name(char * filename){
-	PRINTD("get_current_file_name %s\n","");
+	//PRINTD("get_current_file_name %s\n","");
     if (send_command_wait_string("pausing_keep get_file_name\n", filename) == 0){
     	return TRUE;
     }
@@ -783,7 +791,7 @@ void * update_thread(void *cmd){
   char old_current_filename[200];
   char *p;
   
-  old_current_filename[0] = '\0';
+  old_current_filename[0] = 0;
   
   /* Timout in cycles before turning OFF screen while playing audio */
   screen_saver_to_cycles = ((config.screen_saver_to * 1000000) / PB_UPDATE_PERIOD_US);
@@ -1128,20 +1136,66 @@ int get_command_from_xy( int x, int y, int * p ){
 }
 
 
+/** Display a RGB or RGBA buffer to frame buffer
+ */
+static void display_RGB_to_fb(unsigned char * buffer, int x, int y, int w, int h, bool transparency){
+	static unsigned char * fb_mmap; 
+	static struct fb_var_screeninfo screeninfo;
+	unsigned short * buffer16;
+	int buffer_size;
+	int fb;
+	int i ;
+	
+	/* Alloc buffer for RBG conversion */
+	buffer_size = w * h * 2 ;
+	buffer16 = malloc( buffer_size );
+	if (buffer16 == NULL){
+	    fprintf(stderr, "Allocation error\n");
+	    return;
+	}	
+
+	
+	if (fb_mmap == NULL){
+		fb = open( getenv( "FRAMEBUFFER" ), O_RDWR);
+		fb_mmap = mmap(NULL, buffer_size, PROT_READ|PROT_WRITE,MAP_SHARED, fb, 0);		
+	    ioctl (fb, FBIOGET_VSCREENINFO, &screeninfo);	
+	    close(fb);
+	}
+
+	 
+	for( i = 0; i < (w * h); i++ ){           		
+		if (transparency == false ){
+			/* Initial buffer is RGB24 */
+			buffer16[i] =  ( (buffer[3*i] & 0xF8)  <<  8 | /* R 5 bits*/ 
+				     (buffer[3*i+1] & 0xFC) << 3 | /* G 6 bits */   
+					 (buffer[3*i+2]>>3));          /* B 5 bits*/
+		} else {
+			/* Initial buffer is RGBA*/
+			buffer16[i] =  ( (buffer[4*i] & 0xF8) << 8 | /* R 5 bits*/ 
+							   (buffer[4*i+1] & 0xFC) << 3 | /* G 6 bits */   
+							   (buffer[4*i+2]>>3));          /* B 5 bits*/			
+			/*TODO gerer transparence*/					
+		}
+	}	
+	
+	if (fb_mmap != NULL){
+		for (i=y; i< y+h;i++){ 			
+			memcpy(fb_mmap+(i*screeninfo.xres + x)*2, buffer16 + (w*(i-y)), w*2);
+		}
+	}	
+		
+	free( buffer16 ); 
+	
+}
+
 void display_image_to_fb( ILuint img){
     int height, width;
-    unsigned char  *buffer24;
-    unsigned short * buffer16;
+    unsigned char  *buffer24;    
     int buffer_size;
-    int i;
-    unsigned char * adr;
-    int fb;
-    
-    
+                
     ilBindImage(img);
     width  = ilGetInteger(IL_IMAGE_WIDTH);
     height = ilGetInteger(IL_IMAGE_HEIGHT); 
-    
     
     /* Alloc buffer for RBG conversion */
     buffer_size = width * height * 3;
@@ -1150,27 +1204,7 @@ void display_image_to_fb( ILuint img){
         fprintf(stderr, "Allocation error\n");
         return;
 	}
-
-    /* Alloc buffer for RBG conversion */
-    buffer_size = width * height * 2 ;
-    buffer16 = malloc( buffer_size );
-    if (buffer16 == NULL){
-        fprintf(stderr, "Allocation error\n");
-        return;
-	}	
-	
     ilCopyPixels(0, 0, 0, width, height, 1, IL_RGB, IL_UNSIGNED_BYTE, buffer24);
-    for( i = 0; i < (width * height); i++ ){           
-        /* RGB 565 */   
-        buffer16[i] =  ( (buffer24[3*i] & 0xF8)  <<  8 | /* R 5 bits*/ 
-            		     (buffer24[3*i+1] & 0xFC) << 3 | /* G 6 bits */   
-            			 (buffer24[3*i+2]>>3));          /* B 5 bits*/
-    }
-    
-    fb = open( getenv( "FRAMEBUFFER" ), O_RDWR);
-    adr = mmap(NULL, buffer_size, PROT_READ|PROT_WRITE,MAP_SHARED, fb, 0);
-    memcpy( adr, buffer16, buffer_size);
-    munmap( adr, buffer_size );
-    free( buffer16 ); 
+    display_RGB_to_fb(buffer24,0,0,width, height, false);
     free( buffer24 ); 
 }

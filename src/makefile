@@ -9,7 +9,7 @@ CFLAGS+=-DUSE_MINIMIG -Wall -I$(INC_KERNEL)
 INSTALL_DIR=../distrib/tomplayer/
 
 ifdef DEBUG
-CFLAGS+=-DDEBUG
+CFLAGS+=-DDEBUG -g 
 endif
 
 SRC = config.c engine.c gui.c widescreen.c resume.c pwm.c playlist.c sound.c zip_skin.c power.c

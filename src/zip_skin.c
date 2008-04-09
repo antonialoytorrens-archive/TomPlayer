@@ -13,15 +13,13 @@
 
 int load_bitmap( ILuint * bitmap_obj, char * filename ){
     ilGenImages(1, bitmap_obj);	
-
     ilBindImage(*bitmap_obj);
     if (!ilLoadImage(filename)) {
         fprintf(stderr, "Could not load image file %s.\nError : %s\n", filename, iluErrorString(ilGetError()));        
         return FALSE;
     }	
 		
-    ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
-		
+    ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);	
     return TRUE;
 }
 
@@ -46,7 +44,7 @@ static void expand_config( struct skin_config * conf ){
 				EXTEND_X(conf->controls[i].area.rectangular.x1);
 				EXTEND_X(conf->controls[i].area.rectangular.x2);
 				EXTEND_Y(conf->controls[i].area.rectangular.y1);
-				EXTEND_Y(conf->controls[i].area.rectangular.y1);
+				EXTEND_Y(conf->controls[i].area.rectangular.y2);
 				break;
 		}
 	}
@@ -88,9 +86,9 @@ int load_skin_from_zip( char * filename, struct skin_config * skin_conf ){
 	int expand_conf = FALSE;
 	struct zip * fp_zip;
 	int return_code = FALSE;
-	int i;
+	int i/*, frame_id*/;
 	char cmd[200];
-
+	
 	ws = ws_probe();
 
     error = 0;
@@ -136,23 +134,32 @@ int load_skin_from_zip( char * filename, struct skin_config * skin_conf ){
 	
 	/* Loading of different bitmap of the skin */
 	load_bitmap( &skin_conf->bitmap, BITMAP_FILENAME );
-	for( i = 0; i < skin_conf->nb; i++ )
-	    if( strlen( skin_conf->controls[i].bitmap_filename ) ){
+	for( i = 0; i < skin_conf->nb; i++ ){
+	    if( strlen( skin_conf->controls[i].bitmap_filename ) ){	    	
 	        if( unzip_file( fp_zip, skin_conf->controls[i].bitmap_filename, BITMAP_FILENAME ) == FALSE ){
     			fprintf( stderr, "Error while unzipping <%s>\n", skin_conf->controls[i].bitmap_filename );
     			goto error;
     		}
 	        load_bitmap( &skin_conf->controls[i].bitmap, BITMAP_FILENAME );
+	    } else{
+	    	skin_conf->controls[i].bitmap = 0;
 	    }
+	}
 
 	if( expand_conf == TRUE ){
         ilBindImage( skin_conf->bitmap );
         iluScale( WS_XMAX,WS_YMAX,1);
-    	for( i = 0; i < skin_conf->nb; i++ )
+        /* crash 
+    	for( i = 0; i < skin_conf->nb; i++ ){
     	    if( skin_conf->controls[i].bitmap != 0 ){
     	        ilBindImage( skin_conf->controls[i].bitmap );
-    	        iluScale( ilGetInteger(IL_IMAGE_WIDTH) * (1.0*WS_XMAX/WS_NOXL_XMAX),ilGetInteger(IL_IMAGE_HEIGHT) * (1.0*WS_YMAX/WS_NOXL_YMAX) ,1);
+    	        for (frame_id = 0; frame_id <ilGetInteger(IL_NUM_IMAGES) ; frame_id++){
+    	        	ilActiveImage(frame_id);	
+    	        	iluScale(ilGetInteger(IL_IMAGE_WIDTH)*(1.0 * WS_XMAX ) / WS_NOXL_XMAX, ilGetInteger(IL_IMAGE_HEIGHT)*(1.0 * WS_YMAX ) / WS_NOXL_YMAX ,1);
+    	        }
     	    }
+    	}
+    	*/
 	}
 	
 	return_code = TRUE;
@@ -168,6 +175,7 @@ error:
 	
 int unload_skin(  struct skin_config * skin_conf ){
     int i;
+   
 	/* Unload different bitmap of the skin */
 	if( skin_conf->bitmap ) ilDeleteImages(1, &skin_conf->bitmap);
 	for( i = 0; i < skin_conf->nb; i++ )

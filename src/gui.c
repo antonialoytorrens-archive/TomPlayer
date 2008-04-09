@@ -365,29 +365,6 @@ void ExtendDialogBoxToScreen( DLGTEMPLATE * dlg ){
 }
 
 
-/** Display a rectangular buffer on screen using a specific gui.
-*
-*/
-void gui_buffer_rgb(char * buffer,int width, int height, int x, int y){
-  
-  int x1,y1;   
-  unsigned char r,g,b;
-  int i =0;
-
-  for( y1 = 0; y1 < height; y1++ ){
-    for( x1 = 0; x1 < width ; x1++ ){   
-      r=buffer[i++];
-      g=buffer[i++];
-      b=buffer[i++];
-      /* Skip the a value*/
-      i++;       
-      SetPixelRGB(HDC_SCREEN, x + x1, y +y1, r,g,b);	
-    }
-  }  
-  Rectangle(HDC_SCREEN,0,y,GetGDCapability( HDC_SCREEN, GDCAP_HPIXEL),GetGDCapability( HDC_SCREEN, GDCAP_VPIXEL));  
-}
-
-
 
 
 
@@ -398,7 +375,7 @@ static void fill_boxes (HWND hDlg, int list_box_id, int text_path_id, char * ext
     DIR*   dir;
     struct stat ftype;
     char   fullpath [PATH_MAX + 1];
-    LISTBOXITEMINFO lbii;
+    static LISTBOXITEMINFO lbii;
     
     if ((dir = opendir (path)) == NULL)
          return;
