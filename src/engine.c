@@ -825,6 +825,7 @@ void * update_thread(void *cmd){
                 if( strcmp( p, old_current_filename ) ){
                     strcpy( old_current_filename, p);
                     display_current_file( p, &config.audio_config, config.audio_config.bitmap );
+                    display_bat_state(true);
                 }
             }
         }
