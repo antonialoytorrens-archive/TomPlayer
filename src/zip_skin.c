@@ -5,6 +5,7 @@
 #include <zip.h>
 #include "zip_skin.h"
 #include "widescreen.h"
+#include "engine.h"
 
 #define CONF_FILENAME		"/tmp/skin.conf"
 #define BITMAP_FILENAME		"/tmp/bitmap"
@@ -86,7 +87,8 @@ int load_skin_from_zip( char * filename, struct skin_config * skin_conf ){
 	int expand_conf = FALSE;
 	struct zip * fp_zip;
 	int return_code = FALSE;
-	int i/*, frame_id*/;
+	int i, frame_id;
+	int new_w, new_h;
 	char cmd[200];
 	
 	ws = ws_probe();
@@ -149,17 +151,30 @@ int load_skin_from_zip( char * filename, struct skin_config * skin_conf ){
 	if( expand_conf == TRUE ){
         ilBindImage( skin_conf->bitmap );
         iluScale( WS_XMAX,WS_YMAX,1);
-        /* crash 
+        
     	for( i = 0; i < skin_conf->nb; i++ ){
     	    if( skin_conf->controls[i].bitmap != 0 ){
     	        ilBindImage( skin_conf->controls[i].bitmap );
-    	        for (frame_id = 0; frame_id <ilGetInteger(IL_NUM_IMAGES) ; frame_id++){
-    	        	ilActiveImage(frame_id);	
-    	        	iluScale(ilGetInteger(IL_IMAGE_WIDTH)*(1.0 * WS_XMAX ) / WS_NOXL_XMAX, ilGetInteger(IL_IMAGE_HEIGHT)*(1.0 * WS_YMAX ) / WS_NOXL_YMAX ,1);
-    	        }
+    	        frame_id = 0; 
+    	        new_w = ((int)(ilGetInteger(IL_IMAGE_WIDTH) *(1.0 * WS_XMAX ) / WS_NOXL_XMAX));
+    	        new_h = ((int)(ilGetInteger(IL_IMAGE_HEIGHT)*(1.0 * WS_YMAX ) / WS_NOXL_YMAX));
+    	        PRINTD("%i - new w : %i new h : %i - num im :%i - num mipmaps : %i \n ", i, new_w,new_h, ilGetInteger(IL_NUM_IMAGES),ilGetInteger(IL_NUM_MIPMAPS));
+    	        /*while (1){
+    	        	ilBindImage( skin_conf->controls[i].bitmap );    	        	
+    	        	if ( !ilActiveImage(frame_id)){
+    	        		ilBindImage( skin_conf->controls[i].bitmap );
+    	        		break;
+    	        	}
+    	        	PRINTD("frame id : %i\n", frame_id);
+    	        	iluScale(new_w,new_h,1);
+    	        	frame_id++;    	        	
+    	       }    */	        	    	         	        
+    	        if  (skin_conf->controls[i].cmd != CMD_BATTERY_STATUS){
+    	        	/* Scale animation seems to crash so exclude battery icons */
+    	        	iluScale(new_w,new_h,1);
+    	        }	         	      
     	    }
-    	}
-    	*/
+    	}    	
 	}
 	
 	return_code = TRUE;

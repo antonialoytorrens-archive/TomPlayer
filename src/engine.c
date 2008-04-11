@@ -218,13 +218,33 @@ static void display_cursor_over_skin (ILuint cursor_id, ILuint frame_id, int x, 
 		ilActiveImage(frame_id);		
 		PRINTD("Frame id : %i active image : %i origin mode : %i\n",frame_id, ilGetInteger(IL_ACTIVE_IMAGE), ilGetInteger(IL_ORIGIN_MODE));
 		ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);  
+#if 0		
 		ilCopyPixels(0, 0, 0, width, height, 1,
 		    	     IL_RGBA, IL_UNSIGNED_BYTE, buffer);	    			  
-		ilGenImages(1, &tmp_cursor_id);	
-		ilBindImage(tmp_cursor_id);		
-		ilTexImage(width, height, 1, 4,IL_RGBA, IL_UNSIGNED_BYTE, buffer);
-		/* Flip image because an ilTexImage is always LOWER_LEFT */
-		iluFlipImage();			
+
+		{
+			/*FIXME*/
+			int i,j ;
+			unsigned char * temp; 
+				
+			ilGenImages(1, &tmp_cursor_id);	
+			ilBindImage(tmp_cursor_id);
+	
+			temp = malloc (width*4);
+			for (i=0; i <height/2; i++){
+				for (j=0;j<(4*width); j++){
+					if (j%4 != 3){
+						temp[j] =  buffer[(height-i-1)*4*width + j];
+						buffer[(height-i-1)*4*width+j]=buffer[i*4*width+j];
+						buffer[i*4*width+j]=temp[j];
+					}
+				}			
+			}
+			free (temp);
+			ilTexImage(width, height, 1, 4,IL_RGBA, IL_UNSIGNED_BYTE, buffer);
+		}
+#endif
+		tmp_cursor_id = ilCloneCurImage();
 		cursor_id = tmp_cursor_id;				    			
 	}
 	
