@@ -1,5 +1,26 @@
 More informations on http://www.tomplayer.net
 
+April, 12th 2008 Tomplayer V0.12 
+* New useful buttons for playlist can be defined in skins : next,  previous and shuffle
+* Random order when playing an audio folder
+* Display the current audio file 
+* Skins can be selected from the IHM thanks a dedicated tab 
+* Skins are now packaged into a single zip file
+* When ws version is not available, skin is automatically scaled 
+* silent mode : Speaker turned off when headphones are plugged
+* video settings are saved : volume, brightness, contrast and audio delay are saved and restored
+* audio settings are saved : volume is saved and restored
+* Display battery state on the skin
+* Graphical cursor for progress bar
+* Audio screen saver delay can be configured
+* Sort/Icons listbox 	Add icons and sort in file listing
+* win text format : Accept windows text format for tomplayer.ini
+* Default folder : Display a default folder (/mnt) when audio_dir or video_dir do not exist
+* Make screen saver compatible with latest TT releases 
+* OFF button handling.:  1st push=> come back to IHM.  2nd push => Exit.
+
+
+
 March, 12th 2008 Tomplayer V0.11 is out
 * add screen saver in audio mode
 * Automatic detection of rotated screen (no more extra MiniGUI_rotated.cfg and mplayer_rotated.conf are needed)
