@@ -71,6 +71,7 @@
 
 #define KEY_TYPE_CONTROL            "type"
 #define KEY_CMD_CONTROL             "ctrl"
+#define KEY_CMD_CONTROL2            "cmd"
 
 #define KEY_CIRCULAR_CONTROL_X      "x"
 #define KEY_CIRCULAR_CONTROL_Y      "y"
@@ -80,6 +81,8 @@
 #define KEY_RECTANGULAR_CONTROL_X2  "x2"
 #define KEY_RECTANGULAR_CONTROL_Y1  "y1"
 #define KEY_RECTANGULAR_CONTROL_Y2  "y2"
+
+#define KEY_TEXT_COLOR "text_color"
 
 #define KEY_CTRL_BITMAP_FILENAME "bitmap"
 
@@ -125,6 +128,7 @@ struct skin_config{
     int progress_bar_index; /**< index of progress bar object in controls table*/    
     int pb_r, pb_g, pb_b;
     int bat_index; /**< index of Battery object in controls table*/
+    int text_color;
 };
 
 

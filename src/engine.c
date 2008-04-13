@@ -1183,21 +1183,40 @@ static void display_RGB_to_fb(unsigned char * buffer, int x, int y, int w, int h
 	    close(fb);
 	}
 
-	 
-	for( i = 0; i < (w * h); i++ ){           		
-		if (transparency == false ){
-			/* Initial buffer is RGB24 */
-			buffer16[i] =  ( (buffer[3*i] & 0xF8)  <<  8 | /* R 5 bits*/ 
-				     (buffer[3*i+1] & 0xFC) << 3 | /* G 6 bits */   
-					 (buffer[3*i+2]>>3));          /* B 5 bits*/
-		} else {
-			/* Initial buffer is RGBA*/
-			buffer16[i] =  ( (buffer[4*i] & 0xF8) << 8 | /* R 5 bits*/ 
-							   (buffer[4*i+1] & 0xFC) << 3 | /* G 6 bits */   
-							   (buffer[4*i+2]>>3));          /* B 5 bits*/			
-			/*TODO gerer transparence*/					
+	if (coor_trans == 0){ 
+		for( i = 0; i < (w * h); i++ ){           		
+			if (transparency == false ){
+				/* Initial buffer is RGB24 */
+				buffer16[i] =  ( (buffer[3*i] & 0xF8)  <<  8 | /* R 5 bits*/ 
+					     (buffer[3*i+1] & 0xFC) << 3 | /* G 6 bits */   
+						 (buffer[3*i+2]>>3));          /* B 5 bits*/
+			} else {
+				/* Initial buffer is RGBA*/
+				buffer16[i] =  ( (buffer[4*i] & 0xF8) << 8 | /* R 5 bits*/ 
+								   (buffer[4*i+1] & 0xFC) << 3 | /* G 6 bits */   
+								   (buffer[4*i+2]>>3));          /* B 5 bits*/			
+				/*TODO gerer transparence*/					
+			}
 		}
-	}	
+	} else{
+		int j;				  
+			for (j = 0; j<h; j++) {
+				for( i = 0; i < w ; i++ ){
+				if (transparency == false ){
+					/* Initial buffer is RGB24 */
+					buffer16[i+(j*w)] =  ( (buffer[3*(j+(i*w))] & 0xF8)  <<  8 | /* R 5 bits*/ 
+						     (buffer[3*(j+(i*w))+1] & 0xFC) << 3 | /* G 6 bits */   
+							 (buffer[3*(j+(i*w))+2]>>3));          /* B 5 bits*/
+				} else {
+					/* Initial buffer is RGBA*/
+					buffer16[i+(j*w)] =  ( (buffer[4*(j+(i*w))] & 0xF8) << 8 | /* R 5 bits*/ 
+									   (buffer[4*(j+(i*w))+1] & 0xFC) << 3 | /* G 6 bits */   
+									   (buffer[4*(j+(i*w))+2]>>3));          /* B 5 bits*/			
+					/*TODO gerer transparence*/					
+				}
+			}
+		}
+	}
 	
 	if (fb_mmap != NULL){
 		for (i=y; i< y+h;i++){ 			

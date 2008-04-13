@@ -46,7 +46,7 @@
 
 int load_skin_config( char * filename, struct skin_config * skin_conf ){
     GHANDLE gh_config;
-    char section_control[PATH_MAX + 1];
+    char section_control[PATH_MAX + 1];    
     int i;
    
 
@@ -58,7 +58,14 @@ int load_skin_config( char * filename, struct skin_config * skin_conf ){
         fprintf( stderr, "Unable to load file <%s>\n", filename );
         return FALSE;
     }
+
     
+    if( GetIntValueFromEtc( gh_config, SECTION_GENERAL, KEY_TEXT_COLOR, &skin_conf->text_color  ) != ETC_OK  ){   	     	    	
+    	PRINTD("No text color%s","");
+    } else{
+    	PRINTD("Read txt color : 0x%x  \n",skin_conf->text_color);
+    }
+     
     GetIntValueFromEtc( gh_config, SECTION_GENERAL, KEY_TEXT_X1, &(skin_conf->text_x1) );
     GetIntValueFromEtc( gh_config, SECTION_GENERAL, KEY_TEXT_X2, &(skin_conf->text_x2) );
     GetIntValueFromEtc( gh_config, SECTION_GENERAL, KEY_TEXT_Y1, &(skin_conf->text_y1) );
@@ -86,16 +93,18 @@ int load_skin_config( char * filename, struct skin_config * skin_conf ){
          *   
          * Wolf  : suppress dynamic allocation is not such a good idea : it wastes about 80Ko
          * But now,  with mulitple config during the same session, a conf cleanup is needed (in unload_skin ?  Todo later)... 
-         * 
-         * Dont know why but violent crash if uncomment that line on skin selection ...
-         * */                
-     if (  GetValueFromEtc( gh_config, section_control, KEY_CTRL_BITMAP_FILENAME,  &skin_conf->controls[i].bitmap_filename[0] , PATH_MAX )!= ETC_OK ){              
-        	skin_conf->controls[i].bitmap_filename[0] = 0;
+         */                
+     if (  GetValueFromEtc( gh_config, section_control, KEY_CTRL_BITMAP_FILENAME,  &skin_conf->controls[i].bitmap_filename[0] , PATH_MAX ) != ETC_OK ){              
+        	skin_conf->controls[i].bitmap_filename[0] = 0;        	
+        }
+              
+        
+        if (GetIntValueFromEtc( gh_config, section_control, KEY_CMD_CONTROL, &skin_conf->controls[i].cmd ) != ETC_OK){
+        	GetIntValueFromEtc( gh_config, section_control, KEY_CMD_CONTROL2, &skin_conf->controls[i].cmd );
         }
         
-        
-        GetIntValueFromEtc( gh_config, section_control, KEY_CMD_CONTROL, &skin_conf->controls[i].cmd );
         if (skin_conf->controls[i].cmd == CMD_BATTERY_STATUS){
+        	PRINTD("Battery conf index :%i - filename : %s\n",i,skin_conf->controls[i].bitmap_filename);
         	skin_conf->bat_index = i;
         }
         switch( skin_conf->controls[i].type ){
@@ -157,7 +166,7 @@ int load_config( struct tomplayer_config * conf ){
     GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_FILTER_AUDIO_EXT,  conf->filter_audio_ext, PATH_MAX );
     if (GetIntValueFromEtc(gh_config, SECTION_GENERAL, KEY_SCREEN_SAVER_TO,   &conf->screen_saver_to) != ETC_OK){
     	conf->screen_saver_to = SCREEN_SAVER_TO_S;
-    }
+    }    
     
     GetValueFromEtc( gh_config, SECTION_VIDEO_SKIN, KEY_SKIN_FILENAME,  conf->video_skin_filename, PATH_MAX );
     GetValueFromEtc( gh_config, SECTION_AUDIO_SKIN, KEY_SKIN_FILENAME,  conf->audio_skin_filename, PATH_MAX );

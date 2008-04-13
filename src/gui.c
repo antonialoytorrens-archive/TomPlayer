@@ -490,6 +490,8 @@ void display_current_file( char * filename, struct skin_config *skin_conf, ILuin
     rc.top = skin_conf->text_y1;
     rc.bottom = skin_conf->text_y2;
     SetBkMode(HDC_SCREEN, BM_TRANSPARENT);
+    SetTextColor(HDC_SCREEN, RGB2Pixel(HDC_SCREEN, skin_conf->text_color>>16, (skin_conf->text_color&0xFF00)>>8,skin_conf->text_color&0xFF));  	
+    PRINTD("Display current file at x1 %i x2 %i y1 %i y2 %i color : %x name :%s\n",  rc.left, rc.right,rc.top,rc.bottom,skin_conf->text_color,filename );
     TextOut( HDC_SCREEN, rc.left, rc.top, filename );
     //DrawText (HDC_SCREEN, filename, -1, &rc, DT_CENTER );  
 }

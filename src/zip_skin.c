@@ -143,6 +143,7 @@ int load_skin_from_zip( char * filename, struct skin_config * skin_conf ){
     			goto error;
     		}
 	        load_bitmap( &skin_conf->controls[i].bitmap, BITMAP_FILENAME );
+	        PRINTD("Loading %s - Image id :%i\n",skin_conf->controls[i].bitmap_filename,skin_conf->controls[i].bitmap);
 	    } else{
 	    	skin_conf->controls[i].bitmap = 0;
 	    }
