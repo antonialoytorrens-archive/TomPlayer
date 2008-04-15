@@ -1,5 +1,12 @@
 More informations on http://www.tomplayer.net
 
+April, 16th 2008 Tomplayer V0.13
+Bug fixes : 
+* Solve issues on some TomTom which have inverted coordinates
+* Solve a problem with progress bar on audio cedric_skin
+New feature :
+* Add color paramter in skin configuration file for displaying current file
+
 April, 12th 2008 Tomplayer V0.12 
 * New useful buttons for playlist can be defined in skins : next,  previous and shuffle
 * Random order when playing an audio folder
