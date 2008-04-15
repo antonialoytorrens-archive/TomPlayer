@@ -1160,7 +1160,7 @@ int get_command_from_xy( int x, int y, int * p ){
 /** Display a RGB or RGBA buffer to frame buffer
  */
 static void display_RGB_to_fb(unsigned char * buffer, int x, int y, int w, int h, bool transparency){
-	static unsigned char * fb_mmap; 
+	static unsigned short * fb_mmap; 
 	static struct fb_var_screeninfo screeninfo;
 	unsigned short * buffer16;
 	int buffer_size;
@@ -1183,7 +1183,7 @@ static void display_RGB_to_fb(unsigned char * buffer, int x, int y, int w, int h
 	    close(fb);
 	}
 
-	if (coor_trans == 0){ 
+	/*if (coor_trans == 0){*/ 
 		for( i = 0; i < (w * h); i++ ){           		
 			if (transparency == false ){
 				/* Initial buffer is RGB24 */
@@ -1198,32 +1198,24 @@ static void display_RGB_to_fb(unsigned char * buffer, int x, int y, int w, int h
 				/*TODO gerer transparence*/					
 			}
 		}
-	} else{
-		int j;				  
-			for (j = 0; j<h; j++) {
-				for( i = 0; i < w ; i++ ){
-				if (transparency == false ){
-					/* Initial buffer is RGB24 */
-					buffer16[i+(j*w)] =  ( (buffer[3*(j+(i*w))] & 0xF8)  <<  8 | /* R 5 bits*/ 
-						     (buffer[3*(j+(i*w))+1] & 0xFC) << 3 | /* G 6 bits */   
-							 (buffer[3*(j+(i*w))+2]>>3));          /* B 5 bits*/
-				} else {
-					/* Initial buffer is RGBA*/
-					buffer16[i+(j*w)] =  ( (buffer[4*(j+(i*w))] & 0xF8) << 8 | /* R 5 bits*/ 
-									   (buffer[4*(j+(i*w))+1] & 0xFC) << 3 | /* G 6 bits */   
-									   (buffer[4*(j+(i*w))+2]>>3));          /* B 5 bits*/			
-					/*TODO gerer transparence*/					
-				}
-			}
-		}
-	}
 	
 	if (fb_mmap != NULL){
-		for (i=y; i< y+h;i++){ 			
-			memcpy(fb_mmap+(i*screeninfo.xres + x)*2, buffer16 + (w*(i-y)), w*2);
+		int j;
+		if (coor_trans == 0){			
+			for (i=y; i<y+h; i++){
+				for(j=x; j<x+w; j++){					
+					fb_mmap[j+(i*screeninfo.xres)]=buffer16[((i-y)*w)+(j-x)];					
+				}
+			}
+		}else{
+			/* Magic combination for inverted coordinates */
+			for (i=y; i<y+h; i++){
+				for(j=x; j<x+w; j++){					
+					fb_mmap[j*screeninfo.xres+i]=buffer16[(-i+y+h-1)*w+(j-x)];					
+				}
+			}			
 		}
-	}	
-		
+	}			
 	free( buffer16 ); 
 	
 }
