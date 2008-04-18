@@ -30,7 +30,7 @@ static void expand_config( struct skin_config * conf ){
 	EXTEND_X(conf->text_x1);
 	EXTEND_X(conf->text_x2);
 	EXTEND_Y(conf->text_y1);
-	EXTEND_Y(conf->text_y1);
+	EXTEND_Y(conf->text_y2);
 	
 	for( i = 0; i < conf->nb; i++){
 		switch( conf->controls[i].type ){
