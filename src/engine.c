@@ -816,6 +816,7 @@ static void quit_mplayer(void){
 	int pos;
 	
 	if ( is_playing_video == TRUE ){
+	  is_paused=FALSE;
 	  pos = get_file_position_seconds();
 	  if (pos > 0){
 	    resume_write_pos(pos);
@@ -912,7 +913,7 @@ void * mplayer_thread(void *cmd){
     system( (char *) cmd );
     is_mplayer_finished = TRUE;
     printf("\nmplayer has exited\n");
-    /* Save settings to resume file */   
+    /* Save settings to resume file */     
     if ( is_playing_video == TRUE ){	
 	   	resume_set_video_settings(&current_video_settings);            	  	
     } else {    	
