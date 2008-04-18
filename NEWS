@@ -1,5 +1,16 @@
 More informations on http://www.tomplayer.net
 
+
+April, 18th 2008 Tomplayer V0.131
+Minor bug fixes : 
+* Minor issues with pausing 
+  - For times to times the video or audio were going ahead frame by frame while paused
+  - When quitting while paused, the progress bar was not displayed if loading another audio file
+  - Exit while in pause leads to bad movie position backup
+* Expand correctly (along Y aND X) video screen for videos that are smaller than the screen 
+* Fix 2 minors bugs (cursor for progress bar and resize of text filename) that appear when rescling small skin for a widescreen 
+
+
 April, 16th 2008 Tomplayer V0.13
 Bug fixes : 
 * Solve issues on some TomTom which have inverted coordinates
