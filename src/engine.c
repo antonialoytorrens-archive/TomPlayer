@@ -54,7 +54,8 @@
 #define PB_UPDATE_PERIOD_US 250000
 #define SCREEN_SAVER_ACTIVE (-1)
 
-char * cmd_mplayer = "./mplayer -quiet -include mplayer.conf -vf expand=:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -ss %i -slave -input file=%s %s \"%s%s\" > %s";
+char * cmd_mplayer = "./mplayer -quiet -include mplayer.conf -vf expand=%i:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -ss %i -slave -input file=%s %s \"%s%s\" > %s";
+/*char * cmd_mplayer = "./mplayer -quiet -include mplayer.conf -vf bmovl=1:0:/tmp/mplayer-menu.fifo%s -ss %i -slave -input file=%s %s \"%s%s\" > %s";*/
 static char * fifo_command_name = "/tmp/mplayer-cmd.fifo";
 static char * fifo_menu_name = "/tmp/mplayer-menu.fifo";
 static char * fifo_stdout_name = "/tmp/mplayer-out.fifo";
@@ -404,8 +405,19 @@ static void display_progress_bar(int current)
     	width  = ilGetInteger(IL_IMAGE_WIDTH);
     	height = ilGetInteger(IL_IMAGE_HEIGHT);    	
     	if (prev_coords.y == -1){
+    		PRINTD("New progress bar coord : y1 : %i - y2 : %i - h : %i\n", 
+    				c->controls[c->progress_bar_index].area.rectangular.y1,
+    				c->controls[c->progress_bar_index].area.rectangular.y2,
+    				height
+    				);    		
     		prev_coords.y = c->controls[c->progress_bar_index].area.rectangular.y1 + (c->controls[c->progress_bar_index].area.rectangular.y2 -  c->controls[c->progress_bar_index].area.rectangular.y1) / 2 - height/2;
+    		if (prev_coords.y < 0){
+    			prev_coords.y = 0;
+    		}
     		prev_coords.x = c->controls[c->progress_bar_index].area.rectangular.x1 - width/2;
+    		if (prev_coords.x < 0){
+    		    prev_coords.x = 0;
+    		}
     	}
     	new_x = c->controls[c->progress_bar_index].area.rectangular.x1 + current * (c->controls[c->progress_bar_index].area.rectangular.x2 -  c->controls[c->progress_bar_index].area.rectangular.x1) / 100 - width/2;
     	
@@ -438,6 +450,7 @@ static void display_progress_bar(int current)
 	    ilCopyPixels(erase_x, prev_coords.y, 0,
 	    	         erase_width, height , 1,
 	    	    	 IL_RGBA, IL_UNSIGNED_BYTE, buffer);
+	    PRINTD("Progress bar - erase x : %i - prev y : %i - w : %i -h : %i - buffer : @%x \n",erase_x,prev_coords.y,erase_width,height,buffer);
 	    if( is_playing_video == TRUE ) {	    		    	    
 	    	sprintf(str, "RGBA32 %d %d %d %d %d %d\n", erase_width, height, erase_x, prev_coords.y , 0, 0);
 		    write(fifo_menu, str, strlen(str));
@@ -445,7 +458,6 @@ static void display_progress_bar(int current)
         } else {    
    	        /*gui_buffer_rgb(buffer,erase_width, height, erase_x, prev_coords.y);*/
    	        display_RGB_to_fb(buffer, erase_x, prev_coords.y, erase_width, height,true);
-
 	    }
 	    	    		
 		/* Display cursor at its new position after overlaying cursor bitmap on skin background */
@@ -835,21 +847,24 @@ void * update_thread(void *cmd){
       
       /* Display battery state */
       display_bat_state(false);
+      
+      /* DO Not send periodic commands to mplayer while in pause because it unlocks the pause for a brief delay */
+      if( is_playing_audio == TRUE ){
+          if( get_current_file_name( current_filename ) == TRUE ){
+              if( !strncmp( "ANS_FILENAME='", current_filename, strlen( "ANS_FILENAME='" ) ) ){
+                  p=current_filename + strlen( "ANS_FILENAME='" );
+                  p[strlen(p)-2] = 0;
+                  if( strcmp( p, old_current_filename ) ){
+                      strcpy( old_current_filename, p);
+                      display_current_file( p, &config.audio_config, config.audio_config.bitmap );
+                      display_bat_state(true);
+                  }
+              }
+          }
+      }
     }
     
-    if( is_playing_audio == TRUE ){
-        if( get_current_file_name( current_filename ) == TRUE ){
-            if( !strncmp( "ANS_FILENAME='", current_filename, strlen( "ANS_FILENAME='" ) ) ){
-                p=current_filename + strlen( "ANS_FILENAME='" );
-                p[strlen(p)-2] = 0;
-                if( strcmp( p, old_current_filename ) ){
-                    strcpy( old_current_filename, p);
-                    display_current_file( p, &config.audio_config, config.audio_config.bitmap );
-                    display_bat_state(true);
-                }
-            }
-        }
-    }
+
     
 	/* Handle screen saver */    
 	if ((is_playing_video == FALSE) && 
@@ -904,15 +919,23 @@ void launch_mplayer( char * folder, char * filename, int pos ){
     struct video_settings v_settings;
     struct audio_settings a_settings;
 
+    if( coor_trans != 0 ){
+    	strcpy(rotated_param, ",rotate=1" );
+    } else {
+    	rotated_param[0] = 0;    	
+    }
 
-    if( coor_trans != 0 ) strcpy(rotated_param, ",rotate=1" );
-    else  strcpy(rotated_param, "" );
+    if ( has_extension( filename, ".m3u" ) ) {
+    	strcpy(playlist_param, "-playlist" );
+    } else {
+    	playlist_param[0] = 0;    	
+    }
 
-    if( has_extension( filename, ".m3u" ) ) strcpy(playlist_param, "-playlist" );
-    else strcpy(playlist_param, "" );
-
-    if( strlen( folder ) > 0 ) sprintf( file, "%s/%s", folder,filename );
-    else strcpy( file, filename );
+    if( strlen( folder ) > 0 ){
+    	sprintf( file, "%s/%s", folder,filename );
+    } else {
+    	strcpy( file, filename );
+    }
 
     /* Dont want to be killed by SIGPIPE */
     signal (SIGPIPE, SIG_IGN);
@@ -923,7 +946,6 @@ void launch_mplayer( char * folder, char * filename, int pos ){
     mkfifo( fifo_command_name, 0700 );
     mkfifo( fifo_menu_name, 0700 );
     mkfifo( fifo_stdout_name, 0700);
-
     
     fifo_command = open( fifo_command_name, O_RDWR );
     fifo_menu = open( fifo_menu_name, O_RDWR );
@@ -934,7 +956,7 @@ void launch_mplayer( char * folder, char * filename, int pos ){
     is_playing_audio = FALSE;
     no_user_interaction_cycles = 0;
     
-    if( is_video_file( filename ) ){
+    if ( is_video_file( filename ) ) {
       is_playing_video = TRUE;
       resume_file_init(file);
       if (pos > 5){
@@ -943,15 +965,17 @@ void launch_mplayer( char * folder, char * filename, int pos ){
         resume_pos = 0;
       }      
     }
-    else{     
+    else {
       is_playing_audio = TRUE;
       resume_pos = 0;
     }
     
     init_ctrl_bitmaps();
         
-    sprintf( cmd, cmd_mplayer, (ws_probe()? WS_YMAX : WS_NOXL_YMAX), rotated_param, resume_pos, fifo_command_name, playlist_param, folder , filename, fifo_stdout_name );  
-
+    /*sprintf( cmd, cmd_mplayer, (ws_probe()? WS_YMAX : WS_NOXL_YMAX), rotated_param, resume_pos, fifo_command_name, playlist_param, folder , filename, fifo_stdout_name );*/
+    sprintf( cmd, cmd_mplayer, (ws_probe()? WS_XMAX : WS_NOXL_XMAX), (ws_probe()? WS_YMAX : WS_NOXL_YMAX), rotated_param, resume_pos, fifo_command_name, playlist_param, folder , filename, fifo_stdout_name );
+    PRINTD("Mplayer command line : %s \n", cmd);
+    
     pthread_create(&t, NULL, mplayer_thread, cmd);
     
     usleep( 500000 );
