@@ -671,7 +671,7 @@ static int send_command_wait_float(const char * cmd, float *val ){
 */
 static int get_file_position_percent(void){
 	int val = 0;
-    if (send_command_wait_int("pausing_keep get_property percent_pos\n", &val) == 0){
+    if (send_command_wait_int(" get_property percent_pos\n", &val) == 0){
     	return val;
     } else {
     	/* Return 0 if command failed */
@@ -683,7 +683,7 @@ static int get_file_position_percent(void){
 */
 static BOOL get_current_file_name(char * filename){
 	//PRINTD("get_current_file_name %s\n","");
-    if (send_command_wait_string("pausing_keep get_file_name\n", filename) == 0){
+    if (send_command_wait_string(" get_file_name\n", filename) == 0){
     	return TRUE;
     }
     return FALSE;
@@ -693,7 +693,7 @@ static BOOL get_current_file_name(char * filename){
 */
 static int get_file_position_seconds(void){
   int val = 0;
-  if (send_command_wait_int("pausing_keep get_property time_pos\n",&val) == 0){
+  if (send_command_wait_int(" get_property time_pos\n",&val) == 0){
 	  return val;
   } else {
   	/* Return 0 if command failed */
@@ -706,7 +706,7 @@ static int get_file_position_seconds(void){
  */
 static int get_audio_settings( struct audio_settings * settings){
 	
-	return send_command_wait_int("pausing_keep get_property volume\n", &settings->volume);
+	return send_command_wait_int(" get_property volume\n", &settings->volume);
 	
 }
 
@@ -715,13 +715,13 @@ static int get_audio_settings( struct audio_settings * settings){
 static int get_video_settings( struct video_settings * settings){
 	int res = 0;
 	
-	res  = send_command_wait_int("pausing_keep get_property brightness\n", &settings->brightness);
+	res  = send_command_wait_int(" get_property brightness\n", &settings->brightness);
 	//fprintf(stderr,"lumi : %i\n res :%i\n",settings->brightness,res);
-	res |= send_command_wait_int("pausing_keep get_property contrast\n", &settings->contrast);
+	res |= send_command_wait_int(" get_property contrast\n", &settings->contrast);
 	//fprintf(stderr,"contrast : %i\n res :%i\n",settings->contrast,res);
-	res |= send_command_wait_float("pausing_keep get_property audio_delay\n", &settings->audio_delay);
+	res |= send_command_wait_float(" get_property audio_delay\n", &settings->audio_delay);
 	//fprintf(stderr,"delay : %f\n res :%i\n",settings->audio_delay,res);
-	res |= send_command_wait_int("pausing_keep get_property volume\n", &settings->volume);
+	res |= send_command_wait_int(" get_property volume\n", &settings->volume);
 	//fprintf(stderr,"volume  : %i\n res :%i\n",settings->volume,res);
 	
 	return res;
@@ -780,10 +780,22 @@ BOOL is_audio_file( char * file ){
     return has_extension( file, config.filter_audio_ext );}
 
 
-void send_command( const char * cmd ){
-	/* FIXME pour debug
-	fprintf(stderr,"Commande envoyée : %s",cmd);*/
-    write( fifo_command, cmd, strlen( cmd ) );
+void send_raw_command( const char * cmd ){
+	PRINTD ("Raw Commande envoyée : %s",cmd);
+	write( fifo_command, cmd, strlen(cmd));
+}
+
+/* Send a comand to mplayer
+ * 
+ * This function automatically prepends prefix for pause correctness
+ * 
+ * */
+void send_command( const char * cmd ){		
+	char full_cmd [256];
+	int len;
+	len  = snprintf(full_cmd, sizeof(full_cmd), "%s %s", (is_paused ?"pausing " :"") , cmd);
+	PRINTD ("Commande envoyée : %s",full_cmd);
+    write( fifo_command, full_cmd, len );
 }
 
 void send_menu( char * cmd ){
@@ -809,7 +821,7 @@ static void quit_mplayer(void){
 	    resume_write_pos(pos);
 	  }
 	}
-	send_command( "quit\n" );
+	send_raw_command( "quit\n" );
 }
 
 /** Thread that updates peridocally OSD if needed
@@ -954,6 +966,7 @@ void launch_mplayer( char * folder, char * filename, int pos ){
     is_menu_showed = FALSE;
     is_playing_video = FALSE;
     is_playing_audio = FALSE;
+    is_paused = FALSE;
     no_user_interaction_cycles = 0;
     
     if ( is_video_file( filename ) ) {
@@ -1036,8 +1049,8 @@ void handle_mouse_event( int x, int y )
     
     switch( get_command_from_xy( x, y, &p ) ){
         case CMD_PAUSE:
-            send_command("pause\n");
-	    is_paused ^=  TRUE;
+        	send_raw_command("pause\n");            
+        	is_paused ^=  TRUE;
             break;
         case CMD_STOP:
         	quit_mplayer();            
