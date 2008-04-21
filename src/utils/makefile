@@ -28,10 +28,18 @@ test_lcd : test_lcd.o
 	$(CC) $(LDFLAGS) -o $@ $^  -lc 
 	$(STRIP) $@
 
+gps : gps.o
+	$(CC) $(LDFLAGS) -o $@ $^  -lc 
+	$(STRIP) $@
+
 
 test_bat : test_bat.o
 	$(CC) $(LDFLAGS) -o $@ $^  -lc -lminigui -lpthread -ljpeg
 	$(STRIP) $@
+
+screen : screen.o
+	$(CC) $(LDFLAGS) -o $@ $^  -lc 
+	$(STRIP) $@	
 
 %.o : %.c
 	$(CC) $(CFLAGS) -c $< -o $@
