@@ -38,24 +38,7 @@
 #define FALSE 0
 #endif
 
-/* List of available commands */
-#define CMD_EXIT_MENU               0
-#define CMD_PAUSE                   1
-#define CMD_STOP                    2
-#define CMD_MUTE                    3
-#define CMD_VOL_MOINS               4
-#define CMD_VOL_PLUS                5
-#define CMD_LIGHT_MOINS             6
-#define CMD_LIGHT_PLUS              7
-#define CMD_DELAY_MOINS             8
-#define CMD_DELAY_PLUS              9
-#define CMD_GAMMA_MOINS             10
-#define CMD_GAMMA_PLUS              11
-#define CMD_FORWARD                 12
-#define CMD_BACKWARD                13
-#define CMD_NEXT                    14
-#define CMD_PREVIOUS                15
-#define CMD_BATTERY_STATUS          16
+
 
 extern struct tomplayer_config config;
 extern BOOL is_menu_showed;
@@ -77,7 +60,7 @@ void send_menu( char * cmd );
 void show_menu( void );
 void hide_menu( void );
 
-void blit_video_menu( int fifo, struct skin_config * conf );
+/*void blit_video_menu( int fifo, struct skin_config * conf );*/
 
 void * mplayer_thread(void *cmd);
 void launch_mplayer( char * folder, char * filename, int pos );
@@ -90,7 +73,7 @@ int get_command_from_xy( int x, int y, int * p );
 void display_image_to_fb( ILuint );
 
 /* This function is GUI library dependent, it's not defined in engine.c but in gui.c */
-void display_current_file( char * , struct skin_config *, ILuint );
+/*void display_current_file( char * , struct skin_config *, ILuint );*/
 
 
 void gui_buffer_rgb(char * buffer,int width, int height, int x, int y);

@@ -79,6 +79,7 @@ static int current_seek = -1;
  * update thread and gui event thread both perform requests...
  */
 static pthread_mutex_t request_mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t display_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 /* number of progress bar cycle without any activity on screen while screen in ON
  * if (no_user_interaction_cycles == SCREEN_SAVER_ACTIVE) then screen is OFF 
@@ -219,32 +220,6 @@ static void display_cursor_over_skin (ILuint cursor_id, ILuint frame_id, int x, 
 		ilActiveImage(frame_id);		
 		PRINTD("Frame id : %i active image : %i origin mode : %i\n",frame_id, ilGetInteger(IL_ACTIVE_IMAGE), ilGetInteger(IL_ORIGIN_MODE));
 		ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);  
-#if 0		
-		ilCopyPixels(0, 0, 0, width, height, 1,
-		    	     IL_RGBA, IL_UNSIGNED_BYTE, buffer);	    			  
-
-		{
-			/*FIXME*/
-			int i,j ;
-			unsigned char * temp; 
-				
-			ilGenImages(1, &tmp_cursor_id);	
-			ilBindImage(tmp_cursor_id);
-	
-			temp = malloc (width*4);
-			for (i=0; i <height/2; i++){
-				for (j=0;j<(4*width); j++){
-					if (j%4 != 3){
-						temp[j] =  buffer[(height-i-1)*4*width + j];
-						buffer[(height-i-1)*4*width+j]=buffer[i*4*width+j];
-						buffer[i*4*width+j]=temp[j];
-					}
-				}			
-			}
-			free (temp);
-			ilTexImage(width, height, 1, 4,IL_RGBA, IL_UNSIGNED_BYTE, buffer);
-		}
-#endif
 		tmp_cursor_id = ilCloneCurImage();
 		cursor_id = tmp_cursor_id;				    			
 	}
@@ -825,6 +800,60 @@ static void quit_mplayer(void){
 	send_raw_command( "quit\n" );
 }
 
+
+void *anim_thread(void * param){
+	int anim_idx ;
+	int nb_frame,width,height;
+	int current_num, x, y; 
+	unsigned char * buffer;
+	
+	anim_idx = config.audio_config.cmd2idx[CMD_ANIM];
+	
+	 if (( is_playing_audio == TRUE ) &&
+	     ( anim_idx !=-1)){
+		 
+		 ilBindImage(config.audio_config.controls[anim_idx].bitmap);
+		 nb_frame = ilGetInteger(IL_NUM_IMAGES);
+		 width  = ilGetInteger(IL_IMAGE_WIDTH);
+		 height = ilGetInteger(IL_IMAGE_HEIGHT);		
+		 PRINTD(" anim : frames : %i - WxH : %ix%i \n", nb_frame, width,height);
+		 if (config.audio_config.controls[anim_idx].type == CIRCULAR_CONTROL){
+			x = config.audio_config.controls[anim_idx].area.circular.x - config.audio_config.controls[anim_idx].area.circular.r;
+			y = config.audio_config.controls[anim_idx].area.circular.y - config.audio_config.controls[anim_idx].area.circular.r;
+		 }
+		 if (config.audio_config.controls[anim_idx].type == RECTANGULAR_CONTROL){
+			x = config.audio_config.controls[anim_idx].area.rectangular.x1;
+			y = config.audio_config.controls[anim_idx].area.rectangular.y1;
+		 }
+		 /*
+		 for (current_num=0; current_num<nb_frame; current_num++){
+			 ilActiveImage(current_num);					 
+			 ilConvertImage(IL_RGB, IL_UNSIGNED_BYTE);	
+		 }
+		 */
+		 current_num = 0;
+		 while (is_mplayer_finished == FALSE){
+			 /*PRINTD("New anim frame : %i \n", current_num);*/			 
+			 pthread_mutex_lock(&display_mutex);
+			 ilBindImage(config.audio_config.controls[anim_idx].bitmap);
+			 ilActiveImage(current_num);			 
+			 ilConvertImage(IL_RGB, IL_UNSIGNED_BYTE);
+	 		 buffer = ilGetData();			 		 			 
+			 display_RGB_to_fb(buffer,x,y,width, height, false);
+			 pthread_mutex_unlock(&display_mutex);
+			 
+			 current_num++;
+			 if (current_num >=nb_frame){
+				 current_num=0;
+			 }
+			 usleep(100000);     
+		 }
+		 
+	 }
+	 return NULL;
+}
+
+
 /** Thread that updates peridocally OSD if needed
 *
 * \note it also flushes mplayer stdout 
@@ -841,7 +870,7 @@ void * update_thread(void *cmd){
   /* Timout in cycles before turning OFF screen while playing audio */
   screen_saver_to_cycles = ((config.screen_saver_to * 1000000) / PB_UPDATE_PERIOD_US);
   
-  fprintf(stderr, "starting thread update ...\n");
+  PRINTD("starting thread update...\n screen saver to : %i - cycle : %i \n",config.screen_saver_to, screen_saver_to_cycles );
   
   while (is_mplayer_finished == FALSE){
     flush_stdout();
@@ -849,7 +878,7 @@ void * update_thread(void *cmd){
    
     if (((is_menu_showed == TRUE) ||  ( is_playing_video == FALSE ))  && 
        (is_paused == FALSE)) {
-    	
+    	 pthread_mutex_lock(&display_mutex);
       /* Update progress bar */
       pos = get_file_position_percent();
       if (pos >= 0){
@@ -860,6 +889,7 @@ void * update_thread(void *cmd){
       
       /* Display battery state */
       display_bat_state(false);
+     
       
       /* DO Not send periodic commands to mplayer while in pause because it unlocks the pause for a brief delay */
       if( is_playing_audio == TRUE ){
@@ -875,15 +905,16 @@ void * update_thread(void *cmd){
               }
           }
       }
-    }
+      pthread_mutex_unlock(&display_mutex);
+    }    
     
-
     
 	/* Handle screen saver */    
 	if ((is_playing_video == FALSE) && 
 		(no_user_interaction_cycles != SCREEN_SAVER_ACTIVE)){    
 		no_user_interaction_cycles++;
-		if (no_user_interaction_cycles >= screen_saver_to_cycles){
+		if ((screen_saver_to_cycles != 0) && 
+			(no_user_interaction_cycles >= screen_saver_to_cycles)){
 			no_user_interaction_cycles = SCREEN_SAVER_ACTIVE;
 			pwm_off();    		  	 
 		}
@@ -910,6 +941,7 @@ void * mplayer_thread(void *cmd){
    
     is_mplayer_finished = FALSE; 
     pthread_create(&t, NULL, update_thread, NULL);
+    pthread_create(&t, NULL, anim_thread, NULL);
     system( (char *) cmd );
     is_mplayer_finished = TRUE;
     printf("\nmplayer has exited\n");

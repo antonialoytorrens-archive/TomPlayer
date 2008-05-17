@@ -30,6 +30,28 @@
 
 #define MAX_CONTROLS	            20
 
+/* List of available commands */
+enum {
+	CMD_EXIT_MENU = 0,
+    CMD_PAUSE     = 1,
+    CMD_STOP      = 2,
+    CMD_MUTE      = 3,
+    CMD_VOL_MOINS = 4,
+    CMD_VOL_PLUS  = 5,
+    CMD_LIGHT_MOINS = 6,
+    CMD_LIGHT_PLUS  = 7,
+    CMD_DELAY_MOINS = 8,
+    CMD_DELAY_PLUS  = 9,
+    CMD_GAMMA_MOINS = 10,
+    CMD_GAMMA_PLUS  = 11,
+    CMD_FORWARD     = 12,
+    CMD_BACKWARD    = 13,
+    CMD_NEXT        = 14,
+    CMD_PREVIOUS    = 15,
+    CMD_BATTERY_STATUS = 16,
+    CMD_ANIM,
+    CMD_MAX_NB
+};
 
 #define CONFIG_FILE                 "/tmp/tomplayer.ini"
 
@@ -127,8 +149,9 @@ struct skin_config{
     char conf_file[PATH_MAX];    
     int progress_bar_index; /**< index of progress bar object in controls table*/    
     int pb_r, pb_g, pb_b;
-    int bat_index; /**< index of Battery object in controls table*/
+    int bat_index; /**< index of Battery object in controls table*/    
     int text_color;
+    int cmd2idx[CMD_MAX_NB];
 };
 
 

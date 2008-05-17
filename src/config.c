@@ -44,13 +44,22 @@
 #define DEFAULT_FOLDER "/mnt"
 
 
+void reset_skin_conf (struct skin_config * conf){
+	int i;
+	/* FIXME Rajouter libération dynamique */
+	memset(conf, 0, sizeof(*conf));
+	for( i = 0; i < CMD_MAX_NB; i++ ){
+	  conf->cmd2idx[i] = -1;	  
+	}
+}
+
 int load_skin_config( char * filename, struct skin_config * skin_conf ){
     GHANDLE gh_config;
     char section_control[PATH_MAX + 1];    
     int i;
    
 
-
+    reset_skin_conf(skin_conf);
     skin_conf->progress_bar_index = -1;
     gh_config = LoadEtcFile( filename );
     
@@ -107,6 +116,13 @@ int load_skin_config( char * filename, struct skin_config * skin_conf ){
         	PRINTD("Battery conf index :%i - filename : %s\n",i,skin_conf->controls[i].bitmap_filename);
         	skin_conf->bat_index = i;
         }
+        
+        /* Fill table cmd -> skin index */
+        if ((skin_conf->controls[i].cmd >= 0) &&
+        	(skin_conf->controls[i].cmd < CMD_MAX_NB)){
+        	skin_conf->cmd2idx[skin_conf->controls[i].cmd] = i;
+        }
+        
         switch( skin_conf->controls[i].type ){
             case CIRCULAR_CONTROL:
                 GetIntValueFromEtc( gh_config, section_control, KEY_CIRCULAR_CONTROL_X, &skin_conf->controls[i].area.circular.x );
@@ -167,6 +183,7 @@ int load_config( struct tomplayer_config * conf ){
     if (GetIntValueFromEtc(gh_config, SECTION_GENERAL, KEY_SCREEN_SAVER_TO,   &conf->screen_saver_to) != ETC_OK){
     	conf->screen_saver_to = SCREEN_SAVER_TO_S;
     }    
+    PRINTD("config TO value : %i \n", conf->screen_saver_to);
     
     GetValueFromEtc( gh_config, SECTION_VIDEO_SKIN, KEY_SKIN_FILENAME,  conf->video_skin_filename, PATH_MAX );
     GetValueFromEtc( gh_config, SECTION_AUDIO_SKIN, KEY_SKIN_FILENAME,  conf->audio_skin_filename, PATH_MAX );

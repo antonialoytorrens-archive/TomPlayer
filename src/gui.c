@@ -456,6 +456,25 @@ static void audio_file_notif_proc (HWND hwnd, int id, int nc, DWORD add_data)
 }
 
 
+
+
+void display_current_file( char * filename, struct skin_config *skin_conf, ILuint bitmap )
+{
+    RECT rc;
+    
+    display_image_to_fb( bitmap );
+    
+    rc.left = skin_conf->text_x1;
+    rc.right = skin_conf->text_x2;
+    rc.top = skin_conf->text_y1;
+    rc.bottom = skin_conf->text_y2;
+    SetBkMode(HDC_SCREEN, BM_TRANSPARENT);
+    SetTextColor(HDC_SCREEN, RGB2Pixel(HDC_SCREEN, skin_conf->text_color>>16, (skin_conf->text_color&0xFF00)>>8,skin_conf->text_color&0xFF));  	
+    PRINTD("Display current file at x1 %i x2 %i y1 %i y2 %i color : %x name :%s\n",  rc.left, rc.right,rc.top,rc.bottom,skin_conf->text_color,filename );
+    TextOut( HDC_SCREEN, rc.left, rc.top, filename );
+    //DrawText (HDC_SCREEN, filename, -1, &rc, DT_CENTER );  
+}
+
 static void play (HWND hDlg, char * folder, char * filename, BOOL resume)
 {
     int pos = 0;
@@ -478,24 +497,6 @@ static void play (HWND hDlg, char * folder, char * filename, BOOL resume)
     }
     launch_mplayer( folder, filename, pos );   
 }
-
-void display_current_file( char * filename, struct skin_config *skin_conf, ILuint bitmap )
-{
-    RECT rc;
-    
-    display_image_to_fb( bitmap );
-    
-    rc.left = skin_conf->text_x1;
-    rc.right = skin_conf->text_x2;
-    rc.top = skin_conf->text_y1;
-    rc.bottom = skin_conf->text_y2;
-    SetBkMode(HDC_SCREEN, BM_TRANSPARENT);
-    SetTextColor(HDC_SCREEN, RGB2Pixel(HDC_SCREEN, skin_conf->text_color>>16, (skin_conf->text_color&0xFF00)>>8,skin_conf->text_color&0xFF));  	
-    PRINTD("Display current file at x1 %i x2 %i y1 %i y2 %i color : %x name :%s\n",  rc.left, rc.right,rc.top,rc.bottom,skin_conf->text_color,filename );
-    TextOut( HDC_SCREEN, rc.left, rc.top, filename );
-    //DrawText (HDC_SCREEN, filename, -1, &rc, DT_CENTER );  
-}
-
 
 static int mouse_hook (void* context, HWND dst_wnd, int msg, WPARAM wParam, LPARAM lParam)
 {
