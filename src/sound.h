@@ -18,6 +18,11 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+/**
+ * \file sound.h
+ * \author wolfgar
+ * \brief Sound related functions
+ */
 
 #ifndef SOUND_H_
 #define SOUND_H_

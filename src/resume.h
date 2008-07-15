@@ -3,8 +3,8 @@
  * Resume file handling
  *
  *  Mon Feb 27 2008
- *  Copyright  2008  StÃ©phan Rafin
- *  Email* 
+ *  Copyright  2008  Stéphan Rafin
+ *  Email*
  *
  ****************************************************************************/
 /*
@@ -22,25 +22,36 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
+
+/**
+ * \file resume.h
+ * \author wolfgar
+ * \brief Resume file handling
+ */
+
+
 #ifndef __TOMPLAYER_RESUME_H__
 #define __TOMPLAYER_RESUME_H__
 
-
+/**
+ * \struct video_settings
+ * \brief structure to store video settings
+ */
 struct video_settings {
 	int contrast;
 	int brightness;
 	float audio_delay;
-	int volume; /* In fact mplayer property type is float but we always work with int on it*/	
+	int volume; /* In fact mplayer property type is float but we always work with int on it*/
 };
 
 
-struct audio_settings {	
-	int volume; /* In fact mplayer property type is float but we always work with int on it*/	
+struct audio_settings {
+	int volume; /* In fact mplayer property type is float but we always work with int on it*/
 };
 
 
 
-int resume_file_init(char * file); 
+int resume_file_init(char * file);
 int resume_write_pos(int value);
 int resume_get_file_infos(char * filename, int len , int * pos);
 int resume_get_audio_settings(struct audio_settings * settings);

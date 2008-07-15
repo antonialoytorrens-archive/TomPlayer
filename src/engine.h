@@ -20,39 +20,31 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
- 
+
 #ifndef __ENGINE_H__
 #define __ENGINE_H__
-
+#include <stdbool.h>
 #include "config.h"
-
-#ifdef DEBUG
-#define PRINTD(s, ...) fprintf (stderr, (s), __VA_ARGS__)
-#else
-#define PRINTD(s, ...)  
-#endif
-
-#ifndef BOOL
-#define BOOL int
-#define TRUE 1
-#define FALSE 0
-#endif
-
 
 
 extern struct tomplayer_config config;
-extern BOOL is_menu_showed;
-extern BOOL is_mplayer_finished;
-extern BOOL is_playing_video;
-extern BOOL is_playing_audio;
+extern bool is_menu_showed;
+extern bool is_mplayer_finished;
+extern bool is_playing_video;
+extern bool is_playing_audio;
 
 int init_engine( void );
 int release_engine( void );
+void generate_thumbnail( void );
+void get_thumbnail_name( char * folder, char * file, char * thumb );
+bool file_exist( char * file );
 
 char * get_file_extension( char * file );
-BOOL is_video_file( char * file );
-BOOL is_audio_file( char * file );
-BOOL has_extension( char * file, char * extensions );
+bool is_video_file( char * file );
+bool is_audio_file( char * file );
+bool has_extension( char * file, char * extensions );
+
+void display_current_file( char * filename, struct skin_config *skin_conf, ILuint bitmap );
 
 void send_command(const char * cmd );
 void send_menu( char * cmd );
@@ -70,7 +62,7 @@ void handle_mouse_event( int x, int y );
 int get_command_from_xy( int x, int y, int * p );
 
 
-void display_image_to_fb( ILuint );
+void display_image_to_fb( ILuint  );
 
 /* This function is GUI library dependent, it's not defined in engine.c but in gui.c */
 /*void display_current_file( char * , struct skin_config *, ILuint );*/

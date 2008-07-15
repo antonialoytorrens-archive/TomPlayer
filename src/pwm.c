@@ -5,7 +5,7 @@
  * $Rev$
  * $Author$
  * $Date$
- * 
+ *
  *
  ****************************************************************************/
 /*
@@ -22,6 +22,13 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
+
+/**
+ * \file pwm.c
+ * \author wolfgar
+ * \brief turn on/off screen power consumption saving
  */
 
 #include <barcelona/Barc_pwm.h>
@@ -45,13 +52,17 @@
 static  int previous_setting =  PWM_DEFAULT_LIGHT;
 
 
-/** Turn OFF the screen and save the current state to be able to restore
+/**
+ * \fn int pwm_off(void)
+ * \brief Turn OFF the screen and save the current state to be able to restore
+ *
+ * \return
  */
 int pwm_off(void) {
 	int fd, fd_pow;
 	int res = 0;
 	bool is_sys_needed = false;
-	
+
 	fd = open("/dev/" PWM_DEVNAME, O_RDWR);
 	if (fd < 0){
 	    perror("Error while trying to open PWM module ");
@@ -62,15 +73,15 @@ int pwm_off(void) {
 	    } else {
 	    	return -1;
 	    }
-	} 	
+	}
 	if (is_sys_needed == false){
 		previous_setting = ioctl (fd, IOR_BACKLIGHT_CURRENT);
 		if ( previous_setting < 0){
 		    perror("Error while trying to get current backlight value : ");
 		    previous_setting =  PWM_DEFAULT_LIGHT;
 		    res = -1;
-		    goto out_pwm_off;		        
-		}	
+		    goto out_pwm_off;
+		}
 		if (ioctl (fd, IOW_BACKLIGHT_OFF) != 0){
 		    perror("Error while turning OFF the screen : ");
 		    res = -1;
@@ -85,7 +96,7 @@ int pwm_off(void) {
 		previous_setting = strtol(buffer,NULL,10);
 		if ((previous_setting <= 0) || (previous_setting > PWM_BACKLIGHT_MAX)){
 			previous_setting = PWM_DEFAULT_LIGHT;
-		}		
+		}
 		fd_pow = open(SYS_PATH_POWER , O_RDWR);
 		if (fd_pow <0){
 			perror("Error while turning OFF the screen  ");
@@ -94,25 +105,27 @@ int pwm_off(void) {
 		} else{
 			write(fd_pow,"1",1);
 			close(fd_pow);
-		}		
+		}
 	}
 
 out_pwm_off:
 	close(fd);
-	return res;	
+	return res;
 }
 
 
-/** Restore screen to its previous state
- * 
- * \Note Do Nothing if the screen is not OFF
+/**
+ * \fn int pwm_resume(void)
+ * \brief Restore screen to its previous state
+ *
+ * \return
  */
 int pwm_resume(void) {
 	int fd, fd_pow;
 	int res = 0;
 	int current_val;
 	bool is_sys_needed = false;
-	
+
 	fd = open("/dev/" PWM_DEVNAME, O_RDWR);
 	if (fd < 0){
 	    perror("Error while trying to open PWM module ");
@@ -122,17 +135,17 @@ int pwm_resume(void) {
   	    	is_sys_needed = true;
   	    } else {
   	    	return -1;
-  	    }	    
+  	    }
 	}
 	if (is_sys_needed == false){
 		current_val = ioctl (fd, IOR_BACKLIGHT_CURRENT);
 		if ( current_val < 0){
 		    perror("Error while trying to get current backlight value : ");
-		    res = -1;	   
-		    goto out_pwm_resume;		  
+		    res = -1;
+		    goto out_pwm_resume;
 		}
 		if (current_val == PWM_BACKLIGHT_MIN) {
-			/* Turn ON screen only if it is OFF */		
+			/* Turn ON screen only if it is OFF */
 			if (ioctl (fd, IOW_BACKLIGHT_UPDATE , previous_setting) != 0){
 			    perror("Error while turning to restore previous setting : ");
 			    res = -1;
@@ -143,11 +156,11 @@ int pwm_resume(void) {
 		if (fd_pow <0){
 			perror("Error while opening power sys  ");
 			res = -1;
-			goto out_pwm_resume;		  
+			goto out_pwm_resume;
 		} else{
 			char buffer[128];
 			int power_state;
-			
+
 			if (read(fd_pow,buffer,sizeof(buffer)) <= 0){
 				perror("Error while reading power sys entry");
 			    res = -1;
@@ -161,12 +174,12 @@ int pwm_resume(void) {
 				write(fd,buffer,sizeof(buffer));
 			}
 			close(fd_pow);
-		}	
+		}
 	}
 
 out_pwm_resume:
 	close(fd);
-	return res;		
+	return res;
 }
 
 

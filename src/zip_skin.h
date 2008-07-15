@@ -1,6 +1,7 @@
 /***************************************************************************
- *
- *  30.03.08 : nullpointer - Zipped skin Handling 
+ *  30/03/2008
+ *  Copyright  2008  nullpointer
+ *  Email nullpointer[at]lavabit[dot]com
  ****************************************************************************/
 /*
  *  This program is free software; you can redistribute it and/or modify
@@ -17,7 +18,11 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-
+/**
+ * \file zip_skin.h
+ * \author nullpointer
+ * \brief handling of zipped skin
+ */
 
 
 #ifndef __ZIP_SKIN_H__
@@ -26,17 +31,8 @@
 #include "config.h"
 
 
-
-#ifndef TRUE
-#define TRUE 1
-#endif
-
-#ifndef FALSE
-#define FALSE 0
-#endif
-
-int load_bitmap( ILuint * , char * );
-int load_skin_from_zip( char * , struct skin_config *  );
-int unload_skin(  struct skin_config *  );
+bool load_bitmap( ILuint * , char * );
+bool load_skin_from_zip( char * , struct skin_config *  );
+bool unload_skin(  struct skin_config *  );
 
 #endif /* __ZIP_SKIN_H__ */

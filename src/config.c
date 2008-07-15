@@ -3,11 +3,11 @@
  *
  *  Sun Jan  6 14:15:55 2008
  *  Copyright  2008  nullpointer
- *  Email
+ *  Email nullpointer[at]lavabit[dot]com
  *
  * 14.02.08 wolfgar : Add progress bar index detection, progress bar colour config and ws adaptation
  *
- * 
+ *
  ****************************************************************************/
 /*
  *  This program is free software; you can redistribute it and/or modify
@@ -23,182 +23,272 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- */ 
+ */
+
+/*!
+ * \file config.c
+ * \brief main configuration loading
+ * \author nullpointer
+ */
 
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
+#include <dictionary.h>
+#include <iniparser.h>
+
+#include "debug.h"
 #include "config.h"
 #include "zip_skin.h"
 #include "engine.h"
 
-#ifdef USE_MINIMIG
-
-#include <minigui/common.h>
-#include <minigui/minigui.h>
 #include "widescreen.h"
 
-/* Timout in seconds before turning OFF screen while playing audio */
+/**
+ * \def SCREEN_SAVER_TO_S
+ * \brief Timeout in seconds before turning OFF screen while playing audio
+ */
 #define SCREEN_SAVER_TO_S 6
+
+/**
+ * \def DEFAULT_FOLDER
+ * \brief default folder is the specified one doesn't exist
+ */
 #define DEFAULT_FOLDER "/mnt"
 
+/**
+ * \fn static void display_config( struct tomplayer_config * conf )
+ * \brief Show configuration parameters
+ *
+ * \param conf main configuration structure
+ */
+static void display_config( struct tomplayer_config * conf ){
+	PRINTDF( "   - bitmap_loading_filename : %s\n", conf->bitmap_loading_filename );
+    PRINTDF( "   - bitmap_exiting_filename : %s\n", conf->bitmap_exiting_filename );
+	PRINTDF( "   - filter_video_ext : %s\n", conf->filter_video_ext );
+    PRINTDF( "   - filter_audio_ext : %s\n", conf->filter_audio_ext );
+    PRINTDF( "   - video_folder : %s\n", conf->video_folder );
+    PRINTDF( "   - audio_folder : %s\n", conf->audio_folder );
+    PRINTDF( "   - video_skin_filename : %s\n", conf->video_skin_filename );
+    PRINTDF( "   - audio_skin_filename : %s\n", conf->audio_skin_filename );
+    PRINTDF( "   - screen_saver_to : %d\n", conf->screen_saver_to );
+}
 
+/**
+ * \fn void reset_skin_conf (struct skin_config * conf)
+ * \brief reset all value of the skin configuration structure
+ *
+ * \param conf skin configuration
+ */
 void reset_skin_conf (struct skin_config * conf){
 	int i;
-	/* FIXME Rajouter libÃ©ration dynamique */
+	/* FIXME Rajouter libération dynamique */
 	memset(conf, 0, sizeof(*conf));
-	for( i = 0; i < CMD_MAX_NB; i++ ){
-	  conf->cmd2idx[i] = -1;	  
+	for( i = 0; i < SKIN_CMD_MAX_NB; i++ ){
+	  conf->cmd2idx[i] = -1;
 	}
 }
 
-int load_skin_config( char * filename, struct skin_config * skin_conf ){
-    GHANDLE gh_config;
-    char section_control[PATH_MAX + 1];    
-    int i;
-   
+/**
+ * \fn void reset_skin_conf (struct skin_config * conf)
+ * \brief load a skin configuration
+ *
+ * \param filename fullpath to the skin configuration file
+ * \param conf skin configuration structure
+ *
+ * \return true on succes, false on failure
+ */
+bool load_skin_config( char * filename, struct skin_config * skin_conf ){
+	dictionary * ini ;
+    char section_control[PATH_MAX + 1];
+    int i,j;
+    char * s;
+    bool ret = true;
+
 
     reset_skin_conf(skin_conf);
     skin_conf->progress_bar_index = -1;
-    gh_config = LoadEtcFile( filename );
-    
-    if( gh_config == ETC_FILENOTFOUND ){
-        fprintf( stderr, "Unable to load file <%s>\n", filename );
-        return FALSE;
-    }
 
-    
-    if( GetIntValueFromEtc( gh_config, SECTION_GENERAL, KEY_TEXT_COLOR, &skin_conf->text_color  ) != ETC_OK  ){   	     	    	
-    	PRINTD("No text color%s","");
+	ini = iniparser_load(filename);
+	if (ini == NULL) {
+		PRINTDF( "Unable to load config file %s\n", filename);
+		return false ;
+	}
+/*
+	i = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_COLOR, -1);
+    if( i < 0  ){
+    	PRINTD("No text color\n");
     } else{
-    	PRINTD("Read txt color : 0x%x  \n",skin_conf->text_color);
-    }
-     
-    GetIntValueFromEtc( gh_config, SECTION_GENERAL, KEY_TEXT_X1, &(skin_conf->text_x1) );
-    GetIntValueFromEtc( gh_config, SECTION_GENERAL, KEY_TEXT_X2, &(skin_conf->text_x2) );
-    GetIntValueFromEtc( gh_config, SECTION_GENERAL, KEY_TEXT_Y1, &(skin_conf->text_y1) );
-    GetIntValueFromEtc( gh_config, SECTION_GENERAL, KEY_TEXT_Y2, &(skin_conf->text_y2) );
-    
-    GetIntValueFromEtc( gh_config, SECTION_GENERAL, KEY_R_TRANSPARENCY, &(skin_conf->r) );
-    GetIntValueFromEtc( gh_config, SECTION_GENERAL, KEY_G_TRANSPARENCY, &(skin_conf->g) );
-    GetIntValueFromEtc( gh_config, SECTION_GENERAL, KEY_B_TRANSPARENCY, &(skin_conf->b) );
+		skin_conf->text_color = i;
+    	PRINTDF("Read txt color : 0x%x  \n",skin_conf->text_color);
+    }*/
 
-    GetIntValueFromEtc( gh_config, SECTION_GENERAL, KEY_R_PROGRESSBAR, &(skin_conf->pb_r) );
-    GetIntValueFromEtc( gh_config, SECTION_GENERAL, KEY_G_PROGRESSBAR, &(skin_conf->pb_g) );
-    GetIntValueFromEtc( gh_config, SECTION_GENERAL, KEY_B_PROGRESSBAR, &(skin_conf->pb_b) );
-    
-    GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_SKIN_BMP,  skin_conf->bitmap_filename, PATH_MAX );
+	skin_conf->text_x1 = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_X1, 0);
+	skin_conf->text_x2 = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_X2, 0);
+	skin_conf->text_y1 = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_Y1, 0);
+	skin_conf->text_y2 = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_Y2, 0);
 
-    
-    for( i = 0; i < MAX_CONTROLS; i++ ){
-        sprintf( section_control, SECTION_CONTROL_FMT_STR, i );
-        if( GetIntValueFromEtc( gh_config, section_control, KEY_TYPE_CONTROL, (int *) &(skin_conf->controls[i].type) ) != ETC_OK  ){
-           fprintf( stderr, "Warning : no section  <%s>\n", section_control );            
+	skin_conf->r = iniparser_getint(ini, SECTION_GENERAL":"KEY_R_TRANSPARENCY, 0);
+	skin_conf->g = iniparser_getint(ini, SECTION_GENERAL":"KEY_G_TRANSPARENCY, 0);
+	skin_conf->b = iniparser_getint(ini, SECTION_GENERAL":"KEY_B_TRANSPARENCY, 0);
+
+	skin_conf->pb_r = iniparser_getint(ini, SECTION_GENERAL":"KEY_R_PROGRESSBAR, 0);
+	skin_conf->pb_g = iniparser_getint(ini, SECTION_GENERAL":"KEY_G_PROGRESSBAR, 0);
+	skin_conf->pb_b = iniparser_getint(ini, SECTION_GENERAL":"KEY_B_PROGRESSBAR, 0);
+
+	s = iniparser_getstring(ini, SECTION_GENERAL":"KEY_SKIN_BMP, NULL);
+	if( s != NULL ) strcpy( skin_conf->bitmap_filename, s ); // FIXME replace by a strdup
+
+
+    for( i = 0; i < MAX_SKIN_CONTROLS; i++ ){
+		sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_TYPE_CONTROL );
+		j = iniparser_getint(ini, section_control, -1);
+        if( j < 0  ){
+           PRINTDF( "Warning : no section  <%s>\n", section_control );
            break;
         }
-        
-        /* Read filename to load 
-         *   
+		else skin_conf->controls[i].type = j;
+
+        /* Read filename to load
+         *
          * Wolf  : suppress dynamic allocation is not such a good idea : it wastes about 80Ko
-         * But now,  with mulitple config during the same session, a conf cleanup is needed (in unload_skin ?  Todo later)... 
-         */                
-     if (  GetValueFromEtc( gh_config, section_control, KEY_CTRL_BITMAP_FILENAME,  &skin_conf->controls[i].bitmap_filename[0] , PATH_MAX ) != ETC_OK ){              
-        	skin_conf->controls[i].bitmap_filename[0] = 0;        	
-        }
-              
-        
-        if (GetIntValueFromEtc( gh_config, section_control, KEY_CMD_CONTROL, &skin_conf->controls[i].cmd ) != ETC_OK){
-        	GetIntValueFromEtc( gh_config, section_control, KEY_CMD_CONTROL2, &skin_conf->controls[i].cmd );
-        }
-        
-        if (skin_conf->controls[i].cmd == CMD_BATTERY_STATUS){
-        	PRINTD("Battery conf index :%i - filename : %s\n",i,skin_conf->controls[i].bitmap_filename);
+         * But now,  with mulitple config during the same session, a conf cleanup is needed (in unload_skin ?  Todo later)...
+         */
+		sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CTRL_BITMAP_FILENAME );
+		s = iniparser_getstring(ini, section_control, NULL);
+		if( s != NULL ) strcpy( skin_conf->controls[i].bitmap_filename, s );
+
+
+		sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CMD_CONTROL );
+		skin_conf->controls[i].cmd = iniparser_getint(ini, section_control, -1);
+        if( skin_conf->controls[i].cmd < 0  ){
+			sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CMD_CONTROL2 );
+			skin_conf->controls[i].cmd = iniparser_getint(ini, section_control, -1);
+		}
+
+        if (skin_conf->controls[i].cmd == SKIN_CMD_BATTERY_STATUS){
+        	PRINTDF("Battery conf index :%i - filename : %s\n",i,skin_conf->controls[i].bitmap_filename);
         	skin_conf->bat_index = i;
         }
-        
+
         /* Fill table cmd -> skin index */
         if ((skin_conf->controls[i].cmd >= 0) &&
-        	(skin_conf->controls[i].cmd < CMD_MAX_NB)){
+        	(skin_conf->controls[i].cmd < SKIN_CMD_MAX_NB)){
         	skin_conf->cmd2idx[skin_conf->controls[i].cmd] = i;
         }
-        
-        switch( skin_conf->controls[i].type ){
-            case CIRCULAR_CONTROL:
-                GetIntValueFromEtc( gh_config, section_control, KEY_CIRCULAR_CONTROL_X, &skin_conf->controls[i].area.circular.x );
-                GetIntValueFromEtc( gh_config, section_control, KEY_CIRCULAR_CONTROL_Y, &skin_conf->controls[i].area.circular.y );
-                GetIntValueFromEtc( gh_config, section_control, KEY_CIRCULAR_CONTROL_R, &skin_conf->controls[i].area.circular.r );
-                break;
-            case RECTANGULAR_CONTROL:
-            case PROGRESS_CONTROL_X:
-            case PROGRESS_CONTROL_Y:
-                GetIntValueFromEtc( gh_config, section_control, KEY_RECTANGULAR_CONTROL_X1, &skin_conf->controls[i].area.rectangular.x1 );
-                GetIntValueFromEtc( gh_config, section_control, KEY_RECTANGULAR_CONTROL_X2, &skin_conf->controls[i].area.rectangular.x2 );
-                GetIntValueFromEtc( gh_config, section_control, KEY_RECTANGULAR_CONTROL_Y1, &skin_conf->controls[i].area.rectangular.y1 );
-                GetIntValueFromEtc( gh_config, section_control, KEY_RECTANGULAR_CONTROL_Y2, &skin_conf->controls[i].area.rectangular.y2 );
 
-                if ((skin_conf->controls[i].type == PROGRESS_CONTROL_X) ||
-                	(skin_conf->controls[i].type == PROGRESS_CONTROL_Y)){
-                	skin_conf->progress_bar_index = i;		
-                }
+        switch( skin_conf->controls[i].type ){
+            case CIRCULAR_SKIN_CONTROL:
+				sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CIRCULAR_CONTROL_X );
+				skin_conf->controls[i].area.circular.x= iniparser_getint(ini, section_control, -1);
+				sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CIRCULAR_CONTROL_Y );
+				skin_conf->controls[i].area.circular.y = iniparser_getint(ini, section_control, -1);
+				sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CIRCULAR_CONTROL_R );
+				skin_conf->controls[i].area.circular.r = iniparser_getint(ini, section_control, -1);
+                break;
+            case RECTANGULAR_SKIN_CONTROL:
+            case PROGRESS_SKIN_CONTROL_X:
+            case PROGRESS_SKIN_CONTROL_Y:
+				sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_RECTANGULAR_CONTROL_X1 );
+				skin_conf->controls[i].area.rectangular.x1= iniparser_getint(ini, section_control, -1);
+				sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_RECTANGULAR_CONTROL_X2 );
+				skin_conf->controls[i].area.rectangular.x2 = iniparser_getint(ini, section_control, -1);
+				sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_RECTANGULAR_CONTROL_Y1 );
+				skin_conf->controls[i].area.rectangular.y1 = iniparser_getint(ini, section_control, -1);
+				sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_RECTANGULAR_CONTROL_Y2 );
+				skin_conf->controls[i].area.rectangular.y2 = iniparser_getint(ini, section_control, -1);
+
+				if ((skin_conf->controls[i].type == PROGRESS_SKIN_CONTROL_X) ||
+					(skin_conf->controls[i].type == PROGRESS_SKIN_CONTROL_Y)){
+					skin_conf->progress_bar_index = i;
+				}
                 break;
             default:
                 fprintf( stderr, "Type not defined correctly for %s\n", section_control );
-                return FALSE;
+                ret = false;
+                goto error;
         }
     }
-    
-    skin_conf->nb = i;
-    
-    UnloadEtcFile( gh_config );
 
-    return TRUE;
+    skin_conf->nb = i;
+
+error:
+    iniparser_freedict(ini);
+    return ret;
 }
 
-int load_config( struct tomplayer_config * conf ){
-    GHANDLE gh_config;
-    struct stat folder_stats; 
-    
+/**
+ * \fn bool load_config( struct tomplayer_config * conf )
+ * \brief load the main configuration and skin configuration
+ *
+ * \param conf main configuration structure
+ *
+ * \return true on succes, false on failure
+ */
+bool load_config( struct tomplayer_config * conf ){
+	dictionary * ini ;
+    struct stat folder_stats;
+	char *s;
+
+	PRINTD( "Loading main configuration\n");
+
     memset( conf, 0, sizeof( struct tomplayer_config ) );
-        
-    gh_config = LoadEtcFile( CONFIG_FILE );
-    
-    if( gh_config == ETC_FILENOTFOUND ){
-        fprintf(stderr, "Unable to load main configuration file <%s>\n", CONFIG_FILE );
-        return FALSE;
-    }
-    
-    GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_LOADING_BMP,  conf->bitmap_loading_filename, PATH_MAX );
-    GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_EXITING_BMP,  conf->bitmap_exiting_filename, PATH_MAX );
-    GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_VIDEO_FILE_DIRECTORY,conf->video_folder, PATH_MAX);
+
+    ini = iniparser_load(CONFIG_FILE);
+	if (ini == NULL) {
+		PRINTDF( "Unable to load main configuration file <%s>\n", CONFIG_FILE );
+		return false ;
+	}
+
+	s = iniparser_getstring(ini, SECTION_GENERAL":"KEY_LOADING_BMP, NULL);
+	PRINTDF( "%s\n",s);
+	if( s != NULL ) strcpy( conf->bitmap_loading_filename, s );
+
+	s = iniparser_getstring(ini, SECTION_GENERAL":"KEY_EXITING_BMP, NULL);
+	if( s != NULL ) strcpy( conf->bitmap_exiting_filename, s );
+
+	s = iniparser_getstring(ini, SECTION_GENERAL":"KEY_VIDEO_FILE_DIRECTORY, NULL);
+	if( s != NULL ) strcpy( conf->video_folder, s );
     if (stat(conf->video_folder, &folder_stats) != 0){
-    	strcpy(conf->video_folder,DEFAULT_FOLDER); 
-    }    
-    GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_AUDIO_FILE_DIRECTORY,conf->audio_folder, PATH_MAX);
-    if (stat(conf->audio_folder, &folder_stats) != 0){
-    	strcpy(conf->audio_folder,DEFAULT_FOLDER); 
+    	strcpy(conf->video_folder,DEFAULT_FOLDER);
     }
-    GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_FILTER_VIDEO_EXT,  conf->filter_video_ext, PATH_MAX );
-    GetValueFromEtc( gh_config, SECTION_GENERAL, KEY_FILTER_AUDIO_EXT,  conf->filter_audio_ext, PATH_MAX );
-    if (GetIntValueFromEtc(gh_config, SECTION_GENERAL, KEY_SCREEN_SAVER_TO,   &conf->screen_saver_to) != ETC_OK){
+
+	s = iniparser_getstring(ini, SECTION_GENERAL":"KEY_AUDIO_FILE_DIRECTORY, NULL);
+	if( s != NULL ) strcpy( conf->audio_folder, s );
+    if (stat(conf->audio_folder, &folder_stats) != 0){
+    	strcpy(conf->audio_folder,DEFAULT_FOLDER);
+    }
+
+
+	s = iniparser_getstring(ini, SECTION_GENERAL":"KEY_FILTER_VIDEO_EXT, NULL);
+	if( s != NULL ) strcpy( conf->filter_video_ext, s );
+	s = iniparser_getstring(ini, SECTION_GENERAL":"KEY_FILTER_AUDIO_EXT, NULL);
+	if( s != NULL ) strcpy( conf->filter_audio_ext, s );
+
+	conf->screen_saver_to = iniparser_getint(ini, SECTION_GENERAL":"KEY_SCREEN_SAVER_TO, -1);
+    if (conf->screen_saver_to < 0 ){
     	conf->screen_saver_to = SCREEN_SAVER_TO_S;
-    }    
-    PRINTD("config TO value : %i \n", conf->screen_saver_to);
-    
-    GetValueFromEtc( gh_config, SECTION_VIDEO_SKIN, KEY_SKIN_FILENAME,  conf->video_skin_filename, PATH_MAX );
-    GetValueFromEtc( gh_config, SECTION_AUDIO_SKIN, KEY_SKIN_FILENAME,  conf->audio_skin_filename, PATH_MAX );
+    }
 
-    UnloadEtcFile( gh_config );
+    s = iniparser_getstring(ini, SECTION_VIDEO_SKIN":"KEY_SKIN_FILENAME, NULL);
+	if( s != NULL ) strcpy( conf->video_skin_filename, s );
 
+	s = iniparser_getstring(ini, SECTION_AUDIO_SKIN":"KEY_SKIN_FILENAME, NULL);
+	if( s != NULL ) strcpy(conf->audio_skin_filename, s );
+
+    iniparser_freedict(ini);
+
+	display_config( conf );
     if( ws_probe() ) ws_translate( conf );
+
     load_bitmap( &conf->bitmap_loading, conf->bitmap_loading_filename );
     load_bitmap( &conf->bitmap_exiting, conf->bitmap_exiting_filename );
 
-    if( load_skin_from_zip( conf->video_skin_filename, &conf->video_config ) == FALSE ) return FALSE;
-    if( load_skin_from_zip( conf->audio_skin_filename, &conf->audio_config ) == FALSE ) return FALSE;
-    
+    if( load_skin_from_zip( conf->video_skin_filename, &conf->video_config ) == false ) return false;
+    if( load_skin_from_zip( conf->audio_skin_filename, &conf->audio_config ) == false ) return false;
 
-    return TRUE;
+
+    return true;
 }
 
-#endif /* USE_MINIMIG */

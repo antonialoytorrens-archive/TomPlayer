@@ -1,9 +1,7 @@
 /***************************************************************************
- *           GUI based on minigui for Tomplayer
- *
- *  Sun Jan  6 14:15:55 2008
+ *  19/06/2008
  *  Copyright  2008  nullpointer
- *  Email
+ *  Email nullpointer[at]lavabit[dot]com
  ****************************************************************************/
 /*
  *  This program is free software; you can redistribute it and/or modify
@@ -20,825 +18,429 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
- 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <pwd.h>
-#include <errno.h>
-#include <pthread.h>
-#include <fcntl.h>
 
-#include <minigui/common.h>
-#include <minigui/minigui.h>
-#include <minigui/gdi.h>
-#include <minigui/window.h>
-#include <minigui/control.h>
+/*!
+ * \file gui.c
+ * \author nullpointer
+ */
 
-#include "config.h"
+
+#include <directfb.h>
+#include <direct/util.h>
+#include <dictionary.h>
+#include <iniparser.h>
+#include "gui.h"
+#include "window.h"
+#include "gui_control.h"
+#include "callbacks.h"
+#include "debug.h"
+#include "window_context.h"
 #include "engine.h"
-#include "version.h"
-#include "resume.h"
 #include "pwm.h"
 #include "power.h"
-#include "playlist.h"
-#include "widescreen.h"
-#include "zip_skin.h"
+
+/**
+ * \var gui_config
+ * \brief the GUI configuration structure
+ */
+static struct gui_config gui_config;
 
 
-#define DEFAULT_PLAYLIST        "/tmp/tomplayer.m3u"
-#define ICON_FOLDER_FILENAME    "./res/icon/folder.ico"
-#define ICON_FILE_FILENAME      "./res/icon/file.ico"
+/**
+ * \var is_wide_screen
+ * \brief Indicate if the device has a wide screen or not
+ */
+static bool is_wide_screen = false;
 
-#define VIDEO_SKIN_FOLDER   "./skins/video"
-#define AUDIO_SKIN_FOLDER   "./skins/audio"
+static IDirectFB				*dfb;
+static IDirectFBSurface			*primary;
+static IDirectFBEventBuffer		*keybuffer;
 
-#define ID_TIMER            100
-#define IDC_PROPSHEET       110
+/**
+ * \var default_font
+ * \brief default font of the application
+ */
+IDirectFBFont 					*default_font;
 
-#define IDL_FILE_VIDEO      210
-#define IDC_PATH_VIDEO      220
-#define IDB_PLAY_VIDEO      230
-#define IDB_EXIT_VIDEO      240
-#define IDB_RESUME_VIDEO    250
-#define IDC_STATIC_VIDEO    260
-
-#define IDL_FILE_AUDIO      310
-#define IDC_PATH_AUDIO      320
-#define IDB_PLAY_AUDIO      330
-#define IDB_EXIT_AUDIO      340
-#define IDB_RANDOM_AUDIO    350
-#define IDC_STATIC_AUDIO    360
-
-#define IDL_FILE_AUDIO_SKIN     410
-#define IDC_PATH_AUDIO_SKIN     420
-#define IDB_SELECT_AUDIO_SKIN   430
-#define IDC_STATIC_AUDIO_SKIN   440
-
-#define IDL_FILE_VIDEO_SKIN     410
-#define IDC_PATH_VIDEO_SKIN     420
-#define IDB_SELECT_VIDEO_SKIN   430
-#define IDC_STATIC_VIDEO_SKIN   440
-
-static HICON hicon_folder;
-static HICON hicon_file;
-static HWND hlb_video;
-static HWND hlb_audio;
+static int mouse_x=0, mouse_y=0;
+static int screen_width=0, screen_height = 0;
 
 
-static DLGTEMPLATE DlgTomPlayerPropSheet =
-{
-    WS_BORDER | WS_CAPTION,
-    WS_EX_NONE,
-    1, 1, 318, 238,
-    "TomPlayer v"VERSION,
-    0, 0,
-    1, NULL,
-    0
-};
-
-static CTRLDATA CtrlTomPlayerPropSheet[] =
-{ 
-    {
-        CTRL_PROPSHEET,
-        WS_VISIBLE | PSS_COMPACTTAB, 
-        5, 5, 310, 220,
-        IDC_PROPSHEET,
-        "",
-        0
-    },
-};
+static struct gui_window messagebox_window;
+struct gui_window main_window;
 
 
-static DLGTEMPLATE DlgTomPlayerAudio =
-{
-    WS_BORDER | WS_CAPTION,
-    WS_EX_NONE,
-    0, 0, 0, 0,
-    "Audio",
-    0, 0,
-    6, NULL,
-    0
-};
+/**
+ * \fn IDirectFBSurface * load_image_to_surface( char * filename )
+ * \brief load an image to a DirectFB surface
+ *
+ * \param filename of the bitmap
+ *
+ * \return DirectFB surface
+ */
+IDirectFBSurface * load_image_to_surface( char * filename ){
+	DFBResult err;
+	IDirectFBImageProvider *provider;
+	DFBSurfaceDescription dsc;
+	IDirectFBSurface * surface;
 
-static CTRLDATA CtrlTomPlayerAudio[] =
-{ 
-    {
-        CTRL_STATIC,
-        WS_VISIBLE | SS_SIMPLE, 
-        10, 10, 260, 15, 
-        IDC_STATIC_AUDIO, 
-       "Files:",
-        0
-    },
-    {
-        CTRL_LISTBOX,
-        WS_VISIBLE | WS_VSCROLL | WS_BORDER | LBS_SORT | LBS_NOTIFY | LBS_USEICON,
-        10, 30, 260, 100,
-        IDL_FILE_AUDIO,
-        "",
-        0
-    },
+	PRINTDF( "load_image_to_surface <%s>\n", filename );
 
-    {
-        CTRL_STATIC,
-        WS_VISIBLE | SS_SIMPLE, 
-        10, 130, 260, 15, 
-        IDC_PATH_AUDIO, 
-       "Path: ",
-        0
-    },
+	DFBCHECK( dfb->CreateImageProvider( dfb, filename, &provider ) );
+	DFBCHECK( provider->GetSurfaceDescription (provider, &dsc) );
+	DFBCHECK( dfb->CreateSurface( dfb, &dsc, &surface ) );
+	DFBCHECK( provider->RenderTo( provider, surface, NULL ) );
 
-    {
-        CTRL_BUTTON,
-        WS_VISIBLE | BS_DEFPUSHBUTTON | WS_TABSTOP | WS_GROUP,
-        8, 150, 92, 25,
-        IDB_PLAY_AUDIO, 
-        "Play",
-        0
-    },
-    {
-        CTRL_BUTTON,
-        WS_VISIBLE | BS_PUSHBUTTON | WS_TABSTOP,
-        208, 150, 92, 25,
-        IDB_EXIT_AUDIO,
-        "Exit",
-        0
-    },
-    {
-        CTRL_BUTTON,
-        WS_VISIBLE | BS_PUSHBUTTON | WS_TABSTOP,
-        108, 150, 92, 25,
-        IDB_RANDOM_AUDIO,
-        "Play dir.",
-        0
-    },
-};
+	provider->Release( provider );
 
-static DLGTEMPLATE DlgTomPlayerVideo =
-{
-    WS_BORDER | WS_CAPTION,
-    WS_EX_NONE,
-    0, 0, 0, 0,
-    "Video",
-    0, 0,
-    6, NULL,
-    0
-};
-
-static CTRLDATA CtrlTomPlayerVideo[] =
-{ 
-    {
-        CTRL_STATIC,
-        WS_VISIBLE | SS_SIMPLE, 
-        10, 10, 260, 15, 
-        IDC_STATIC_VIDEO, 
-       "Files:",
-        0
-    },
-    {
-        CTRL_LISTBOX,
-        WS_VISIBLE | WS_VSCROLL | WS_BORDER | LBS_SORT | LBS_NOTIFY | LBS_USEICON,
-        10, 30, 260, 100,
-        IDL_FILE_VIDEO,
-        "",
-        0
-    },
-
-    {
-        CTRL_STATIC,
-        WS_VISIBLE | SS_SIMPLE, 
-        10, 130, 260, 15, 
-        IDC_PATH_VIDEO, 
-       "Path: ",
-        0
-    },
-
-    {
-        CTRL_BUTTON,
-        WS_VISIBLE | BS_DEFPUSHBUTTON | WS_TABSTOP | WS_GROUP,
-        8, 150, 92, 25,
-        IDB_PLAY_VIDEO, 
-        "Play",
-        0
-    },
-    {
-        CTRL_BUTTON,
-        WS_VISIBLE | BS_PUSHBUTTON | WS_TABSTOP,
-        208, 150, 92, 25,
-        IDB_EXIT_VIDEO,
-        "Exit",
-        0
-    },
-    {
-        CTRL_BUTTON,
-        WS_VISIBLE | BS_PUSHBUTTON | WS_TABSTOP,
-        108, 150, 92, 25,
-        IDB_RESUME_VIDEO,
-        "Resume",
-        0
-    },
-};
-
-
-
-static DLGTEMPLATE DlgTomPlayerAudioSkin =
-{
-    WS_BORDER | WS_CAPTION,
-    WS_EX_NONE,
-    0, 0, 0, 0,
-    "Audio skin",
-    0, 0,
-    4, NULL,
-    0
-};
-
-static CTRLDATA CtrlTomPlayerAudioSkin[] =
-{ 
-    {
-        CTRL_STATIC,
-        WS_VISIBLE | SS_SIMPLE, 
-        10, 10, 260, 15, 
-        IDC_STATIC_AUDIO_SKIN, 
-       "Files:",
-        0
-    },
-    {
-        CTRL_LISTBOX,
-        WS_VISIBLE | WS_VSCROLL | WS_BORDER | LBS_SORT | LBS_NOTIFY | LBS_USEICON,
-        10, 30, 260, 100,
-        IDL_FILE_AUDIO_SKIN,
-        "",
-        0
-    },
-
-    {
-        CTRL_STATIC,
-        WS_VISIBLE | SS_SIMPLE, 
-        10, 130, 260, 15, 
-        IDC_PATH_AUDIO_SKIN, 
-       "Path: ",
-        0
-    },
-    {
-        CTRL_BUTTON,
-        WS_VISIBLE | BS_PUSHBUTTON | WS_TABSTOP,
-        108, 150, 92, 25,
-        IDB_SELECT_AUDIO_SKIN,
-        "Select skin",
-        0
-    },
-};
-
-
-
-static DLGTEMPLATE DlgTomPlayerVideoSkin =
-{
-    WS_BORDER | WS_CAPTION,
-    WS_EX_NONE,
-    0, 0, 0, 0,
-    "Video skin",
-    0, 0,
-    4, NULL,
-    0
-};
-
-static CTRLDATA CtrlTomPlayerVideoSkin[] =
-{ 
-    {
-        CTRL_STATIC,
-        WS_VISIBLE | SS_SIMPLE, 
-        10, 10, 260, 15, 
-        IDC_STATIC_VIDEO_SKIN, 
-       "Files:",
-        0
-    },
-    {
-        CTRL_LISTBOX,
-        WS_VISIBLE | WS_VSCROLL | WS_BORDER | LBS_SORT | LBS_NOTIFY | LBS_USEICON,
-        10, 30, 260, 100,
-        IDL_FILE_VIDEO_SKIN,
-        "",
-        0
-    },
-
-    {
-        CTRL_STATIC,
-        WS_VISIBLE | SS_SIMPLE, 
-        10, 130, 260, 15, 
-        IDC_PATH_VIDEO_SKIN, 
-       "Path: ",
-        0
-    },
-    {
-        CTRL_BUTTON,
-        WS_VISIBLE | BS_PUSHBUTTON | WS_TABSTOP,
-        108, 150, 92, 25,
-        IDB_SELECT_VIDEO_SKIN,
-        "Select skin",
-        0
-    },
-};
-
-
-void ExtendDialogBoxToScreen( DLGTEMPLATE * dlg ){
-    int i;
-
-    EXTEND_X( dlg->x );
-    EXTEND_Y( dlg->y );    
-    
-    EXTEND_X( dlg->w );
-    EXTEND_Y( dlg->h );
-    
-    for( i = 0; i < dlg->controlnr; i++ ){
-        EXTEND_X( dlg->controls[i].x );
-        EXTEND_Y( dlg->controls[i].y );    
-        
-        EXTEND_X( dlg->controls[i].w );
-        EXTEND_Y( dlg->controls[i].h );
-    }
+	return surface;
 }
 
+/**
+ * \fn IDirectFBFont * load_font( char * filename, int height )
+ * \brief load a font
+ *
+ * \param filename of the font
+ * \param height size of the font
+ *
+ * \return DirectFB font
+ */
+IDirectFBFont * load_font( char * filename, int height ){
+	DFBFontDescription desc;
+	IDirectFBFont * font;
+	DFBResult err;
 
+	PRINTDF( "Loading font <%s> <%d>\n", filename, height );
 
+	desc.flags = DFDESC_HEIGHT;
+	desc.height = height;
 
+	DFBCHECK(dfb->CreateFont( dfb, filename, &desc, &font ));
 
-static void fill_boxes (HWND hDlg, int list_box_id, int text_path_id, char * extension, const char* path)
-{
-
-    struct dirent* dir_ent;
-    DIR*   dir;
-    struct stat ftype;
-    char   fullpath [PATH_MAX + 1];
-    static LISTBOXITEMINFO lbii;
-    
-    if ((dir = opendir (path)) == NULL)
-         return;
-
-    SendDlgItemMessage (hDlg, list_box_id, LB_RESETCONTENT, 0, (LPARAM)0);
-    SetWindowText (GetDlgItem (hDlg, text_path_id), path);
-
-    
-    while ( (dir_ent = readdir ( dir )) != NULL ) {
-        strncpy (fullpath, path, PATH_MAX);
-        strcat (fullpath, "/");
-        strcat (fullpath, dir_ent->d_name);
-        
-        if (stat (fullpath, &ftype) < 0 ) {
-           continue;
-        }
-        
-        lbii.string = dir_ent->d_name;
-        if (S_ISDIR (ftype.st_mode) ){
-            lbii.hIcon = hicon_folder; 
-            SendDlgItemMessage (hDlg, list_box_id, LB_ADDSTRING, 0, (LPARAM)&lbii);
-        }
-        else if (S_ISREG (ftype.st_mode) ) 
-            if( has_extension(dir_ent->d_name, extension ) ){
-                lbii.hIcon = hicon_file;
-                SendDlgItemMessage (hDlg, list_box_id, LB_ADDSTRING, 0, (LPARAM)&lbii);
-            }
-    }
-
-    closedir (dir);
+	return font;
 }
 
-static void dir_notif_proc (HWND hwnd, int id, int nc, int text_path_id, char * extensions)
-{
-   /* When the user double clicked the directory name or
-    * pressed the ENTER key, he will enter the corresponding directory */
-   if (nc == LBN_CLICKED || nc == LBN_ENTER) {
-       int cur_sel = SendMessage (hwnd, LB_GETCURSEL, 0, 0L);
-       if (cur_sel >= 0) {
-           char cwd [MAX_PATH + 1];
-           char dir [MAX_NAME + 1];
-           GetWindowText (GetDlgItem (GetParent (hwnd), text_path_id), cwd, MAX_PATH);
-           SendMessage (hwnd, LB_GETTEXT, cur_sel, (LPARAM)dir);
-           if (strcmp (dir, ".") == 0)
-               return;
-           
-           if( strcmp( dir, ".." ) == 0 ){
-               int i;
-               i = strlen( cwd );
-               while( --i > 0 )
-                   if( cwd[i] == '/' ){
-                       cwd[i] = 0;
-                       break;
-                   }
-           }
-           else{
-               strcat (cwd, "/");
-               strcat (cwd, dir);
-           }
+/**
+ * \fn IDirectFBSurface * create_surface( int width, int height )
+ * \brief Create an empty DirectFB surface
+ *
+ * \param width witdh of the surface
+ * \param height height of the surface
+ *
+ * \return DirectFB surface
+ */
+IDirectFBSurface * create_surface( int width, int height ){
+	IDirectFBSurface * surface;
+	DFBSurfaceDescription dsc;
+	DFBResult err;
 
-           fill_boxes (GetParent (hwnd), id, text_path_id, extensions, cwd);
-       }
-   }
+	PRINTDF( "create_surface %d %d\n", width, height );
+
+	dsc.flags =  DSDESC_WIDTH | DSDESC_HEIGHT | DSDESC_PIXELFORMAT;
+	dsc.width = width;
+	dsc.height = height;
+	dsc.pixelformat = DSPF_ARGB;
+
+	DFBCHECK( dfb->CreateSurface( dfb, &dsc, &surface ) );
+
+	return surface;
 }
 
-
-static void video_file_notif_proc (HWND hwnd, int id, int nc, DWORD add_data)
+/**
+ * \fn void draw_window( struct gui_window * window)
+ * \brief draw the window given in argument to the screen
+ *
+ * \param window the window
+ */
+void draw_window( struct gui_window * window)
 {
-    dir_notif_proc (hwnd, IDL_FILE_VIDEO, nc, IDC_PATH_VIDEO, config.filter_video_ext );
-}
+	struct list_object * list_controls;
+	struct gui_control * control;
+	char * p;
+	int y;
+	int font_height;
 
-static void audio_file_notif_proc (HWND hwnd, int id, int nc, DWORD add_data)
-{
-    char extensions[PATH_MAX+1];
-    strcpy( extensions, config.filter_audio_ext );
-    strcat( extensions, " .m3u" );
-    dir_notif_proc (hwnd, IDL_FILE_AUDIO, nc, IDC_PATH_AUDIO, extensions );
-}
+	PRINTD( "draw_window\n" );
+	primary->SetBlittingFlags( primary,DSBLIT_BLEND_ALPHACHANNEL);
+	primary->SetColor( primary, window->r, window->g, window->b, window->a );
 
-
-
-
-void display_current_file( char * filename, struct skin_config *skin_conf, ILuint bitmap )
-{
-    RECT rc;
-    
-    display_image_to_fb( bitmap );
-    
-    rc.left = skin_conf->text_x1;
-    rc.right = skin_conf->text_x2;
-    rc.top = skin_conf->text_y1;
-    rc.bottom = skin_conf->text_y2;
-    SetBkMode(HDC_SCREEN, BM_TRANSPARENT);
-    SetTextColor(HDC_SCREEN, RGB2Pixel(HDC_SCREEN, skin_conf->text_color>>16, (skin_conf->text_color&0xFF00)>>8,skin_conf->text_color&0xFF));  	
-    PRINTD("Display current file at x1 %i x2 %i y1 %i y2 %i color : %x name :%s\n",  rc.left, rc.right,rc.top,rc.bottom,skin_conf->text_color,filename );
-    TextOut( HDC_SCREEN, rc.left, rc.top, filename );
-    //DrawText (HDC_SCREEN, filename, -1, &rc, DT_CENTER );  
-}
-
-static void play (HWND hDlg, char * folder, char * filename, BOOL resume)
-{
-    int pos = 0;
-    
-
-    if (resume == TRUE) {
-        if (resume_get_file_infos(filename, PATH_MAX, &pos) != 0){
-            MessageBox (hDlg, "Unable to retrieve resume informations", "TomPlayer", MB_OK | MB_ICONINFORMATION);      
-            return;
-        }
-    }
-    
-    ShowWindow( hDlg, SW_HIDE );
-
-    if( is_video_file( filename ) ){
-        display_current_file( filename, &config.video_config, config.bitmap_loading );
-    }
-    else{
-        display_current_file( filename, &config.audio_config, config.audio_config.bitmap );
-    }
-    launch_mplayer( folder, filename, pos );   
-}
-
-static int mouse_hook (void* context, HWND dst_wnd, int msg, WPARAM wParam, LPARAM lParam)
-{
-   if( msg == MSG_LBUTTONDOWN && ( is_playing_video == TRUE || is_playing_audio == TRUE ) ){
-       handle_mouse_event( LOSWORD (lParam), HISWORD (lParam) );
-       return HOOK_STOP;
-   }
-   else
-       return HOOK_GOON;
-}
-
-static int load_icons( void ){
-    hicon_folder = LoadIconFromFile( HDC_SCREEN, ICON_FOLDER_FILENAME, 0 );
-	if( !hicon_folder ){
-	    fprintf( stderr, "Erreur chargement folder.ico\n" );
-	    return FALSE;
+	if( window->font != NULL ){
+		primary->SetFont( primary, window->font );
+		window->font->GetHeight( window->font, &font_height );
 	}
-	
-    hicon_file = LoadIconFromFile( HDC_SCREEN, ICON_FILE_FILENAME, 0 );
-    if( !hicon_file ){
-        fprintf( stderr, "Erreur chargement file.ico\n" );
-        return FALSE;
-    }
+	else{
+		primary->SetFont( primary, default_font );
+		default_font->GetHeight( default_font, &font_height );
+	}
 
-    return TRUE;
+	primary->Clear( primary, 0, 0, 0, 0xFF );
+
+	if( window->background_surface != NULL ){
+		PRINTD( "Drawing background surface\n" );
+		primary->Blit( primary, window->background_surface, NULL, 0, 0 );
+	}
+
+	list_controls = window->controls;
+	while( list_controls != NULL ){
+		control = (struct gui_control *) list_controls->object;
+		PRINTDF( "Affichage du control de type %d\n", control->type );
+		switch( control->type ){
+			case GUI_TYPE_CTRL_ICON:
+				primary->Blit( primary, control->bitmap_surface, NULL, control->x, control->y );
+				break;
+			case GUI_TYPE_CTRL_STATIC_TEXT:
+				p = strdup( get_static_text( control->param ) );
+				y = control->y;
+				p = strtok( p, "\n" );
+				while( p!= NULL ){
+					primary->DrawString( primary, p, -1,control->x, y,  DSTF_CENTER | DSTF_TOP );
+					p=strtok( NULL, "\n" );
+					y += font_height;
+				}
+				break;
+			case GUI_TYPE_CTRL_BUTTON:
+				primary->Blit( primary, control->bitmap_surface, NULL, control->x, control->y );
+				break;
+			case GUI_TYPE_CTRL_LISTVIEW:
+			case GUI_TYPE_CTRL_LISTVIEW_ICON:
+				primary->Blit( primary, control->bitmap_surface, NULL, control->x, control->y );
+				break;
+		}
+
+		list_controls = list_controls->next;
+	}
 }
 
-static int listbox_cmp( char * path, char * v1, char * v2 ){
-    struct stat ftype1,ftype2;
-    char f_v1[MAX_PATH+1];
-    char f_v2[MAX_PATH+1];
-
-    sprintf( f_v1, "%s/%s", path, v1 );
-    sprintf( f_v2, "%s/%s", path, v2 );
-    stat (f_v1, &ftype1);
-    stat (f_v2, &ftype2);
-    
-    if( S_ISDIR (ftype1.st_mode) && S_ISDIR (ftype2.st_mode) ) return strcasecmp( v1, v2 );
-    else if( S_ISDIR (ftype1.st_mode) ) return -1;
-    else if( S_ISDIR (ftype2.st_mode) ) return +1;
-    else return strcasecmp( v1, v2 );
-}
-
-static int listbox_video_cmp( char * v1, char * v2, size_t n ){
-    char path[MAX_PATH+1];
-
-    GetWindowText (GetDlgItem (GetParent (hlb_video), IDC_PATH_VIDEO), path, MAX_PATH);
-    return listbox_cmp( path, v1, v2 );
-}
-
-static int listbox_audio_cmp( char * v1, char * v2, size_t n ){
-    char path[MAX_PATH+1];
-
-    GetWindowText (GetDlgItem (GetParent (hlb_audio), IDC_PATH_AUDIO), path, MAX_PATH);
-    return listbox_cmp( path, v1, v2 );
-}
 
 
-static int TomPlayerVideoProc (HWND hDlg, int message, WPARAM wParam, LPARAM lParam)
+/**
+ * \fn static void init_resources( int argc, char *argv[] )
+ * \brief set up DirectFB and load resources
+ *
+ * \param argc argument count
+ * \param argv argument values
+ */
+static void init_resources( int argc, char *argv[] )
 {
-    char folder[MAX_PATH+1];
-    int i;
-    char filename[MAX_NAME+1];
-    
-    switch (message) {
-        case MSG_INITPAGE:
-            hlb_video = GetDlgItem (hDlg, IDL_FILE_VIDEO);
-            SendMessage (hlb_video, LB_SETSTRCMPFUNC, 0, (LPARAM)listbox_video_cmp);
-            fill_boxes (hDlg, IDL_FILE_VIDEO, IDC_PATH_VIDEO, config.filter_video_ext, config.video_folder);
-            SetNotificationCallback (GetDlgItem (hDlg, IDL_FILE_VIDEO), video_file_notif_proc);
-            break;
-    
-        case MSG_SHOWPAGE:
-            return 1;
-    
-        case MSG_COMMAND:
-            switch (wParam) {
-                case IDB_PLAY_VIDEO:
-                    GetWindowText (GetDlgItem (hDlg, IDC_PATH_VIDEO), folder, MAX_PATH);
-                    strcat( folder, "/" );
-                    i = SendDlgItemMessage (hDlg, IDL_FILE_VIDEO, LB_GETCURSEL, 0, 0);
-                    if( i == LB_ERR ){
-                        MessageBox (hDlg, "No file selected", "TomPlayer", MB_OK | MB_ICONINFORMATION);      
-                        break;
-                    } else {
-                        SendDlgItemMessage (hDlg, IDL_FILE_VIDEO, LB_GETTEXT, i, (LPARAM)filename) ;
-                    }
-                    play (GetParent(hDlg), folder, filename, FALSE);
-                    break;
-                case IDB_EXIT_VIDEO:
-                    EndDialog (GetParent(hDlg), wParam);
-                    display_image_to_fb( config.bitmap_exiting );
-                    exit(0);
-                    break;
-                case IDB_RESUME_VIDEO:
-                    play (GetParent(hDlg), "",filename,TRUE);
-                    break;
-            }
-            break;
+	DFBResult err;
+	DFBSurfaceDescription dsc;
 
-    }
-    
-    return DefaultPageProc (hDlg, message, wParam, lParam);
+	PRINTD( "init_resources\n" );
+
+
+	DFBCHECK(DirectFBInit( &argc, &argv ));
+
+	DFBCHECK(DirectFBCreate( &dfb ));
+
+	DFBCHECK(dfb->CreateInputEventBuffer( dfb, DICAPS_ALL,DFB_FALSE, &keybuffer ));
+
+	err = dfb->SetCooperativeLevel( dfb, DFSCL_FULLSCREEN );
+	if (err) DirectFBError( "Failed to get exclusive access", err );
+
+	dsc.flags = DSDESC_CAPS;
+	dsc.caps = DSCAPS_PRIMARY /*| DSCAPS_DOUBLE*/;
+
+	err = dfb->CreateSurface( dfb, &dsc, &primary );
+
+	DFBCHECK(primary->GetSize( primary, &screen_width, &screen_height ));
+
+	if( screen_width == 480 ) is_wide_screen = true;
+	if( screen_width == 240 ){
+		s32 matrix[9];
+
+		matrix[0] = 0;
+		matrix[1] = 1;
+		matrix[2] = 0;
+		matrix[3] = 1;
+		matrix[4] = 0;
+		matrix[5] = 0;
+		matrix[6] = 0;
+		matrix[7] = 0;
+		matrix[8] = 0;
+
+		primary->SetRenderOptions( primary, DSRO_MATRIX );
+		primary->SetMatrix( primary, matrix );
+	}
+	default_font = load_font( FONT, 20 );
 }
 
 
-static int TomPlayerAudioProc (HWND hDlg, int message, WPARAM wParam, LPARAM lParam)
+/**
+ * \fn static void release_resources( void )
+ * \brief release DirectFB
+ */
+static void release_resources( void )
 {
-    char folder[MAX_PATH+1];
-    int i;
-    char filename[MAX_NAME+1];
-    
-    switch (message) {
-        case MSG_INITPAGE:
-            hlb_audio = GetDlgItem (hDlg, IDL_FILE_AUDIO);
-            SendMessage (hlb_audio, LB_SETSTRCMPFUNC, 0, (LPARAM)listbox_audio_cmp);
-            fill_boxes (hDlg, IDL_FILE_AUDIO, IDC_PATH_AUDIO, config.filter_audio_ext, config.audio_folder);
-            SetNotificationCallback (GetDlgItem (hDlg, IDL_FILE_AUDIO), audio_file_notif_proc);        
-            break;
-    
-        case MSG_SHOWPAGE:
-            return 1;
-    
-        case MSG_COMMAND:
-            switch (wParam) {
-                case IDB_PLAY_AUDIO:
-                    GetWindowText (GetDlgItem (hDlg, IDC_PATH_AUDIO), folder, MAX_PATH);
-                    strcat( folder, "/" );
-                    i = SendDlgItemMessage (hDlg, IDL_FILE_AUDIO, LB_GETCURSEL, 0, 0);
-                    if( i == LB_ERR ){
-                        MessageBox (hDlg, "No file selected", "TomPlayer", MB_OK | MB_ICONINFORMATION);      
-                        break;
-                    } else {
-                        SendDlgItemMessage (hDlg, IDL_FILE_AUDIO, LB_GETTEXT, i, (LPARAM)filename) ;
-                    }
-                    play (GetParent(hDlg), folder, filename, FALSE);
-                    break;
-                case IDB_EXIT_AUDIO:
-                    EndDialog (GetParent(hDlg), wParam);
-                    display_image_to_fb( config.bitmap_exiting );
-                    exit(0);
-                    break;
-                case IDB_RANDOM_AUDIO:
-                    GetWindowText (GetDlgItem (hDlg, IDC_PATH_AUDIO), folder, MAX_PATH);
-                    if( generate_random_playlist( folder, DEFAULT_PLAYLIST ) == TRUE )
-                        play (GetParent(hDlg), "",DEFAULT_PLAYLIST, FALSE);
-                    else MessageBox (hDlg, "Unable to create playlist", "TomPlayer", MB_OK | MB_ICONINFORMATION);
-                    break;
-            }
-    }
-    
-    return DefaultPageProc (hDlg, message, wParam, lParam);
+	PRINTD( "deinit_resources\n");
+	default_font->Release( default_font );
+	primary->Release( primary );
+	keybuffer->Release( keybuffer );
+	dfb->Release( dfb );
 }
 
+/**
+ * \fn void message_box( char * title, char * message )
+ * \brief show a message box on the screen
+ *
+ * \param title title of the message box
+ * \param message message to display
+ */
+void message_box( char * title, char * message ){
+	DFBInputEvent evt;
 
-static int TomPlayerAudioSkinProc (HWND hDlg, int message, WPARAM wParam, LPARAM lParam)
+	context.title = title;
+	context.message = message;
+	draw_window( &messagebox_window );
+
+	while ( 1 ) {
+		keybuffer->WaitForEvent( keybuffer );
+		if( keybuffer->GetEvent( keybuffer, DFB_EVENT(&evt)) == DFB_OK )
+			if (evt.type == DIET_BUTTONPRESS) break;
+	}
+
+	draw_window( &main_window );
+}
+
+/**
+ * \fn static bool dispatch_ts_event( struct gui_window * window, DFBInputEvent *evt )
+ * \brief dispatch a touch screen event to the control selected or to the skin
+ *
+ * \param window current window
+ * \param evt DirectFB event
+ */
+static bool dispatch_ts_event( struct gui_window * window, DFBInputEvent *evt )
 {
-    char zip_file[MAX_PATH+1];
-    int i;
-    char filename[MAX_NAME+1];
-    char cmd[200];
+	int x,y;
+	struct list_object * list_controls;
+	struct gui_control * control;
 
-    switch (message) {
-        case MSG_INITPAGE:
-            fill_boxes (hDlg, IDL_FILE_AUDIO_SKIN, IDC_PATH_AUDIO_SKIN, ".zip", AUDIO_SKIN_FOLDER);
-            break;
-    
-        case MSG_SHOWPAGE:
-            return 1;
-    
-        case MSG_COMMAND:
-            switch (wParam) {
-                case IDB_SELECT_AUDIO_SKIN:
-                    GetWindowText (GetDlgItem (hDlg, IDC_PATH_AUDIO_SKIN), zip_file, MAX_PATH);
-                    strcat( zip_file, "/" );
-                    i = SendDlgItemMessage (hDlg, IDL_FILE_AUDIO_SKIN, LB_GETCURSEL, 0, 0);
-                    if( i == LB_ERR ){
-                        MessageBox (hDlg, "No file selected", "TomPlayer", MB_OK | MB_ICONINFORMATION);      
-                        break;
-                    } else {
-                        SendDlgItemMessage (hDlg, IDL_FILE_AUDIO_SKIN, LB_GETTEXT, i, (LPARAM)filename) ;
-                    }
-                    strcat( zip_file, filename );
-                    unload_skin( &config.audio_config );
-                    
-                    if( load_skin_from_zip( zip_file, &config.audio_config ) == FALSE ){
-                        MessageBox (hDlg, "Unable to load this skin", "Error", MB_OK | MB_ICONINFORMATION);
-                        load_skin_from_zip( config.audio_skin_filename, &config.audio_config );
-                    }
-                    else{
-                        strcpy( config.audio_skin_filename, zip_file );
-                        SetValueToEtcFile (CONFIG_FILE, SECTION_AUDIO_SKIN, KEY_SKIN_FILENAME, zip_file);
-                        sprintf( cmd, "cp -f %s .", CONFIG_FILE );
-                        system( cmd );
-                        system( "unix2dos tomplayer.ini" );
-                        
-                    }
-                    break;
-            }
-    }
-    
-    return DefaultPageProc (hDlg, message, wParam, lParam);
+	PRINTD( "dispatch_ts_event\n" );
+	if (evt->type == DIET_AXISMOTION) {
+		if (evt->flags & DIEF_AXISABS) {
+			switch (evt->axis) {
+				case DIAI_X:
+					mouse_x = evt->axisabs;
+					break;
+				case DIAI_Y:
+					mouse_y = evt->axisabs;
+					break;
+				case DIAI_Z:
+				case DIAI_LAST:
+					break;
+			}
+		}
+
+		mouse_x = CLAMP (mouse_x, 0, screen_width  - 1);
+		mouse_y = CLAMP (mouse_y, 0, screen_height - 1);
+	}
+	else if (evt->type == DIET_BUTTONPRESS){
+		if ( is_playing_video == true || is_playing_audio == true ) handle_mouse_event( mouse_x, mouse_y );
+		else if( window->redirect_ts_event_to_controls ){
+			list_controls = window->controls;
+			while( list_controls != NULL ){
+				control = (struct gui_control *) list_controls->object;
+				x = mouse_x;
+				y = mouse_y;
+
+				if( is_gui_ctrl_selected( control, &x, &y ) )
+					if( control->callback != NULL){
+						return control->callback(window, control->param, x, y);
+					}
+				list_controls = list_controls->next;
+			}
+		}
+		else if( window->callback!= NULL ) return window->callback(window, NULL, x, y);
+	}
+
+	return true;
 }
 
-static int TomPlayerVideoSkinProc (HWND hDlg, int message, WPARAM wParam, LPARAM lParam)
+/**
+ * \fn static bool load_main_config( void )
+ * \todo move this piece of configuration to the main configuration structure in config.h/config.c
+ */
+static bool load_main_config( void ){
+	dictionary * ini ;
+	char *s;
+
+	memset( &gui_config, 0, sizeof( struct gui_config ) );
+
+	ini = iniparser_load("./conf/gui.cfg");
+	if (ini == NULL) {
+		PRINTD( "Unable to load main config file\n");
+		return false ;
+	}
+
+	if( !is_wide_screen ){
+		s = iniparser_getstring(ini, "general:first_window", NULL);
+		if( s != NULL ) gui_config.first_window = strdup( s );
+
+
+		s = iniparser_getstring(ini, "general:messagebox_window", NULL);
+		if( s != NULL ) gui_config.messagebox_window = strdup( s );
+	}
+	else{
+		s = iniparser_getstring(ini, "general:first_window_ws", NULL);
+		if( s != NULL ) gui_config.first_window = strdup( s );
+
+		s = iniparser_getstring(ini, "general:messagebox_window_ws", NULL);
+		if( s != NULL ) gui_config.messagebox_window = strdup( s );
+	}
+
+	iniparser_freedict(ini);
+
+	return true;
+}
+
+
+int main( int argc, char *argv[] )
 {
-    char zip_file[MAX_PATH+1];
-    int i;
-    char filename[MAX_NAME+1];
-    char cmd[200];
+	bool quit = false;
+	DFBInputEvent evt;
 
-    switch (message) {
-        case MSG_INITPAGE:
-            fill_boxes (hDlg, IDL_FILE_VIDEO_SKIN, IDC_PATH_VIDEO_SKIN, ".zip", VIDEO_SKIN_FOLDER);
-            break;
-    
-        case MSG_SHOWPAGE:
-            return 1;
-    
-        case MSG_COMMAND:
-            switch (wParam) {
-                case IDB_SELECT_VIDEO_SKIN:
-                	
-                    GetWindowText (GetDlgItem (hDlg, IDC_PATH_VIDEO_SKIN), zip_file, MAX_PATH);
-                    strcat( zip_file, "/" );
-                    i = SendDlgItemMessage (hDlg, IDL_FILE_VIDEO_SKIN, LB_GETCURSEL, 0, 0);
-                    if( i == LB_ERR ){
-                        MessageBox (hDlg, "No file selected", "TomPlayer", MB_OK | MB_ICONINFORMATION);      
-                        break;
-                    } else {
-                        SendDlgItemMessage (hDlg, IDL_FILE_VIDEO_SKIN, LB_GETTEXT, i, (LPARAM)filename) ;
-                    }
-                    strcat( zip_file, filename );
-                    unload_skin( &config.video_config );
-                    /* repeated below ???!!!
-                     * load_skin_from_zip( zip_file, &config.video_config );*/
-                    
-                    if( load_skin_from_zip( zip_file, &config.video_config ) == FALSE ){
-                        MessageBox (hDlg, "Unable to load this skin", "Error", MB_OK | MB_ICONINFORMATION);
-                        load_skin_from_zip( config.video_skin_filename, &config.video_config );
-                    }
-                    else{
-                        strcpy( config.video_skin_filename, zip_file );
-                        SetValueToEtcFile (CONFIG_FILE, SECTION_VIDEO_SKIN, KEY_SKIN_FILENAME, zip_file);
-                        sprintf( cmd, "cp -f %s .", CONFIG_FILE );
-                        system( cmd );
-                        system( "unix2dos tomplayer.ini" );
-                    }
-                    break;
-            }
+	init_engine();
+	load_main_config();
+    if( load_config(&config) == false ){
+        fprintf( stderr, "Error while loading config\n" );
+        exit(1);
     }
-    
-    return DefaultPageProc (hDlg, message, wParam, lParam);
-}
+	init_resources( argc, argv );
 
-static int TomPlayerPropSheetProc (HWND hDlg, int message, WPARAM wParam, LPARAM lParam)
-{
 
-    switch (message) {
-        case MSG_INITDIALOG:
-            if( load_config(&config) == FALSE ){
-                fprintf( stderr, "Error while loading config\n" );
-                exit(1);
-            }
-            if( load_icons() == FALSE ){
-                fprintf( stderr, "Error while loading icons\n" );
-                exit(1);
-            }
-            
-            
-            HWND pshwnd = GetDlgItem (hDlg, IDC_PROPSHEET);
+	memset( &main_window, 0, sizeof( struct gui_window ) );
 
-            DlgTomPlayerVideo.controls = CtrlTomPlayerVideo;
-            ExtendDialogBoxToScreen( &DlgTomPlayerVideo );
-            SendMessage (pshwnd, PSM_ADDPAGE, (WPARAM)&DlgTomPlayerVideo, (LPARAM)TomPlayerVideoProc);
+	load_window( gui_config.messagebox_window, &messagebox_window );
 
-            DlgTomPlayerAudio.controls = CtrlTomPlayerAudio;
-            ExtendDialogBoxToScreen( &DlgTomPlayerAudio );
-            SendMessage (pshwnd, PSM_ADDPAGE, (WPARAM)&DlgTomPlayerAudio, (LPARAM)TomPlayerAudioProc);
-            
-            DlgTomPlayerAudioSkin.controls = CtrlTomPlayerAudioSkin;
-            ExtendDialogBoxToScreen( &DlgTomPlayerAudioSkin );
-            SendMessage (pshwnd, PSM_ADDPAGE, (WPARAM)&DlgTomPlayerAudioSkin, (LPARAM)TomPlayerAudioSkinProc);
+	show_param_window( &main_window, gui_config.first_window, 0, 0 );
+	while( !quit ){
+		keybuffer->WaitForEventWithTimeout( keybuffer, 0, 200 );
+		while (keybuffer->GetEvent( keybuffer, DFB_EVENT(&evt)) == DFB_OK) {
+			quit = !dispatch_ts_event( &main_window, &evt );
+		}
 
-            DlgTomPlayerVideoSkin.controls = CtrlTomPlayerVideoSkin;
-            ExtendDialogBoxToScreen( &DlgTomPlayerVideoSkin );
-            SendMessage (pshwnd, PSM_ADDPAGE, (WPARAM)&DlgTomPlayerVideoSkin, (LPARAM)TomPlayerVideoSkinProc);
-            
-            SendMessage (pshwnd, PSM_SETACTIVEINDEX, (WPARAM)0, (LPARAM)0);
-            
-            ShowCursor(FALSE);
-            SetTimer (hDlg, ID_TIMER, 100);
-    
-            return 1;
-            
-        case MSG_TIMER:
-            if( ( is_playing_video == TRUE || is_playing_audio == TRUE ) && is_mplayer_finished == TRUE ){
-                is_playing_video = FALSE;
-                is_playing_audio = FALSE;
-                /* wolf : will be reinit on mplayer launch => Harmfull for udpate thread exit for now...
-                 * is_mplayer_finished = FALSE;*/
-                ShowWindow( hDlg, SW_SHOW );
-                ShowWindow( GetDlgItem (hDlg, IDC_PROPSHEET), SW_SHOW );
-                UpdateWindow( hDlg, TRUE );
-                UpdateWindow( GetDlgItem (hDlg, IDC_PROPSHEET), TRUE );
+        if( ( is_playing_video == true || is_playing_audio == true ) && is_mplayer_finished == true ){
+            is_playing_video = false;
+            is_playing_audio = false;
 
-                /* Turn ON screen if it is not */
-                pwm_resume();                               
-            }
-            /* Test OFF button */
-            if (power_is_off_button_pushed()){
-            	EndDialog (hDlg, wParam);
-            	display_image_to_fb( config.bitmap_exiting );
-            	exit(0);
-            }
-            break;
 
-        case MSG_CLOSE:
-            EndDialog (hDlg, wParam);
-            display_image_to_fb( config.bitmap_exiting );
-            exit(0);
-    }
-    
-    return DefaultDialogProc (hDlg, message, wParam, lParam);
+            /* Turn ON screen if it is not */
+            pwm_resume();
+            draw_window( &main_window );
+        }
+        /* Test OFF button */
+        if (power_is_off_button_pushed()){
+        	display_image_to_fb( config.bitmap_exiting );
+        	exit(0);
+        }
+
+	}
+	release_engine();
+
+	release_resources();
+
+
+	return 0;
 }
 
 
-int MiniGUIMain (int argc, const char* argv[])
-{
 
-    init_engine();
-	
-    SetWindowBkColor( HWND_DESKTOP, 0 );
-    RegisterMouseMsgHook(HWND_DESKTOP, mouse_hook);
-    
-    DlgTomPlayerPropSheet.controls = CtrlTomPlayerPropSheet;
-    
-    ExtendDialogBoxToScreen( &DlgTomPlayerPropSheet );
-    
-    DialogBoxIndirectParam (&DlgTomPlayerPropSheet, HWND_DESKTOP, TomPlayerPropSheetProc, 0L);
-
-    release_engine();
-    
-    return 0;
-}

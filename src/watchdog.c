@@ -1,6 +1,6 @@
 /***************************************************************************
  *
- *  
+ *
  ****************************************************************************/
 /*
  *  This program is free software; you can redistribute it and/or modify
@@ -16,7 +16,12 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- */ 
+ */
+
+/**
+ * \file watchdog.c
+ * \author wolfgar
+ */
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -26,29 +31,31 @@
 #include <pthread.h>
 
 
-
-/** Periocally refresh the wdg */
+/**
+ * \fn static void  refresh_wdg(void)
+ * \brief Periocally refresh the wdg
+ */
 static void  refresh_wdg(void){
   int fd;
 
   fd = open("/dev/watchdog", O_RDWR);
-  
+
   if (fd < 0){
     fprintf(stderr,"unable to open watchdog device\n");
     return;
   }
-  
+
   while (1){
     /*Write a single byte to refresh WDG */
     write(fd, "o",1);
     sleep(1);
-  }  
+  }
 }
 
 /** Launch a process in charge of refreshing the wdg every seconds
 *
 */
-int main(int argc, char *argv[]) {  
+int main(int argc, char *argv[]) {
   refresh_wdg();
   return 0;
 }

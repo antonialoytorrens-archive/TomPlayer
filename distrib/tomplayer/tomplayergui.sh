@@ -27,17 +27,45 @@ killall -9 suntime
 killall -9 refresh_wdg 
 ./refresh_wdg &
 
-echo "Running the application"
-
-#Create a symbolic link to enable generic minigui configuration file
-ln -sf ${TOMPLAYER_DIR}/res /etc/res
-
 #convert in UNIX text format the used configuration file
-cp -f tomplayer.ini /tmp/tomplayer.ini
+cp -f conf/tomplayer.ini /tmp/tomplayer.ini
 dos2unix /tmp/tomplayer.ini
 
+#!/bin/sh
 export FRAMEBUFFER=/dev/fb
-./tomplayer
+export TSLIB_CONSOLEDEVICE=none
+export TSLIB_FBDEVICE=/dev/fb
+export TSLIB_TSDEVICE=/dev/ts
+export TSLIB_CONFFILE=/etc/ts.conf
+export TSLIB_PLUGINDIR=/usr/lib/ts
+
+
+export LIB_TOMPLAYER=${TOMPLAYER_DIR}/lib
+export CONF_TOMPLAYER=${TOMPLAYER_DIR}/conf
+cd /etc
+ln -sf ${CONF_TOMPLAYER}/ts.conf ts.conf
+
+mkdir /usr/lib
+cd /usr/lib
+ln -sf ${LIB_TOMPLAYER}/directfb-1.2-0 directfb-1.2-0
+ln -sf ${LIB_TOMPLAYER}/ts ts
+
+ln -sf ${LIB_TOMPLAYER}/libfusion-1.2.so.0.0.0 libfusion-1.2.so.0
+ln -sf ${LIB_TOMPLAYER}/libzip.so.1.0.0 libzip.so.1
+ln -sf ${LIB_TOMPLAYER}/libdirect-1.2.so.0.0.0 libdirect-1.2.so.0
+ln -sf ${LIB_TOMPLAYER}/libz.so.1.2.3 libz.so.1
+ln -sf ${LIB_TOMPLAYER}/libpng12.so.0 libpng12.so.0
+ln -sf ${LIB_TOMPLAYER}/libdirectfb-1.2.so.0.0.0 libdirectfb-1.2.so.0
+ln -sf ${LIB_TOMPLAYER}/libfreetype.so.6.3.16 libfreetype.so.6
+ln -sf ${LIB_TOMPLAYER}/libpng.so.3.29.0 libpng.so.3
+ln -sf ${LIB_TOMPLAYER}/libts-0.0.so.0.1.1 libts-0.0.so.0
+ln -sf ${LIB_TOMPLAYER}/libIL.so.1.0.0 libIL.so.1
+ln -sf ${LIB_TOMPLAYER}/libILU.so.1.0.0 libILU.so.1
+ln -sf ${LIB_TOMPLAYER}/libILUT.so.1.0.0 libILUT.so.1
+
+
+cd $TOMPLAYER_DIR
+./tomplayer --dfb:no-vt
 
 ttn_file=/bin/ttn
 

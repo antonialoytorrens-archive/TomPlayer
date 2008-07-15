@@ -2,7 +2,7 @@
  * Resume file handling
  *
  *  Mon Feb 27 2008
- *  Copyright  2008  StÃ©phan Rafin
+ *  Copyright  2008  Stéphan Rafin
  *  Email
  ****************************************************************************/
 /*
@@ -20,18 +20,29 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
+
+/**
+ * \file resume.c
+ * \author wolfgar
+ * \brief Resume file handling
+ */
+
+
 #include <stdio.h>
-#include <minigui/common.h>
-#include <minigui/minigui.h>
-
+#include <dictionary.h>
+#include <iniparser.h>
 #include "resume.h"
+#include "debug.h"
 
-#define RESUME_FILENAME "./resume.ini"
+/* Correct iniparser bug in naming function iniparser_setstring/iniparser_set */
+extern int iniparser_set(dictionary * ini, char * entry, char * val);
+#define iniparser_setstring iniparser_set
+
+#define RESUME_FILENAME "./conf/resume.ini"
 
 #define RESUME_SECTION_KEY "RESUME"
 #define RESUME_VIDEO_SETTINGS_SECTION_KEY "VIDEO SETTINGS"
 #define RESUME_AUDIO_SETTINGS_SECTION_KEY "AUDIO SETTINGS"
-
 #define RESUME_FILENAME_KEY "file"
 #define RESUME_POS_KEY "pos"
 #define RESUME_CONTRAST_KEY "contrast"
@@ -39,197 +50,325 @@
 #define RESUME_VOLUME_KEY "volume"
 #define RESUME_AUDIO_DELAY_KEY "audio_delay"
 
-/** Reinit the resume file 
-*
-* \param file The opened media filename
-*
-*\retval  0  OK
-*\retval -1  KO
-*/
-int resume_file_init(char * file){    
+/**
+ * \fn int resume_file_init(char * file)
+ * \brief Reinit the resume file
+ *
+ * \param file The opened media filename
+ *
+ * \return 0  on success, -1 on failure
+ */
+int resume_file_init(char * file){
+	dictionary * ini ;
+	FILE * fp;
+	int ret = 0;
 
-  if (SetValueToEtcFile(RESUME_FILENAME,  RESUME_SECTION_KEY,  RESUME_FILENAME_KEY, file) != ETC_OK){
-    fprintf(stderr,"Error while writing media file entry in resume file : %s \n ", RESUME_FILENAME);
-    return -1;
-  } else {
-    if (SetValueToEtcFile(RESUME_FILENAME,  RESUME_SECTION_KEY,  RESUME_POS_KEY, "-1") != ETC_OK){
-      fprintf(stderr,"Error while reinitializing position value in resume file : %s \n ", RESUME_FILENAME);
-      return -1;
-    }    
-  }
-  return 0;	
+	ini = iniparser_load(RESUME_FILENAME);
+	if( ini == NULL ){
+		PRINTD( "resume file doesn't exist\n" );
+		ini = dictionary_new( 0 );
+	}
+
+	fp = fopen( RESUME_FILENAME, "w+" );
+	if( fp == NULL ){
+		PRINTDF( "Unable to create resume file <%s>\n", RESUME_FILENAME );
+		ret = -1;
+		goto error;
+	}
+
+	iniparser_setstring( ini, RESUME_SECTION_KEY, NULL );
+	iniparser_setstring( ini, RESUME_SECTION_KEY":"RESUME_FILENAME_KEY, file );
+	iniparser_setstring( ini, RESUME_SECTION_KEY":"RESUME_POS_KEY, "-1" );
+
+	iniparser_dump_ini( ini, fp );
+
+	fclose( fp );
+
+error:
+	iniparser_freedict(ini);
+
+	return ret;
 }
 
-
-/** Write position entry in resume file 
-*
-* \param value The current position in seconds
-*
-*\retval  0  OK
-*\retval -1  KO
-*/
+/**
+ * \fn int resume_write_pos(int value)
+ * \brief Write position entry in resume file
+ *
+ * \param value The current position in seconds
+ *
+ * \return 0  on success, -1 on failure
+ */
 int resume_write_pos(int value){
   char buffer[100];
+  dictionary * ini ;
+  FILE * fp;
+  int ret = 0;
+
+  ini = iniparser_load(RESUME_FILENAME);
+  if( ini == NULL ){
+  	PRINTDF( "Unable to load resume file <%s>\n", RESUME_FILENAME );
+  	return -1;
+  }
 
   snprintf(buffer, sizeof(buffer),"%i", value);
-  if (SetValueToEtcFile(RESUME_FILENAME,  RESUME_SECTION_KEY,  RESUME_POS_KEY, buffer) != ETC_OK){
-    fprintf(stderr,"Error while writing position value %i in resume file : %s \n ", value, RESUME_FILENAME);
-    return -1;
-  }    
-  return 0;
+  iniparser_setstring( ini, RESUME_SECTION_KEY, NULL );
+  iniparser_setstring( ini, RESUME_SECTION_KEY":"RESUME_POS_KEY, buffer );
+
+  fp = fopen( RESUME_FILENAME, "w+" );
+  if( fp == NULL ){
+  	PRINTDF( "Unable to create resume file <%s>\n", RESUME_FILENAME );
+  	ret = -1;
+  	goto error;
+  }
+
+  iniparser_dump_ini( ini, fp );
+  fclose( fp );
+
+error:
+  iniparser_freedict(ini);
+  return ret;
 }
 
-/** Get media file and position entry in resume file 
-*
-*\param filename[out] Buffer where the media filename has to be stored
-*\param len Length of the buffer where thefilename has to be copied 
-*\param pos[out] Last position in seconds
-*
-* \retval 0  : OK
-* \retval -1 :  An error occured 
-*/
+
+/**
+ * \fn int resume_get_file_infos(char * filename, int len , int * pos)
+ * \brief Get media file and position entry in resume file
+ *
+ * \param filename Buffer where the media filename has to be stored
+ * \param len Length of the buffer where thefilename has to be copied
+ * \param pos Last position in seconds
+ *
+ * \return 0  on success, -1 on failure
+ */
 int resume_get_file_infos(char * filename, int len , int * pos){
-  char buffer[100];  
+  dictionary * ini ;
+  char *s;
+  int ret = 0;
 
 
   *pos = 0;
   if (len <= 0){
     return -1;
   }
-  filename[0] = 0;
+  memset( filename, 0, len );
 
-  if (GetValueFromEtcFile( RESUME_FILENAME, RESUME_SECTION_KEY, RESUME_POS_KEY, buffer, sizeof(buffer)) != ETC_OK){
-    fprintf(stderr,"Error while getting position value in resume file : %s \n ", RESUME_FILENAME);
-    return -1;
-  }
-  if (sscanf(buffer,"%i", pos) != 1){
-    fprintf(stderr,"Error while parsing position value : %s \n ", buffer);
-    return -1;
-  }  
-  if (GetValueFromEtcFile( RESUME_FILENAME, RESUME_SECTION_KEY, RESUME_FILENAME_KEY, filename, len) != ETC_OK){
-    fprintf(stderr,"Error while getting media filename in : %s \n ", RESUME_FILENAME);
-    return -1;
+  ini = iniparser_load(RESUME_FILENAME);
+  if( ini == NULL ){
+  	PRINTDF( "Unable to load resume file <%s>\n", RESUME_FILENAME );
+  	return -1;
   }
 
-  return 0;
+  s = iniparser_getstring(ini, RESUME_SECTION_KEY":"RESUME_FILENAME_KEY, NULL);
+  if( s != NULL ) strncpy( filename, s, len-1 );
+  else{
+  	ret = -1;
+  	PRINTDF( "Error while getting media filename in : %s \n ", RESUME_FILENAME);
+  	goto error;
+  }
+
+  s = iniparser_getstring(ini, RESUME_SECTION_KEY":"RESUME_POS_KEY, NULL);
+  if( s != NULL ){
+  	if (sscanf(s ,"%i", pos) != 1){
+  		ret = -1;
+  		PRINTDF("Error while parsing position value : %s \n ", s);
+  		goto error;
+  	}
+  }
+  else{
+  	ret = -1;
+  	PRINTDF("Error while getting position value in resume file : %s \n ", RESUME_FILENAME);
+  	goto error;
+  }
+
+error:
+  iniparser_freedict(ini);
+  return ret;
 }
 
 
-/** Read video settings from resume file
- * \param settings[out] read settings 
- * 
- *\retval  0  OK
- *\retval -1  KO
+
+/**
+ * \fn int resume_get_audio_settings(struct audio_settings * settings)
+ * \brief Read video settings from resume file
+ *
+ * \param settings read settings
+ *
+ * \return 0  on success, -1 on failure
  */
 int resume_get_audio_settings(struct audio_settings * settings){
-	GHANDLE gh_resume;
+	dictionary * ini ;
 	int res = 0;
-	 
-	gh_resume = LoadEtcFile( RESUME_FILENAME );	
-	if( gh_resume == ETC_FILENOTFOUND ){
-       fprintf(stderr, "Warning : Unable to load resume file <%s>\n", RESUME_FILENAME );
-       return -1;
-	}		
-    if (GetIntValueFromEtc( gh_resume, RESUME_AUDIO_SETTINGS_SECTION_KEY, RESUME_VOLUME_KEY, &settings->volume ) != ETC_OK ){
-    	res = -1;
-    	goto out_audio_settings;
-    }	
-     
-out_audio_settings: 
-    UnloadEtcFile( gh_resume);
-    return res;
-}
+	int i;
 
-
-/** Read audio settings from resume file
- * \param settings[out] read settings 
- * 
- *\retval  0  OK
- *\retval -1  KO
- */
-int resume_get_video_settings(struct video_settings * settings) {
-	GHANDLE gh_resume;
-	char buffer[256];
-	int res = 0;
-	 
-	gh_resume = LoadEtcFile( RESUME_FILENAME );	
-	if( gh_resume == ETC_FILENOTFOUND ){
-       fprintf(stderr, "Warning : Unable to load resume file <%s>\n", RESUME_FILENAME );
-       return -1;
+	ini = iniparser_load(RESUME_FILENAME);
+	if( ini == NULL ){
+		PRINTDF( "Warning : Unable to load resume file <%s>\n", RESUME_FILENAME );
+		return -1;
 	}
 
-    if (GetIntValueFromEtc( gh_resume, RESUME_VIDEO_SETTINGS_SECTION_KEY, RESUME_CONTRAST_KEY, &settings->contrast ) != ETC_OK ){
-    	res = -1;
-    	goto out_video_settings;
-    }
-    if (GetIntValueFromEtc( gh_resume, RESUME_VIDEO_SETTINGS_SECTION_KEY, RESUME_BRIGHTNESS_KEY, &settings->brightness ) != ETC_OK ){
-    	res = -1;
-    	goto out_video_settings;
-    }	
-    if (GetIntValueFromEtc( gh_resume, RESUME_VIDEO_SETTINGS_SECTION_KEY, RESUME_VOLUME_KEY, &settings->volume ) != ETC_OK ){
-    	res = -1;
-    	goto out_video_settings;
-    }    
-        
-    if (GetValueFromEtc( gh_resume, RESUME_VIDEO_SETTINGS_SECTION_KEY, RESUME_AUDIO_DELAY_KEY, buffer, sizeof(buffer) ) != ETC_OK ){
-    	res = -1;
-    	goto out_video_settings;
-    }
-    if (sscanf(buffer,"%f",&settings->audio_delay) != 1){
-    	res = -1;
-    }
+	i = iniparser_getint(ini, RESUME_AUDIO_SETTINGS_SECTION_KEY":"RESUME_VOLUME_KEY, -1);
+	if( i < 0 ){
+		PRINTD( "Warning : Unable to get volume from resume file\n");
+		res = -1;
+		goto out_audio_settings;
+	}
+	else settings->volume = i;
 
-    
-out_video_settings: 
-    UnloadEtcFile( gh_resume);
+
+out_audio_settings:
+	iniparser_freedict(ini);
     return res;
 }
 
-
-/** Write audio settings to resume file
- * \param settings[in] settings to be written to the file
- * 
- *\retval  0  OK
- *\retval -1  KO
+/**
+ * \fn int resume_get_video_settings(struct video_settings * settings)
+ * \brief Get media file and position entry in resume file
+ *
+ * \param settings read settings
+ *
+ * \return 0  on success, -1 on failure
  */
-int resume_set_audio_settings(const struct audio_settings * settings){	
-	char buffer[256];
-	
-    snprintf(buffer,sizeof(buffer),"%i",settings->volume);
-    if (SetValueToEtcFile( RESUME_FILENAME, RESUME_AUDIO_SETTINGS_SECTION_KEY, RESUME_VOLUME_KEY,buffer) != ETC_OK ){
-    	return -1;
-    }
-    		        
-    return 0;
-	
+int resume_get_video_settings(struct video_settings * settings) {
+	dictionary * ini ;
+	bool res = 0;
+	int i;
+	char *s;
+
+	ini = iniparser_load(RESUME_FILENAME);
+	if( ini == NULL ){
+		PRINTDF( "Warning : Unable to load resume file <%s>\n", RESUME_FILENAME );
+		return -1;
+	}
+
+
+	i = iniparser_getint(ini, RESUME_VIDEO_SETTINGS_SECTION_KEY":"RESUME_CONTRAST_KEY, -1);
+	if( i < 0 ){
+		res = -1;
+		goto out_video_settings;
+	}
+	else settings->contrast = i;
+
+	i = iniparser_getint(ini, RESUME_VIDEO_SETTINGS_SECTION_KEY":"RESUME_BRIGHTNESS_KEY, -1);
+	if( i < 0 ){
+		res = -1;
+		goto out_video_settings;
+	}
+	else settings->brightness = i;
+
+	i = iniparser_getint(ini, RESUME_VIDEO_SETTINGS_SECTION_KEY":"RESUME_VOLUME_KEY, -1);
+	if( i < 0 ){
+		res = -1;
+		goto out_video_settings;
+	}
+	else settings->volume = i;
+
+
+
+	s = iniparser_getstring(ini, RESUME_VIDEO_SETTINGS_SECTION_KEY":"RESUME_AUDIO_DELAY_KEY, NULL);
+	if( s != NULL ){
+		if (sscanf(s,"%f",&settings->audio_delay) != 1){
+			res = -1;
+			goto out_video_settings;
+		}
+	}
+	else{
+		res = -1;
+		PRINTDF( "Error while getting in <%s> resume file\n ", RESUME_AUDIO_DELAY_KEY);
+		goto out_video_settings;
+	}
+
+out_video_settings:
+	iniparser_freedict(ini);
+	return res;
 }
 
-/** Write video settings to resume file
- * \param settings[in] settings to be written to the file
- * 
- *\retval  0  OK
- *\retval -1  KO
+/**
+ * \fn int resume_set_audio_settings(const struct audio_settings * settings)
+ * \brief Write audio settings to resume file
+ *
+ * \param settings read settings
+ *
+ * \return 0  on success, -1 on failure
+ */
+int resume_set_audio_settings(const struct audio_settings * settings){
+	char buffer[256];
+	dictionary * ini ;
+	FILE * fp;
+	int ret = 0;
+
+	ini = iniparser_load(RESUME_FILENAME);
+	if( ini == NULL ){
+		PRINTDF( "Unable to load resume file <%s>\n", RESUME_FILENAME );
+		return -1;
+	}
+
+	iniparser_setstring( ini, RESUME_AUDIO_SETTINGS_SECTION_KEY, NULL );
+    snprintf(buffer,sizeof(buffer),"%i",settings->volume);
+    iniparser_setstring( ini, RESUME_AUDIO_SETTINGS_SECTION_KEY":"RESUME_VOLUME_KEY, buffer );
+
+    fp = fopen( RESUME_FILENAME, "w+" );
+    if( fp == NULL ){
+    	PRINTDF( "Unable to create resume file <%s>\n", RESUME_FILENAME );
+    	ret = -1;
+    	goto error;
+    }
+
+    iniparser_dump_ini( ini, fp );
+    fclose( fp );
+
+ error:
+    iniparser_freedict(ini);
+    return ret;
+
+
+
+}
+
+
+/**
+ * \fn int resume_set_video_settings(const struct video_settings * settings)
+ * \brief Write video settings to resume file
+ *
+ * \param settings read settings
+ *
+ * \return 0  on success, -1 on failure
  */
 int resume_set_video_settings(const struct video_settings * settings) {
-	
-	char buffer[256];	
-	
-	snprintf(buffer,sizeof(buffer),"%i",settings->contrast);	 
-    if (SetValueToEtcFile( RESUME_FILENAME, RESUME_VIDEO_SETTINGS_SECTION_KEY, RESUME_CONTRAST_KEY, buffer )  != ETC_OK ){
-    	return -1;
-    }
+	char buffer[256];
+	dictionary * ini ;
+	FILE * fp;
+	int ret = 0;
+
+	ini = iniparser_load(RESUME_FILENAME);
+	if( ini == NULL ){
+		PRINTDF( "Unable to load resume file <%s>\n", RESUME_FILENAME );
+		return false;
+	}
+
+	iniparser_setstring( ini, 	RESUME_VIDEO_SETTINGS_SECTION_KEY, NULL );
+	snprintf(buffer,sizeof(buffer),"%i",settings->contrast);
+	iniparser_setstring( ini, 	RESUME_VIDEO_SETTINGS_SECTION_KEY":"RESUME_CONTRAST_KEY, buffer );
+
     snprintf(buffer,sizeof(buffer),"%i",settings->brightness);
-    if (SetValueToEtcFile( RESUME_FILENAME, RESUME_VIDEO_SETTINGS_SECTION_KEY, RESUME_BRIGHTNESS_KEY, buffer ) != ETC_OK ){    	
-    	return -1;
-    }	
-    snprintf(buffer,sizeof(buffer),"%i",settings->volume);
-    if (SetValueToEtcFile( RESUME_FILENAME, RESUME_VIDEO_SETTINGS_SECTION_KEY, RESUME_VOLUME_KEY,buffer) != ETC_OK ){
-    	return -1;
-    }    
-    snprintf(buffer,sizeof(buffer),"%f",settings->audio_delay);    
-    if (SetValueToEtcFile( RESUME_FILENAME, RESUME_VIDEO_SETTINGS_SECTION_KEY, RESUME_AUDIO_DELAY_KEY, buffer ) != ETC_OK ){    	
-    	return -1;
-    }
-    		        
+	iniparser_setstring( ini, 	RESUME_VIDEO_SETTINGS_SECTION_KEY":"RESUME_BRIGHTNESS_KEY, buffer );
+
+	snprintf(buffer,sizeof(buffer),"%i",settings->volume);
+	iniparser_setstring( ini, 	RESUME_VIDEO_SETTINGS_SECTION_KEY":"RESUME_VOLUME_KEY, buffer );
+
+    snprintf(buffer,sizeof(buffer),"%f",settings->audio_delay);
+	iniparser_setstring( ini, 	RESUME_VIDEO_SETTINGS_SECTION_KEY":"RESUME_AUDIO_DELAY_KEY, buffer );
+
+	fp = fopen( RESUME_FILENAME, "w+" );
+	if( fp == NULL ){
+		PRINTDF( "Unable to create resume file <%s>\n", RESUME_FILENAME );
+		ret = -1;
+		goto error;
+	}
+
+	iniparser_dump_ini( ini, fp );
+	fclose( fp );
+
+error:
+	iniparser_freedict(ini);
     return 0;
 }

@@ -1,6 +1,6 @@
 /***************************************************************************
  *
- *  14.02.08 : wolfgar - Widescreen Handling 
+ *  14.02.08 : wolfgar - Widescreen Handling
  ****************************************************************************/
 /*
  *  This program is free software; you can redistribute it and/or modify
@@ -18,6 +18,10 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+/**
+ * \file widescreen.h
+ * \author wolfgar
+ */
 
 
 #ifndef __TOMPLAYER_WIDESCRREN_H__
@@ -26,18 +30,46 @@
 #include "config.h"
 
 /* Widescreen Resolution */
+/**
+ * \def WS_YMAX
+ */
 #define WS_YMAX 272
+
+/**
+ * \def WS_XMAX
+ */
 #define WS_XMAX 480
 
 /* Resolution of "normal" screen */
+/**
+ * \def WS_NOXL_YMAX
+ */
 #define WS_NOXL_YMAX 240
+
+/**
+ * \def WS_NOXL_XMAX
+ */
 #define WS_NOXL_XMAX 320
 
-#define EXTEND(a,b,c) (a) = (a) * (1.0 * b) /c
-#define EXTEND_X(a) EXTEND(a, ws_probe()?WS_XMAX:WS_NOXL_XMAX, WS_NOXL_XMAX )
-#define EXTEND_Y(a) EXTEND(a, ws_probe()?WS_YMAX:WS_NOXL_YMAX, WS_NOXL_YMAX )
+/**
+ * \def EXPAND
+ */
+#define EXPAND(a,b,c) (a) = (a) * (1.0 * b) /c
 
-/*Prefix for widescreen filenames*/
+/**
+ * \def EXPAND_X
+ */
+#define EXPAND_X(a) EXPAND(a, ws_probe()?WS_XMAX:WS_NOXL_XMAX, WS_NOXL_XMAX )
+
+/**
+ * \def EXPAND_Y
+ */
+#define EXPAND_Y(a) EXPAND(a, ws_probe()?WS_YMAX:WS_NOXL_YMAX, WS_NOXL_YMAX )
+
+/**
+ * \def WS_FILENAME_PREFIX
+ * \brief Prefix for widescreen filenames
+ */
 #define WS_FILENAME_PREFIX "ws_"
 
 extern int ws_probe(void);

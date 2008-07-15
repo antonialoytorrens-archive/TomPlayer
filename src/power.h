@@ -1,9 +1,9 @@
 /***************************************************************************
- *  
+ *
  *Power related functions to :
  *    - Probe power Off button
- * 	  - Get Battery informations 
- * 
+ * 	  - Get Battery informations
+ *
  * $URL$
  * $Rev$
  * $Author$
@@ -26,21 +26,30 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+/**
+ * \file power.h
+ * \author wolfgar
+ * \brief power utilities functions
+ */
+
 #include <stdbool.h>
 
 #ifndef POWER_H_
 #define POWER_H_
 
-enum power_level { 
-      POWER_BAT_PLUG, /* TomTom has an alternative power source */
-	  POWER_BAT_100,  /* Battery is full */
-	  POWER_BAT_66,
-	  POWER_BAT_33,
-	  POWER_BAT_WARN, /* Warning low battery */
-	  POWER_BAT_UNKNOWN
+/**
+ * \enum E_POWER_LEVEL
+ */
+enum E_POWER_LEVEL {
+      POWER_BAT_PLUG, /*!< TomTom has an alternative power source */
+	  POWER_BAT_100,  /*!< Battery is full */
+	  POWER_BAT_66,   /*!< 66% full */
+	  POWER_BAT_33,	  /*!< 33% full */
+	  POWER_BAT_WARN, /*<! Warning low battery */
+	  POWER_BAT_UNKNOWN /*!<unknown state */
 } ;
 
 bool power_is_off_button_pushed(void);
-enum power_level power_get_bat_state(void);
+enum E_POWER_LEVEL power_get_bat_state(void);
 
 #endif /*POWER_H_*/
