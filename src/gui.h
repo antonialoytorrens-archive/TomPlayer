@@ -54,5 +54,6 @@ IDirectFBSurface * create_surface( int width, int height );
 IDirectFBFont * load_font( char * filename, int height );
 void draw_window( struct gui_window * window);
 void message_box( char * title, char * message );
+void show_information_message( char * msg );
 
 #endif /* __GUI_H__ */

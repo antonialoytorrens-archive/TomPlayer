@@ -156,7 +156,7 @@ void draw_window( struct gui_window * window)
 {
 	struct list_object * list_controls;
 	struct gui_control * control;
-	char * p;
+	char * p, *s;
 	int y;
 	int font_height;
 
@@ -189,7 +189,8 @@ void draw_window( struct gui_window * window)
 				primary->Blit( primary, control->bitmap_surface, NULL, control->x, control->y );
 				break;
 			case GUI_TYPE_CTRL_STATIC_TEXT:
-				p = strdup( get_static_text( control->param ) );
+				s = strdup( get_static_text( control->param ) );
+				p = s;
 				y = control->y;
 				p = strtok( p, "\n" );
 				while( p!= NULL ){
@@ -197,6 +198,7 @@ void draw_window( struct gui_window * window)
 					p=strtok( NULL, "\n" );
 					y += font_height;
 				}
+				free( s );
 				break;
 			case GUI_TYPE_CTRL_BUTTON:
 				primary->Blit( primary, control->bitmap_surface, NULL, control->x, control->y );
@@ -241,7 +243,6 @@ static void init_resources( int argc, char *argv[] )
 	dsc.caps = DSCAPS_PRIMARY /*| DSCAPS_DOUBLE*/;
 
 	err = dfb->CreateSurface( dfb, &dsc, &primary );
-
 	DFBCHECK(primary->GetSize( primary, &screen_width, &screen_height ));
 
 	if( screen_width == 480 ) is_wide_screen = true;
@@ -272,6 +273,9 @@ static void init_resources( int argc, char *argv[] )
 static void release_resources( void )
 {
 	PRINTD( "deinit_resources\n");
+	unload_window( &messagebox_window );
+	unload_window( &main_window );
+	
 	default_font->Release( default_font );
 	primary->Release( primary );
 	keybuffer->Release( keybuffer );
@@ -299,6 +303,47 @@ void message_box( char * title, char * message ){
 	}
 
 	draw_window( &main_window );
+}
+
+/**
+ * \fn void show_information_message( char * msg )
+ * \brief show a message over the current window
+ *
+ * \param msg message to display
+ */
+void show_information_message( char * msg ){
+	char *p,*s;
+	int font_height;
+	int y;
+
+	PRINTD( "show_information_message\n" );
+
+	if( main_window.font != NULL ){
+		primary->SetFont( primary, main_window.font );
+		main_window.font->GetHeight( main_window.font, &font_height );
+	}
+	else{
+		primary->SetFont( primary, default_font );
+		default_font->GetHeight( default_font, &font_height );
+	}
+	
+	primary->Clear( primary, 0, 0, 0, 0xFF );
+
+	if( main_window.background_surface != NULL ){
+		PRINTD( "Drawing background surface\n" );
+		primary->Blit( primary, main_window.background_surface, NULL, 0, 0 );
+	}
+	
+	s = strdup( msg );
+	p = s;
+	y = screen_height/3;
+	p = strtok( p, "\n" );
+	while( p!= NULL ){
+		primary->DrawString( primary, p, -1,screen_width/2, y,  DSTF_CENTER | DSTF_TOP );
+		p=strtok( NULL, "\n" );
+		y += font_height;
+	}
+	free( s );
 }
 
 /**
@@ -404,18 +449,18 @@ int main( int argc, char *argv[] )
         fprintf( stderr, "Error while loading config\n" );
         exit(1);
     }
-	init_resources( argc, argv );
 
+	init_resources( argc, argv );
 
 	memset( &main_window, 0, sizeof( struct gui_window ) );
 
 	load_window( gui_config.messagebox_window, &messagebox_window );
 
 	show_param_window( &main_window, gui_config.first_window, 0, 0 );
-	while( !quit ){
+	while( quit == false ){
 		keybuffer->WaitForEventWithTimeout( keybuffer, 0, 200 );
 		while (keybuffer->GetEvent( keybuffer, DFB_EVENT(&evt)) == DFB_OK) {
-			quit = !dispatch_ts_event( &main_window, &evt );
+			if( dispatch_ts_event( &main_window, &evt ) == false ) quit=true;
 		}
 
         if( ( is_playing_video == true || is_playing_audio == true ) && is_mplayer_finished == true ){
@@ -430,7 +475,7 @@ int main( int argc, char *argv[] )
         /* Test OFF button */
         if (power_is_off_button_pushed()){
         	display_image_to_fb( config.bitmap_exiting );
-        	exit(0);
+        	quit = true;
         }
 
 	}
@@ -439,7 +484,7 @@ int main( int argc, char *argv[] )
 	release_resources();
 
 
-	return 0;
+	exit(0);
 }
 
 
