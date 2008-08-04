@@ -392,8 +392,9 @@ bool playlist_audio( struct gui_window * window, char * param, int x, int y ){
  * \return true on succes, false on failure
  */
 bool exit_tomplayer( struct gui_window * window, char * param, int x, int y ){
+	PRINTD( "Exiting...\n" );
 	display_image_to_fb( config.bitmap_exiting );
-	exit(0);
+	return false;
 }
 
 /**
