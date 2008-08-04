@@ -35,6 +35,8 @@
 #define ICON_W	80
 #define ICON_H	80
 #define DEFAULT_FILE_ICON "./res/icon/file.png"
+#define DEFAULT_AUDIO_ICON "./res/icon/audio.png"
+#define DEFAULT_VIDEO_ICON "./res/icon/video.png"
 #define DEFAULT_FOLDER_ICON "./res/icon/folder.png"
 
 /**

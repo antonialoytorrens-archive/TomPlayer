@@ -64,7 +64,7 @@
 #define SCREEN_SAVER_ACTIVE (-1)
 
 char * cmd_mplayer = "./mplayer -quiet -include ./conf/mplayer.conf -vf expand=%i:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -ss %i -slave -input file=%s %s \"%s/%s\" > %s";
-char * cmd_mplayer_thumbnail = "./mplayer \"%s/%s\" -ao null -vo png -ss 100 -frames 1 -vf scale=%d:%d";
+char * cmd_mplayer_thumbnail = "./mplayer -ao null -vo png:z=0 -ss 10 -frames 1 -vf scale=%d:%d \"%s/%s\"";
 
 static char * fifo_command_name = "/tmp/mplayer-cmd.fifo";
 static char * fifo_menu_name = "/tmp/mplayer-menu.fifo";
@@ -147,16 +147,20 @@ bool file_exist( char * file ){
 void get_thumbnail_name( char * folder, char * file, char * thumb ){
 	char * s;
 	char * c;
+	
+	if( is_video_file( file ) ){
+		/* remove extension */
+		s = strdup( file );
+		c = strrchr( s, '.');
+		if( c != NULL ) *c=0;
 
-	/* remove extension */
-	s = strdup( file );
-	c = strrchr( s, '.');
-	if( c != NULL ) *c=0;
+		/* thumbnail fullpath */
+		sprintf( thumb, "%s/thumb_%s.png", folder, s );
 
-	/* thumbnail fullpath */
-	sprintf( thumb, "%s/thumb_%s.png", folder, s );
-
-	free( s );
+		free( s );
+	}
+	else if ( is_audio_file( file ) ) strcpy( thumb, DEFAULT_AUDIO_ICON );
+	else strcpy( thumb, DEFAULT_FILE_ICON );
 }
 
 /**
@@ -177,18 +181,20 @@ void generate_thumbnail( void ){
 	while( list != NULL ){
 		file_elt = (struct file_elt *) list->object;
 
-		if( file_elt->type == TYPE_FILE ){
+		if( file_elt->type == TYPE_FILE && is_video_file( file_elt->name ) ){
 
 			get_thumbnail_name( context.current_path, file_elt->name, fullpath );
 
 			if( file_exist( fullpath ) == false ){
+				sprintf( cmd, "Generating thumbnail for\n%s", file_elt->name );
+				show_information_message( cmd );
 				PRINTDF( "Generating thumbnail for %s\n", file_elt->name );
-				sprintf( cmd, cmd_mplayer_thumbnail, context.current_path, file_elt->name, ICON_W, ICON_H );
+				sprintf( cmd, cmd_mplayer_thumbnail, ICON_W, ICON_H, context.current_path, file_elt->name );
 				system( cmd );
 
 				/* Move thumbnail to the right folder */
 				if( file_exist( "00000001.png") ) sprintf( cmd, "mv 00000001.png \"%s\"", fullpath );
-				else  sprintf( cmd, "cp %s \"%s\"", DEFAULT_FILE_ICON, fullpath );
+				else  sprintf( cmd, "cp %s \"%s\"", DEFAULT_VIDEO_ICON, fullpath );
 				system( cmd );
 			}
 		}
