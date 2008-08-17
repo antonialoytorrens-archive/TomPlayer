@@ -137,15 +137,15 @@ libzip-distclean:
 iniparser : $(LIBDIR)/libiniparser.so
 
 $(LIBDIR)/libiniparser.so :
-	make -C $(INIPARSER-DIR)  
+	make -C $(INIPARSER-DIR) CC=$(CROSS-COMPIL)gcc  
 	cp $(INIPARSER-DIR)/src/*.h $(INCDIR)
 	cp $(INIPARSER-DIR)/libiniparser.so.0 $(LIBDIR)/
 	(cd  $(LIBDIR)/ && ln -s libiniparser.so.0 libiniparser.so)	
 
 iniparser-distclean :
 	make -C $(INIPARSER-DIR)  veryclean
-	rm -f $(INCDIR)/src/iniparser.h
-	rm -f $(INCDIR)/src/dictionary.h
+	rm -f $(INCDIR)/iniparser.h
+	rm -f $(INCDIR)/dictionary.h
 	rm -f $(LIBDIR)/libiniparser.so.0
 	rm -f $(LIBDIR)/libiniparser.so
 
