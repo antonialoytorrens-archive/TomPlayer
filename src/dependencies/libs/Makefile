@@ -62,7 +62,7 @@ $(LIBJPEG-DIR)/Makefile :
 libjpeg : $(LIBDIR)/libjpeg.so
 
 $(LIBDIR)/libjpeg.so : $(LIBJPEG-DIR)/Makefile 
-	( cd $(LIBJPEG-DIR) && make all install DESTDIR=$(INSTALL_DIR)/$(PREFIX))
+	( cd $(LIBJPEG-DIR) && make all install DESTDIR=$(INSTALL_DIR))
 	
 
 libjpeg-distclean :	
