@@ -85,7 +85,7 @@ corgi_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(corgi_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
 @ENABLE_CORGI_MODULE_TRUE@am_corgi_la_rpath = -rpath $(pluginexecdir)
-dejitter_la_LIBADD =
+dejitter_la_DEPENDENCIES = $(top_builddir)/src/libts.la
 am_dejitter_la_OBJECTS = dejitter.lo
 dejitter_la_OBJECTS = $(am_dejitter_la_OBJECTS)
 dejitter_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -107,7 +107,7 @@ input_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(input_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
 @ENABLE_INPUT_MODULE_TRUE@am_input_la_rpath = -rpath $(pluginexecdir)
-linear_la_LIBADD =
+linear_la_DEPENDENCIES = $(top_builddir)/src/libts.la
 am_linear_la_OBJECTS = linear.lo
 linear_la_OBJECTS = $(am_linear_la_OBJECTS)
 linear_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -130,7 +130,7 @@ mk712_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(mk712_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
 @ENABLE_MK712_MODULE_TRUE@am_mk712_la_rpath = -rpath $(pluginexecdir)
-pthres_la_LIBADD =
+pthres_la_DEPENDENCIES = $(top_builddir)/src/libts.la
 am_pthres_la_OBJECTS = pthres.lo
 pthres_la_OBJECTS = $(am_pthres_la_OBJECTS)
 pthres_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -146,7 +146,7 @@ ucb1x00_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(ucb1x00_la_LDFLAGS) $(LDFLAGS) -o $@
 @ENABLE_UCB1X00_MODULE_TRUE@am_ucb1x00_la_rpath = -rpath \
 @ENABLE_UCB1X00_MODULE_TRUE@	$(pluginexecdir)
-variance_la_LIBADD =
+variance_la_DEPENDENCIES = $(top_builddir)/src/libts.la
 am_variance_la_OBJECTS = variance.lo
 variance_la_OBJECTS = $(am_variance_la_OBJECTS)
 variance_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -346,12 +346,16 @@ pluginexec_LTLIBRARIES = \
 
 variance_la_SOURCES = variance.c
 variance_la_LDFLAGS = -module $(LTVSN)
+variance_la_LIBADD = $(top_builddir)/src/libts.la
 dejitter_la_SOURCES = dejitter.c
 dejitter_la_LDFLAGS = -module $(LTVSN)
+dejitter_la_LIBADD = $(top_builddir)/src/libts.la
 linear_la_SOURCES = linear.c
 linear_la_LDFLAGS = -module $(LTVSN)
+linear_la_LIBADD = $(top_builddir)/src/libts.la
 pthres_la_SOURCES = pthres.c
 pthres_la_LDFLAGS = -module $(LTVSN)
+pthres_la_LIBADD = $(top_builddir)/src/libts.la
 
 # hw access
 corgi_la_SOURCES = corgi-raw.c
