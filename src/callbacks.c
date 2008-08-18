@@ -102,10 +102,16 @@ void * get_gui_callback_by_name( char * callback_name ){
 bool show_param_window( struct gui_window * window, char * param, int x, int y ){
 	PRINTD( "show_main_window\n" );
 
-	unload_window( window );
-	load_window ( param, window );
-	draw_window( window );
-	return true;
+	if( window != NULL ) unload_window( main_window, true );
+	main_window = load_window ( param, true );
+	if( main_window == NULL ){
+		PRINTDF( "Unable to show window <%s>\n", param );
+		return false;
+	}
+	else{
+		draw_window( main_window );
+		return true;
+	}
 }
 
 /**
@@ -120,7 +126,7 @@ bool show_param_window( struct gui_window * window, char * param, int x, int y )
  * \return true on succes, false on failure
  */
 bool show_not_yet_implemented( struct gui_window * window, char * param, int x, int y ){
-	message_box ( "Error", "Not yet implemented\n Wait next version :)" );
+	show_message_box ( "Error", "Not yet implemented\n Wait next version :)" );
 	return true;
 }
 
@@ -136,12 +142,8 @@ bool show_not_yet_implemented( struct gui_window * window, char * param, int x, 
  * \return the index of the selected item
  */
 static int listview_get_selected_item( int x, int y){
-	int font_height;
-	context.listview_control->font->GetHeight( context.listview_control->font, &font_height );
-	if( context.listview_icon ){
-		return (context.listview_control->w / ICON_W) * (y/(font_height+ICON_H)) + x / ICON_W + context.listview_first_item;
-	}
-	else return y/font_height + context.listview_first_item;
+
+	return (context.listview_control->w / listview_get_item_width()) * (y/listview_get_item_height()) + x / listview_get_item_width() + context.listview_first_item;
 }
 
 /**
@@ -161,7 +163,7 @@ bool scroll_up_listview( struct gui_window * window, char * param, int x, int y 
 
 	/* Check if the listview exist */
 	if( context.listview_control == NULL ){
-		message_box ( "Error", "No listview in this window" );
+		show_message_box ( "Error", "No listview in this window" );
 		return false;
 	}
 
@@ -200,7 +202,7 @@ bool scroll_down_listview( struct gui_window * window, char * param, int x, int 
 
 	/* Check if the listview exist */
 	if( context.listview_control == NULL ){
-		message_box ( "Error", "No listview in this window" );
+		show_message_box ( "Error", "No listview in this window" );
 		return false;
 	}
 
@@ -298,7 +300,7 @@ bool listview_selected( struct gui_window * window, char * param, int x, int y )
  */
 bool play_video( struct gui_window * window, char * param, int x, int y ){
 	if( context.listview_selected_item < 0 )
-		message_box ( "Error", "No file selected !" );
+		show_message_box ( "Error", "No file selected !" );
 	else{
 		struct file_elt * elt;
 		elt = (struct file_elt *) get_object_from_list( context.list_files, context.listview_selected_item );
@@ -320,17 +322,17 @@ bool play_video( struct gui_window * window, char * param, int x, int y ){
  * \return true on succes, false on failure
  */
 bool resume_video( struct gui_window * window, char * param, int x, int y ){
-	int pos = 0;
-	char filename[PATH_MAX];
+    int pos = 0;
+    char filename[PATH_MAX];
 
     if (resume_get_file_infos(filename, PATH_MAX, &pos) != 0){
-    	message_box ("TomPlayer", "Unable to retrieve resume informations");
+    	show_message_box ("TomPlayer", "Unable to retrieve resume informations");
     }
     else{
     	display_current_file( filename, &config.video_config, config.bitmap_loading );
-    	launch_mplayer( "", filename, pos );
-	}
-	return true;
+        launch_mplayer( "", filename, pos );
+    }
+    return true;
 }
 
 /**
@@ -346,7 +348,7 @@ bool resume_video( struct gui_window * window, char * param, int x, int y ){
  */
 bool play_audio( struct gui_window * window, char * param, int x, int y ){
 	if( context.listview_selected_item < 0 )
-		message_box ( "Error", "No file selected !" );
+		show_message_box ( "Error", "No file selected !" );
 	else{
 		struct file_elt * elt;
 		elt = (struct file_elt *) get_object_from_list( context.list_files, context.listview_selected_item );
@@ -369,14 +371,13 @@ bool play_audio( struct gui_window * window, char * param, int x, int y ){
  */
 bool playlist_audio( struct gui_window * window, char * param, int x, int y ){
 	if( context.listview_selected_item < 0 )
-		message_box ( "Error", "No file selected !" );
-	else{
-        if( generate_random_playlist( context.current_path, DEFAULT_PLAYLIST ) == true ){
+		show_message_box ( "Error", "No file selected !" );
+	else if( generate_random_playlist( context.current_path, DEFAULT_PLAYLIST ) == true ){
         	display_current_file( DEFAULT_PLAYLIST, &config.audio_config, config.audio_config.bitmap );
         	launch_mplayer( "", DEFAULT_PLAYLIST, 0 );
         }
-        else message_box ( "Error", "Unable to create playlist" );
-	}
+        else show_message_box ( "Error", "Unable to create playlist" );
+
 	return true;
 }
 
@@ -421,7 +422,7 @@ bool select_skin( struct gui_window * window, char * param, int x, int y ){
 
 	PRINTDF( "select_skin %s\n", param);
 	if( context.listview_selected_item < 0 )
-		message_box ( "Error", "No skin selected !" );
+		show_message_box ( "Error", "No skin selected !" );
 	else{
 		if( !strcmp( param, "video_skin" ) ){
 			conf = &config.video_config;
@@ -441,7 +442,7 @@ bool select_skin( struct gui_window * window, char * param, int x, int y ){
 			unload_skin( conf );
 			sprintf( zip_file, "%s/%s", context.current_path, elt->name );
 			if( load_skin_from_zip( zip_file, conf ) == false ){
-				message_box( "Error", "Unable to load this skin");
+				show_message_box( "Error", "Unable to load this skin");
 				load_skin_from_zip( original_skin_filename, conf );
 			}
 			else{
@@ -470,7 +471,7 @@ bool select_skin( struct gui_window * window, char * param, int x, int y ){
 				system( cmd );
 				system( "unix2dos ./conf/tomplayer.ini" );
 
-				message_box( "Info", "Skin successfully loaded\n");
+				show_message_box( "Info", "Skin successfully loaded\n");
 error:
 				iniparser_freedict(ini);
 			}

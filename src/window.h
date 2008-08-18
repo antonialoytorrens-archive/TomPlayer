@@ -35,20 +35,19 @@
 
 /**
  * \struct gui_window
- * \todo "redirect_ts_event_to_controls" has to be deleted if not used
- */
+  */
 struct gui_window{
 	IDirectFBSurface * background_surface; /*!<DirectFB background bitmap */
 	struct list_object * controls; /*!<list of controls */
 	IDirectFBFont *font;	/*!<DirectFB font used by the window */
 	int r,g,b,a; 		/*!<Text color */
 	bool (*callback)(struct gui_window *, char * param, int , int ); /*!<periodic callback of the window */
-	bool redirect_ts_event_to_controls;
 };
 
+extern struct gui_window * main_window;
 
-bool load_window( char * filename, struct gui_window * window );
+struct gui_window *  load_window( char * filename, bool );
 bool load_window_config( char * filename, struct gui_window * window );
-void unload_window( struct gui_window * window );
+void unload_window( struct gui_window * window, bool );
 
 #endif /* __WINDOW_H__ */

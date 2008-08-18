@@ -42,6 +42,8 @@
  * \todo move to config.h/config.c
  */
 struct gui_config{
+	char * default_font;
+	int font_height;
 	char * first_window;
 	char * messagebox_window;
 };
@@ -53,7 +55,7 @@ IDirectFBSurface * load_image_to_surface( char * filename );
 IDirectFBSurface * create_surface( int width, int height );
 IDirectFBFont * load_font( char * filename, int height );
 void draw_window( struct gui_window * window);
-void message_box( char * title, char * message );
+void show_message_box( char * title, char * message );
 void show_information_message( char * msg );
 
 #endif /* __GUI_H__ */

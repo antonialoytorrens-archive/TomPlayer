@@ -58,12 +58,14 @@
 #include "window_context.h"
 #include "file_list.h"
 #include "gui_control.h"
+#include "gui.h"
 
 /* Progress bar update period in us */
 #define PB_UPDATE_PERIOD_US 250000
 #define SCREEN_SAVER_ACTIVE (-1)
 
-char * cmd_mplayer = "./mplayer -quiet -include ./conf/mplayer.conf -vf expand=%i:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -ss %i -slave -input file=%s %s \"%s/%s\" > %s";
+/*char * cmd_mplayer = "./mplayer -quiet -include ./conf/mplayer.conf -vf expand=%i:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -ss %i -slave -input file=%s %s \"%s/%s\" > %s";*/
+char * cmd_mplayer = "./mplayer -include ./conf/mplayer.conf -vf expand=%i:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -ss %i -slave -input file=%s %s \"%s/%s\" > %s";
 char * cmd_mplayer_thumbnail = "./mplayer -ao null -vo png:z=0 -ss 10 -frames 1 -vf scale=%d:%d \"%s/%s\"";
 
 static char * fifo_command_name = "/tmp/mplayer-cmd.fifo";
@@ -191,6 +193,7 @@ void generate_thumbnail( void ){
 				PRINTDF( "Generating thumbnail for %s\n", file_elt->name );
 				sprintf( cmd, cmd_mplayer_thumbnail, ICON_W, ICON_H, context.current_path, file_elt->name );
 				system( cmd );
+				system( "sync" );
 
 				/* Move thumbnail to the right folder */
 				if( file_exist( "00000001.png") ) sprintf( cmd, "mv 00000001.png \"%s\"", fullpath );

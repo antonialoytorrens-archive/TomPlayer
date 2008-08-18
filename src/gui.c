@@ -39,18 +39,14 @@
 #include "pwm.h"
 #include "power.h"
 
+
+
 /**
  * \var gui_config
  * \brief the GUI configuration structure
  */
 static struct gui_config gui_config;
 
-
-/**
- * \var is_wide_screen
- * \brief Indicate if the device has a wide screen or not
- */
-static bool is_wide_screen = false;
 
 static IDirectFB				*dfb;
 static IDirectFBSurface			*primary;
@@ -64,10 +60,6 @@ IDirectFBFont 					*default_font;
 
 static int mouse_x=0, mouse_y=0;
 static int screen_width=0, screen_height = 0;
-
-
-static struct gui_window messagebox_window;
-struct gui_window main_window;
 
 
 /**
@@ -165,10 +157,12 @@ void draw_window( struct gui_window * window)
 	primary->SetColor( primary, window->r, window->g, window->b, window->a );
 
 	if( window->font != NULL ){
+		PRINTD( "Using window's font\n" );
 		primary->SetFont( primary, window->font );
 		window->font->GetHeight( window->font, &font_height );
 	}
 	else{
+		PRINTD( "Using default font\n" );
 		primary->SetFont( primary, default_font );
 		default_font->GetHeight( default_font, &font_height );
 	}
@@ -185,11 +179,9 @@ void draw_window( struct gui_window * window)
 		control = (struct gui_control *) list_controls->object;
 		PRINTDF( "Affichage du control de type %d\n", control->type );
 		switch( control->type ){
-			case GUI_TYPE_CTRL_ICON:
-				primary->Blit( primary, control->bitmap_surface, NULL, control->x, control->y );
-				break;
 			case GUI_TYPE_CTRL_STATIC_TEXT:
-				s = strdup( get_static_text( control->param ) );
+				p = get_static_text( control->param );
+				s = strdup( p );
 				p = s;
 				y = control->y;
 				p = strtok( p, "\n" );
@@ -211,6 +203,10 @@ void draw_window( struct gui_window * window)
 
 		list_controls = list_controls->next;
 	}
+
+#ifdef USE_DOUBLE_BUFFER
+	primary->Flip( primary, NULL, DSFLIP_ONSYNC );
+#endif /* USE_DOUBLE_BUFFER */
 }
 
 
@@ -240,29 +236,14 @@ static void init_resources( int argc, char *argv[] )
 	if (err) DirectFBError( "Failed to get exclusive access", err );
 
 	dsc.flags = DSDESC_CAPS;
-	dsc.caps = DSCAPS_PRIMARY /*| DSCAPS_DOUBLE*/;
-
+#ifdef USE_DOUBLE_BUFFER
+	dsc.caps = DSCAPS_PRIMARY | DSCAPS_DOUBLE;
+#else /* USE_DOUBLE_BUFFER */
+	dsc.caps = DSCAPS_PRIMARY;
+#endif /* USE_DOUBLE_BUFFER */
+	
 	err = dfb->CreateSurface( dfb, &dsc, &primary );
 	DFBCHECK(primary->GetSize( primary, &screen_width, &screen_height ));
-
-	if( screen_width == 480 ) is_wide_screen = true;
-	if( screen_width == 240 ){
-		s32 matrix[9];
-
-		matrix[0] = 0;
-		matrix[1] = 1;
-		matrix[2] = 0;
-		matrix[3] = 1;
-		matrix[4] = 0;
-		matrix[5] = 0;
-		matrix[6] = 0;
-		matrix[7] = 0;
-		matrix[8] = 0;
-
-		primary->SetRenderOptions( primary, DSRO_MATRIX );
-		primary->SetMatrix( primary, matrix );
-	}
-	default_font = load_font( FONT, 20 );
 }
 
 
@@ -273,8 +254,8 @@ static void init_resources( int argc, char *argv[] )
 static void release_resources( void )
 {
 	PRINTD( "deinit_resources\n");
-	unload_window( &messagebox_window );
-	unload_window( &main_window );
+
+	if( main_window != NULL ) unload_window( main_window, true );
 	
 	default_font->Release( default_font );
 	primary->Release( primary );
@@ -288,21 +269,43 @@ static void release_resources( void )
  *
  * \param title title of the message box
  * \param message message to display
+ * \param wait_input boolean which indicate if window has to wait an input to 
  */
-void message_box( char * title, char * message ){
+static void message_box( char * title, char * message, bool wait_input ){
 	DFBInputEvent evt;
+	struct gui_window * messagebox_window;
 
 	context.title = title;
 	context.message = message;
-	draw_window( &messagebox_window );
 
-	while ( 1 ) {
-		keybuffer->WaitForEvent( keybuffer );
-		if( keybuffer->GetEvent( keybuffer, DFB_EVENT(&evt)) == DFB_OK )
-			if (evt.type == DIET_BUTTONPRESS) break;
+	messagebox_window = load_window( gui_config.messagebox_window, false );
+
+	if( messagebox_window != NULL ){
+		draw_window( messagebox_window );
+		unload_window( messagebox_window, false );
+	
+		if( wait_input == true ){
+			while ( 1 ) {
+				keybuffer->WaitForEvent( keybuffer );
+				if( keybuffer->GetEvent( keybuffer, DFB_EVENT(&evt)) == DFB_OK )
+					if (evt.type == DIET_BUTTONPRESS) break;
+			}
+			
+			/* Show main window */
+			draw_window( main_window );
+		}
 	}
+}
 
-	draw_window( &main_window );
+/**
+ * \fn void show_message_box( char * title, char * message )
+ * \brief show a message box on the screen
+ *
+ * \param title title of the message box
+ * \param message message to display
+ */
+void show_message_box( char * title, char * message ){
+	message_box( title, message, true );
 }
 
 /**
@@ -311,40 +314,11 @@ void message_box( char * title, char * message ){
  *
  * \param msg message to display
  */
-void show_information_message( char * msg ){
-	char *p,*s;
-	int font_height;
-	int y;
-
-	PRINTD( "show_information_message\n" );
-
-	if( main_window.font != NULL ){
-		primary->SetFont( primary, main_window.font );
-		main_window.font->GetHeight( main_window.font, &font_height );
-	}
-	else{
-		primary->SetFont( primary, default_font );
-		default_font->GetHeight( default_font, &font_height );
-	}
-	
-	primary->Clear( primary, 0, 0, 0, 0xFF );
-
-	if( main_window.background_surface != NULL ){
-		PRINTD( "Drawing background surface\n" );
-		primary->Blit( primary, main_window.background_surface, NULL, 0, 0 );
-	}
-	
-	s = strdup( msg );
-	p = s;
-	y = screen_height/3;
-	p = strtok( p, "\n" );
-	while( p!= NULL ){
-		primary->DrawString( primary, p, -1,screen_width/2, y,  DSTF_CENTER | DSTF_TOP );
-		p=strtok( NULL, "\n" );
-		y += font_height;
-	}
-	free( s );
+void show_information_message( char * message ){
+	message_box( "", message, false );
 }
+
+
 
 /**
  * \fn static bool dispatch_ts_event( struct gui_window * window, DFBInputEvent *evt )
@@ -378,9 +352,10 @@ static bool dispatch_ts_event( struct gui_window * window, DFBInputEvent *evt )
 		mouse_x = CLAMP (mouse_x, 0, screen_width  - 1);
 		mouse_y = CLAMP (mouse_y, 0, screen_height - 1);
 	}
-	else if (evt->type == DIET_BUTTONPRESS){
+	else if (evt->type == DIET_BUTTONPRESS ){
+		/* redirect TS event to handle_mouse_event when MPlayer is running */
 		if ( is_playing_video == true || is_playing_audio == true ) handle_mouse_event( mouse_x, mouse_y );
-		else if( window->redirect_ts_event_to_controls ){
+		else{
 			list_controls = window->controls;
 			while( list_controls != NULL ){
 				control = (struct gui_control *) list_controls->object;
@@ -394,7 +369,6 @@ static bool dispatch_ts_event( struct gui_window * window, DFBInputEvent *evt )
 				list_controls = list_controls->next;
 			}
 		}
-		else if( window->callback!= NULL ) return window->callback(window, NULL, x, y);
 	}
 
 	return true;
@@ -407,6 +381,7 @@ static bool dispatch_ts_event( struct gui_window * window, DFBInputEvent *evt )
 static bool load_main_config( void ){
 	dictionary * ini ;
 	char *s;
+	char key[200];
 
 	memset( &gui_config, 0, sizeof( struct gui_config ) );
 
@@ -416,21 +391,19 @@ static bool load_main_config( void ){
 		return false ;
 	}
 
-	if( !is_wide_screen ){
-		s = iniparser_getstring(ini, "general:first_window", NULL);
-		if( s != NULL ) gui_config.first_window = strdup( s );
+	s = iniparser_getstring(ini, "general:font", NULL);
+	if( s != NULL ) gui_config.default_font = strdup( s );
+	else gui_config.default_font = strdup( FONT );
 
+	gui_config.font_height = iniparser_getint( ini, "general:font_height", 20 );
 
-		s = iniparser_getstring(ini, "general:messagebox_window", NULL);
-		if( s != NULL ) gui_config.messagebox_window = strdup( s );
-	}
-	else{
-		s = iniparser_getstring(ini, "general:first_window_ws", NULL);
-		if( s != NULL ) gui_config.first_window = strdup( s );
+	sprintf( key, "%d_%d:first_window", screen_width, screen_height );
+	s = iniparser_getstring(ini, key, NULL);
+	if( s != NULL ) gui_config.first_window = strdup( s );
 
-		s = iniparser_getstring(ini, "general:messagebox_window_ws", NULL);
-		if( s != NULL ) gui_config.messagebox_window = strdup( s );
-	}
+	sprintf( key, "%d_%d:messagebox_window", screen_width, screen_height );
+	s = iniparser_getstring(ini, key, NULL);
+	if( s != NULL ) gui_config.messagebox_window = strdup( s );
 
 	iniparser_freedict(ini);
 
@@ -444,43 +417,40 @@ int main( int argc, char *argv[] )
 	DFBInputEvent evt;
 
 	init_engine();
-	load_main_config();
-    if( load_config(&config) == false ){
-        fprintf( stderr, "Error while loading config\n" );
-        exit(1);
-    }
-
 	init_resources( argc, argv );
 
-	memset( &main_window, 0, sizeof( struct gui_window ) );
+	load_main_config();
+	if( load_config(&config) == false ){
+		fprintf( stderr, "Error while loading config\n" );
+		exit(1);
+	}
+	default_font = load_font( gui_config.default_font, gui_config.font_height );
 
-	load_window( gui_config.messagebox_window, &messagebox_window );
-
-	show_param_window( &main_window, gui_config.first_window, 0, 0 );
+	show_param_window( main_window, gui_config.first_window, 0, 0 );
 	while( quit == false ){
-		keybuffer->WaitForEventWithTimeout( keybuffer, 0, 200 );
+		keybuffer->WaitForEventWithTimeout( keybuffer, 0, 20 );
 		while (keybuffer->GetEvent( keybuffer, DFB_EVENT(&evt)) == DFB_OK) {
-			if( dispatch_ts_event( &main_window, &evt ) == false ) quit=true;
+			if( dispatch_ts_event( main_window, &evt ) == false ) quit=true;
 		}
 
-        if( ( is_playing_video == true || is_playing_audio == true ) && is_mplayer_finished == true ){
-            is_playing_video = false;
-            is_playing_audio = false;
-
-
-            /* Turn ON screen if it is not */
-            pwm_resume();
-            draw_window( &main_window );
-        }
-        /* Test OFF button */
-        if (power_is_off_button_pushed()){
-        	display_image_to_fb( config.bitmap_exiting );
-        	quit = true;
-        }
+		if( ( is_playing_video == true || is_playing_audio == true ) && is_mplayer_finished == true ){
+			is_playing_video = false;
+			is_playing_audio = false;
+		
+		
+			/* Turn ON screen if it is not */
+			pwm_resume();
+			draw_window( main_window );
+		}
+		/* Test OFF button */
+		if (power_is_off_button_pushed()){
+			display_image_to_fb( config.bitmap_exiting );
+			quit = true;
+		}
 
 	}
-	release_engine();
 
+	release_engine();
 	release_resources();
 
 

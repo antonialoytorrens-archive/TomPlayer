@@ -37,32 +37,20 @@
  */
 struct gui_window_context context;
 
-/**
- * \fn void init_gui_window_context( void )
- * \brief Initialization of the context
- */
-void init_gui_window_context( void ){
-	PRINTD( "init_context\n" );
-	memset( &context, 0, sizeof( struct gui_window_context ) );
-}
 
 /**
  * \fn void release_gui_window_context( void )
  * \brief Release the context
  */
-void release_gui_window_context( void ){
-	PRINTD( "release_context\n" );
+static void release_gui_window_context( void ){
+	PRINTD( "release_gui_window_context\n" );
 	if( context.current_path != NULL ){
 		free( context.current_path );
 		context.current_path = NULL;
-	}/*
-	if( context.selected_file != NULL ){
-		free( context.selected_file );
-		context.selected_file = NULL;
-	}*/
+	}
 
 	context.listview_control = NULL;
-	release_list (context.list_files, release_file_elt );
+	if( context.list_files != NULL ) release_list (context.list_files, release_file_elt );
 	context.list_files = NULL;
 
 	context.filter_ext = NULL;
@@ -72,4 +60,15 @@ void release_gui_window_context( void ){
 
 	context.title = NULL;
 	context.message = NULL;
+}
+
+/**
+ * \fn void init_gui_window_context( void )
+ * \brief Initialization of the context
+ */
+
+void init_gui_window_context( void ){
+	PRINTD( "init_gui_window_context\n" );
+	release_gui_window_context();
+	memset( &context, 0, sizeof( struct gui_window_context ) );
 }

@@ -36,32 +36,38 @@
 
 #define DEFAULT_FONT_HEIGHT 15
 
+struct gui_window * main_window = NULL;
+
 /**
  * \fn bool load_window( char * filename, struct gui_window * window )
  * \brief loading of a window, and initialization)
  *
  * \param filename window configuration file
- * \param window structure where to store configuration
+ * \param reset_context indicate if the window context has to be resetted or not
  *
- * \return true on success, false on failure
+ * \return adress on the loaded window, NULL if error
  */
-bool load_window( char * filename, struct gui_window * window ){
+struct gui_window *  load_window( char * filename, bool reset_context ){
+	struct gui_window * window;
 	bool return_code;
 	struct list_object * list_controls;
 	struct gui_control * control;
 
+	if( reset_context == true ) init_gui_window_context();
+
 	PRINTDF( "load_window <%s>\n", filename );
-	init_gui_window_context ();
+        window = malloc( sizeof( struct gui_window ) );
+        if( window == NULL ){
+            PRINTDF( "Unable to allocate memory for creating window %s\n", filename );
+            return NULL;
+        }
+
 	memset( window, 0, sizeof( struct gui_window ) );
-	window->redirect_ts_event_to_controls = true;
 	return_code = load_window_config( filename, window );
 
 	if( return_code != true ){
-		char msg[200];
-
-		sprintf( msg, "Unable to load window config\n%s", filename );
-		message_box ( "Crtitical Error", msg );
-		exit( 1 );
+		PRINTDF( "Unable to load  window config\n%s", filename );
+		return NULL;
 	}
 
 	if( window->font == NULL ) window->font = default_font;
@@ -71,7 +77,6 @@ bool load_window( char * filename, struct gui_window * window ){
 	while( list_controls != NULL ){
 		control = (struct gui_control *) list_controls->object;
 		switch( control->type ){
-			case GUI_TYPE_CTRL_ICON:
 			case GUI_TYPE_CTRL_STATIC_TEXT:
 			case GUI_TYPE_CTRL_BUTTON:
 				break;
@@ -86,7 +91,7 @@ bool load_window( char * filename, struct gui_window * window ){
 		list_controls = list_controls->next;
 	}
 
-	return return_code;
+	return window;
 }
 
 
@@ -139,7 +144,7 @@ bool load_window_config( char * filename, struct gui_window * window ){
 		i = iniparser_getint(ini, key, -1);
 		if( i < 0 ) break;
 
-		if( i != GUI_TYPE_CTRL_ICON && i != GUI_TYPE_CTRL_STATIC_TEXT && i != GUI_TYPE_CTRL_BUTTON && i != GUI_TYPE_CTRL_LISTVIEW && i != GUI_TYPE_CTRL_LISTVIEW_ICON ){
+		if( i != GUI_TYPE_CTRL_STATIC_TEXT && i != GUI_TYPE_CTRL_BUTTON && i != GUI_TYPE_CTRL_LISTVIEW && i != GUI_TYPE_CTRL_LISTVIEW_ICON ){
 			PRINTDF( "Control type unknown for control #%d\n", num_control );
 			goto end;
 		}
@@ -206,27 +211,32 @@ end:
  * \brief release a window
  *
  * \param window window structure
+ * \param reset_context indicate if the window context has to be resetted or not
  */
-void unload_window( struct gui_window * window ){
+void unload_window( struct gui_window * window, bool reset_context ){
 	struct list_object * list_controls;
 	struct gui_control * control;
 
 	PRINTD("unload_window\n");
 
-	if( window->background_surface != NULL ) window->background_surface->Release( window->background_surface );
-	if( window->font != NULL && window->font != default_font) window->font->Release( window->font );
 
-	list_controls = window->controls;
-	while( list_controls != NULL ){
-		control = (struct gui_control *) list_controls->object;
-		if( control->bitmap_surface != NULL )  control->bitmap_surface->Release( control->bitmap_surface );
-		if( control->font != NULL && control->font != default_font )  control->font->Release( control->font );
-		list_controls = list_controls->next;
-	}
-
-	release_list( window->controls, NULL );
-	window->controls = NULL;
-	release_gui_window_context();
+	if( reset_context == true ) init_gui_window_context();
+        if( window != NULL ){
+            if( window->background_surface != NULL ) window->background_surface->Release( window->background_surface );
+            if( window->font != NULL && window->font != default_font) window->font->Release( window->font );
+    
+            list_controls = window->controls;
+            while( list_controls != NULL ){
+                    control = (struct gui_control *) list_controls->object;
+                    if( control->bitmap_surface != NULL )  control->bitmap_surface->Release( control->bitmap_surface );
+                    if( control->font != NULL && control->font != default_font )  control->font->Release( control->font );
+                    list_controls = list_controls->next;
+            }
+    
+            release_list( window->controls, NULL );
+            window->controls = NULL;
+	free( window );
+    }
 }
 
 

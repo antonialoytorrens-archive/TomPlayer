@@ -52,6 +52,5 @@ struct gui_window_context{
 extern struct gui_window_context context;
 
 void init_gui_window_context( void );
-void release_gui_window_context( void );
 
 #endif /* __CONTEXT_H__ */

@@ -38,14 +38,15 @@
 #define DEFAULT_AUDIO_ICON "./res/icon/audio.png"
 #define DEFAULT_VIDEO_ICON "./res/icon/video.png"
 #define DEFAULT_FOLDER_ICON "./res/icon/folder.png"
+#define DEFAULT_ICON_SELECTED "./res/icon/icon_selected.png"
+#define DEFAULT_LINE_SELECTED "./res/icon/line_selected.png"
 
 /**
  * \enum E_GUI_TYPE_CTRL
  * \brief define the type of control
  */
 enum E_GUI_TYPE_CTRL{
-	GUI_TYPE_CTRL_ICON = 0,		/*!< a simple icon */
-	GUI_TYPE_CTRL_STATIC_TEXT,	/*!< a static text */
+	GUI_TYPE_CTRL_STATIC_TEXT = 1,	/*!< a static text */
 	GUI_TYPE_CTRL_BUTTON,		/*!< a button */
 	GUI_TYPE_CTRL_LISTVIEW,		/*!< a text listview */
 	GUI_TYPE_CTRL_LISTVIEW_ICON	/*!< an icon listview */
@@ -68,6 +69,9 @@ struct gui_control{
 
 
 char * get_static_text( char * param );
+
+int listview_get_item_height( void );
+int listview_get_item_width( void );
 int listview_get_nb_item_printable( void );
 int listview_get_nb_line( void );
 int listview_get_nb_item_by_line( void );

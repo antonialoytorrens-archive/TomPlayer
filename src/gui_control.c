@@ -113,7 +113,7 @@ int listview_get_nb_item_printable( void ){
  */
 void update_gui_ctrl_listview_surface( void ){
 	struct file_elt * f;
-	int x = 10;
+	int x = 0;
 	int y = 0;
 	int i,j;
 	int string_width;
@@ -121,7 +121,9 @@ void update_gui_ctrl_listview_surface( void ){
 	int max_elt_printable;
 	struct gui_control * control;
 	char fullpath[PATH_MAX];
-	IDirectFBSurface * surface;
+	IDirectFBSurface * surface = NULL;
+	IDirectFBSurface * selected_surface = NULL;
+	DFBRectangle rect;
 
 
 	control = context.listview_control;
@@ -134,8 +136,7 @@ void update_gui_ctrl_listview_surface( void ){
 
 	PRINTDF( "Nombre d'element affichable : %d\n", max_elt_printable );
 
-	control->bitmap_surface->SetPorterDuff(control->bitmap_surface, DSPD_NONE);
-	control->bitmap_surface->SetBlittingFlags( control->bitmap_surface, DSBLIT_SRC_PREMULTIPLY );
+	control->bitmap_surface->SetBlittingFlags( control->bitmap_surface, DSBLIT_BLEND_ALPHACHANNEL );
 	control->bitmap_surface->Clear( control->bitmap_surface,0,0,0,0);
 
 	PRINTDF( "Nombre d'element %d\n", get_list_count(context.list_files ) );
@@ -156,7 +157,17 @@ void update_gui_ctrl_listview_surface( void ){
 			}
 
 			control->bitmap_surface->Blit( control->bitmap_surface, surface, NULL, x, y );
-			surface->Release( surface );
+
+			if( i == context.listview_selected_item ){
+				selected_surface = load_image_to_surface( DEFAULT_ICON_SELECTED );
+				control->bitmap_surface->Blit( control->bitmap_surface, selected_surface, NULL, x, y );
+				if( selected_surface != NULL ) selected_surface->Release( selected_surface );
+				selected_surface = NULL;
+			}
+			if( surface != NULL ){
+				surface->Release( surface );
+				surface = NULL;
+			}
 
 			/* Look for the best length */
 			for( j = strlen( f->name ); j > 0; j--){
@@ -175,11 +186,16 @@ void update_gui_ctrl_listview_surface( void ){
 		}
 		else{
 			if( i == context.listview_selected_item ){
-				control->bitmap_surface->SetColor( control->bitmap_surface,control->r,control->g,control->b,control->a );
-				control->bitmap_surface->FillRectangle( control->bitmap_surface, 0, y, control->w, listview_get_item_height() );
-				control->bitmap_surface->SetColor( control->bitmap_surface,255-control->r,255-control->g,255-control->b,control->a );
+				rect.x = x;
+				rect.y = y;
+				rect.w = listview_get_item_width() - x;
+				rect.h = listview_get_item_height();
+				selected_surface = load_image_to_surface( DEFAULT_LINE_SELECTED );
+				control->bitmap_surface->StretchBlit( control->bitmap_surface, selected_surface, NULL, &rect );
+				if( selected_surface != NULL ) selected_surface->Release( selected_surface );
+				selected_surface = NULL;
 			}
-			else control->bitmap_surface->SetColor( control->bitmap_surface,control->r,control->g,control->b,control->a );
+
 			control->bitmap_surface->DrawString(control->bitmap_surface, f->name, -1, 0, y,  DSTF_LEFT | DSTF_TOP );
 			y+=listview_get_item_height();
 		}
@@ -206,6 +222,7 @@ bool init_gui_ctrl_listview( struct gui_control * control, bool icon_view ){
 
 	if( control->font == NULL ) control->font = default_font;
 	DFBCHECK(control->bitmap_surface->SetFont( control->bitmap_surface, control->font ));
+	control->bitmap_surface->SetColor( control->bitmap_surface,control->r,control->g,control->b,control->a );
 
 	if( !strcmp( control->param, "video" ) ){
 		context.current_path = strdup( config.video_folder );
@@ -262,7 +279,6 @@ bool is_gui_ctrl_selected( struct gui_control * control, int * ts_x, int * ts_y 
 	if( control->bitmap_surface != NULL ) control->bitmap_surface->GetSize( control->bitmap_surface, &width, &height);
 
 	switch( control->type ){
-			case GUI_TYPE_CTRL_ICON:
 			case GUI_TYPE_CTRL_STATIC_TEXT:
 				return false;
 				break;
