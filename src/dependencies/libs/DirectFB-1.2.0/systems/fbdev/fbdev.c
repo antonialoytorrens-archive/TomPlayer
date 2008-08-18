@@ -700,9 +700,9 @@ system_shutdown( bool emergency )
      }
 
      if (shared->orig_cmap.len) {
-          if (ioctl( dfb_fbdev->fd, FBIOPUTCMAP, &shared->orig_cmap ) < 0)
+          /* FIXME if (ioctl( dfb_fbdev->fd, FBIOPUTCMAP, &shared->orig_cmap ) < 0)
                D_DEBUG( "DirectFB/FBDev: "
-                        "Could not restore palette!\n" );
+                        "Could not restore palette!\n" );*/
      }
 
      if (shared->orig_cmap_memory)
@@ -1222,11 +1222,11 @@ primarySetColorAdjustment( CoreLayer          *layer,
 
      temp->len = cmap->len;
      temp->start = cmap->start;
-     if (FBDEV_IOCTL( FBIOPUTCMAP, temp ) < 0) {
+     /* FIXME if (FBDEV_IOCTL( FBIOPUTCMAP, temp ) < 0) {
           D_PERROR( "DirectFB/FBDev: Could not set the palette!\n" );
 
           return errno2result(errno);
-     }
+     }*/
 
      return DFB_OK;
 }
@@ -2473,12 +2473,12 @@ dfb_fbdev_set_gamma_ramp( DFBSurfacePixelFormat format )
                cmap->blue[i] |= cmap->blue[i] << 8;
      }
 
-     if (FBDEV_IOCTL( FBIOPUTCMAP, cmap ) < 0) {
+     /* FIXME if (FBDEV_IOCTL( FBIOPUTCMAP, cmap ) < 0) {
           D_PERROR( "DirectFB/FBDev: "
                      "Could not set gamma ramp" );
 
           return errno2result(errno);
-     }
+     }*/
 
      return DFB_OK;
 }
@@ -2505,11 +2505,11 @@ dfb_fbdev_set_palette( CorePalette *palette )
           cmap->transp[i] |= cmap->transp[i] << 8;
      }
 
-     if (FBDEV_IOCTL( FBIOPUTCMAP, cmap ) < 0) {
+     /*FIXME if (FBDEV_IOCTL( FBIOPUTCMAP, cmap ) < 0) {
           D_PERROR( "DirectFB/FBDev: Could not set the palette!\n" );
 
           return errno2result(errno);
-     }
+     }*/
 
      return DFB_OK;
 }
@@ -2551,7 +2551,7 @@ dfb_fbdev_set_rgb332_palette()
           }
      }
 
-     if (FBDEV_IOCTL( FBIOPUTCMAP, &cmap ) < 0) {
+     /*FIXME if (FBDEV_IOCTL( FBIOPUTCMAP, &cmap ) < 0) {
           D_PERROR( "DirectFB/FBDev: "
                      "Could not set rgb332 palette" );
 
@@ -2561,7 +2561,7 @@ dfb_fbdev_set_rgb332_palette()
           SHFREE( pool, cmap.transp );
 
           return errno2result(errno);
-     }
+     }*/
 
      SHFREE( pool, cmap.red );
      SHFREE( pool, cmap.green );
