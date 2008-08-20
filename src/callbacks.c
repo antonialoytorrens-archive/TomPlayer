@@ -370,13 +370,11 @@ bool play_audio( struct gui_window * window, char * param, int x, int y ){
  * \return true on succes, false on failure
  */
 bool playlist_audio( struct gui_window * window, char * param, int x, int y ){
-	if( context.listview_selected_item < 0 )
-		show_message_box ( "Error", "No file selected !" );
-	else if( generate_random_playlist( context.current_path, DEFAULT_PLAYLIST ) == true ){
-        	display_current_file( DEFAULT_PLAYLIST, &config.audio_config, config.audio_config.bitmap );
-        	launch_mplayer( "", DEFAULT_PLAYLIST, 0 );
-        }
-        else show_message_box ( "Error", "Unable to create playlist" );
+	if( generate_random_playlist( context.current_path, DEFAULT_PLAYLIST ) == true ){
+		display_current_file( DEFAULT_PLAYLIST, &config.audio_config, config.audio_config.bitmap );
+		launch_mplayer( "", DEFAULT_PLAYLIST, 0 );
+	}
+	else show_message_box ( "Error", "Unable to create playlist" );
 
 	return true;
 }
