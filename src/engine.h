@@ -40,6 +40,7 @@ void get_thumbnail_name( char * folder, char * file, char * thumb );
 bool file_exist( char * file );
 
 char * get_file_extension( char * file );
+bool is_skin_file( char * file );
 bool is_video_file( char * file );
 bool is_audio_file( char * file );
 bool has_extension( char * file, char * extensions );

@@ -156,18 +156,20 @@ void update_gui_ctrl_listview_surface( void ){
 				else surface = load_image_to_surface( DEFAULT_FILE_ICON );
 			}
 
-			control->bitmap_surface->Blit( control->bitmap_surface, surface, NULL, x, y );
-
+			rect.x = x;
+			rect.y = y;
+			rect.w = ICON_W;
+			rect.h = ICON_H;
+			
+			control->bitmap_surface->StretchBlit( control->bitmap_surface, surface, NULL, &rect );
+			if( surface != NULL ) surface->Release( surface );
+			
 			if( i == context.listview_selected_item ){
 				selected_surface = load_image_to_surface( DEFAULT_ICON_SELECTED );
-				control->bitmap_surface->Blit( control->bitmap_surface, selected_surface, NULL, x, y );
+				control->bitmap_surface->StretchBlit( control->bitmap_surface, selected_surface, NULL, &rect );
 				if( selected_surface != NULL ) selected_surface->Release( selected_surface );
-				selected_surface = NULL;
 			}
-			if( surface != NULL ){
-				surface->Release( surface );
-				surface = NULL;
-			}
+
 
 			/* Look for the best length */
 			for( j = strlen( f->name ); j > 0; j--){

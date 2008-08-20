@@ -150,7 +150,7 @@ void get_thumbnail_name( char * folder, char * file, char * thumb ){
 	char * s;
 	char * c;
 	
-	if( is_video_file( file ) ){
+	if( is_video_file( file ) || is_skin_file( file ) ){
 		/* remove extension */
 		s = strdup( file );
 		c = strrchr( s, '.');
@@ -847,6 +847,10 @@ bool has_extension( char * file, char * extensions ){
         if( strcasestr( extensions, ext ) != NULL ) return true;
     return false;
 
+}
+
+bool is_skin_file( char * file ){
+    return has_extension( file, ".zip" );
 }
 
 bool is_video_file( char * file ){
