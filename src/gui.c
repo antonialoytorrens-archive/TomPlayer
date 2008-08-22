@@ -60,6 +60,7 @@ IDirectFBFont 					*default_font;
 
 static int mouse_x=0, mouse_y=0;
 static int screen_width=0, screen_height = 0;
+static bool is_rotated = false;
 
 
 /**
@@ -139,12 +140,12 @@ IDirectFBSurface * create_surface( int width, int height ){
 }
 
 /**
- * \fn void draw_window( struct gui_window * window)
- * \brief draw the window given in argument to the screen
+ * draw the window given in argument to the directfb surface given
  *
  * \param window the window
+ * \param surface the directFB surface where the window has to be drawn
  */
-void draw_window( struct gui_window * window)
+void draw_window_on_surface( struct gui_window * window, IDirectFBSurface * surface)
 {
 	struct list_object * list_controls;
 	struct gui_control * control;
@@ -152,26 +153,26 @@ void draw_window( struct gui_window * window)
 	int y;
 	int font_height;
 
-	PRINTD( "draw_window\n" );
-	primary->SetBlittingFlags( primary,DSBLIT_BLEND_ALPHACHANNEL);
-	primary->SetColor( primary, window->r, window->g, window->b, window->a );
+	PRINTD( "draw_window_on_surface\n" );
+	surface->SetBlittingFlags( surface,DSBLIT_BLEND_ALPHACHANNEL);
+	surface->SetColor( surface, window->r, window->g, window->b, window->a );
 
 	if( window->font != NULL ){
 		PRINTD( "Using window's font\n" );
-		primary->SetFont( primary, window->font );
+		surface->SetFont( surface, window->font );
 		window->font->GetHeight( window->font, &font_height );
 	}
 	else{
 		PRINTD( "Using default font\n" );
-		primary->SetFont( primary, default_font );
+		surface->SetFont( surface, default_font );
 		default_font->GetHeight( default_font, &font_height );
 	}
 
-	primary->Clear( primary, 0, 0, 0, 0xFF );
+	surface->Clear( surface, 0, 0, 0, 0xFF );
 
 	if( window->background_surface != NULL ){
 		PRINTD( "Drawing background surface\n" );
-		primary->Blit( primary, window->background_surface, NULL, 0, 0 );
+		surface->Blit( surface, window->background_surface, NULL, 0, 0 );
 	}
 
 	list_controls = window->controls;
@@ -186,29 +187,87 @@ void draw_window( struct gui_window * window)
 				y = control->y;
 				p = strtok( p, "\n" );
 				while( p!= NULL ){
-					primary->DrawString( primary, p, -1,control->x, y,  DSTF_CENTER | DSTF_TOP );
+					surface->DrawString( surface, p, -1,control->x, y,  DSTF_CENTER | DSTF_TOP );
 					p=strtok( NULL, "\n" );
 					y += font_height;
 				}
 				free( s );
 				break;
 			case GUI_TYPE_CTRL_BUTTON:
-				primary->Blit( primary, control->bitmap_surface, NULL, control->x, control->y );
+				surface->Blit( surface, control->bitmap_surface, NULL, control->x, control->y );
 				break;
 			case GUI_TYPE_CTRL_LISTVIEW:
 			case GUI_TYPE_CTRL_LISTVIEW_ICON:
-				primary->Blit( primary, control->bitmap_surface, NULL, control->x, control->y );
+				surface->Blit( surface, control->bitmap_surface, NULL, control->x, control->y );
 				break;
 		}
 
 		list_controls = list_controls->next;
 	}
 
+
+}
+
+/**
+ * Rotate the surface given in parameter
+ *
+ * \param surface the directFB surface to rotate
+ */
+void rotate_surface( IDirectFBSurface ** surface ){
+	int w,h,pitch_src,pitch_dest;
+	int x,y;
+	void * ptr_src;
+	void * ptr_dest;
+	DFBSurfacePixelFormat pixel_format;
+	IDirectFBSurface * dest_surface;
+	IDirectFBSurface * src_surface;
+	u32 *pixel_src;
+	u32 *pixel_dest;
+
+	src_surface = *surface;
+
+	src_surface->GetSize( src_surface, &w, &h );
+	src_surface->GetPixelFormat( src_surface, &pixel_format );
+
+	dest_surface = create_surface( h, w );
+
+	src_surface->Lock( src_surface, DSLF_READ, &ptr_src, &pitch_src );
+	dest_surface->Lock( dest_surface, DSLF_WRITE, &ptr_dest, &pitch_dest );
+	for( y = 0; y < h;y++ ){
+		for( x = 0; x < w; x++ ){
+			pixel_src = (u32 *) ( ptr_src + y * pitch_src + x * (pitch_src/w ) );
+			pixel_dest = (u32 *) ( ptr_dest + x * pitch_dest + y * (pitch_dest/h ) );
+			*pixel_dest = *pixel_src;
+		}
+	}
+	dest_surface->Unlock( dest_surface );
+	src_surface->Unlock( src_surface );
+
+	/* swap surface and release unused surface */
+	*surface = dest_surface;
+	src_surface->Release( src_surface );
+}
+
+/**
+ * Draw window on the screen
+ *
+ * \param window the window
+ */
+void draw_window( struct gui_window * window ){
+	IDirectFBSurface * surface;
+	if( is_rotated == true ){
+		surface = create_surface( screen_width, screen_height );
+		draw_window_on_surface( window, surface );
+		rotate_surface( &surface );
+		primary->Blit( primary, surface, NULL, 0, 0 );
+		surface->Release( surface );
+	}
+	else draw_window_on_surface( window, primary);
+
 #ifdef USE_DOUBLE_BUFFER
 	primary->Flip( primary, NULL, DSFLIP_ONSYNC );
 #endif /* USE_DOUBLE_BUFFER */
 }
-
 
 
 /**
@@ -222,6 +281,7 @@ static void init_resources( int argc, char *argv[] )
 {
 	DFBResult err;
 	DFBSurfaceDescription dsc;
+	int buffer;
 
 	PRINTD( "init_resources\n" );
 
@@ -244,6 +304,13 @@ static void init_resources( int argc, char *argv[] )
 	
 	err = dfb->CreateSurface( dfb, &dsc, &primary );
 	DFBCHECK(primary->GetSize( primary, &screen_width, &screen_height ));
+
+	if( screen_width < screen_height ){
+		is_rotated = true;
+		buffer = screen_width;
+		screen_width = screen_height;
+		screen_height = buffer;
+	}
 }
 
 
