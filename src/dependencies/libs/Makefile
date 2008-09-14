@@ -163,3 +163,7 @@ $(LIBDIR)/libdirectfb.so : $(DIRECTFB-DIR)/Makefile
 directfb-distclean :	
 	make -C $(DIRECTFB-DIR)  distclean
 
+examples :
+	(cd DirectFB-examples-1.0.1;  DIRECTFB_CFLAGS="-I$(INCDIR) -I$(INCDIR)/directfb" DIRECTFB_LIBS="-L$(LIBDIR)/directfb-1.2-0 -ldirectfb  -ldirect -lfusion -lz" $(CONFIGURE) $(CONFIG-OPTS) )
+	make -C  DirectFB-examples-1.0.1 all
+
