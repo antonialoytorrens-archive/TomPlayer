@@ -2,10 +2,10 @@
 /* include/IL/config.h.in.  Generated from configure.ac by autoheader.  */
 
 /* Altivec extension found */
-#define ALTIVEC_GCC 
+/* #undef ALTIVEC_GCC */
 
 /* PPC_ASM assembly found */
-#define GCC_PCC_ASM 
+/* #undef GCC_PCC_ASM */
 
 /* X86_64_ASM assembly found */
 /* #undef GCC_X86_64_ASM */
@@ -53,7 +53,7 @@
 /* #undef ILUT_USE_DIRECTX9 */
 
 /* Support OpenGL API */
-#define ILUT_USE_OPENGL 
+/* #undef ILUT_USE_OPENGL */
 
 /* Support SDL API */
 /* #undef ILUT_USE_SDL */
@@ -62,79 +62,79 @@
 /* #undef IL_NO_BMP */
 
 /* DCX support */
-/* #undef IL_NO_DCX */
+#define IL_NO_DCX 
 
 /* GIF support */
 /* #undef IL_NO_GIF */
 
 /* HDR support */
-/* #undef IL_NO_HDR */
+#define IL_NO_HDR 
 
 /* ICON support */
 /* #undef IL_NO_ICON */
 
 /* JPG support */
-#define IL_NO_JPG 
+/* #undef IL_NO_JPG */
 
 /* LCMS support */
 #define IL_NO_LCMS 
 
 /* LIF support */
-/* #undef IL_NO_LIF */
+#define IL_NO_LIF 
 
 /* MDL support */
-/* #undef IL_NO_MDL */
+#define IL_NO_MDL 
 
 /* MNG support */
 #define IL_NO_MNG 
 
 /* PCD support */
-/* #undef IL_NO_PCD */
+#define IL_NO_PCD 
 
 /* PCX support */
-/* #undef IL_NO_PCX */
+#define IL_NO_PCX 
 
 /* PIC support */
-/* #undef IL_NO_PIC */
+#define IL_NO_PIC 
 
 /* PIX support */
-/* #undef IL_NO_PIX */
+#define IL_NO_PIX 
 
 /* PNG support */
 /* #undef IL_NO_PNG */
 
 /* PNM support */
-/* #undef IL_NO_PNM */
+#define IL_NO_PNM 
 
 /* PSD support */
-/* #undef IL_NO_PSD */
+#define IL_NO_PSD 
 
 /* PSP support */
-/* #undef IL_NO_PSP */
+#define IL_NO_PSP 
 
 /* PXR support */
-/* #undef IL_NO_PXR */
+#define IL_NO_PXR 
 
 /* RAW support */
-/* #undef IL_NO_RAW */
+#define IL_NO_RAW 
 
 /* SGI support */
-/* #undef IL_NO_SGI */
+#define IL_NO_SGI 
 
 /* TGA support */
-/* #undef IL_NO_TGA */
+#define IL_NO_TGA 
 
 /* TIF support */
 #define IL_NO_TIF 
 
 /* WAD support */
-/* #undef IL_NO_WAD */
+#define IL_NO_WAD 
 
 /* WAL support */
-/* #undef IL_NO_WAL */
+#define IL_NO_WAL 
 
 /* XPM support */
-/* #undef IL_NO_XPM */
+#define IL_NO_XPM 
 
 /* Use libjpeg without modification. always enabled. */
 #define IL_USE_JPEGLIB_UNMODIFIED 
@@ -143,10 +143,10 @@
 #define LCMS_NODIRINCLUDE 
 
 /* Building on Mac OS X */
-#define MAX_OS_X 
+/* #undef MAX_OS_X */
 
 /* memalign memory allocation */
-/* #undef MEMALIGN */
+#define MEMALIGN 
 
 /* mm_malloc memory allocation */
 /* #undef MM_MALLOC */
@@ -170,7 +170,7 @@
 #define PACKAGE_VERSION ""
 
 /* posix_memalign memory allocation */
-/* #undef POSIX_MEMALIGN */
+#define POSIX_MEMALIGN 
 
 /* SSE extension found */
 /* #undef SSE */
@@ -188,14 +188,14 @@
 #define VALLOC 
 
 /* Memory must be vector aligned */
-#define VECTORMEM 
+/* #undef VECTORMEM */
 
 /* Version number of package */
 #define VERSION "1.6.8"
 
 /* Define to 1 if your processor stores words with the most significant byte
    first (like Motorola and SPARC, unlike Intel and VAX). */
-#define WORDS_BIGENDIAN 1
+/* #undef WORDS_BIGENDIAN */
 
 /* Define to 1 if the X Window System is missing or not being used. */
-/* #undef X_DISPLAY_MISSING */
+#define X_DISPLAY_MISSING 1
