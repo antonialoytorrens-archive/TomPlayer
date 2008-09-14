@@ -3,9 +3,13 @@ ifndef INC_KERNEL
 	INC_KERNEL=../../../../golinux/include
 endif
 
+DEP_BUILD=./dependencies/build/usr/local/
+
+
 CC=arm-linux-gcc
 STRIP=arm-linux-strip
-CFLAGS+= -Wall -I$(INC_KERNEL) 
+CFLAGS+= -Wall -I$(INC_KERNEL)  -I$(DEP_BUILD)/include/ -I$(DEP_BUILD)/include/directfb
+LDFLAGS+=-L$(DEP_BUILD)/lib/ -Wl,-rpath=/usr/local/lib
 INSTALL_DIR=../distrib/tomplayer/
 
 ifdef DEBUG
@@ -20,13 +24,19 @@ all : tomplayer refresh_wdg
 
 tomplayer: $(OBJ)
 	$(CC) $(LDFLAGS) -o tomplayer $^  -liniparser -ldirectfb -lfusion -ldirect -lpthread -lz -lzip  -lm -lpthread -ljpeg -lILU  -lIL -lpng $(ADD_LIBS)
-	$(STRIP) tomplayer
-	mv tomplayer $(INSTALL_DIR)
+	cp tomplayer $(INSTALL_DIR)	
+#	mv tomplayer $(INSTALL_DIR)				
+	$(STRIP) $(INSTALL_DIR)/tomplayer
 
 refresh_wdg : watchdog.o
 	$(CC) $(LDFLAGS) -o refresh_wdg $^
 	$(STRIP) refresh_wdg
 	mv refresh_wdg $(INSTALL_DIR)
+
+install_deps :
+	rm -rf $(INSTALL_DIR)/deps
+	make -C dependencies/libs/
+	./create_script.sh
 
 #Explicit non trivial dependencies
 callbacks.o: callbacks.c callbacks.h gui.h window_context.h debug.h list.h file_list.h engine.h resume.h playlist.h zip_skin.h config.h
