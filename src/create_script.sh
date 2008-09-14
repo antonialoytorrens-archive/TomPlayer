@@ -1,6 +1,6 @@
 # This script
-#   - Copy dependencies 
-#   - Generate a script to create symlinks on target fs
+#   - Copy dependencies (only folder and regular files as it they will end up on a FAT fs)
+#   - Generate a script to create symlinks on target fs 
 #
 
 TOMPLAYER_FOLDER=../distrib/tomplayer/
@@ -9,15 +9,17 @@ DEP_DEST_FOLDER=$TOMPLAYER_FOLDER/$DISTRIB_TREE
 
 RPATH=/usr/local
 REF_TREE=./dependencies/build/
-REF_FOLDER_LIST="lib etc"
+REF_FOLDER_LIST="lib"
 
 OUTPUT_FILENAME=create_symlinks.sh
 
 INIT_DIR=`pwd`
  
 rm $OUTPUT_FILENAME
-echo "LOCAL_DIR=\`pwd\`" > $OUTPUT_FILENAME
-echo "mkdir -p $RPATH" >> $OUTPUT_FILENAME
+echo "LOCAL_DIR=\`echo \$0 | sed 's/$OUTPUT_FILENAME//'\`" > $OUTPUT_FILENAME
+echo "cd \$LOCAL_DIR"     >> $OUTPUT_FILENAME
+echo "LOCAL_DIR=\`pwd\`" >> $OUTPUT_FILENAME
+echo "mkdir -p $RPATH"   >> $OUTPUT_FILENAME
 
 # copying necessary files and creating script for symlinks
 for FOLDER in $REF_FOLDER_LIST ; do 
@@ -36,7 +38,7 @@ done
 
 
 
-# Generating script for symlinks
+# Generating script for symlinks 
 for FOLDER in $REF_FOLDER_LIST ; do 
 cd $REF_TREE/$RPATH/$FOLDER
 find . -type l | xargs ls -l | grep "\->" |  awk -v rpath=$RPATH/$FOLDER -v dest=$DISTRIB_TREE/$RPATH/$FOLDER '{  i=split($9, field , "/") ; base=field[i] ; print "ln -sf $LOCAL_DIR/"  dest "/" $11 " " rpath "/" base}' >> $INIT_DIR/$OUTPUT_FILENAME
