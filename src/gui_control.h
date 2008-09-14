@@ -28,7 +28,7 @@
 #ifndef __CONTROLS_H__
 #define __CONTROLS_H__
 #include <stdbool.h>
-#include <directfb.h>
+#include <directfb/directfb.h>
 #include "window.h"
 
 
