@@ -229,6 +229,7 @@ bool load_skin_from_zip( char * filename, struct skin_config * skin_conf ){
     	        new_w = ((int)(ilGetInteger(IL_IMAGE_WIDTH) *(1.0 * WS_XMAX ) / WS_NOXL_XMAX));
     	        new_h = ((int)(ilGetInteger(IL_IMAGE_HEIGHT)*(1.0 * WS_YMAX ) / WS_NOXL_YMAX));
     	        PRINTDF("%i - new w : %i new h : %i - num im :%i - num mipmaps : %i \n ", i, new_w,new_h, ilGetInteger(IL_NUM_IMAGES),ilGetInteger(IL_NUM_MIPMAPS));
+    	        
     	        /*while (1){
     	        	ilBindImage( skin_conf->controls[i].bitmap );
     	        	if ( !ilActiveImage(frame_id)){
