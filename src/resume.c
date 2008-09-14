@@ -2,7 +2,7 @@
  * Resume file handling
  *
  *  Mon Feb 27 2008
- *  Copyright  2008  Stéphan Rafin
+ *  Copyright  2008  Stï¿½phan Rafin
  *  Email
  ****************************************************************************/
 /*
@@ -27,7 +27,7 @@
  * \brief Resume file handling
  */
 
-
+#include <stdbool.h>
 #include <stdio.h>
 #include <dictionary.h>
 #include <iniparser.h>
