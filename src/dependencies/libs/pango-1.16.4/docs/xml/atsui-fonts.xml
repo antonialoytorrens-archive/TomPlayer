@@ -1,0 +1,77 @@
+<refentry id="pango-ATSUI-Fonts">
+<refmeta>
+<refentrytitle role="top_of_page">ATSUI Fonts</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>PANGO Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>ATSUI Fonts</refname>
+<refpurpose>Font handling and rendering with ATSUI fonts</refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
+</refnamediv>
+
+<refsynopsisdiv role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+
+
+
+            <link linkend="PangoCairoATSUIFont">PangoCairoATSUIFont</link>;
+<link linkend="ATSUFontID">ATSUFontID</link>  <link linkend="pango-cairo-atsui-font-get-atsu-font-id">pango_cairo_atsui_font_get_atsu_font_id</link>
+                                            (<link linkend="PangoCairoATSUIFont">PangoCairoATSUIFont</link> *cafont);
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1 role="desc">
+<title role="desc.title">Description</title>
+<para>
+The macros and functions in this section are used to access fonts natively on
+MacOS systems using the ATSUI text rendering subsystem.
+</para>
+</refsect1>
+
+<refsect1 role="details">
+<title role="details.title">Details</title>
+<refsect2>
+<title><anchor id="PangoCairoATSUIFont" role="struct"/>PangoCairoATSUIFont</title>
+<indexterm><primary>PangoCairoATSUIFont</primary></indexterm><programlisting>typedef struct _PangoCairoATSUIFont PangoCairoATSUIFont;</programlisting>
+<para>
+
+The <link linkend="PangoCairoATSUIFont"><type>PangoCairoATSUIFont</type></link> is <link linkend="PangoFont"><type>PangoFont</type></link> used to represent
+an ATSUI font used with the cairo backend.
+</para></refsect2>
+<refsect2>
+<title><anchor id="pango-cairo-atsui-font-get-atsu-font-id" role="function" condition="since:1.12"/>pango_cairo_atsui_font_get_atsu_font_id ()</title>
+<indexterm role="1.12"><primary>pango_cairo_atsui_font_get_atsu_font_id</primary></indexterm><programlisting><link linkend="ATSUFontID">ATSUFontID</link>  pango_cairo_atsui_font_get_atsu_font_id
+                                            (<link linkend="PangoCairoATSUIFont">PangoCairoATSUIFont</link> *cafont);</programlisting>
+<para>
+Returns the ATSUFontID of a font.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cafont</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="PangoCairoATSUIFont"><type>PangoCairoATSUIFont</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the ATSUFontID associated to <parameter>cafont</parameter>.
+
+</simpara></listitem></varlistentry>
+</variablelist><para>Since  1.12
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,419 @@
+<refentry id="GtkLayout">
+<refmeta>
+<refentrytitle role="top_of_page">GtkLayout</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GTK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GtkLayout</refname>
+<refpurpose>
+Infinite scrollable area containing child widgets and/or custom drawing</refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
+</refnamediv>
+
+<refsynopsisdiv role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <link linkend="GtkLayout-struct">GtkLayout</link>;
+<link linkend="GtkWidget">GtkWidget</link>*          <link linkend="gtk-layout-new">gtk_layout_new</link>                      (<link linkend="GtkAdjustment">GtkAdjustment</link> *hadjustment,
+                                                         <link linkend="GtkAdjustment">GtkAdjustment</link> *vadjustment);
+<link linkend="void">void</link>                <link linkend="gtk-layout-put">gtk_layout_put</link>                      (<link linkend="GtkLayout">GtkLayout</link> *layout,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *child_widget,
+                                                         <link linkend="gint">gint</link> x,
+                                                         <link linkend="gint">gint</link> y);
+<link linkend="void">void</link>                <link linkend="gtk-layout-move">gtk_layout_move</link>                     (<link linkend="GtkLayout">GtkLayout</link> *layout,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *child_widget,
+                                                         <link linkend="gint">gint</link> x,
+                                                         <link linkend="gint">gint</link> y);
+<link linkend="void">void</link>                <link linkend="gtk-layout-set-size">gtk_layout_set_size</link>                 (<link linkend="GtkLayout">GtkLayout</link> *layout,
+                                                         <link linkend="guint">guint</link> width,
+                                                         <link linkend="guint">guint</link> height);
+<link linkend="void">void</link>                <link linkend="gtk-layout-get-size">gtk_layout_get_size</link>                 (<link linkend="GtkLayout">GtkLayout</link> *layout,
+                                                         <link linkend="guint">guint</link> *width,
+                                                         <link linkend="guint">guint</link> *height);
+<link linkend="void">void</link>                <link linkend="gtk-layout-freeze">gtk_layout_freeze</link>                   (<link linkend="GtkLayout">GtkLayout</link> *layout);
+<link linkend="void">void</link>                <link linkend="gtk-layout-thaw">gtk_layout_thaw</link>                     (<link linkend="GtkLayout">GtkLayout</link> *layout);
+<link linkend="GtkAdjustment">GtkAdjustment</link>*      <link linkend="gtk-layout-get-hadjustment">gtk_layout_get_hadjustment</link>          (<link linkend="GtkLayout">GtkLayout</link> *layout);
+<link linkend="GtkAdjustment">GtkAdjustment</link>*      <link linkend="gtk-layout-get-vadjustment">gtk_layout_get_vadjustment</link>          (<link linkend="GtkLayout">GtkLayout</link> *layout);
+<link linkend="void">void</link>                <link linkend="gtk-layout-set-hadjustment">gtk_layout_set_hadjustment</link>          (<link linkend="GtkLayout">GtkLayout</link> *layout,
+                                                         <link linkend="GtkAdjustment">GtkAdjustment</link> *adjustment);
+<link linkend="void">void</link>                <link linkend="gtk-layout-set-vadjustment">gtk_layout_set_vadjustment</link>          (<link linkend="GtkLayout">GtkLayout</link> *layout,
+                                                         <link linkend="GtkAdjustment">GtkAdjustment</link> *adjustment);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1 role="object_hierarchy">
+<title role="object_hierarchy.title">Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GInitiallyUnowned">GInitiallyUnowned</link>
+         +----<link linkend="GtkObject">GtkObject</link>
+               +----<link linkend="GtkWidget">GtkWidget</link>
+                     +----<link linkend="GtkContainer">GtkContainer</link>
+                           +----GtkLayout
+</synopsis>
+
+</refsect1>
+
+
+
+<refsect1 role="impl_interfaces">
+<title role="impl_interfaces.title">Implemented Interfaces</title>
+<para>
+GtkLayout implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
+</refsect1>
+
+
+<refsect1 role="properties">
+<title role="properties.title">Properties</title>
+<synopsis>
+
+  <link linkend="GtkLayout--hadjustment">hadjustment</link>              <link linkend="GtkAdjustment">GtkAdjustment</link>         : Read / Write
+  <link linkend="GtkLayout--height">height</link>                   <link linkend="guint">guint</link>                 : Read / Write
+  <link linkend="GtkLayout--vadjustment">vadjustment</link>              <link linkend="GtkAdjustment">GtkAdjustment</link>         : Read / Write
+  <link linkend="GtkLayout--width">width</link>                    <link linkend="guint">guint</link>                 : Read / Write
+</synopsis>
+</refsect1>
+<refsect1 role="child_properties">
+<title role="child_properties.title">Child Properties</title>
+<synopsis>
+
+  <link linkend="GtkLayout--x">x</link>                        <link linkend="gint">gint</link>                  : Read / Write
+  <link linkend="GtkLayout--y">y</link>                        <link linkend="gint">gint</link>                  : Read / Write
+</synopsis>
+</refsect1>
+
+<refsect1 role="signal_proto">
+<title role="signal_proto.title">Signals</title>
+<synopsis>
+
+  <link linkend="GtkLayout-set-scroll-adjustments">set-scroll-adjustments</link>                         : Run Last / Action
+</synopsis>
+</refsect1>
+
+
+<refsect1 role="desc">
+<title role="desc.title">Description</title>
+<para>
+<link linkend="GtkLayout"><type>GtkLayout</type></link> is similar to <link linkend="GtkDrawingArea"><type>GtkDrawingArea</type></link> in that it's a "blank slate"
+and doesn't do anything but paint a blank background by default. It's
+different in that it supports scrolling natively (you can add it to a
+<link linkend="GtkScrolledWindow"><type>GtkScrolledWindow</type></link>), and it can contain child widgets, since it's a
+<link linkend="GtkContainer"><type>GtkContainer</type></link>. However if you're just going to draw, a <link linkend="GtkDrawingArea"><type>GtkDrawingArea</type></link>
+is a better choice since it has lower overhead.
+</para>
+
+<para>
+When handling expose events on a <link linkend="GtkLayout"><type>GtkLayout</type></link>, you must draw to 
+GTK_LAYOUT (layout)-&gt;bin_window, rather than to 
+GTK_WIDGET (layout)-&gt;window, as you would for a drawing
+area.
+</para>
+</refsect1>
+
+<refsect1 role="details">
+<title role="details.title">Details</title>
+<refsect2>
+<title><anchor id="GtkLayout-struct" role="struct"/>GtkLayout</title>
+<indexterm><primary>GtkLayout</primary></indexterm><programlisting>typedef struct {
+  GdkWindow *bin_window;
+} GtkLayout;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-layout-new" role="function"/>gtk_layout_new ()</title>
+<indexterm><primary>gtk_layout_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*          gtk_layout_new                      (<link linkend="GtkAdjustment">GtkAdjustment</link> *hadjustment,
+                                                         <link linkend="GtkAdjustment">GtkAdjustment</link> *vadjustment);</programlisting>
+<para>
+Creates a new <link linkend="GtkLayout"><type>GtkLayout</type></link>. Unless you have a specific adjustment
+you'd like the layout to use for scrolling, pass <link linkend="NULL:CAPS"><literal>NULL</literal></link> for
+<parameter>hadjustment</parameter> and <parameter>vadjustment</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>hadjustment</parameter>&nbsp;:</term>
+<listitem><simpara> horizontal scroll adjustment, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>vadjustment</parameter>&nbsp;:</term>
+<listitem><simpara> vertical scroll adjustment, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a new <link linkend="GtkLayout"><type>GtkLayout</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-layout-put" role="function"/>gtk_layout_put ()</title>
+<indexterm><primary>gtk_layout_put</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_layout_put                      (<link linkend="GtkLayout">GtkLayout</link> *layout,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *child_widget,
+                                                         <link linkend="gint">gint</link> x,
+                                                         <link linkend="gint">gint</link> y);</programlisting>
+<para>
+Adds <parameter>child_widget</parameter> to <parameter>layout</parameter>, at position (<parameter>x</parameter>,<parameter>y</parameter>).
+<parameter>layout</parameter> becomes the new parent container of <parameter>child_widget</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>layout</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkLayout"><type>GtkLayout</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>child_widget</parameter>&nbsp;:</term>
+<listitem><simpara> child widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara> X position of child widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara> Y position of child widget
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-layout-move" role="function"/>gtk_layout_move ()</title>
+<indexterm><primary>gtk_layout_move</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_layout_move                     (<link linkend="GtkLayout">GtkLayout</link> *layout,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *child_widget,
+                                                         <link linkend="gint">gint</link> x,
+                                                         <link linkend="gint">gint</link> y);</programlisting>
+<para>
+Moves a current child of <parameter>layout</parameter> to a new position.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>layout</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkLayout"><type>GtkLayout</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>child_widget</parameter>&nbsp;:</term>
+<listitem><simpara> a current child of <parameter>layout</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara> X position to move to
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara> Y position to move to
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-layout-set-size" role="function"/>gtk_layout_set_size ()</title>
+<indexterm><primary>gtk_layout_set_size</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_layout_set_size                 (<link linkend="GtkLayout">GtkLayout</link> *layout,
+                                                         <link linkend="guint">guint</link> width,
+                                                         <link linkend="guint">guint</link> height);</programlisting>
+<para>
+Sets the size of the scrollable area of the layout.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>layout</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkLayout"><type>GtkLayout</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><simpara> width of entire scrollable area
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
+<listitem><simpara> height of entire scrollable area
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-layout-get-size" role="function"/>gtk_layout_get_size ()</title>
+<indexterm><primary>gtk_layout_get_size</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_layout_get_size                 (<link linkend="GtkLayout">GtkLayout</link> *layout,
+                                                         <link linkend="guint">guint</link> *width,
+                                                         <link linkend="guint">guint</link> *height);</programlisting>
+<para>
+Gets the size that has been set on the layout, and that determines
+the total extents of the layout's scrollbar area. See
+<link linkend="gtk-layout-set-size"><function>gtk_layout_set_size()</function></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>layout</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkLayout"><type>GtkLayout</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><simpara> location to store the width set on <parameter>layout</parameter>, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
+<listitem><simpara> location to store the height set on <parameter>layout</parameter>, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-layout-freeze" role="function" condition="deprecated:"/>gtk_layout_freeze ()</title>
+<indexterm role="deprecated"><primary>gtk_layout_freeze</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_layout_freeze                   (<link linkend="GtkLayout">GtkLayout</link> *layout);</programlisting>
+<warning><para><literal>gtk_layout_freeze</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+This is a deprecated function, it doesn't do anything useful.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>layout</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkLayout"><type>GtkLayout</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-layout-thaw" role="function" condition="deprecated:"/>gtk_layout_thaw ()</title>
+<indexterm role="deprecated"><primary>gtk_layout_thaw</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_layout_thaw                     (<link linkend="GtkLayout">GtkLayout</link> *layout);</programlisting>
+<warning><para><literal>gtk_layout_thaw</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+This is a deprecated function, it doesn't do anything useful.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>layout</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkLayout"><type>GtkLayout</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-layout-get-hadjustment" role="function"/>gtk_layout_get_hadjustment ()</title>
+<indexterm><primary>gtk_layout_get_hadjustment</primary></indexterm><programlisting><link linkend="GtkAdjustment">GtkAdjustment</link>*      gtk_layout_get_hadjustment          (<link linkend="GtkLayout">GtkLayout</link> *layout);</programlisting>
+<para>
+This function should only be called after the layout has been
+placed in a <link linkend="GtkScrolledWindow"><type>GtkScrolledWindow</type></link> or otherwise configured for
+scrolling. It returns the <link linkend="GtkAdjustment"><type>GtkAdjustment</type></link> used for communication
+between the horizontal scrollbar and <parameter>layout</parameter>.
+</para>
+<para>
+See <link linkend="GtkScrolledWindow"><type>GtkScrolledWindow</type></link>, <link linkend="GtkScrollbar"><type>GtkScrollbar</type></link>, <link linkend="GtkAdjustment"><type>GtkAdjustment</type></link> for details.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>layout</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkLayout"><type>GtkLayout</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> horizontal scroll adjustment
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-layout-get-vadjustment" role="function"/>gtk_layout_get_vadjustment ()</title>
+<indexterm><primary>gtk_layout_get_vadjustment</primary></indexterm><programlisting><link linkend="GtkAdjustment">GtkAdjustment</link>*      gtk_layout_get_vadjustment          (<link linkend="GtkLayout">GtkLayout</link> *layout);</programlisting>
+<para>
+This function should only be called after the layout has been
+placed in a <link linkend="GtkScrolledWindow"><type>GtkScrolledWindow</type></link> or otherwise configured for
+scrolling. It returns the <link linkend="GtkAdjustment"><type>GtkAdjustment</type></link> used for communication
+between the vertical scrollbar and <parameter>layout</parameter>.
+</para>
+<para>
+See <link linkend="GtkScrolledWindow"><type>GtkScrolledWindow</type></link>, <link linkend="GtkScrollbar"><type>GtkScrollbar</type></link>, <link linkend="GtkAdjustment"><type>GtkAdjustment</type></link> for details.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>layout</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkLayout"><type>GtkLayout</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> vertical scroll adjustment
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-layout-set-hadjustment" role="function"/>gtk_layout_set_hadjustment ()</title>
+<indexterm><primary>gtk_layout_set_hadjustment</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_layout_set_hadjustment          (<link linkend="GtkLayout">GtkLayout</link> *layout,
+                                                         <link linkend="GtkAdjustment">GtkAdjustment</link> *adjustment);</programlisting>
+<para>
+Sets the horizontal scroll adjustment for the layout.
+</para>
+<para>
+See <link linkend="GtkScrolledWindow"><type>GtkScrolledWindow</type></link>, <link linkend="GtkScrollbar"><type>GtkScrollbar</type></link>, <link linkend="GtkAdjustment"><type>GtkAdjustment</type></link> for details.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>layout</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkLayout"><type>GtkLayout</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>adjustment</parameter>&nbsp;:</term>
+<listitem><simpara> new scroll adjustment
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-layout-set-vadjustment" role="function"/>gtk_layout_set_vadjustment ()</title>
+<indexterm><primary>gtk_layout_set_vadjustment</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_layout_set_vadjustment          (<link linkend="GtkLayout">GtkLayout</link> *layout,
+                                                         <link linkend="GtkAdjustment">GtkAdjustment</link> *adjustment);</programlisting>
+<para>
+Sets the vertical scroll adjustment for the layout.
+</para>
+<para>
+See <link linkend="GtkScrolledWindow"><type>GtkScrolledWindow</type></link>, <link linkend="GtkScrollbar"><type>GtkScrollbar</type></link>, <link linkend="GtkAdjustment"><type>GtkAdjustment</type></link> for details.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>layout</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkLayout"><type>GtkLayout</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>adjustment</parameter>&nbsp;:</term>
+<listitem><simpara> new scroll adjustment
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+<refsect1 role="property_details">
+<title role="property_details.title">Property Details</title>
+<refsect2><title><anchor id="GtkLayout--hadjustment"/>The :<literal>hadjustment</literal> property</title>
+<indexterm><primary>GtkLayout:hadjustment</primary></indexterm><programlisting>  hadjustment              <link linkend="GtkAdjustment">GtkAdjustment</link>         : Read / Write</programlisting>
+<para>The GtkAdjustment for the horizontal position.</para></refsect2>
+<refsect2><title><anchor id="GtkLayout--height"/>The :<literal>height</literal> property</title>
+<indexterm><primary>GtkLayout:height</primary></indexterm><programlisting>  height                   <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>The height of the layout.</para><para>Allowed values: &lt;= G_MAXINT</para>
+<para>Default value: 100</para>
+</refsect2>
+<refsect2><title><anchor id="GtkLayout--vadjustment"/>The :<literal>vadjustment</literal> property</title>
+<indexterm><primary>GtkLayout:vadjustment</primary></indexterm><programlisting>  vadjustment              <link linkend="GtkAdjustment">GtkAdjustment</link>         : Read / Write</programlisting>
+<para>The GtkAdjustment for the vertical position.</para></refsect2>
+<refsect2><title><anchor id="GtkLayout--width"/>The :<literal>width</literal> property</title>
+<indexterm><primary>GtkLayout:width</primary></indexterm><programlisting>  width                    <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>The width of the layout.</para><para>Allowed values: &lt;= G_MAXINT</para>
+<para>Default value: 100</para>
+</refsect2>
+
+</refsect1>
+<refsect1 role="child_property_details">
+<title role="child_property_details.title">Child Property Details</title>
+<refsect2><title><anchor id="GtkLayout--x"/>The :<literal>x</literal> child property</title>
+<indexterm><primary>GtkLayout:x</primary></indexterm><programlisting>  x                        <link linkend="gint">gint</link>                  : Read / Write</programlisting>
+<para>X position of child widget.</para><para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GtkLayout--y"/>The :<literal>y</literal> child property</title>
+<indexterm><primary>GtkLayout:y</primary></indexterm><programlisting>  y                        <link linkend="gint">gint</link>                  : Read / Write</programlisting>
+<para>Y position of child widget.</para><para>Default value: 0</para>
+</refsect2>
+
+</refsect1>
+
+<refsect1 role="signals">
+<title role="signals.title">Signal Details</title>
+<refsect2><title><anchor id="GtkLayout-set-scroll-adjustments"/>The <literal>::set-scroll-adjustments</literal> signal</title>
+<indexterm><primary>GtkLayout::set-scroll-adjustments</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="GtkLayout">GtkLayout</link>     *layout,
+                                                        <link linkend="GtkAdjustment">GtkAdjustment</link> *arg1,
+                                                        <link linkend="GtkAdjustment">GtkAdjustment</link> *arg2,
+                                                        <link linkend="gpointer">gpointer</link>       user_data)      : Run Last / Action</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>layout</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+</refsect1>
+
+
+<refsect1>
+<title>See Also</title>
+<para>
+<link linkend="GtkDrawingArea"><type>GtkDrawingArea</type></link>, <link linkend="GtkScrolledWindow"><type>GtkScrolledWindow</type></link>
+</para>
+</refsect1>
+
+</refentry>

@@ -1,0 +1,616 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>GtkFileChooserButton</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GTK+ Reference Manual">
+<link rel="up" href="SelectorWidgets.html" title="Selectors (File/Font/Color/Input Devices)">
+<link rel="prev" href="GtkFileChooser.html" title="GtkFileChooser">
+<link rel="next" href="GtkFileChooserDialog.html" title="GtkFileChooserDialog">
+<meta name="generator" content="GTK-Doc V1.7 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gtk.html" title="Part&#160;I.&#160;GTK+ Overview">
+<link rel="part" href="gtkbase.html" title="Part&#160;II.&#160;GTK+ Core Reference">
+<link rel="part" href="gtkobjects.html" title="Part&#160;III.&#160;GTK+ Widgets and Objects">
+<link rel="chapter" href="ch01.html" title="Object Hierarchy">
+<link rel="chapter" href="ch02.html" title="Widget Gallery">
+<link rel="chapter" href="WindowWidgets.html" title="Windows">
+<link rel="chapter" href="DisplayWidgets.html" title="Display Widgets">
+<link rel="chapter" href="ButtonWidgets.html" title="Buttons and Toggles">
+<link rel="chapter" href="NumericEntry.html" title="Numeric/Text Data Entry">
+<link rel="chapter" href="TextWidgetObjects.html" title="Multiline Text Editor">
+<link rel="chapter" href="TreeWidgetObjects.html" title="Tree, List and Icon Grid Widgets">
+<link rel="chapter" href="MenusAndCombos.html" title="Menus, Combo Box, Toolbar">
+<link rel="chapter" href="Actions.html" title="Action-based menus and toolbars">
+<link rel="chapter" href="SelectorWidgets.html" title="Selectors (File/Font/Color/Input Devices)">
+<link rel="chapter" href="LayoutContainers.html" title="Layout Containers">
+<link rel="chapter" href="Ornaments.html" title="Ornaments">
+<link rel="chapter" href="ScrollingWidgets.html" title="Scrolling">
+<link rel="chapter" href="Printing.html" title="Printing">
+<link rel="chapter" href="MiscObjects.html" title="Miscellaneous">
+<link rel="chapter" href="AbstractObjects.html" title="Abstract Base Classes">
+<link rel="chapter" href="PlugSocket.html" title="Cross-process Embedding">
+<link rel="chapter" href="SpecialObjects.html" title="Special-purpose features">
+<link rel="chapter" href="RecentDocuments.html" title="Recently Used Documents">
+<link rel="chapter" href="DeprecatedObjects.html" title="Deprecated">
+<link rel="part" href="migrating.html" title="Part&#160;IV.&#160;Migrating from Previous Versions of GTK+">
+<link rel="chapter" href="gtk-migrating-checklist.html" title="Migration Checklist">
+<link rel="chapter" href="gtk-migrating-GtkFileChooser.html" title="Migrating from GtkFileSelection to GtkFileChooser">
+<link rel="chapter" href="gtk-migrating-GtkAction.html" title="Migrating from old menu and toolbar systems to GtkAction">
+<link rel="chapter" href="gtk-migrating-GtkComboBox.html" title="Migrating from GtkOptionMenu and GtkCombo to GtkComboBox and GtkComboBoxEntry">
+<link rel="chapter" href="gtk-migrating-GtkIconView.html" title="Migrating from GnomeIconList to GtkIconView">
+<link rel="chapter" href="gtk-migrating-GtkAboutDialog.html" title="Migrating from GnomeAbout to GtkAboutDialog">
+<link rel="chapter" href="gtk-migrating-GtkColorButton.html" title="Migrating from GnomeColorPicker to GtkColorButton">
+<link rel="chapter" href="gtk-migrating-GtkAssistant.html" title="Migrating from GnomeDruid to GtkAssistant">
+<link rel="chapter" href="gtk-migrating-GtkRecentChooser.html" title="Migrating from EggRecent to GtkRecentChooser">
+<link rel="chapter" href="gtk-migrating-GtkLinkButton.html" title="Migrating from GnomeHRef to GtkLinkButton">
+<link rel="part" href="pt05.html" title="Part&#160;V.&#160;GTK+ Tools">
+<link rel="glossary" href="glossary.html" title="Glossary">
+<link rel="index" href="ix01.html" title="Index">
+<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="ix03.html" title="Index of new symbols in 2.2">
+<link rel="index" href="ix04.html" title="Index of new symbols in 2.4">
+<link rel="index" href="ix05.html" title="Index of new symbols in 2.6">
+<link rel="index" href="ix06.html" title="Index of new symbols in 2.8">
+<link rel="index" href="ix07.html" title="Index of new symbols in 2.10">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="GtkFileChooser.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="SelectorWidgets.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GTK+ Reference Manual</th>
+<td><a accesskey="n" href="GtkFileChooserDialog.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id3630586" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id3631060" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id3630877" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id3630947" class="shortcut">Implemented Interfaces</a>
+                  &#160;|&#160;
+                  <a href="#id3630977" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="GtkFileChooserButton"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id3630586"></a><span class="refentrytitle">GtkFileChooserButton</span>
+</h2>
+<p>GtkFileChooserButton &#8212; A button to launch a file selection dialog</p>
+</td>
+<td valign="top" align="right"><img src="file-button.png"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <a href="GtkFileChooserButton.html#GtkFileChooserButton-struct">GtkFileChooserButton</a>;
+<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          <a href="GtkFileChooserButton.html#gtk-file-chooser-button-new">gtk_file_chooser_button_new</a>         (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *title,
+                                                         <a href="GtkFileChooser.html#GtkFileChooserAction">GtkFileChooserAction</a> action);
+<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          <a href="GtkFileChooserButton.html#gtk-file-chooser-button-new-with-backend">gtk_file_chooser_button_new_with_backend</a>
+                                                        (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *title,
+                                                         <a href="GtkFileChooser.html#GtkFileChooserAction">GtkFileChooserAction</a> action,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *backend);
+<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          <a href="GtkFileChooserButton.html#gtk-file-chooser-button-new-with-dialog">gtk_file_chooser_button_new_with_dialog</a>
+                                                        (<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *dialog);
+const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a href="GtkFileChooserButton.html#gtk-file-chooser-button-get-title">gtk_file_chooser_button_get_title</a>   (<a href="GtkFileChooserButton.html" title="GtkFileChooserButton">GtkFileChooserButton</a> *button);
+void                <a href="GtkFileChooserButton.html#gtk-file-chooser-button-set-title">gtk_file_chooser_button_set_title</a>   (<a href="GtkFileChooserButton.html" title="GtkFileChooserButton">GtkFileChooserButton</a> *button,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *title);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkFileChooserButton.html#gtk-file-chooser-button-get-width-chars">gtk_file_chooser_button_get_width_chars</a>
+                                                        (<a href="GtkFileChooserButton.html" title="GtkFileChooserButton">GtkFileChooserButton</a> *button);
+void                <a href="GtkFileChooserButton.html#gtk-file-chooser-button-set-width-chars">gtk_file_chooser_button_set_width_chars</a>
+                                                        (<a href="GtkFileChooserButton.html" title="GtkFileChooserButton">GtkFileChooserButton</a> *button,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> n_chars);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkFileChooserButton.html#gtk-file-chooser-button-get-focus-on-click">gtk_file_chooser_button_get_focus_on_click</a>
+                                                        (<a href="GtkFileChooserButton.html" title="GtkFileChooserButton">GtkFileChooserButton</a> *button);
+void                <a href="GtkFileChooserButton.html#gtk-file-chooser-button-set-focus-on-click">gtk_file_chooser_button_set_focus_on_click</a>
+                                                        (<a href="GtkFileChooserButton.html" title="GtkFileChooserButton">GtkFileChooserButton</a> *button,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> focus_on_click);
+
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3630877"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gobject/gobject-The-Base-Object-Type.html#GInitiallyUnowned"
+>GInitiallyUnowned</a>
+         +----<a href="GtkObject.html" title="GtkObject">GtkObject</a>
+               +----<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>
+                     +----<a href="GtkContainer.html" title="GtkContainer">GtkContainer</a>
+                           +----<a href="GtkBox.html" title="GtkBox">GtkBox</a>
+                                 +----<a href="GtkHBox.html" title="GtkHBox">GtkHBox</a>
+                                       +----GtkFileChooserButton
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3630947"></a><h2>Implemented Interfaces</h2>
+<p>
+GtkFileChooserButton implements
+ <a href="GtkFileChooser.html" title="GtkFileChooser">GtkFileChooser</a> and  AtkImplementorIface.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3630977"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  <a href="GtkFileChooserButton.html#GtkFileChooserButton--dialog">dialog</a>                   <a href="GtkFileChooser.html" title="GtkFileChooser">GtkFileChooser</a>        : Write / Construct Only
+  <a href="GtkFileChooserButton.html#GtkFileChooserButton--focus-on-click">focus-on-click</a>           <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkFileChooserButton.html#GtkFileChooserButton--title">title</a>                    <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  <a href="GtkFileChooserButton.html#GtkFileChooserButton--width-chars">width-chars</a>              <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3631060"></a><h2>Description</h2>
+<p>
+The <a href="GtkFileChooserButton.html" title="GtkFileChooserButton"><span class="type">GtkFileChooserButton</span></a> is a widget that lets the user select a
+file.  It implements the <a href="GtkFileChooser.html" title="GtkFileChooser"><span class="type">GtkFileChooser</span></a> interface.  Visually, it is a
+file name with a button to bring up a <a href="GtkFileChooserDialog.html" title="GtkFileChooserDialog"><span class="type">GtkFileChooserDialog</span></a>.
+The user can then use that dialog to change the file associated with
+that button.  This widget does not support setting the "select-multiple"
+property to <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>.
+</p>
+<div class="example">
+<a name="id3631114"></a><p class="title"><b>Example&#160;28.&#160;Create a button to let the user select a file in /etc</b></p>
+<div class="example-contents"><pre class="programlisting">
+{
+  GtkWidget *button;
+
+  button = gtk_file_chooser_button_new (_("Select a file"),
+                                        GTK_FILE_CHOOSER_ACTION_OPEN);
+  gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (button),
+                                       "/etc");
+}
+</pre></div>
+</div>
+<br class="example-break"><p>
+The <a href="GtkFileChooserButton.html" title="GtkFileChooserButton"><span class="type">GtkFileChooserButton</span></a> supports the <a href="GtkFileChooser.html#GtkFileChooserAction"><span class="type">GtkFileChooserAction</span></a>s <a href="GtkFileChooser.html#GTK-FILE-CHOOSER-ACTION-OPEN:CAPS"><code class="literal">GTK_FILE_CHOOSER_ACTION_OPEN</code></a> and <a href="GtkFileChooser.html#GTK-FILE-CHOOSER-ACTION-SELECT-FOLDER:CAPS"><code class="literal">GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER</code></a>.
+</p>
+<div class="important" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Important</h3>
+<p>
+The <a href="GtkFileChooserButton.html" title="GtkFileChooserButton"><span class="type">GtkFileChooserButton</span></a> will ellipsize the label,
+and thus will thus request little horizontal space.  To give the button
+more space, you should call <a href="GtkWidget.html#gtk-widget-size-request"><code class="function">gtk_widget_size_request()</code></a>,
+<a href="GtkFileChooserButton.html#gtk-file-chooser-button-set-width-chars"><code class="function">gtk_file_chooser_button_set_width_chars()</code></a>, or pack the button in
+such a way that other interface elements give space to the widget.
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3631221"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3631232"></a><h3>
+<a name="GtkFileChooserButton-struct"></a>GtkFileChooserButton</h3>
+<a class="indexterm" name="id3631245"></a><pre class="programlisting">typedef struct _GtkFileChooserButton GtkFileChooserButton;</pre>
+<p>
+This should not be accessed directly.  Use the accessor functions below. 
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3631262"></a><h3>
+<a name="gtk-file-chooser-button-new"></a>gtk_file_chooser_button_new ()</h3>
+<a class="indexterm" name="id3631278"></a><pre class="programlisting"><a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          gtk_file_chooser_button_new         (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *title,
+                                                         <a href="GtkFileChooser.html#GtkFileChooserAction">GtkFileChooserAction</a> action);</pre>
+<p>
+Creates a new file-selecting button widget.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>title</code></em>&#160;:</span></td>
+<td> the title of the browse dialog.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>action</code></em>&#160;:</span></td>
+<td> the open mode for the widget.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a new button widget.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3631369"></a><h3>
+<a name="gtk-file-chooser-button-new-with-backend"></a>gtk_file_chooser_button_new_with_backend ()</h3>
+<a class="indexterm" name="id3631385"></a><pre class="programlisting"><a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          gtk_file_chooser_button_new_with_backend
+                                                        (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *title,
+                                                         <a href="GtkFileChooser.html#GtkFileChooserAction">GtkFileChooserAction</a> action,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *backend);</pre>
+<p>
+Creates a new file-selecting button widget using <em class="parameter"><code>backend</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>title</code></em>&#160;:</span></td>
+<td> the title of the browse dialog.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>action</code></em>&#160;:</span></td>
+<td> the open mode for the widget.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>backend</code></em>&#160;:</span></td>
+<td> the name of the <span class="type">GtkFileSystem</span> backend to use.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a new button widget.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3631515"></a><h3>
+<a name="gtk-file-chooser-button-new-with-dialog"></a>gtk_file_chooser_button_new_with_dialog ()</h3>
+<a class="indexterm" name="id3631531"></a><pre class="programlisting"><a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          gtk_file_chooser_button_new_with_dialog
+                                                        (<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *dialog);</pre>
+<p>
+Creates a <a href="GtkFileChooserButton.html" title="GtkFileChooserButton"><span class="type">GtkFileChooserButton</span></a> widget which uses <em class="parameter"><code>dialog</code></em> as it's
+file-picking window. Note that <em class="parameter"><code>dialog</code></em> must be a <a href="GtkDialog.html" title="GtkDialog"><span class="type">GtkDialog</span></a> (or
+subclass) which implements the <a href="GtkFileChooser.html" title="GtkFileChooser"><span class="type">GtkFileChooser</span></a> interface and must 
+not have <a href="GtkDialog.html#GTK-DIALOG-DESTROY-WITH-PARENT:CAPS"><code class="literal">GTK_DIALOG_DESTROY_WITH_PARENT</code></a> set.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>dialog</code></em>&#160;:</span></td>
+<td> the widget to use as dialog
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a new button widget.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3631651"></a><h3>
+<a name="gtk-file-chooser-button-get-title"></a>gtk_file_chooser_button_get_title ()</h3>
+<a class="indexterm" name="id3631667"></a><pre class="programlisting">const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gtk_file_chooser_button_get_title   (<a href="GtkFileChooserButton.html" title="GtkFileChooserButton">GtkFileChooserButton</a> *button);</pre>
+<p>
+Retrieves the title of the browse dialog used by <em class="parameter"><code>button</code></em>. The returned value
+should not be modified or freed.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>button</code></em>&#160;:</span></td>
+<td> the button widget to examine.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a pointer to the browse dialog's title.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3631744"></a><h3>
+<a name="gtk-file-chooser-button-set-title"></a>gtk_file_chooser_button_set_title ()</h3>
+<a class="indexterm" name="id3631761"></a><pre class="programlisting">void                gtk_file_chooser_button_set_title   (<a href="GtkFileChooserButton.html" title="GtkFileChooserButton">GtkFileChooserButton</a> *button,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *title);</pre>
+<p>
+Modifies the <em class="parameter"><code>title</code></em> of the browse dialog used by <em class="parameter"><code>button</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>button</code></em>&#160;:</span></td>
+<td> the button widget to modify.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>title</code></em>&#160;:</span></td>
+<td> the new browse dialog title.
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3631852"></a><h3>
+<a name="gtk-file-chooser-button-get-width-chars"></a>gtk_file_chooser_button_get_width_chars ()</h3>
+<a class="indexterm" name="id3631868"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_file_chooser_button_get_width_chars
+                                                        (<a href="GtkFileChooserButton.html" title="GtkFileChooserButton">GtkFileChooserButton</a> *button);</pre>
+<p>
+Retrieves the width in characters of the <em class="parameter"><code>button</code></em> widget's entry and/or label.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>button</code></em>&#160;:</span></td>
+<td> the button widget to examine.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> an integer width (in characters) that the button will use to size itself.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3631946"></a><h3>
+<a name="gtk-file-chooser-button-set-width-chars"></a>gtk_file_chooser_button_set_width_chars ()</h3>
+<a class="indexterm" name="id3631962"></a><pre class="programlisting">void                gtk_file_chooser_button_set_width_chars
+                                                        (<a href="GtkFileChooserButton.html" title="GtkFileChooserButton">GtkFileChooserButton</a> *button,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> n_chars);</pre>
+<p>
+Sets the width (in characters) that <em class="parameter"><code>button</code></em> will use to <em class="parameter"><code>n_chars</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>button</code></em>&#160;:</span></td>
+<td> the button widget to examine.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>n_chars</code></em>&#160;:</span></td>
+<td> the new width, in characters.
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3632056"></a><h3>
+<a name="gtk-file-chooser-button-get-focus-on-click"></a>gtk_file_chooser_button_get_focus_on_click ()</h3>
+<a class="indexterm" name="id3632072"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_file_chooser_button_get_focus_on_click
+                                                        (<a href="GtkFileChooserButton.html" title="GtkFileChooserButton">GtkFileChooserButton</a> *button);</pre>
+<p>
+Returns whether the button grabs focus when it is clicked with the mouse.
+See <a href="GtkFileChooserButton.html#gtk-file-chooser-button-set-focus-on-click"><code class="function">gtk_file_chooser_button_set_focus_on_click()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>button</code></em>&#160;:</span></td>
+<td> a <a href="GtkFileChooserButton.html" title="GtkFileChooserButton"><span class="type">GtkFileChooserButton</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the button grabs focus when it is clicked with
+              the mouse.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3632174"></a><h3>
+<a name="gtk-file-chooser-button-set-focus-on-click"></a>gtk_file_chooser_button_set_focus_on_click ()</h3>
+<a class="indexterm" name="id3632191"></a><pre class="programlisting">void                gtk_file_chooser_button_set_focus_on_click
+                                                        (<a href="GtkFileChooserButton.html" title="GtkFileChooserButton">GtkFileChooserButton</a> *button,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> focus_on_click);</pre>
+<p>
+Sets whether the button will grab focus when it is clicked with the mouse.
+Making mouse clicks not grab focus is useful in places like toolbars where
+you don't want the keyboard focus removed from the main area of the
+application.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>button</code></em>&#160;:</span></td>
+<td> a <a href="GtkFileChooserButton.html" title="GtkFileChooserButton"><span class="type">GtkFileChooserButton</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>focus_on_click</code></em>&#160;:</span></td>
+<td> whether the button grabs focus when clicked with the mouse
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3632285"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3632296"></a><h3>
+<a name="GtkFileChooserButton--dialog"></a>The :<code class="literal">dialog</code> property</h3>
+<a class="indexterm" name="id3632312"></a><pre class="programlisting">  dialog                   <a href="GtkFileChooser.html" title="GtkFileChooser">GtkFileChooser</a>        : Write / Construct Only</pre>
+<p>
+Instance of the <a href="GtkFileChooserDialog.html" title="GtkFileChooserDialog"><span class="type">GtkFileChooserDialog</span></a> associated with the button.</p>
+<p>
+
+</p>
+<p>Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3632353"></a><h3>
+<a name="GtkFileChooserButton--focus-on-click"></a>The :<code class="literal">focus-on-click</code> property</h3>
+<a class="indexterm" name="id3632370"></a><pre class="programlisting">  focus-on-click           <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>
+Whether the <a href="GtkFileChooserButton.html" title="GtkFileChooserButton"><span class="type">GtkFileChooserButton</span></a> button grabs focus when it is clicked
+with the mouse.</p>
+<p>
+
+</p>
+<p>Default value: TRUE</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3632416"></a><h3>
+<a name="GtkFileChooserButton--title"></a>The :<code class="literal">title</code> property</h3>
+<a class="indexterm" name="id3632432"></a><pre class="programlisting">  title                    <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>
+Title to put on the <a href="GtkFileChooserDialog.html" title="GtkFileChooserDialog"><span class="type">GtkFileChooserDialog</span></a> associated with the button.</p>
+<p>
+
+</p>
+<p>Default value: "Select A File"</p>
+<p>Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3632475"></a><h3>
+<a name="GtkFileChooserButton--width-chars"></a>The :<code class="literal">width-chars</code> property</h3>
+<a class="indexterm" name="id3632492"></a><pre class="programlisting">  width-chars              <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>
+The width of the entry and label inside the button, in characters.</p>
+<p>
+
+</p>
+<p>Allowed values: &gt;= -1</p>
+<p>Default value: -1</p>
+<p>Since  2.6
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3632532"></a><h2>See Also</h2>
+<p>
+<a href="GtkFileChooserDialog.html" title="GtkFileChooserDialog"><span class="type">GtkFileChooserDialog</span></a>
+</p>
+</div>
+</div>
+</body>
+</html>

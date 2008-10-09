@@ -1,0 +1,314 @@
+<refentry id="GtkCellView">
+<refmeta>
+<refentrytitle role="top_of_page">GtkCellView</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GTK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GtkCellView</refname>
+<refpurpose>A widget displaying a single row of a GtkTreeModel</refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
+</refnamediv>
+
+<refsynopsisdiv role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <link linkend="GtkCellView-struct">GtkCellView</link>;
+<link linkend="GtkWidget">GtkWidget</link>*          <link linkend="gtk-cell-view-new">gtk_cell_view_new</link>                   (void);
+<link linkend="GtkWidget">GtkWidget</link>*          <link linkend="gtk-cell-view-new-with-text">gtk_cell_view_new_with_text</link>         (const <link linkend="gchar">gchar</link> *text);
+<link linkend="GtkWidget">GtkWidget</link>*          <link linkend="gtk-cell-view-new-with-markup">gtk_cell_view_new_with_markup</link>       (const <link linkend="gchar">gchar</link> *markup);
+<link linkend="GtkWidget">GtkWidget</link>*          <link linkend="gtk-cell-view-new-with-pixbuf">gtk_cell_view_new_with_pixbuf</link>       (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf);
+<link linkend="void">void</link>                <link linkend="gtk-cell-view-set-model">gtk_cell_view_set_model</link>             (<link linkend="GtkCellView">GtkCellView</link> *cell_view,
+                                                         <link linkend="GtkTreeModel">GtkTreeModel</link> *model);
+<link linkend="void">void</link>                <link linkend="gtk-cell-view-set-displayed-row">gtk_cell_view_set_displayed_row</link>     (<link linkend="GtkCellView">GtkCellView</link> *cell_view,
+                                                         <link linkend="GtkTreePath">GtkTreePath</link> *path);
+<link linkend="GtkTreePath">GtkTreePath</link>*        <link linkend="gtk-cell-view-get-displayed-row">gtk_cell_view_get_displayed_row</link>     (<link linkend="GtkCellView">GtkCellView</link> *cell_view);
+<link linkend="gboolean">gboolean</link>            <link linkend="gtk-cell-view-get-size-of-row">gtk_cell_view_get_size_of_row</link>       (<link linkend="GtkCellView">GtkCellView</link> *cell_view,
+                                                         <link linkend="GtkTreePath">GtkTreePath</link> *path,
+                                                         <link linkend="GtkRequisition">GtkRequisition</link> *requisition);
+<link linkend="void">void</link>                <link linkend="gtk-cell-view-set-background-color">gtk_cell_view_set_background_color</link>  (<link linkend="GtkCellView">GtkCellView</link> *cell_view,
+                                                         const <link linkend="GdkColor">GdkColor</link> *color);
+<link linkend="GList">GList</link>*              <link linkend="gtk-cell-view-get-cell-renderers">gtk_cell_view_get_cell_renderers</link>    (<link linkend="GtkCellView">GtkCellView</link> *cell_view);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1 role="object_hierarchy">
+<title role="object_hierarchy.title">Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GInitiallyUnowned">GInitiallyUnowned</link>
+         +----<link linkend="GtkObject">GtkObject</link>
+               +----<link linkend="GtkWidget">GtkWidget</link>
+                     +----GtkCellView
+</synopsis>
+
+</refsect1>
+
+
+
+<refsect1 role="impl_interfaces">
+<title role="impl_interfaces.title">Implemented Interfaces</title>
+<para>
+GtkCellView implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link> and  <link linkend="GtkCellLayout">GtkCellLayout</link>.</para>
+
+</refsect1>
+
+
+<refsect1 role="properties">
+<title role="properties.title">Properties</title>
+<synopsis>
+
+  <link linkend="GtkCellView--background">background</link>               <link linkend="gchararray">gchararray</link>            : Write
+  <link linkend="GtkCellView--background-gdk">background-gdk</link>           <link linkend="GdkColor">GdkColor</link>              : Read / Write
+  <link linkend="GtkCellView--background-set">background-set</link>           <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkCellView--model">model</link>                    <link linkend="GtkTreeModel">GtkTreeModel</link>          : Read / Write
+</synopsis>
+</refsect1>
+
+
+
+<refsect1 role="desc">
+<title role="desc.title">Description</title>
+<para>
+A <link linkend="GtkCellView"><type>GtkCellView</type></link> displays a single row of a <link linkend="GtkTreeModel"><type>GtkTreeModel</type></link>, using
+cell renderers just like <link linkend="GtkTreeView"><type>GtkTreeView</type></link>. <link linkend="GtkCellView"><type>GtkCellView</type></link> doesn't support
+some of the more complex features of <link linkend="GtkTreeView"><type>GtkTreeView</type></link>, like cell editing
+and drag and drop.
+</para>
+</refsect1>
+
+<refsect1 role="details">
+<title role="details.title">Details</title>
+<refsect2>
+<title><anchor id="GtkCellView-struct" role="struct"/>GtkCellView</title>
+<indexterm><primary>GtkCellView</primary></indexterm><programlisting>typedef struct _GtkCellView GtkCellView;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-cell-view-new" role="function" condition="since:2.6"/>gtk_cell_view_new ()</title>
+<indexterm role="2.6"><primary>gtk_cell_view_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*          gtk_cell_view_new                   (void);</programlisting>
+<para>
+Creates a new <link linkend="GtkCellView"><type>GtkCellView</type></link> widget.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A newly created <link linkend="GtkCellView"><type>GtkCellView</type></link> widget.
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.6
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-cell-view-new-with-text" role="function" condition="since:2.6"/>gtk_cell_view_new_with_text ()</title>
+<indexterm role="2.6"><primary>gtk_cell_view_new_with_text</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*          gtk_cell_view_new_with_text         (const <link linkend="gchar">gchar</link> *text);</programlisting>
+<para>
+Creates a new <link linkend="GtkCellView"><type>GtkCellView</type></link> widget, adds a <link linkend="GtkCellRendererText"><type>GtkCellRendererText</type></link> 
+to it, and makes its show <parameter>text</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>text</parameter>&nbsp;:</term>
+<listitem><simpara> the text to display in the cell view
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A newly created <link linkend="GtkCellView"><type>GtkCellView</type></link> widget.
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.6
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-cell-view-new-with-markup" role="function" condition="since:2.6"/>gtk_cell_view_new_with_markup ()</title>
+<indexterm role="2.6"><primary>gtk_cell_view_new_with_markup</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*          gtk_cell_view_new_with_markup       (const <link linkend="gchar">gchar</link> *markup);</programlisting>
+<para>
+Creates a new <link linkend="GtkCellView"><type>GtkCellView</type></link> widget, adds a <link linkend="GtkCellRendererText"><type>GtkCellRendererText</type></link> 
+to it, and makes its show <parameter>markup</parameter>. The text can text can be
+marked up with the <link linkend="PangoMarkupFormat">Pango text 
+markup language</link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>markup</parameter>&nbsp;:</term>
+<listitem><simpara> the text to display in the cell view
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A newly created <link linkend="GtkCellView"><type>GtkCellView</type></link> widget.
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.6
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-cell-view-new-with-pixbuf" role="function" condition="since:2.6"/>gtk_cell_view_new_with_pixbuf ()</title>
+<indexterm role="2.6"><primary>gtk_cell_view_new_with_pixbuf</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*          gtk_cell_view_new_with_pixbuf       (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf);</programlisting>
+<para>
+Creates a new <link linkend="GtkCellView"><type>GtkCellView</type></link> widget, adds a <link linkend="GtkCellRendererPixbuf"><type>GtkCellRendererPixbuf</type></link> 
+to it, and makes its show <parameter>pixbuf</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pixbuf</parameter>&nbsp;:</term>
+<listitem><simpara> the image to display in the cell view
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A newly created <link linkend="GtkCellView"><type>GtkCellView</type></link> widget.
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.6
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-cell-view-set-model" role="function" condition="since:2.6"/>gtk_cell_view_set_model ()</title>
+<indexterm role="2.6"><primary>gtk_cell_view_set_model</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_cell_view_set_model             (<link linkend="GtkCellView">GtkCellView</link> *cell_view,
+                                                         <link linkend="GtkTreeModel">GtkTreeModel</link> *model);</programlisting>
+<para>
+Sets the model for <parameter>cell_view</parameter>.  If <parameter>cell_view</parameter> already has a model
+set, it will remove it before setting the new model.  If <parameter>model</parameter> is 
+<link linkend="NULL:CAPS"><literal>NULL</literal></link>, then it will unset the old model.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cell_view</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkCellView"><type>GtkCellView</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>model</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkTreeModel"><type>GtkTreeModel</type></link>
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.6
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-cell-view-set-displayed-row" role="function" condition="since:2.6"/>gtk_cell_view_set_displayed_row ()</title>
+<indexterm role="2.6"><primary>gtk_cell_view_set_displayed_row</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_cell_view_set_displayed_row     (<link linkend="GtkCellView">GtkCellView</link> *cell_view,
+                                                         <link linkend="GtkTreePath">GtkTreePath</link> *path);</programlisting>
+<para>
+Sets the row of the model that is currently displayed
+by the <link linkend="GtkCellView"><type>GtkCellView</type></link>. If the path is unset, then the
+contents of the cellview "stick" at their last value;
+this is not normally a desired result, but may be
+a needed intermediate state if say, the model for
+the <link linkend="GtkCellView"><type>GtkCellView</type></link> becomes temporarily empty.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cell_view</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkCellView"><type>GtkCellView</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkTreePath"><type>GtkTreePath</type></link> or <link linkend="NULL:CAPS"><literal>NULL</literal></link> to unset.
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.6
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-cell-view-get-displayed-row" role="function" condition="since:2.6"/>gtk_cell_view_get_displayed_row ()</title>
+<indexterm role="2.6"><primary>gtk_cell_view_get_displayed_row</primary></indexterm><programlisting><link linkend="GtkTreePath">GtkTreePath</link>*        gtk_cell_view_get_displayed_row     (<link linkend="GtkCellView">GtkCellView</link> *cell_view);</programlisting>
+<para>
+Returns a <link linkend="GtkTreePath"><type>GtkTreePath</type></link> referring to the currently 
+displayed row. If no row is currently displayed, 
+<link linkend="NULL:CAPS"><literal>NULL</literal></link> is returned.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cell_view</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkCellView"><type>GtkCellView</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the currently displayed row or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.6
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-cell-view-get-size-of-row" role="function" condition="since:2.6"/>gtk_cell_view_get_size_of_row ()</title>
+<indexterm role="2.6"><primary>gtk_cell_view_get_size_of_row</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            gtk_cell_view_get_size_of_row       (<link linkend="GtkCellView">GtkCellView</link> *cell_view,
+                                                         <link linkend="GtkTreePath">GtkTreePath</link> *path,
+                                                         <link linkend="GtkRequisition">GtkRequisition</link> *requisition);</programlisting>
+<para>
+Sets <parameter>requisition</parameter> to the size needed by <parameter>cell_view</parameter> to display 
+the model row pointed to by <parameter>path</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cell_view</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkCellView"><type>GtkCellView</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkTreePath"><type>GtkTreePath</type></link> 
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>requisition</parameter>&nbsp;:</term>
+<listitem><simpara> return location for the size 
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link>
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.6
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-cell-view-set-background-color" role="function" condition="since:2.6"/>gtk_cell_view_set_background_color ()</title>
+<indexterm role="2.6"><primary>gtk_cell_view_set_background_color</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_cell_view_set_background_color  (<link linkend="GtkCellView">GtkCellView</link> *cell_view,
+                                                         const <link linkend="GdkColor">GdkColor</link> *color);</programlisting>
+<para>
+Sets the background color of <parameter>view</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cell_view</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkCellView"><type>GtkCellView</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>color</parameter>&nbsp;:</term>
+<listitem><simpara> the new background color
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.6
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-cell-view-get-cell-renderers" role="function" condition="since:2.6"/>gtk_cell_view_get_cell_renderers ()</title>
+<indexterm role="2.6"><primary>gtk_cell_view_get_cell_renderers</primary></indexterm><programlisting><link linkend="GList">GList</link>*              gtk_cell_view_get_cell_renderers    (<link linkend="GtkCellView">GtkCellView</link> *cell_view);</programlisting>
+<para>
+Returns the cell renderers which have been added to <parameter>cell_view</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cell_view</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkCellView"><type>GtkCellView</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a list of cell renderers. The list, but not the
+  renderers has been newly allocated and should be freed with
+  <link linkend="g-list-free"><function>g_list_free()</function></link> when no longer needed.
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.6
+</para></refsect2>
+
+</refsect1>
+<refsect1 role="property_details">
+<title role="property_details.title">Property Details</title>
+<refsect2><title><anchor id="GtkCellView--background"/>The :<literal>background</literal> property</title>
+<indexterm><primary>GtkCellView:background</primary></indexterm><programlisting>  background               <link linkend="gchararray">gchararray</link>            : Write</programlisting>
+<para>Background color as a string.</para><para>Default value: NULL</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellView--background-gdk"/>The :<literal>background-gdk</literal> property</title>
+<indexterm><primary>GtkCellView:background-gdk</primary></indexterm><programlisting>  background-gdk           <link linkend="GdkColor">GdkColor</link>              : Read / Write</programlisting>
+<para>Background color as a GdkColor.</para></refsect2>
+<refsect2><title><anchor id="GtkCellView--background-set"/>The :<literal>background-set</literal> property</title>
+<indexterm><primary>GtkCellView:background-set</primary></indexterm><programlisting>  background-set           <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether this tag affects the background color.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellView--model"/>The :<literal>model</literal> property</title>
+<indexterm><primary>GtkCellView:model</primary></indexterm><programlisting>  model                    <link linkend="GtkTreeModel">GtkTreeModel</link>          : Read / Write</programlisting>
+<para>
+The model for cell view
+</para>
+<para>
+since 2.10</para>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

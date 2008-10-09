@@ -1,0 +1,2890 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>GtkPrintSettings</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GTK+ Reference Manual">
+<link rel="up" href="Printing.html" title="Printing">
+<link rel="prev" href="GtkPrintContext.html" title="GtkPrintContext">
+<link rel="next" href="GtkPageSetup.html" title="GtkPageSetup">
+<meta name="generator" content="GTK-Doc V1.7 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gtk.html" title="Part&#160;I.&#160;GTK+ Overview">
+<link rel="part" href="gtkbase.html" title="Part&#160;II.&#160;GTK+ Core Reference">
+<link rel="part" href="gtkobjects.html" title="Part&#160;III.&#160;GTK+ Widgets and Objects">
+<link rel="chapter" href="ch01.html" title="Object Hierarchy">
+<link rel="chapter" href="ch02.html" title="Widget Gallery">
+<link rel="chapter" href="WindowWidgets.html" title="Windows">
+<link rel="chapter" href="DisplayWidgets.html" title="Display Widgets">
+<link rel="chapter" href="ButtonWidgets.html" title="Buttons and Toggles">
+<link rel="chapter" href="NumericEntry.html" title="Numeric/Text Data Entry">
+<link rel="chapter" href="TextWidgetObjects.html" title="Multiline Text Editor">
+<link rel="chapter" href="TreeWidgetObjects.html" title="Tree, List and Icon Grid Widgets">
+<link rel="chapter" href="MenusAndCombos.html" title="Menus, Combo Box, Toolbar">
+<link rel="chapter" href="Actions.html" title="Action-based menus and toolbars">
+<link rel="chapter" href="SelectorWidgets.html" title="Selectors (File/Font/Color/Input Devices)">
+<link rel="chapter" href="LayoutContainers.html" title="Layout Containers">
+<link rel="chapter" href="Ornaments.html" title="Ornaments">
+<link rel="chapter" href="ScrollingWidgets.html" title="Scrolling">
+<link rel="chapter" href="Printing.html" title="Printing">
+<link rel="chapter" href="MiscObjects.html" title="Miscellaneous">
+<link rel="chapter" href="AbstractObjects.html" title="Abstract Base Classes">
+<link rel="chapter" href="PlugSocket.html" title="Cross-process Embedding">
+<link rel="chapter" href="SpecialObjects.html" title="Special-purpose features">
+<link rel="chapter" href="RecentDocuments.html" title="Recently Used Documents">
+<link rel="chapter" href="DeprecatedObjects.html" title="Deprecated">
+<link rel="part" href="migrating.html" title="Part&#160;IV.&#160;Migrating from Previous Versions of GTK+">
+<link rel="chapter" href="gtk-migrating-checklist.html" title="Migration Checklist">
+<link rel="chapter" href="gtk-migrating-GtkFileChooser.html" title="Migrating from GtkFileSelection to GtkFileChooser">
+<link rel="chapter" href="gtk-migrating-GtkAction.html" title="Migrating from old menu and toolbar systems to GtkAction">
+<link rel="chapter" href="gtk-migrating-GtkComboBox.html" title="Migrating from GtkOptionMenu and GtkCombo to GtkComboBox and GtkComboBoxEntry">
+<link rel="chapter" href="gtk-migrating-GtkIconView.html" title="Migrating from GnomeIconList to GtkIconView">
+<link rel="chapter" href="gtk-migrating-GtkAboutDialog.html" title="Migrating from GnomeAbout to GtkAboutDialog">
+<link rel="chapter" href="gtk-migrating-GtkColorButton.html" title="Migrating from GnomeColorPicker to GtkColorButton">
+<link rel="chapter" href="gtk-migrating-GtkAssistant.html" title="Migrating from GnomeDruid to GtkAssistant">
+<link rel="chapter" href="gtk-migrating-GtkRecentChooser.html" title="Migrating from EggRecent to GtkRecentChooser">
+<link rel="chapter" href="gtk-migrating-GtkLinkButton.html" title="Migrating from GnomeHRef to GtkLinkButton">
+<link rel="part" href="pt05.html" title="Part&#160;V.&#160;GTK+ Tools">
+<link rel="glossary" href="glossary.html" title="Glossary">
+<link rel="index" href="ix01.html" title="Index">
+<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="ix03.html" title="Index of new symbols in 2.2">
+<link rel="index" href="ix04.html" title="Index of new symbols in 2.4">
+<link rel="index" href="ix05.html" title="Index of new symbols in 2.6">
+<link rel="index" href="ix06.html" title="Index of new symbols in 2.8">
+<link rel="index" href="ix07.html" title="Index of new symbols in 2.10">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="GtkPrintContext.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="Printing.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GTK+ Reference Manual</th>
+<td><a accesskey="n" href="GtkPageSetup.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id3743252" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id3745505" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id3745481" class="shortcut">Object Hierarchy</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="GtkPrintSettings"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id3743252"></a><span class="refentrytitle">GtkPrintSettings</span>
+</h2>
+<p>GtkPrintSettings &#8212; Stores print settings</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <a href="GtkPrintSettings.html#GtkPrintSettings-struct">GtkPrintSettings</a>;
+void                (<a href="GtkPrintSettings.html#GtkPrintSettingsFunc">*GtkPrintSettingsFunc</a>)             (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *value,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a>*   <a href="GtkPrintSettings.html#gtk-print-settings-new">gtk_print_settings_new</a>              (void);
+<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a>*   <a href="GtkPrintSettings.html#gtk-print-settings-copy">gtk_print_settings_copy</a>             (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *other);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkPrintSettings.html#gtk-print-settings-has-key">gtk_print_settings_has_key</a>          (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key);
+const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a href="GtkPrintSettings.html#gtk-print-settings-get">gtk_print_settings_get</a>              (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set">gtk_print_settings_set</a>              (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *value);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-unset">gtk_print_settings_unset</a>            (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-foreach">gtk_print_settings_foreach</a>          (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a href="GtkPrintSettings.html#GtkPrintSettingsFunc">GtkPrintSettingsFunc</a> func,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkPrintSettings.html#gtk-print-settings-get-bool">gtk_print_settings_get_bool</a>         (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-bool">gtk_print_settings_set_bool</a>         (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> value);
+<a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             <a href="GtkPrintSettings.html#gtk-print-settings-get-double">gtk_print_settings_get_double</a>       (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key);
+<a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             <a href="GtkPrintSettings.html#gtk-print-settings-get-double-with-default">gtk_print_settings_get_double_with_default</a>
+                                                        (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> def);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-double">gtk_print_settings_set_double</a>       (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> value);
+<a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             <a href="GtkPrintSettings.html#gtk-print-settings-get-length">gtk_print_settings_get_length</a>       (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-length">gtk_print_settings_set_length</a>       (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> value,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkPrintSettings.html#gtk-print-settings-get-int">gtk_print_settings_get_int</a>          (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkPrintSettings.html#gtk-print-settings-get-int-with-default">gtk_print_settings_get_int_with_default</a>
+                                                        (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> def);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-int">gtk_print_settings_set_int</a>          (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> value);
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-PRINTER:CAPS">GTK_PRINT_SETTINGS_PRINTER</a>
+const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a href="GtkPrintSettings.html#gtk-print-settings-get-printer">gtk_print_settings_get_printer</a>      (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-printer">gtk_print_settings_set_printer</a>      (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *printer);
+enum                <a href="GtkPrintSettings.html#GtkPageOrientation">GtkPageOrientation</a>;
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-ORIENTATION:CAPS">GTK_PRINT_SETTINGS_ORIENTATION</a>
+<a href="GtkPrintSettings.html#GtkPageOrientation">GtkPageOrientation</a>  <a href="GtkPrintSettings.html#gtk-print-settings-get-orientation">gtk_print_settings_get_orientation</a>  (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-orientation">gtk_print_settings_set_orientation</a>  (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a href="GtkPrintSettings.html#GtkPageOrientation">GtkPageOrientation</a> orientation);
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-PAPER-FORMAT:CAPS">GTK_PRINT_SETTINGS_PAPER_FORMAT</a>
+<a href="gtk-GtkPaperSize.html#GtkPaperSize">GtkPaperSize</a>*       <a href="GtkPrintSettings.html#gtk-print-settings-get-paper-size">gtk_print_settings_get_paper_size</a>   (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-paper-size">gtk_print_settings_set_paper_size</a>   (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a href="gtk-GtkPaperSize.html#GtkPaperSize">GtkPaperSize</a> *paper_size);
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-PAPER-WIDTH:CAPS">GTK_PRINT_SETTINGS_PAPER_WIDTH</a>
+<a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             <a href="GtkPrintSettings.html#gtk-print-settings-get-paper-width">gtk_print_settings_get_paper_width</a>  (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-paper-width">gtk_print_settings_set_paper_width</a>  (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> width,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-PAPER-HEIGHT:CAPS">GTK_PRINT_SETTINGS_PAPER_HEIGHT</a>
+<a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             <a href="GtkPrintSettings.html#gtk-print-settings-get-paper-height">gtk_print_settings_get_paper_height</a> (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-paper-height">gtk_print_settings_set_paper_height</a> (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> height,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-USE-COLOR:CAPS">GTK_PRINT_SETTINGS_USE_COLOR</a>
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkPrintSettings.html#gtk-print-settings-get-use-color">gtk_print_settings_get_use_color</a>    (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-use-color">gtk_print_settings_set_use_color</a>    (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> use_color);
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-COLLATE:CAPS">GTK_PRINT_SETTINGS_COLLATE</a>
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkPrintSettings.html#gtk-print-settings-get-collate">gtk_print_settings_get_collate</a>      (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-collate">gtk_print_settings_set_collate</a>      (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> collate);
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-REVERSE:CAPS">GTK_PRINT_SETTINGS_REVERSE</a>
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkPrintSettings.html#gtk-print-settings-get-reverse">gtk_print_settings_get_reverse</a>      (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-reverse">gtk_print_settings_set_reverse</a>      (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> reverse);
+enum                <a href="GtkPrintSettings.html#GtkPrintDuplex">GtkPrintDuplex</a>;
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-DUPLEX:CAPS">GTK_PRINT_SETTINGS_DUPLEX</a>
+<a href="GtkPrintSettings.html#GtkPrintDuplex">GtkPrintDuplex</a>      <a href="GtkPrintSettings.html#gtk-print-settings-get-duplex">gtk_print_settings_get_duplex</a>       (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-duplex">gtk_print_settings_set_duplex</a>       (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a href="GtkPrintSettings.html#GtkPrintDuplex">GtkPrintDuplex</a> duplex);
+enum                <a href="GtkPrintSettings.html#GtkPrintQuality">GtkPrintQuality</a>;
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-QUALITY:CAPS">GTK_PRINT_SETTINGS_QUALITY</a>
+<a href="GtkPrintSettings.html#GtkPrintQuality">GtkPrintQuality</a>     <a href="GtkPrintSettings.html#gtk-print-settings-get-quality">gtk_print_settings_get_quality</a>      (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-quality">gtk_print_settings_set_quality</a>      (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a href="GtkPrintSettings.html#GtkPrintQuality">GtkPrintQuality</a> quality);
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-N-COPIES:CAPS">GTK_PRINT_SETTINGS_N_COPIES</a>
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkPrintSettings.html#gtk-print-settings-get-n-copies">gtk_print_settings_get_n_copies</a>     (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-n-copies">gtk_print_settings_set_n_copies</a>     (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> num_copies);
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-NUMBER-UP:CAPS">GTK_PRINT_SETTINGS_NUMBER_UP</a>
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkPrintSettings.html#gtk-print-settings-get-number-up">gtk_print_settings_get_number_up</a>    (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-number-up">gtk_print_settings_set_number_up</a>    (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> number_up);
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-RESOLUTION:CAPS">GTK_PRINT_SETTINGS_RESOLUTION</a>
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkPrintSettings.html#gtk-print-settings-get-resolution">gtk_print_settings_get_resolution</a>   (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-resolution">gtk_print_settings_set_resolution</a>   (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> resolution);
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-SCALE:CAPS">GTK_PRINT_SETTINGS_SCALE</a>
+<a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             <a href="GtkPrintSettings.html#gtk-print-settings-get-scale">gtk_print_settings_get_scale</a>        (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-scale">gtk_print_settings_set_scale</a>        (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> scale);
+enum                <a href="GtkPrintSettings.html#GtkPrintPages">GtkPrintPages</a>;
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-PRINT-PAGES:CAPS">GTK_PRINT_SETTINGS_PRINT_PAGES</a>
+<a href="GtkPrintSettings.html#GtkPrintPages">GtkPrintPages</a>       <a href="GtkPrintSettings.html#gtk-print-settings-get-print-pages">gtk_print_settings_get_print_pages</a>  (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-print-pages">gtk_print_settings_set_print_pages</a>  (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a href="GtkPrintSettings.html#GtkPrintPages">GtkPrintPages</a> pages);
+                    <a href="GtkPrintSettings.html#GtkPageRange">GtkPageRange</a>;
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-PAGE-RANGES:CAPS">GTK_PRINT_SETTINGS_PAGE_RANGES</a>
+<a href="GtkPrintSettings.html#GtkPageRange">GtkPageRange</a>*       <a href="GtkPrintSettings.html#gtk-print-settings-get-page-ranges">gtk_print_settings_get_page_ranges</a>  (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> *num_ranges);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-page-ranges">gtk_print_settings_set_page_ranges</a>  (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a href="GtkPrintSettings.html#GtkPageRange">GtkPageRange</a> *page_ranges,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> num_ranges);
+enum                <a href="GtkPrintSettings.html#GtkPageSet">GtkPageSet</a>;
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-PAGE-SET:CAPS">GTK_PRINT_SETTINGS_PAGE_SET</a>
+<a href="GtkPrintSettings.html#GtkPageSet">GtkPageSet</a>          <a href="GtkPrintSettings.html#gtk-print-settings-get-page-set">gtk_print_settings_get_page_set</a>     (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-page-set">gtk_print_settings_set_page_set</a>     (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a href="GtkPrintSettings.html#GtkPageSet">GtkPageSet</a> page_set);
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-DEFAULT-SOURCE:CAPS">GTK_PRINT_SETTINGS_DEFAULT_SOURCE</a>
+const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a href="GtkPrintSettings.html#gtk-print-settings-get-default-source">gtk_print_settings_get_default_source</a>
+                                                        (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-default-source">gtk_print_settings_set_default_source</a>
+                                                        (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *default_source);
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-MEDIA-TYPE:CAPS">GTK_PRINT_SETTINGS_MEDIA_TYPE</a>
+const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a href="GtkPrintSettings.html#gtk-print-settings-get-media-type">gtk_print_settings_get_media_type</a>   (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-media-type">gtk_print_settings_set_media_type</a>   (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *media_type);
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-DITHER:CAPS">GTK_PRINT_SETTINGS_DITHER</a>
+const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a href="GtkPrintSettings.html#gtk-print-settings-get-dither">gtk_print_settings_get_dither</a>       (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-dither">gtk_print_settings_set_dither</a>       (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *dither);
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-FINISHINGS:CAPS">GTK_PRINT_SETTINGS_FINISHINGS</a>
+const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a href="GtkPrintSettings.html#gtk-print-settings-get-finishings">gtk_print_settings_get_finishings</a>   (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-finishings">gtk_print_settings_set_finishings</a>   (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *finishings);
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-OUTPUT-BIN:CAPS">GTK_PRINT_SETTINGS_OUTPUT_BIN</a>
+const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a href="GtkPrintSettings.html#gtk-print-settings-get-output-bin">gtk_print_settings_get_output_bin</a>   (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);
+void                <a href="GtkPrintSettings.html#gtk-print-settings-set-output-bin">gtk_print_settings_set_output_bin</a>   (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *output_bin);
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-OUTPUT-FILE-FORMAT:CAPS">GTK_PRINT_SETTINGS_OUTPUT_FILE_FORMAT</a>
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-OUTPUT-URI:CAPS">GTK_PRINT_SETTINGS_OUTPUT_URI</a>
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-WIN32-DRIVER-EXTRA:CAPS">GTK_PRINT_SETTINGS_WIN32_DRIVER_EXTRA</a>
+#define             <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-WIN32-DRIVER-VERSION:CAPS">GTK_PRINT_SETTINGS_WIN32_DRIVER_VERSION</a>
+
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3745481"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----GtkPrintSettings
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3745505"></a><h2>Description</h2>
+<p>
+A GtkPrintSettings object represents the settings of a print dialog in 
+a system-independent way. The main use for this object is that once 
+you've printed you can get a settings object that represents the settings 
+the user chose, and the next time you print you can pass that object in so 
+that the user doesn't have to re-set all his settings. 
+</p>
+<p>
+Its also possible to enumerate the settings so that you can easily save 
+the settings for the next time your app runs, or even store them in a 
+document. The predefined keys try to use shared values as much as possible 
+so that moving such a document between systems still works.
+</p>
+<p>
+Printing support was added in GTK+ 2.10.
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3745541"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3745551"></a><h3>
+<a name="GtkPrintSettings-struct"></a>GtkPrintSettings</h3>
+<a class="indexterm" name="id3745564"></a><pre class="programlisting">typedef struct _GtkPrintSettings GtkPrintSettings;</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3745580"></a><h3>
+<a name="GtkPrintSettingsFunc"></a>GtkPrintSettingsFunc ()</h3>
+<a class="indexterm" name="id3745593"></a><pre class="programlisting">void                (*GtkPrintSettingsFunc)             (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *value,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>key</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>
+
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3745682"></a><h3>
+<a name="gtk-print-settings-new"></a>gtk_print_settings_new ()</h3>
+<a class="indexterm" name="id3745697"></a><pre class="programlisting"><a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a>*   gtk_print_settings_new              (void);</pre>
+<p>
+Creates a new <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a> object.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a new <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a> object
+
+</td>
+</tr></tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3745761"></a><h3>
+<a name="gtk-print-settings-copy"></a>gtk_print_settings_copy ()</h3>
+<a class="indexterm" name="id3745777"></a><pre class="programlisting"><a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a>*   gtk_print_settings_copy             (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *other);</pre>
+<p>
+Copies a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a> object.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>other</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a newly allocated copy of <em class="parameter"><code>other</code></em>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3745867"></a><h3>
+<a name="gtk-print-settings-has-key"></a>gtk_print_settings_has_key ()</h3>
+<a class="indexterm" name="id3745883"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_print_settings_has_key          (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key);</pre>
+<p>
+Returns <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, if a value is associated with <em class="parameter"><code>key</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>key</code></em>&#160;:</span></td>
+<td> a key
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, if <em class="parameter"><code>key</code></em> has a value
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3746012"></a><h3>
+<a name="gtk-print-settings-get"></a>gtk_print_settings_get ()</h3>
+<a class="indexterm" name="id3746028"></a><pre class="programlisting">const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gtk_print_settings_get              (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key);</pre>
+<p>
+Looks up the string value associated with <em class="parameter"><code>key</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>key</code></em>&#160;:</span></td>
+<td> a key
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the string value for <em class="parameter"><code>key</code></em>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3746138"></a><h3>
+<a name="gtk-print-settings-set"></a>gtk_print_settings_set ()</h3>
+<a class="indexterm" name="id3746153"></a><pre class="programlisting">void                gtk_print_settings_set              (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *value);</pre>
+<p>
+Associates <em class="parameter"><code>value</code></em> with <em class="parameter"><code>key</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>key</code></em>&#160;:</span></td>
+<td> a key
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td> a string value, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10 
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3746284"></a><h3>
+<a name="gtk-print-settings-unset"></a>gtk_print_settings_unset ()</h3>
+<a class="indexterm" name="id3746299"></a><pre class="programlisting">void                gtk_print_settings_unset            (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key);</pre>
+<p>
+Removes any value associated with <em class="parameter"><code>key</code></em>. 
+This has the same effect as setting the value to <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>key</code></em>&#160;:</span></td>
+<td> a key
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10 
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3746403"></a><h3>
+<a name="gtk-print-settings-foreach"></a>gtk_print_settings_foreach ()</h3>
+<a class="indexterm" name="id3746419"></a><pre class="programlisting">void                gtk_print_settings_foreach          (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a href="GtkPrintSettings.html#GtkPrintSettingsFunc">GtkPrintSettingsFunc</a> func,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
+<p>
+Calls <em class="parameter"><code>func</code></em> for each key-value pair of <em class="parameter"><code>settings</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>func</code></em>&#160;:</span></td>
+<td> the function to call
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td> user data for <em class="parameter"><code>func</code></em>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3746547"></a><h3>
+<a name="gtk-print-settings-get-bool"></a>gtk_print_settings_get_bool ()</h3>
+<a class="indexterm" name="id3746563"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_print_settings_get_bool         (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key);</pre>
+<p>
+Returns the boolean represented by the value
+that is associated with <em class="parameter"><code>key</code></em>. 
+</p>
+<p>
+The string "true" represents <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, any other 
+string <a
+href="../glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>key</code></em>&#160;:</span></td>
+<td> a key
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, if <em class="parameter"><code>key</code></em> maps to a true value.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3746706"></a><h3>
+<a name="gtk-print-settings-set-bool"></a>gtk_print_settings_set_bool ()</h3>
+<a class="indexterm" name="id3746723"></a><pre class="programlisting">void                gtk_print_settings_set_bool         (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> value);</pre>
+<p>
+Sets <em class="parameter"><code>key</code></em> to a boolean value.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>key</code></em>&#160;:</span></td>
+<td> a key
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td> a boolean
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3746836"></a><h3>
+<a name="gtk-print-settings-get-double"></a>gtk_print_settings_get_double ()</h3>
+<a class="indexterm" name="id3746852"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             gtk_print_settings_get_double       (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key);</pre>
+<p>
+Returns the double value associated with <em class="parameter"><code>key</code></em>, or 0.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>key</code></em>&#160;:</span></td>
+<td> a key
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the double value of <em class="parameter"><code>key</code></em>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3746962"></a><h3>
+<a name="gtk-print-settings-get-double-with-default"></a>gtk_print_settings_get_double_with_default ()</h3>
+<a class="indexterm" name="id3746978"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             gtk_print_settings_get_double_with_default
+                                                        (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> def);</pre>
+<p>
+Returns the floating point number represented by 
+the value that is associated with <em class="parameter"><code>key</code></em>, or <em class="parameter"><code>default_val</code></em>
+if the value does not represent a floating point number.
+</p>
+<p>
+Floating point numbers are parsed with <a
+href="../glib/glib-String-Utility-Functions.html#g-ascii-strtod"
+><code class="function">g_ascii_strtod()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>key</code></em>&#160;:</span></td>
+<td> a key
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>def</code></em>&#160;:</span></td>
+<td> the default value
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the floating point number associated with <em class="parameter"><code>key</code></em>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3747133"></a><h3>
+<a name="gtk-print-settings-set-double"></a>gtk_print_settings_set_double ()</h3>
+<a class="indexterm" name="id3747149"></a><pre class="programlisting">void                gtk_print_settings_set_double       (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> value);</pre>
+<p>
+Sets <em class="parameter"><code>key</code></em> to a double value.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>key</code></em>&#160;:</span></td>
+<td> a key 
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td> a double value
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3747264"></a><h3>
+<a name="gtk-print-settings-get-length"></a>gtk_print_settings_get_length ()</h3>
+<a class="indexterm" name="id3747280"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             gtk_print_settings_get_length       (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);</pre>
+<p>
+Returns the value associated with <em class="parameter"><code>key</code></em>, interpreted
+as a length. The returned value is converted to <em class="parameter"><code>units</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>key</code></em>&#160;:</span></td>
+<td> a key
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>unit</code></em>&#160;:</span></td>
+<td> the unit of the return value
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the length value of <em class="parameter"><code>key</code></em>, converted to <em class="parameter"><code>unit</code></em>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3747424"></a><h3>
+<a name="gtk-print-settings-set-length"></a>gtk_print_settings_set_length ()</h3>
+<a class="indexterm" name="id3747440"></a><pre class="programlisting">void                gtk_print_settings_set_length       (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> value,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);</pre>
+<p>
+Associates a length in units of <em class="parameter"><code>unit</code></em> with <em class="parameter"><code>key</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>key</code></em>&#160;:</span></td>
+<td> a key
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td> a length
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>unit</code></em>&#160;:</span></td>
+<td> the unit of <em class="parameter"><code>length</code></em>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3747588"></a><h3>
+<a name="gtk-print-settings-get-int"></a>gtk_print_settings_get_int ()</h3>
+<a class="indexterm" name="id3747604"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_print_settings_get_int          (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key);</pre>
+<p>
+Returns the integer value of <em class="parameter"><code>key</code></em>, or 0.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>key</code></em>&#160;:</span></td>
+<td> a key
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the integer value of <em class="parameter"><code>key</code></em> 
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3747712"></a><h3>
+<a name="gtk-print-settings-get-int-with-default"></a>gtk_print_settings_get_int_with_default ()</h3>
+<a class="indexterm" name="id3747729"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_print_settings_get_int_with_default
+                                                        (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> def);</pre>
+<p>
+Returns the value of <em class="parameter"><code>key</code></em>, interpreted as
+an integer, or the default value.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>key</code></em>&#160;:</span></td>
+<td> a key
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>def</code></em>&#160;:</span></td>
+<td> the default value
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the integer value of <em class="parameter"><code>key</code></em>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3747861"></a><h3>
+<a name="gtk-print-settings-set-int"></a>gtk_print_settings_set_int ()</h3>
+<a class="indexterm" name="id3747877"></a><pre class="programlisting">void                gtk_print_settings_set_int          (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *key,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> value);</pre>
+<p>
+Sets <em class="parameter"><code>key</code></em> to an integer value.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>key</code></em>&#160;:</span></td>
+<td> a key
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>value</code></em>&#160;:</span></td>
+<td> an integer 
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10 
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3747991"></a><h3>
+<a name="GTK-PRINT-SETTINGS-PRINTER:CAPS"></a>GTK_PRINT_SETTINGS_PRINTER</h3>
+<a class="indexterm" name="id3748006"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_PRINTER        "printer"
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3748021"></a><h3>
+<a name="gtk-print-settings-get-printer"></a>gtk_print_settings_get_printer ()</h3>
+<a class="indexterm" name="id3748037"></a><pre class="programlisting">const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gtk_print_settings_get_printer      (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);</pre>
+<p>
+Convenience function to obtain the value of 
+<a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-PRINTER:CAPS"><code class="literal">GTK_PRINT_SETTINGS_PRINTER</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the printer name
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3748126"></a><h3>
+<a name="gtk-print-settings-set-printer"></a>gtk_print_settings_set_printer ()</h3>
+<a class="indexterm" name="id3748142"></a><pre class="programlisting">void                gtk_print_settings_set_printer      (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *printer);</pre>
+<p>
+Convenience function to set <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-PRINTER:CAPS"><code class="literal">GTK_PRINT_SETTINGS_PRINTER</code></a>
+to <em class="parameter"><code>printer</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>printer</code></em>&#160;:</span></td>
+<td> the printer name
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3748247"></a><h3>
+<a name="GtkPageOrientation"></a>enum GtkPageOrientation</h3>
+<a class="indexterm" name="id3748260"></a><pre class="programlisting">typedef enum {
+  GTK_PAGE_ORIENTATION_PORTRAIT,
+  GTK_PAGE_ORIENTATION_LANDSCAPE,
+  GTK_PAGE_ORIENTATION_REVERSE_PORTRAIT,
+  GTK_PAGE_ORIENTATION_REVERSE_LANDSCAPE
+} GtkPageOrientation;
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3748278"></a><h3>
+<a name="GTK-PRINT-SETTINGS-ORIENTATION:CAPS"></a>GTK_PRINT_SETTINGS_ORIENTATION</h3>
+<a class="indexterm" name="id3748291"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_ORIENTATION    "orientation"
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3748307"></a><h3>
+<a name="gtk-print-settings-get-orientation"></a>gtk_print_settings_get_orientation ()</h3>
+<a class="indexterm" name="id3748324"></a><pre class="programlisting"><a href="GtkPrintSettings.html#GtkPageOrientation">GtkPageOrientation</a>  gtk_print_settings_get_orientation  (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);</pre>
+<p>
+Get the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-ORIENTATION:CAPS"><code class="literal">GTK_PRINT_SETTINGS_ORIENTATION</code></a>, 
+converted to a <a href="GtkPrintSettings.html#GtkPageOrientation"><span class="type">GtkPageOrientation</span></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the orientation
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3748419"></a><h3>
+<a name="gtk-print-settings-set-orientation"></a>gtk_print_settings_set_orientation ()</h3>
+<a class="indexterm" name="id3748436"></a><pre class="programlisting">void                gtk_print_settings_set_orientation  (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a href="GtkPrintSettings.html#GtkPageOrientation">GtkPageOrientation</a> orientation);</pre>
+<p>
+Sets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-ORIENTATION:CAPS"><code class="literal">GTK_PRINT_SETTINGS_ORIENTATION</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>orientation</code></em>&#160;:</span></td>
+<td> a page orientation
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3748534"></a><h3>
+<a name="GTK-PRINT-SETTINGS-PAPER-FORMAT:CAPS"></a>GTK_PRINT_SETTINGS_PAPER_FORMAT</h3>
+<a class="indexterm" name="id3748549"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_PAPER_FORMAT   "paper-format"
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3748565"></a><h3>
+<a name="gtk-print-settings-get-paper-size"></a>gtk_print_settings_get_paper_size ()</h3>
+<a class="indexterm" name="id3748581"></a><pre class="programlisting"><a href="gtk-GtkPaperSize.html#GtkPaperSize">GtkPaperSize</a>*       gtk_print_settings_get_paper_size   (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);</pre>
+<p>
+Gets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-PAPER-FORMAT:CAPS"><code class="literal">GTK_PRINT_SETTINGS_PAPER_FORMAT</code></a>, 
+converted to a <a href="gtk-GtkPaperSize.html#GtkPaperSize"><span class="type">GtkPaperSize</span></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the paper size
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3748678"></a><h3>
+<a name="gtk-print-settings-set-paper-size"></a>gtk_print_settings_set_paper_size ()</h3>
+<a class="indexterm" name="id3748694"></a><pre class="programlisting">void                gtk_print_settings_set_paper_size   (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a href="gtk-GtkPaperSize.html#GtkPaperSize">GtkPaperSize</a> *paper_size);</pre>
+<p>
+Sets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-PAPER-FORMAT:CAPS"><code class="literal">GTK_PRINT_SETTINGS_PAPER_FORMAT</code></a>,
+<a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-PAPER-WIDTH:CAPS"><code class="literal">GTK_PRINT_SETTINGS_PAPER_WIDTH</code></a> and
+<a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-PAPER-HEIGHT:CAPS"><code class="literal">GTK_PRINT_SETTINGS_PAPER_HEIGHT</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>paper_size</code></em>&#160;:</span></td>
+<td> a paper size
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3748816"></a><h3>
+<a name="GTK-PRINT-SETTINGS-PAPER-WIDTH:CAPS"></a>GTK_PRINT_SETTINGS_PAPER_WIDTH</h3>
+<a class="indexterm" name="id3748830"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_PAPER_WIDTH    "paper-width"
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3748846"></a><h3>
+<a name="gtk-print-settings-get-paper-width"></a>gtk_print_settings_get_paper_width ()</h3>
+<a class="indexterm" name="id3748862"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             gtk_print_settings_get_paper_width  (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);</pre>
+<p>
+Gets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-PAPER-WIDTH:CAPS"><code class="literal">GTK_PRINT_SETTINGS_PAPER_WIDTH</code></a>,
+converted to <em class="parameter"><code>unit</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>unit</code></em>&#160;:</span></td>
+<td> the unit for the return value
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the paper width, in units of <em class="parameter"><code>unit</code></em>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3748983"></a><h3>
+<a name="gtk-print-settings-set-paper-width"></a>gtk_print_settings_set_paper_width ()</h3>
+<a class="indexterm" name="id3749000"></a><pre class="programlisting">void                gtk_print_settings_set_paper_width  (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> width,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);</pre>
+<p>
+Sets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-PAPER-WIDTH:CAPS"><code class="literal">GTK_PRINT_SETTINGS_PAPER_WIDTH</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>width</code></em>&#160;:</span></td>
+<td> the paper width
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>unit</code></em>&#160;:</span></td>
+<td> the units of <em class="parameter"><code>width</code></em>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3749125"></a><h3>
+<a name="GTK-PRINT-SETTINGS-PAPER-HEIGHT:CAPS"></a>GTK_PRINT_SETTINGS_PAPER_HEIGHT</h3>
+<a class="indexterm" name="id3749140"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_PAPER_HEIGHT   "paper-height"
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3749156"></a><h3>
+<a name="gtk-print-settings-get-paper-height"></a>gtk_print_settings_get_paper_height ()</h3>
+<a class="indexterm" name="id3749172"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             gtk_print_settings_get_paper_height (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);</pre>
+<p>
+Gets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-PAPER-HEIGHT:CAPS"><code class="literal">GTK_PRINT_SETTINGS_PAPER_HEIGHT</code></a>,
+converted to <em class="parameter"><code>unit</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>unit</code></em>&#160;:</span></td>
+<td> the unit for the return value
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the paper height, in units of <em class="parameter"><code>unit</code></em>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3749293"></a><h3>
+<a name="gtk-print-settings-set-paper-height"></a>gtk_print_settings_set_paper_height ()</h3>
+<a class="indexterm" name="id3749309"></a><pre class="programlisting">void                gtk_print_settings_set_paper_height (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> height,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);</pre>
+<p>
+Sets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-PAPER-HEIGHT:CAPS"><code class="literal">GTK_PRINT_SETTINGS_PAPER_HEIGHT</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>height</code></em>&#160;:</span></td>
+<td> the paper height
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>unit</code></em>&#160;:</span></td>
+<td> the units of <em class="parameter"><code>height</code></em>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3749436"></a><h3>
+<a name="GTK-PRINT-SETTINGS-USE-COLOR:CAPS"></a>GTK_PRINT_SETTINGS_USE_COLOR</h3>
+<a class="indexterm" name="id3749450"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_USE_COLOR      "use-color"
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3749466"></a><h3>
+<a name="gtk-print-settings-get-use-color"></a>gtk_print_settings_get_use_color ()</h3>
+<a class="indexterm" name="id3749481"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_print_settings_get_use_color    (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);</pre>
+<p>
+Gets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-USE-COLOR:CAPS"><code class="literal">GTK_PRINT_SETTINGS_USE_COLOR</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> whether to use color
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3749569"></a><h3>
+<a name="gtk-print-settings-set-use-color"></a>gtk_print_settings_set_use_color ()</h3>
+<a class="indexterm" name="id3749585"></a><pre class="programlisting">void                gtk_print_settings_set_use_color    (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> use_color);</pre>
+<p>
+Sets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-USE-COLOR:CAPS"><code class="literal">GTK_PRINT_SETTINGS_USE_COLOR</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>use_color</code></em>&#160;:</span></td>
+<td> whether to use color
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3749684"></a><h3>
+<a name="GTK-PRINT-SETTINGS-COLLATE:CAPS"></a>GTK_PRINT_SETTINGS_COLLATE</h3>
+<a class="indexterm" name="id3749698"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_COLLATE        "collate"
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3749714"></a><h3>
+<a name="gtk-print-settings-get-collate"></a>gtk_print_settings_get_collate ()</h3>
+<a class="indexterm" name="id3749729"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_print_settings_get_collate      (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);</pre>
+<p>
+Gets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-COLLATE:CAPS"><code class="literal">GTK_PRINT_SETTINGS_COLLATE</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> whether to collate the printed pages
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3749816"></a><h3>
+<a name="gtk-print-settings-set-collate"></a>gtk_print_settings_set_collate ()</h3>
+<a class="indexterm" name="id3749832"></a><pre class="programlisting">void                gtk_print_settings_set_collate      (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> collate);</pre>
+<p>
+Sets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-COLLATE:CAPS"><code class="literal">GTK_PRINT_SETTINGS_COLLATE</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>collate</code></em>&#160;:</span></td>
+<td> whether to collate the output
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3749931"></a><h3>
+<a name="GTK-PRINT-SETTINGS-REVERSE:CAPS"></a>GTK_PRINT_SETTINGS_REVERSE</h3>
+<a class="indexterm" name="id3749945"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_REVERSE        "reverse"
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3749961"></a><h3>
+<a name="gtk-print-settings-get-reverse"></a>gtk_print_settings_get_reverse ()</h3>
+<a class="indexterm" name="id3749976"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_print_settings_get_reverse      (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);</pre>
+<p>
+Gets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-REVERSE:CAPS"><code class="literal">GTK_PRINT_SETTINGS_REVERSE</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> whether to reverse the order of the printed pages
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3750064"></a><h3>
+<a name="gtk-print-settings-set-reverse"></a>gtk_print_settings_set_reverse ()</h3>
+<a class="indexterm" name="id3750079"></a><pre class="programlisting">void                gtk_print_settings_set_reverse      (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> reverse);</pre>
+<p>
+Sets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-REVERSE:CAPS"><code class="literal">GTK_PRINT_SETTINGS_REVERSE</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>reverse</code></em>&#160;:</span></td>
+<td> whether to reverse the output
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3750178"></a><h3>
+<a name="GtkPrintDuplex"></a>enum GtkPrintDuplex</h3>
+<a class="indexterm" name="id3750191"></a><pre class="programlisting">typedef enum {
+  GTK_PRINT_DUPLEX_SIMPLEX,
+  GTK_PRINT_DUPLEX_HORIZONTAL,
+  GTK_PRINT_DUPLEX_VERTICAL
+} GtkPrintDuplex;
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3750208"></a><h3>
+<a name="GTK-PRINT-SETTINGS-DUPLEX:CAPS"></a>GTK_PRINT_SETTINGS_DUPLEX</h3>
+<a class="indexterm" name="id3750222"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_DUPLEX         "duplex"
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3750238"></a><h3>
+<a name="gtk-print-settings-get-duplex"></a>gtk_print_settings_get_duplex ()</h3>
+<a class="indexterm" name="id3750253"></a><pre class="programlisting"><a href="GtkPrintSettings.html#GtkPrintDuplex">GtkPrintDuplex</a>      gtk_print_settings_get_duplex       (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);</pre>
+<p>
+Gets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-DUPLEX:CAPS"><code class="literal">GTK_PRINT_SETTINGS_DUPLEX</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> whether to print the output in duplex.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3750342"></a><h3>
+<a name="gtk-print-settings-set-duplex"></a>gtk_print_settings_set_duplex ()</h3>
+<a class="indexterm" name="id3750357"></a><pre class="programlisting">void                gtk_print_settings_set_duplex       (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a href="GtkPrintSettings.html#GtkPrintDuplex">GtkPrintDuplex</a> duplex);</pre>
+<p>
+Sets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-DUPLEX:CAPS"><code class="literal">GTK_PRINT_SETTINGS_DUPLEX</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>duplex</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html#GtkPrintDuplex"><span class="type">GtkPrintDuplex</span></a> value
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3750465"></a><h3>
+<a name="GtkPrintQuality"></a>enum GtkPrintQuality</h3>
+<a class="indexterm" name="id3750478"></a><pre class="programlisting">typedef enum {
+  GTK_PRINT_QUALITY_LOW,
+  GTK_PRINT_QUALITY_NORMAL,
+  GTK_PRINT_QUALITY_HIGH,
+  GTK_PRINT_QUALITY_DRAFT
+} GtkPrintQuality;
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3750495"></a><h3>
+<a name="GTK-PRINT-SETTINGS-QUALITY:CAPS"></a>GTK_PRINT_SETTINGS_QUALITY</h3>
+<a class="indexterm" name="id3750508"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_QUALITY        "quality"
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3750524"></a><h3>
+<a name="gtk-print-settings-get-quality"></a>gtk_print_settings_get_quality ()</h3>
+<a class="indexterm" name="id3750539"></a><pre class="programlisting"><a href="GtkPrintSettings.html#GtkPrintQuality">GtkPrintQuality</a>     gtk_print_settings_get_quality      (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);</pre>
+<p>
+Gets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-QUALITY:CAPS"><code class="literal">GTK_PRINT_SETTINGS_QUALITY</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the print quality
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3750627"></a><h3>
+<a name="gtk-print-settings-set-quality"></a>gtk_print_settings_set_quality ()</h3>
+<a class="indexterm" name="id3750643"></a><pre class="programlisting">void                gtk_print_settings_set_quality      (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a href="GtkPrintSettings.html#GtkPrintQuality">GtkPrintQuality</a> quality);</pre>
+<p>
+Sets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-QUALITY:CAPS"><code class="literal">GTK_PRINT_SETTINGS_QUALITY</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>quality</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html#GtkPrintQuality"><span class="type">GtkPrintQuality</span></a> value
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3750750"></a><h3>
+<a name="GTK-PRINT-SETTINGS-N-COPIES:CAPS"></a>GTK_PRINT_SETTINGS_N_COPIES</h3>
+<a class="indexterm" name="id3750764"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_N_COPIES       "n-copies"
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3750780"></a><h3>
+<a name="gtk-print-settings-get-n-copies"></a>gtk_print_settings_get_n_copies ()</h3>
+<a class="indexterm" name="id3750795"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_print_settings_get_n_copies     (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);</pre>
+<p>
+Gets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-N-COPIES:CAPS"><code class="literal">GTK_PRINT_SETTINGS_N_COPIES</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the number of copies to print
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3750883"></a><h3>
+<a name="gtk-print-settings-set-n-copies"></a>gtk_print_settings_set_n_copies ()</h3>
+<a class="indexterm" name="id3750899"></a><pre class="programlisting">void                gtk_print_settings_set_n_copies     (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> num_copies);</pre>
+<p>
+Sets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-N-COPIES:CAPS"><code class="literal">GTK_PRINT_SETTINGS_N_COPIES</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>num_copies</code></em>&#160;:</span></td>
+<td> the number of copies 
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3750998"></a><h3>
+<a name="GTK-PRINT-SETTINGS-NUMBER-UP:CAPS"></a>GTK_PRINT_SETTINGS_NUMBER_UP</h3>
+<a class="indexterm" name="id3751011"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_NUMBER_UP      "number-up"
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3751027"></a><h3>
+<a name="gtk-print-settings-get-number-up"></a>gtk_print_settings_get_number_up ()</h3>
+<a class="indexterm" name="id3751043"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_print_settings_get_number_up    (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);</pre>
+<p>
+Gets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-NUMBER-UP:CAPS"><code class="literal">GTK_PRINT_SETTINGS_NUMBER_UP</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the number of pages per sheet
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3751131"></a><h3>
+<a name="gtk-print-settings-set-number-up"></a>gtk_print_settings_set_number_up ()</h3>
+<a class="indexterm" name="id3751147"></a><pre class="programlisting">void                gtk_print_settings_set_number_up    (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> number_up);</pre>
+<p>
+Sets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-NUMBER-UP:CAPS"><code class="literal">GTK_PRINT_SETTINGS_NUMBER_UP</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>number_up</code></em>&#160;:</span></td>
+<td> the number of pages per sheet 
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3751246"></a><h3>
+<a name="GTK-PRINT-SETTINGS-RESOLUTION:CAPS"></a>GTK_PRINT_SETTINGS_RESOLUTION</h3>
+<a class="indexterm" name="id3751260"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_RESOLUTION     "resolution"
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3751276"></a><h3>
+<a name="gtk-print-settings-get-resolution"></a>gtk_print_settings_get_resolution ()</h3>
+<a class="indexterm" name="id3751293"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_print_settings_get_resolution   (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);</pre>
+<p>
+Gets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-RESOLUTION:CAPS"><code class="literal">GTK_PRINT_SETTINGS_RESOLUTION</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the resolution in dpi
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3751380"></a><h3>
+<a name="gtk-print-settings-set-resolution"></a>gtk_print_settings_set_resolution ()</h3>
+<a class="indexterm" name="id3751396"></a><pre class="programlisting">void                gtk_print_settings_set_resolution   (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> resolution);</pre>
+<p>
+Sets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-RESOLUTION:CAPS"><code class="literal">GTK_PRINT_SETTINGS_RESOLUTION</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>resolution</code></em>&#160;:</span></td>
+<td> the resolution in dpi
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3751495"></a><h3>
+<a name="GTK-PRINT-SETTINGS-SCALE:CAPS"></a>GTK_PRINT_SETTINGS_SCALE</h3>
+<a class="indexterm" name="id3751508"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_SCALE          "scale"
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3751524"></a><h3>
+<a name="gtk-print-settings-get-scale"></a>gtk_print_settings_get_scale ()</h3>
+<a class="indexterm" name="id3751539"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             gtk_print_settings_get_scale        (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);</pre>
+<p>
+Gets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-SCALE:CAPS"><code class="literal">GTK_PRINT_SETTINGS_SCALE</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the scale in percent
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3751627"></a><h3>
+<a name="gtk-print-settings-set-scale"></a>gtk_print_settings_set_scale ()</h3>
+<a class="indexterm" name="id3751642"></a><pre class="programlisting">void                gtk_print_settings_set_scale        (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> scale);</pre>
+<p>
+Sets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-SCALE:CAPS"><code class="literal">GTK_PRINT_SETTINGS_SCALE</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>scale</code></em>&#160;:</span></td>
+<td> the scale in percent
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3751742"></a><h3>
+<a name="GtkPrintPages"></a>enum GtkPrintPages</h3>
+<a class="indexterm" name="id3751754"></a><pre class="programlisting">typedef enum {
+  GTK_PRINT_PAGES_ALL,
+  GTK_PRINT_PAGES_CURRENT,
+  GTK_PRINT_PAGES_RANGES
+} GtkPrintPages;
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3751771"></a><h3>
+<a name="GTK-PRINT-SETTINGS-PRINT-PAGES:CAPS"></a>GTK_PRINT_SETTINGS_PRINT_PAGES</h3>
+<a class="indexterm" name="id3751784"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_PRINT_PAGES    "print-pages"
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3751800"></a><h3>
+<a name="gtk-print-settings-get-print-pages"></a>gtk_print_settings_get_print_pages ()</h3>
+<a class="indexterm" name="id3751816"></a><pre class="programlisting"><a href="GtkPrintSettings.html#GtkPrintPages">GtkPrintPages</a>       gtk_print_settings_get_print_pages  (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);</pre>
+<p>
+Gets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-PRINT-PAGES:CAPS"><code class="literal">GTK_PRINT_SETTINGS_PRINT_PAGES</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> which pages to print
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3751904"></a><h3>
+<a name="gtk-print-settings-set-print-pages"></a>gtk_print_settings_set_print_pages ()</h3>
+<a class="indexterm" name="id3751920"></a><pre class="programlisting">void                gtk_print_settings_set_print_pages  (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a href="GtkPrintSettings.html#GtkPrintPages">GtkPrintPages</a> pages);</pre>
+<p>
+Sets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-PRINT-PAGES:CAPS"><code class="literal">GTK_PRINT_SETTINGS_PRINT_PAGES</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>pages</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html#GtkPrintPages"><span class="type">GtkPrintPages</span></a> value
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3752026"></a><h3>
+<a name="GtkPageRange"></a>GtkPageRange</h3>
+<a class="indexterm" name="id3752039"></a><pre class="programlisting">typedef struct {
+  gint start;
+  gint end;
+} GtkPageRange;
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3752054"></a><h3>
+<a name="GTK-PRINT-SETTINGS-PAGE-RANGES:CAPS"></a>GTK_PRINT_SETTINGS_PAGE_RANGES</h3>
+<a class="indexterm" name="id3752068"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_PAGE_RANGES    "page-ranges"
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3752084"></a><h3>
+<a name="gtk-print-settings-get-page-ranges"></a>gtk_print_settings_get_page_ranges ()</h3>
+<a class="indexterm" name="id3752101"></a><pre class="programlisting"><a href="GtkPrintSettings.html#GtkPageRange">GtkPageRange</a>*       gtk_print_settings_get_page_ranges  (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> *num_ranges);</pre>
+<p>
+Gets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-PAGE-RANGES:CAPS"><code class="literal">GTK_PRINT_SETTINGS_PAGE_RANGES</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>num_ranges</code></em>&#160;:</span></td>
+<td> return location for the length of the returned array
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> an array of <a href="GtkPrintSettings.html#GtkPageRange"><span class="type">GtkPageRange</span></a>s. Use <a
+href="../glib/glib-Memory-Allocation.html#g-free"
+><code class="function">g_free()</code></a>
+  to free the array when it is no longer needed. 
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3752231"></a><h3>
+<a name="gtk-print-settings-set-page-ranges"></a>gtk_print_settings_set_page_ranges ()</h3>
+<a class="indexterm" name="id3752248"></a><pre class="programlisting">void                gtk_print_settings_set_page_ranges  (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a href="GtkPrintSettings.html#GtkPageRange">GtkPageRange</a> *page_ranges,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> num_ranges);</pre>
+<p>
+Sets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-PAGE-RANGES:CAPS"><code class="literal">GTK_PRINT_SETTINGS_PAGE_RANGES</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>page_ranges</code></em>&#160;:</span></td>
+<td> an array of <a href="GtkPrintSettings.html#GtkPageRange"><span class="type">GtkPageRange</span></a>s
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>num_ranges</code></em>&#160;:</span></td>
+<td> the length of <em class="parameter"><code>page_ranges</code></em>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3752383"></a><h3>
+<a name="GtkPageSet"></a>enum GtkPageSet</h3>
+<a class="indexterm" name="id3752396"></a><pre class="programlisting">typedef enum {
+  GTK_PAGE_SET_ALL,
+  GTK_PAGE_SET_EVEN,
+  GTK_PAGE_SET_ODD
+} GtkPageSet;
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3752412"></a><h3>
+<a name="GTK-PRINT-SETTINGS-PAGE-SET:CAPS"></a>GTK_PRINT_SETTINGS_PAGE_SET</h3>
+<a class="indexterm" name="id3752426"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_PAGE_SET       "page-set"
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3752442"></a><h3>
+<a name="gtk-print-settings-get-page-set"></a>gtk_print_settings_get_page_set ()</h3>
+<a class="indexterm" name="id3752457"></a><pre class="programlisting"><a href="GtkPrintSettings.html#GtkPageSet">GtkPageSet</a>          gtk_print_settings_get_page_set     (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);</pre>
+<p>
+Gets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-PAGE-SET:CAPS"><code class="literal">GTK_PRINT_SETTINGS_PAGE_SET</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the set of pages to print
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3752545"></a><h3>
+<a name="gtk-print-settings-set-page-set"></a>gtk_print_settings_set_page_set ()</h3>
+<a class="indexterm" name="id3752561"></a><pre class="programlisting">void                gtk_print_settings_set_page_set     (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a href="GtkPrintSettings.html#GtkPageSet">GtkPageSet</a> page_set);</pre>
+<p>
+Sets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-PAGE-SET:CAPS"><code class="literal">GTK_PRINT_SETTINGS_PAGE_SET</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>page_set</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html#GtkPageSet"><span class="type">GtkPageSet</span></a> value
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3752668"></a><h3>
+<a name="GTK-PRINT-SETTINGS-DEFAULT-SOURCE:CAPS"></a>GTK_PRINT_SETTINGS_DEFAULT_SOURCE</h3>
+<a class="indexterm" name="id3752682"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_DEFAULT_SOURCE "default-source"
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3752698"></a><h3>
+<a name="gtk-print-settings-get-default-source"></a>gtk_print_settings_get_default_source ()</h3>
+<a class="indexterm" name="id3752713"></a><pre class="programlisting">const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gtk_print_settings_get_default_source
+                                                        (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);</pre>
+<p>
+Gets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-DEFAULT-SOURCE:CAPS"><code class="literal">GTK_PRINT_SETTINGS_DEFAULT_SOURCE</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the default source
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3752804"></a><h3>
+<a name="gtk-print-settings-set-default-source"></a>gtk_print_settings_set_default_source ()</h3>
+<a class="indexterm" name="id3752820"></a><pre class="programlisting">void                gtk_print_settings_set_default_source
+                                                        (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *default_source);</pre>
+<p>
+Sets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-DEFAULT-SOURCE:CAPS"><code class="literal">GTK_PRINT_SETTINGS_DEFAULT_SOURCE</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>default_source</code></em>&#160;:</span></td>
+<td> the default source
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3752921"></a><h3>
+<a name="GTK-PRINT-SETTINGS-MEDIA-TYPE:CAPS"></a>GTK_PRINT_SETTINGS_MEDIA_TYPE</h3>
+<a class="indexterm" name="id3752934"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_MEDIA_TYPE     "media-type"
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3752950"></a><h3>
+<a name="gtk-print-settings-get-media-type"></a>gtk_print_settings_get_media_type ()</h3>
+<a class="indexterm" name="id3752966"></a><pre class="programlisting">const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gtk_print_settings_get_media_type   (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);</pre>
+<p>
+Gets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-MEDIA-TYPE:CAPS"><code class="literal">GTK_PRINT_SETTINGS_MEDIA_TYPE</code></a>.
+</p>
+<p>
+The set of media types is defined in PWG 5101.1-2002 PWG.
+</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the media type
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3753060"></a><h3>
+<a name="gtk-print-settings-set-media-type"></a>gtk_print_settings_set_media_type ()</h3>
+<a class="indexterm" name="id3753076"></a><pre class="programlisting">void                gtk_print_settings_set_media_type   (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *media_type);</pre>
+<p>
+Sets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-MEDIA-TYPE:CAPS"><code class="literal">GTK_PRINT_SETTINGS_MEDIA_TYPE</code></a>.
+</p>
+<p>
+The set of media types is defined in PWG 5101.1-2002 PWG.
+</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>media_type</code></em>&#160;:</span></td>
+<td> the media type
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3753180"></a><h3>
+<a name="GTK-PRINT-SETTINGS-DITHER:CAPS"></a>GTK_PRINT_SETTINGS_DITHER</h3>
+<a class="indexterm" name="id3753194"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_DITHER         "dither"
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3753210"></a><h3>
+<a name="gtk-print-settings-get-dither"></a>gtk_print_settings_get_dither ()</h3>
+<a class="indexterm" name="id3753225"></a><pre class="programlisting">const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gtk_print_settings_get_dither       (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);</pre>
+<p>
+Gets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-DITHER:CAPS"><code class="literal">GTK_PRINT_SETTINGS_DITHER</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the dithering that is used
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3753314"></a><h3>
+<a name="gtk-print-settings-set-dither"></a>gtk_print_settings_set_dither ()</h3>
+<a class="indexterm" name="id3753330"></a><pre class="programlisting">void                gtk_print_settings_set_dither       (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *dither);</pre>
+<p>
+Sets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-DITHER:CAPS"><code class="literal">GTK_PRINT_SETTINGS_DITHER</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>dither</code></em>&#160;:</span></td>
+<td> the dithering that is used
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3753429"></a><h3>
+<a name="GTK-PRINT-SETTINGS-FINISHINGS:CAPS"></a>GTK_PRINT_SETTINGS_FINISHINGS</h3>
+<a class="indexterm" name="id3753442"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_FINISHINGS     "finishings"
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3753458"></a><h3>
+<a name="gtk-print-settings-get-finishings"></a>gtk_print_settings_get_finishings ()</h3>
+<a class="indexterm" name="id3753475"></a><pre class="programlisting">const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gtk_print_settings_get_finishings   (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);</pre>
+<p>
+Gets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-FINISHINGS:CAPS"><code class="literal">GTK_PRINT_SETTINGS_FINISHINGS</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the finishings
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3753563"></a><h3>
+<a name="gtk-print-settings-set-finishings"></a>gtk_print_settings_set_finishings ()</h3>
+<a class="indexterm" name="id3753580"></a><pre class="programlisting">void                gtk_print_settings_set_finishings   (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *finishings);</pre>
+<p>
+Sets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-FINISHINGS:CAPS"><code class="literal">GTK_PRINT_SETTINGS_FINISHINGS</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>finishings</code></em>&#160;:</span></td>
+<td> the finishings
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3753678"></a><h3>
+<a name="GTK-PRINT-SETTINGS-OUTPUT-BIN:CAPS"></a>GTK_PRINT_SETTINGS_OUTPUT_BIN</h3>
+<a class="indexterm" name="id3753692"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_OUTPUT_BIN     "output-bin"
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3753708"></a><h3>
+<a name="gtk-print-settings-get-output-bin"></a>gtk_print_settings_get_output_bin ()</h3>
+<a class="indexterm" name="id3753724"></a><pre class="programlisting">const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gtk_print_settings_get_output_bin   (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);</pre>
+<p>
+Gets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-OUTPUT-BIN:CAPS"><code class="literal">GTK_PRINT_SETTINGS_OUTPUT_BIN</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the output bin
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3753812"></a><h3>
+<a name="gtk-print-settings-set-output-bin"></a>gtk_print_settings_set_output_bin ()</h3>
+<a class="indexterm" name="id3753828"></a><pre class="programlisting">void                gtk_print_settings_set_output_bin   (<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *output_bin);</pre>
+<p>
+Sets the value of <a href="GtkPrintSettings.html#GTK-PRINT-SETTINGS-OUTPUT-BIN:CAPS"><code class="literal">GTK_PRINT_SETTINGS_OUTPUT_BIN</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>output_bin</code></em>&#160;:</span></td>
+<td> the output bin
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3753926"></a><h3>
+<a name="GTK-PRINT-SETTINGS-OUTPUT-FILE-FORMAT:CAPS"></a>GTK_PRINT_SETTINGS_OUTPUT_FILE_FORMAT</h3>
+<a class="indexterm" name="id3753941"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_OUTPUT_FILE_FORMAT  "output-file-format"
+</pre>
+<p>
+The key used by the "Print to file" printer to store the format
+of the output. The supported values are "PS" and "PDF".
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3753959"></a><h3>
+<a name="GTK-PRINT-SETTINGS-OUTPUT-URI:CAPS"></a>GTK_PRINT_SETTINGS_OUTPUT_URI</h3>
+<a class="indexterm" name="id3753972"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_OUTPUT_URI          "output-uri"
+</pre>
+<p>
+The key used by the "Print to file" printer to store the URI
+to which the output should be written. GTK+ itself supports
+only "file://" URIs.
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3753991"></a><h3>
+<a name="GTK-PRINT-SETTINGS-WIN32-DRIVER-EXTRA:CAPS"></a>GTK_PRINT_SETTINGS_WIN32_DRIVER_EXTRA</h3>
+<a class="indexterm" name="id3754005"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_WIN32_DRIVER_EXTRA   "win32-driver-extra"
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3754022"></a><h3>
+<a name="GTK-PRINT-SETTINGS-WIN32-DRIVER-VERSION:CAPS"></a>GTK_PRINT_SETTINGS_WIN32_DRIVER_VERSION</h3>
+<a class="indexterm" name="id3754036"></a><pre class="programlisting">#define GTK_PRINT_SETTINGS_WIN32_DRIVER_VERSION "win32-driver-version"
+</pre>
+<p>
+
+</p>
+</div>
+</div>
+</div>
+</body>
+</html>

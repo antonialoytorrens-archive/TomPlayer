@@ -1,0 +1,521 @@
+# The Bengali translation for ATK
+# Copyright (C) 2002 Free Software Foundation, Inc.
+# This file is distributed under the same license as the ATK package.
+# Sayamindu Dasgupta <unmadindu@Softhome.net>, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-03-08 13:37+0000\n"
+"PO-Revision-Date: 2003-01-29 13:06+0530\n"
+"Last-Translator: Sayamindu Dasgupta <unmadindu@Softhome.net>\n"
+"Language-Team: Bengali <gnome-translation@bengalinux.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: atk/atkhyperlink.c:103
+msgid "Selected Link"
+msgstr ""
+
+#: atk/atkhyperlink.c:104
+msgid "Specifies whether the AtkHyperlink object is selected"
+msgstr ""
+
+#: atk/atkhyperlink.c:110
+msgid "Number of Anchors"
+msgstr ""
+
+#: atk/atkhyperlink.c:111
+msgid "The number of anchors associated with the AtkHyperlink object"
+msgstr ""
+
+#: atk/atkhyperlink.c:119
+msgid "End index"
+msgstr ""
+
+#: atk/atkhyperlink.c:120
+msgid "The end index of the AtkHyperlink object"
+msgstr ""
+
+#: atk/atkhyperlink.c:128
+msgid "Start index"
+msgstr ""
+
+#: atk/atkhyperlink.c:129
+msgid "The start index of the AtkHyperlink object"
+msgstr ""
+
+#: atk/atkobject.c:82
+msgid "invalid"
+msgstr "ভুল"
+
+#: atk/atkobject.c:83
+#, fuzzy
+msgid "accelerator label"
+msgstr "গতিবর্ধক শিরোনাম"
+
+#: atk/atkobject.c:84
+msgid "alert"
+msgstr "সতর্ক "
+
+#: atk/atkobject.c:85
+msgid "animation"
+msgstr "চলচ্চিত্র "
+
+#: atk/atkobject.c:86
+msgid "arrow"
+msgstr "নির্দেশক"
+
+#: atk/atkobject.c:87
+msgid "calendar"
+msgstr "দিনপঞ্জি"
+
+#: atk/atkobject.c:88
+msgid "canvas"
+msgstr "চিত্রপট"
+
+#: atk/atkobject.c:89
+#, fuzzy
+msgid "check box"
+msgstr "টিক বাক্স‌"
+
+#: atk/atkobject.c:90
+#, fuzzy
+msgid "check menu item"
+msgstr "টিক মেনুর আইটেম"
+
+#: atk/atkobject.c:91
+#, fuzzy
+msgid "color chooser"
+msgstr "রং নির্বাচক"
+
+#: atk/atkobject.c:92
+#, fuzzy
+msgid "column header"
+msgstr "কলাম শিরোনাম"
+
+#: atk/atkobject.c:93
+#, fuzzy
+msgid "combo box"
+msgstr "কম্বো বাক্স"
+
+#: atk/atkobject.c:94
+#, fuzzy
+msgid "dateeditor"
+msgstr "তারিখ-পরিবর্তক"
+
+#: atk/atkobject.c:95
+#, fuzzy
+msgid "desktop icon"
+msgstr "ডেস্কটপ-আইকন"
+
+#: atk/atkobject.c:96
+#, fuzzy
+msgid "desktop frame"
+msgstr "ডেস্কটপ কাঠামো"
+
+#: atk/atkobject.c:97
+msgid "dial"
+msgstr "ডায়াল"
+
+#: atk/atkobject.c:98
+msgid "dialog"
+msgstr "সংলাপ"
+
+#: atk/atkobject.c:99
+#, fuzzy
+msgid "directory pane"
+msgstr "ডাইরেক্টরি ফলক"
+
+#: atk/atkobject.c:100
+#, fuzzy
+msgid "drawing area"
+msgstr "আঁকার স্থান"
+
+#: atk/atkobject.c:101
+#, fuzzy
+msgid "file chooser"
+msgstr "ফাইল নির্বাচক"
+
+#: atk/atkobject.c:102
+msgid "filler"
+msgstr "পূরনকারী"
+
+#. I know it looks wrong but that is what Java returns
+#: atk/atkobject.c:104
+#, fuzzy
+msgid "fontchooser"
+msgstr "ফন্ট নির্বাচক"
+
+#: atk/atkobject.c:105
+msgid "frame"
+msgstr "কাঠামো"
+
+#: atk/atkobject.c:106
+#, fuzzy
+msgid "glass pane"
+msgstr "স্বচ্ছ-ফলক"
+
+#: atk/atkobject.c:107
+#, fuzzy
+msgid "html container"
+msgstr "এইচ-টি-এম-এল ধারক"
+
+#: atk/atkobject.c:108
+msgid "icon"
+msgstr "আইকন"
+
+#: atk/atkobject.c:109
+msgid "image"
+msgstr "ছবি"
+
+#: atk/atkobject.c:110
+#, fuzzy
+msgid "internal frame"
+msgstr "অভন্তরীন-কাঠামো"
+
+#: atk/atkobject.c:111
+msgid "label"
+msgstr "শিরোনাম"
+
+#: atk/atkobject.c:112
+#, fuzzy
+msgid "layered pane"
+msgstr "বহুস্তরীয় ফলক"
+
+#: atk/atkobject.c:113
+msgid "list"
+msgstr "তালিকা"
+
+#: atk/atkobject.c:114
+#, fuzzy
+msgid "list item"
+msgstr "তালিকার আইটেম"
+
+#: atk/atkobject.c:115
+msgid "menu"
+msgstr "মেনূ"
+
+#: atk/atkobject.c:116
+#, fuzzy
+msgid "menu bar"
+msgstr "মেনূ বার"
+
+#: atk/atkobject.c:117
+#, fuzzy
+msgid "menu item"
+msgstr "মেনূ আইটেম"
+
+#: atk/atkobject.c:118
+#, fuzzy
+msgid "option pane"
+msgstr "পছন্দ - ফলক"
+
+#: atk/atkobject.c:119
+#, fuzzy
+msgid "page tab"
+msgstr "পৃষ্ঠাসূচক-ট্যাব"
+
+#: atk/atkobject.c:120
+#, fuzzy
+msgid "page tab list"
+msgstr "পৃষ্ঠাসূচক-ট্যাব তালিকা"
+
+#: atk/atkobject.c:121
+msgid "panel"
+msgstr "পাত"
+
+#: atk/atkobject.c:122
+#, fuzzy
+msgid "password text"
+msgstr "পাসওয়ার্ড টেক্সট"
+
+#: atk/atkobject.c:123
+#, fuzzy
+msgid "popup menu"
+msgstr "ভেসে ওঠা মেনূ"
+
+#: atk/atkobject.c:124
+#, fuzzy
+msgid "progress bar"
+msgstr "অগ্রগতি নির্ণায়ক"
+
+#: atk/atkobject.c:125
+#, fuzzy
+msgid "push button"
+msgstr "টিপ বোতাম"
+
+#: atk/atkobject.c:126
+#, fuzzy
+msgid "radio button"
+msgstr "রেডিও বোতাম"
+
+#: atk/atkobject.c:127
+#, fuzzy
+msgid "radio menu item"
+msgstr "রেডিও-মেনূর আইটেম"
+
+#: atk/atkobject.c:128
+#, fuzzy
+msgid "root pane"
+msgstr "মূল ফলক"
+
+#: atk/atkobject.c:129
+#, fuzzy
+msgid "row header"
+msgstr "সারি শিরোনাম"
+
+#: atk/atkobject.c:130
+#, fuzzy
+msgid "scroll bar"
+msgstr "স্ক্রল বার"
+
+#: atk/atkobject.c:131
+#, fuzzy
+msgid "scroll pane"
+msgstr "স্ক্রল ফলক"
+
+#: atk/atkobject.c:132
+msgid "separator"
+msgstr "বিভাজক"
+
+#: atk/atkobject.c:133
+msgid "slider"
+msgstr "স্লাইডার"
+
+#: atk/atkobject.c:134
+#, fuzzy
+msgid "split pane"
+msgstr "বিভাজিত ফলক"
+
+#: atk/atkobject.c:135
+#, fuzzy
+msgid "spin button"
+msgstr "ঘোরানো বোতাম"
+
+#: atk/atkobject.c:136
+msgid "statusbar"
+msgstr "স্ট্যাটাস বার"
+
+#: atk/atkobject.c:137
+msgid "table"
+msgstr "ছক"
+
+#: atk/atkobject.c:138
+#, fuzzy
+msgid "table cell"
+msgstr "ছকস্থ ঘর"
+
+#: atk/atkobject.c:139
+#, fuzzy
+msgid "table column header"
+msgstr "ছকস্থ কলামের শিরোনাম"
+
+#: atk/atkobject.c:140
+#, fuzzy
+msgid "table row header"
+msgstr "ছকস্থ সারির শিরোনাম"
+
+#: atk/atkobject.c:141
+#, fuzzy
+msgid "tear off menu item"
+msgstr "আলগা মেনূ আইটেম"
+
+#: atk/atkobject.c:142
+msgid "terminal"
+msgstr "টারমিনাল"
+
+#: atk/atkobject.c:143
+msgid "text"
+msgstr "টেক্সট"
+
+#: atk/atkobject.c:144
+#, fuzzy
+msgid "toggle button"
+msgstr "টগ্গল বোতাম"
+
+#: atk/atkobject.c:145
+#, fuzzy
+msgid "tool bar"
+msgstr "টুল বার"
+
+#: atk/atkobject.c:146
+#, fuzzy
+msgid "tool tip"
+msgstr "টুল পরামর্শ"
+
+#: atk/atkobject.c:147
+msgid "tree"
+msgstr "ট্রি   "
+
+#: atk/atkobject.c:148
+#, fuzzy
+msgid "tree table"
+msgstr "ট্রি ছক"
+
+#: atk/atkobject.c:149
+msgid "unknown"
+msgstr "অজ্ঞাত"
+
+#: atk/atkobject.c:150
+msgid "viewport"
+msgstr "ভিউপোর্ট"
+
+#: atk/atkobject.c:151
+msgid "window"
+msgstr "উইনডো"
+
+#: atk/atkobject.c:152
+msgid "header"
+msgstr "শিরোনাম"
+
+#: atk/atkobject.c:153
+msgid "footer"
+msgstr "পাদটীকা"
+
+#: atk/atkobject.c:154
+msgid "paragraph"
+msgstr "অনুচ্ছেদ"
+
+#: atk/atkobject.c:155
+msgid "application"
+msgstr "এপ্লিকেসন"
+
+#: atk/atkobject.c:156
+msgid "autocomplete"
+msgstr ""
+
+#: atk/atkobject.c:157
+msgid "edit bar"
+msgstr ""
+
+#: atk/atkobject.c:158
+msgid "embedded component"
+msgstr ""
+
+#: atk/atkobject.c:296
+msgid "Accessible Name"
+msgstr ""
+
+#: atk/atkobject.c:297
+msgid "Object instance's name formatted for assistive technology access"
+msgstr ""
+
+#: atk/atkobject.c:303
+msgid "Accessible Description"
+msgstr ""
+
+#: atk/atkobject.c:304
+msgid "Description of an object, formatted for assistive technology access"
+msgstr ""
+
+#: atk/atkobject.c:310
+msgid "Accessible Parent"
+msgstr ""
+
+#: atk/atkobject.c:311
+msgid "Is used to notify that the parent has changed"
+msgstr ""
+
+#: atk/atkobject.c:317
+msgid "Accessible Value"
+msgstr ""
+
+#: atk/atkobject.c:318
+msgid "Is used to notify that the value has changed"
+msgstr ""
+
+#: atk/atkobject.c:326
+msgid "Accessible Role"
+msgstr ""
+
+#: atk/atkobject.c:327
+msgid "The accessible role of this object"
+msgstr ""
+
+#: atk/atkobject.c:335
+msgid "Accessible Layer"
+msgstr ""
+
+#: atk/atkobject.c:336
+msgid "The accessible layer of this object"
+msgstr ""
+
+#: atk/atkobject.c:344
+msgid "Accessible MDI Value"
+msgstr ""
+
+#: atk/atkobject.c:345
+msgid "The accessible MDI value of this object"
+msgstr ""
+
+#: atk/atkobject.c:353
+msgid "Accessible Table Caption"
+msgstr ""
+
+#: atk/atkobject.c:354
+msgid ""
+"Is used to notify that the table caption has changed; this property should "
+"not be used. accessible-table-caption-object should be used instead"
+msgstr ""
+
+#: atk/atkobject.c:360
+msgid "Accessible Table Column Header"
+msgstr ""
+
+#: atk/atkobject.c:361
+msgid "Is used to notify that the table column header has changed"
+msgstr ""
+
+#: atk/atkobject.c:367
+msgid "Accessible Table Column Description"
+msgstr ""
+
+#: atk/atkobject.c:368
+msgid "Is used to notify that the table column description has changed"
+msgstr ""
+
+#: atk/atkobject.c:374
+msgid "Accessible Table Row Header"
+msgstr ""
+
+#: atk/atkobject.c:375
+msgid "Is used to notify that the table row header has changed"
+msgstr ""
+
+#: atk/atkobject.c:381
+msgid "Accessible Table Row Description"
+msgstr ""
+
+#: atk/atkobject.c:382
+msgid "Is used to notify that the table row description has changed"
+msgstr ""
+
+#: atk/atkobject.c:388
+msgid "Accessible Table Summary"
+msgstr ""
+
+#: atk/atkobject.c:389
+msgid "Is used to notify that the table summary has changed"
+msgstr ""
+
+#: atk/atkobject.c:395
+msgid "Accessible Table Caption Object"
+msgstr ""
+
+#: atk/atkobject.c:396
+msgid "Is used to notify that the table caption has changed"
+msgstr ""
+
+#: atk/atkobject.c:402
+msgid "Number of Accessible Hypertext Links"
+msgstr ""
+
+#: atk/atkobject.c:403
+msgid "The number of links which the current AtkHypertext has"
+msgstr ""
+
+#~ msgid "ruler"
+#~ msgstr "রুলার"

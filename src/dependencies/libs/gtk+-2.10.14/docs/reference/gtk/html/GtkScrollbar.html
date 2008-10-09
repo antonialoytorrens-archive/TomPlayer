@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>GtkScrollbar</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GTK+ Reference Manual">
+<link rel="up" href="AbstractObjects.html" title="Abstract Base Classes">
+<link rel="prev" href="GtkScale.html" title="GtkScale">
+<link rel="next" href="GtkSeparator.html" title="GtkSeparator">
+<meta name="generator" content="GTK-Doc V1.7 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gtk.html" title="Part&#160;I.&#160;GTK+ Overview">
+<link rel="part" href="gtkbase.html" title="Part&#160;II.&#160;GTK+ Core Reference">
+<link rel="part" href="gtkobjects.html" title="Part&#160;III.&#160;GTK+ Widgets and Objects">
+<link rel="chapter" href="ch01.html" title="Object Hierarchy">
+<link rel="chapter" href="ch02.html" title="Widget Gallery">
+<link rel="chapter" href="WindowWidgets.html" title="Windows">
+<link rel="chapter" href="DisplayWidgets.html" title="Display Widgets">
+<link rel="chapter" href="ButtonWidgets.html" title="Buttons and Toggles">
+<link rel="chapter" href="NumericEntry.html" title="Numeric/Text Data Entry">
+<link rel="chapter" href="TextWidgetObjects.html" title="Multiline Text Editor">
+<link rel="chapter" href="TreeWidgetObjects.html" title="Tree, List and Icon Grid Widgets">
+<link rel="chapter" href="MenusAndCombos.html" title="Menus, Combo Box, Toolbar">
+<link rel="chapter" href="Actions.html" title="Action-based menus and toolbars">
+<link rel="chapter" href="SelectorWidgets.html" title="Selectors (File/Font/Color/Input Devices)">
+<link rel="chapter" href="LayoutContainers.html" title="Layout Containers">
+<link rel="chapter" href="Ornaments.html" title="Ornaments">
+<link rel="chapter" href="ScrollingWidgets.html" title="Scrolling">
+<link rel="chapter" href="Printing.html" title="Printing">
+<link rel="chapter" href="MiscObjects.html" title="Miscellaneous">
+<link rel="chapter" href="AbstractObjects.html" title="Abstract Base Classes">
+<link rel="chapter" href="PlugSocket.html" title="Cross-process Embedding">
+<link rel="chapter" href="SpecialObjects.html" title="Special-purpose features">
+<link rel="chapter" href="RecentDocuments.html" title="Recently Used Documents">
+<link rel="chapter" href="DeprecatedObjects.html" title="Deprecated">
+<link rel="part" href="migrating.html" title="Part&#160;IV.&#160;Migrating from Previous Versions of GTK+">
+<link rel="chapter" href="gtk-migrating-checklist.html" title="Migration Checklist">
+<link rel="chapter" href="gtk-migrating-GtkFileChooser.html" title="Migrating from GtkFileSelection to GtkFileChooser">
+<link rel="chapter" href="gtk-migrating-GtkAction.html" title="Migrating from old menu and toolbar systems to GtkAction">
+<link rel="chapter" href="gtk-migrating-GtkComboBox.html" title="Migrating from GtkOptionMenu and GtkCombo to GtkComboBox and GtkComboBoxEntry">
+<link rel="chapter" href="gtk-migrating-GtkIconView.html" title="Migrating from GnomeIconList to GtkIconView">
+<link rel="chapter" href="gtk-migrating-GtkAboutDialog.html" title="Migrating from GnomeAbout to GtkAboutDialog">
+<link rel="chapter" href="gtk-migrating-GtkColorButton.html" title="Migrating from GnomeColorPicker to GtkColorButton">
+<link rel="chapter" href="gtk-migrating-GtkAssistant.html" title="Migrating from GnomeDruid to GtkAssistant">
+<link rel="chapter" href="gtk-migrating-GtkRecentChooser.html" title="Migrating from EggRecent to GtkRecentChooser">
+<link rel="chapter" href="gtk-migrating-GtkLinkButton.html" title="Migrating from GnomeHRef to GtkLinkButton">
+<link rel="part" href="pt05.html" title="Part&#160;V.&#160;GTK+ Tools">
+<link rel="glossary" href="glossary.html" title="Glossary">
+<link rel="index" href="ix01.html" title="Index">
+<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="ix03.html" title="Index of new symbols in 2.2">
+<link rel="index" href="ix04.html" title="Index of new symbols in 2.4">
+<link rel="index" href="ix05.html" title="Index of new symbols in 2.6">
+<link rel="index" href="ix06.html" title="Index of new symbols in 2.8">
+<link rel="index" href="ix07.html" title="Index of new symbols in 2.10">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="GtkScale.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="AbstractObjects.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GTK+ Reference Manual</th>
+<td><a accesskey="n" href="GtkSeparator.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id3886144" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id3886375" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id3886166" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id3886235" class="shortcut">Implemented Interfaces</a>
+                  &#160;|&#160;
+                  <a href="#id3886258" class="shortcut">Style Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="GtkScrollbar"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id3886144"></a><span class="refentrytitle">GtkScrollbar</span>
+</h2>
+<p>GtkScrollbar &#8212; Base class for GtkHScrollbar and GtkVScrollbar</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <a href="GtkScrollbar.html#GtkScrollbar-struct">GtkScrollbar</a>;
+
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3886166"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gobject/gobject-The-Base-Object-Type.html#GInitiallyUnowned"
+>GInitiallyUnowned</a>
+         +----<a href="GtkObject.html" title="GtkObject">GtkObject</a>
+               +----<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>
+                     +----<a href="GtkRange.html" title="GtkRange">GtkRange</a>
+                           +----GtkScrollbar
+                                 +----<a href="GtkHScrollbar.html" title="GtkHScrollbar">GtkHScrollbar</a>
+                                 +----<a href="GtkVScrollbar.html" title="GtkVScrollbar">GtkVScrollbar</a>
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3886235"></a><h2>Implemented Interfaces</h2>
+<p>
+GtkScrollbar implements
+ AtkImplementorIface.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3886258"></a><h2>Style Properties</h2>
+<pre class="synopsis">
+
+  <a href="GtkScrollbar.html#GtkScrollbar--fixed-slider-length">fixed-slider-length</a>      <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read
+  <a href="GtkScrollbar.html#GtkScrollbar--has-backward-stepper">has-backward-stepper</a>     <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read
+  <a href="GtkScrollbar.html#GtkScrollbar--has-forward-stepper">has-forward-stepper</a>      <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read
+  <a href="GtkScrollbar.html#GtkScrollbar--has-secondary-backward-stepper">has-secondary-backward-stepper</a> <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read
+  <a href="GtkScrollbar.html#GtkScrollbar--has-secondary-forward-stepper">has-secondary-forward-stepper</a> <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read
+  <a href="GtkScrollbar.html#GtkScrollbar--min-slider-length">min-slider-length</a>        <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3886375"></a><h2>Description</h2>
+<p>
+The <a href="GtkScrollbar.html" title="GtkScrollbar"><span class="type">GtkScrollbar</span></a> widget is an abstract base class for <a href="GtkHScrollbar.html" title="GtkHScrollbar"><span class="type">GtkHScrollbar</span></a> and
+<a href="GtkVScrollbar.html" title="GtkVScrollbar"><span class="type">GtkVScrollbar</span></a>. It is not very useful in itself.
+</p>
+<p>
+The position of the thumb in a scrollbar is controlled by the scroll
+adjustments. See <a href="GtkAdjustment.html" title="GtkAdjustment"><span class="type">GtkAdjustment</span></a> for the fields in an adjustment - for
+<a href="GtkScrollbar.html" title="GtkScrollbar"><span class="type">GtkScrollbar</span></a>, the "value" field represents the position of the
+scrollbar, which must be between the "lower" field and "upper -
+page_size." The "page_size" field represents the size of the visible
+scrollable area. The "step_increment" and "page_increment" fields are
+used when the user asks to step down (using the small stepper arrows)
+or page down (using for example the PageDown key).
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3886442"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3886453"></a><h3>
+<a name="GtkScrollbar-struct"></a>GtkScrollbar</h3>
+<a class="indexterm" name="id3886466"></a><pre class="programlisting">typedef struct _GtkScrollbar GtkScrollbar;</pre>
+<p>
+The <a href="GtkScrollbar.html" title="GtkScrollbar"><span class="type">GtkScrollbar</span></a> struct does not contain any public data.
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3886491"></a><h2>Style Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3886502"></a><h3>
+<a name="GtkScrollbar--fixed-slider-length"></a>The :<code class="literal">fixed-slider-length</code> style property</h3>
+<a class="indexterm" name="id3886519"></a><pre class="programlisting">  fixed-slider-length      <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read</pre>
+<p>Don't change slider size, just lock it to the minimum length.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3886546"></a><h3>
+<a name="GtkScrollbar--has-backward-stepper"></a>The :<code class="literal">has-backward-stepper</code> style property</h3>
+<a class="indexterm" name="id3886563"></a><pre class="programlisting">  has-backward-stepper     <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read</pre>
+<p>Display the standard backward arrow button.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3886589"></a><h3>
+<a name="GtkScrollbar--has-forward-stepper"></a>The :<code class="literal">has-forward-stepper</code> style property</h3>
+<a class="indexterm" name="id3886606"></a><pre class="programlisting">  has-forward-stepper      <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read</pre>
+<p>Display the standard forward arrow button.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3886633"></a><h3>
+<a name="GtkScrollbar--has-secondary-backward-stepper"></a>The :<code class="literal">has-secondary-backward-stepper</code> style property</h3>
+<a class="indexterm" name="id3886650"></a><pre class="programlisting">  has-secondary-backward-stepper <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read</pre>
+<p>Display a second backward arrow button on the opposite end of the scrollbar.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3886678"></a><h3>
+<a name="GtkScrollbar--has-secondary-forward-stepper"></a>The :<code class="literal">has-secondary-forward-stepper</code> style property</h3>
+<a class="indexterm" name="id3886695"></a><pre class="programlisting">  has-secondary-forward-stepper <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read</pre>
+<p>Display a second forward arrow button on the opposite end of the scrollbar.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3886723"></a><h3>
+<a name="GtkScrollbar--min-slider-length"></a>The :<code class="literal">min-slider-length</code> style property</h3>
+<a class="indexterm" name="id3886740"></a><pre class="programlisting">  min-slider-length        <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read</pre>
+<p>Minimum length of scrollbar slider.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 21</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3886771"></a><h2>See Also</h2>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><a href="GtkHScrollbar.html" title="GtkHScrollbar"><span class="type">GtkHScrollbar</span></a></span></td>
+<td><p>a horizontal scrollbar.</p></td>
+</tr>
+<tr>
+<td><span class="term"><a href="GtkVScrollbar.html" title="GtkVScrollbar"><span class="type">GtkVScrollbar</span></a></span></td>
+<td><p>a vertical scrollbar.</p></td>
+</tr>
+<tr>
+<td><span class="term"><a href="GtkAdjustment.html" title="GtkAdjustment"><span class="type">GtkAdjustment</span></a></span></td>
+<td><p>connects scrollbars to the widget being scrolled.</p></td>
+</tr>
+<tr>
+<td><span class="term"><a href="GtkScrolledWindow.html" title="GtkScrolledWindow"><span class="type">GtkScrolledWindow</span></a></span></td>
+<td><p>convenient widget for setting up scrolling.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+</div>
+</div>
+</body>
+</html>

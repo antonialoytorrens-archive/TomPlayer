@@ -1,0 +1,1316 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>GtkStatusIcon</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GTK+ Reference Manual">
+<link rel="up" href="DisplayWidgets.html" title="Display Widgets">
+<link rel="prev" href="GtkStatusbar.html" title="GtkStatusbar">
+<link rel="next" href="ButtonWidgets.html" title="Buttons and Toggles">
+<meta name="generator" content="GTK-Doc V1.7 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gtk.html" title="Part&#160;I.&#160;GTK+ Overview">
+<link rel="part" href="gtkbase.html" title="Part&#160;II.&#160;GTK+ Core Reference">
+<link rel="part" href="gtkobjects.html" title="Part&#160;III.&#160;GTK+ Widgets and Objects">
+<link rel="chapter" href="ch01.html" title="Object Hierarchy">
+<link rel="chapter" href="ch02.html" title="Widget Gallery">
+<link rel="chapter" href="WindowWidgets.html" title="Windows">
+<link rel="chapter" href="DisplayWidgets.html" title="Display Widgets">
+<link rel="chapter" href="ButtonWidgets.html" title="Buttons and Toggles">
+<link rel="chapter" href="NumericEntry.html" title="Numeric/Text Data Entry">
+<link rel="chapter" href="TextWidgetObjects.html" title="Multiline Text Editor">
+<link rel="chapter" href="TreeWidgetObjects.html" title="Tree, List and Icon Grid Widgets">
+<link rel="chapter" href="MenusAndCombos.html" title="Menus, Combo Box, Toolbar">
+<link rel="chapter" href="Actions.html" title="Action-based menus and toolbars">
+<link rel="chapter" href="SelectorWidgets.html" title="Selectors (File/Font/Color/Input Devices)">
+<link rel="chapter" href="LayoutContainers.html" title="Layout Containers">
+<link rel="chapter" href="Ornaments.html" title="Ornaments">
+<link rel="chapter" href="ScrollingWidgets.html" title="Scrolling">
+<link rel="chapter" href="Printing.html" title="Printing">
+<link rel="chapter" href="MiscObjects.html" title="Miscellaneous">
+<link rel="chapter" href="AbstractObjects.html" title="Abstract Base Classes">
+<link rel="chapter" href="PlugSocket.html" title="Cross-process Embedding">
+<link rel="chapter" href="SpecialObjects.html" title="Special-purpose features">
+<link rel="chapter" href="RecentDocuments.html" title="Recently Used Documents">
+<link rel="chapter" href="DeprecatedObjects.html" title="Deprecated">
+<link rel="part" href="migrating.html" title="Part&#160;IV.&#160;Migrating from Previous Versions of GTK+">
+<link rel="chapter" href="gtk-migrating-checklist.html" title="Migration Checklist">
+<link rel="chapter" href="gtk-migrating-GtkFileChooser.html" title="Migrating from GtkFileSelection to GtkFileChooser">
+<link rel="chapter" href="gtk-migrating-GtkAction.html" title="Migrating from old menu and toolbar systems to GtkAction">
+<link rel="chapter" href="gtk-migrating-GtkComboBox.html" title="Migrating from GtkOptionMenu and GtkCombo to GtkComboBox and GtkComboBoxEntry">
+<link rel="chapter" href="gtk-migrating-GtkIconView.html" title="Migrating from GnomeIconList to GtkIconView">
+<link rel="chapter" href="gtk-migrating-GtkAboutDialog.html" title="Migrating from GnomeAbout to GtkAboutDialog">
+<link rel="chapter" href="gtk-migrating-GtkColorButton.html" title="Migrating from GnomeColorPicker to GtkColorButton">
+<link rel="chapter" href="gtk-migrating-GtkAssistant.html" title="Migrating from GnomeDruid to GtkAssistant">
+<link rel="chapter" href="gtk-migrating-GtkRecentChooser.html" title="Migrating from EggRecent to GtkRecentChooser">
+<link rel="chapter" href="gtk-migrating-GtkLinkButton.html" title="Migrating from GnomeHRef to GtkLinkButton">
+<link rel="part" href="pt05.html" title="Part&#160;V.&#160;GTK+ Tools">
+<link rel="glossary" href="glossary.html" title="Glossary">
+<link rel="index" href="ix01.html" title="Index">
+<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="ix03.html" title="Index of new symbols in 2.2">
+<link rel="index" href="ix04.html" title="Index of new symbols in 2.4">
+<link rel="index" href="ix05.html" title="Index of new symbols in 2.6">
+<link rel="index" href="ix06.html" title="Index of new symbols in 2.8">
+<link rel="index" href="ix07.html" title="Index of new symbols in 2.10">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="GtkStatusbar.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="DisplayWidgets.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GTK+ Reference Manual</th>
+<td><a accesskey="n" href="ButtonWidgets.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id3101823" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id3102677" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id3102464" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id3102489" class="shortcut">Properties</a>
+                  &#160;|&#160;
+                  <a href="#id3102632" class="shortcut">Signals</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="GtkStatusIcon"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id3101823"></a><span class="refentrytitle">GtkStatusIcon</span>
+</h2>
+<p>GtkStatusIcon &#8212; Display an icon in the system tray</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <a href="GtkStatusIcon.html#GtkStatusIcon-struct">GtkStatusIcon</a>;
+<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a>*      <a href="GtkStatusIcon.html#gtk-status-icon-new">gtk_status_icon_new</a>                 (void);
+<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a>*      <a href="GtkStatusIcon.html#gtk-status-icon-new-from-pixbuf">gtk_status_icon_new_from_pixbuf</a>     (<a
+href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
+>GdkPixbuf</a> *pixbuf);
+<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a>*      <a href="GtkStatusIcon.html#gtk-status-icon-new-from-file">gtk_status_icon_new_from_file</a>       (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *filename);
+<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a>*      <a href="GtkStatusIcon.html#gtk-status-icon-new-from-stock">gtk_status_icon_new_from_stock</a>      (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *stock_id);
+<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a>*      <a href="GtkStatusIcon.html#gtk-status-icon-new-from-icon-name">gtk_status_icon_new_from_icon_name</a>  (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *icon_name);
+void                <a href="GtkStatusIcon.html#gtk-status-icon-set-from-pixbuf">gtk_status_icon_set_from_pixbuf</a>     (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon,
+                                                         <a
+href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
+>GdkPixbuf</a> *pixbuf);
+void                <a href="GtkStatusIcon.html#gtk-status-icon-set-from-file">gtk_status_icon_set_from_file</a>       (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *filename);
+void                <a href="GtkStatusIcon.html#gtk-status-icon-set-from-stock">gtk_status_icon_set_from_stock</a>      (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *stock_id);
+void                <a href="GtkStatusIcon.html#gtk-status-icon-set-from-icon-name">gtk_status_icon_set_from_icon_name</a>  (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *icon_name);
+<a href="GtkImage.html#GtkImageType">GtkImageType</a>        <a href="GtkStatusIcon.html#gtk-status-icon-get-storage-type">gtk_status_icon_get_storage_type</a>    (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon);
+<a
+href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
+>GdkPixbuf</a>*          <a href="GtkStatusIcon.html#gtk-status-icon-get-pixbuf">gtk_status_icon_get_pixbuf</a>          (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon);
+const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a href="GtkStatusIcon.html#gtk-status-icon-get-stock">gtk_status_icon_get_stock</a>           (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon);
+const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a href="GtkStatusIcon.html#gtk-status-icon-get-icon-name">gtk_status_icon_get_icon_name</a>       (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkStatusIcon.html#gtk-status-icon-get-size">gtk_status_icon_get_size</a>            (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon);
+void                <a href="GtkStatusIcon.html#gtk-status-icon-set-tooltip">gtk_status_icon_set_tooltip</a>         (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tooltip_text);
+void                <a href="GtkStatusIcon.html#gtk-status-icon-set-visible">gtk_status_icon_set_visible</a>         (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> visible);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkStatusIcon.html#gtk-status-icon-get-visible">gtk_status_icon_get_visible</a>         (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon);
+void                <a href="GtkStatusIcon.html#gtk-status-icon-set-blinking">gtk_status_icon_set_blinking</a>        (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> blinking);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkStatusIcon.html#gtk-status-icon-get-blinking">gtk_status_icon_get_blinking</a>        (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkStatusIcon.html#gtk-status-icon-is-embedded">gtk_status_icon_is_embedded</a>         (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon);
+void                <a href="GtkStatusIcon.html#gtk-status-icon-position-menu">gtk_status_icon_position_menu</a>       (<a href="GtkMenu.html" title="GtkMenu">GtkMenu</a> *menu,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> *x,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> *y,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> *push_in,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkStatusIcon.html#gtk-status-icon-get-geometry">gtk_status_icon_get_geometry</a>        (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon,
+                                                         <a
+href="../gdk/GdkScreen.html"
+>GdkScreen</a> **screen,
+                                                         <a
+href="../gdk/gdk-Points-Rectangles-and-Regions.html#GdkRectangle"
+>GdkRectangle</a> *area,
+                                                         <a href="gtk-Standard-Enumerations.html#GtkOrientation">GtkOrientation</a> *orientation);
+
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3102464"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----GtkStatusIcon
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3102489"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  <a href="GtkStatusIcon.html#GtkStatusIcon--blinking">blinking</a>                 <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkStatusIcon.html#GtkStatusIcon--file">file</a>                     <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Write
+  <a href="GtkStatusIcon.html#GtkStatusIcon--icon-name">icon-name</a>                <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  <a href="GtkStatusIcon.html#GtkStatusIcon--pixbuf">pixbuf</a>                   <a
+href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
+>GdkPixbuf</a>             : Read / Write
+  <a href="GtkStatusIcon.html#GtkStatusIcon--size">size</a>                     <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read
+  <a href="GtkStatusIcon.html#GtkStatusIcon--stock">stock</a>                    <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  <a href="GtkStatusIcon.html#GtkStatusIcon--storage-type">storage-type</a>             <a href="GtkImage.html#GtkImageType">GtkImageType</a>          : Read
+  <a href="GtkStatusIcon.html#GtkStatusIcon--visible">visible</a>                  <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3102632"></a><h2>Signals</h2>
+<pre class="synopsis">
+
+  <a href="GtkStatusIcon.html#GtkStatusIcon-activate">activate</a>                                       : Run First / Action
+  <a href="GtkStatusIcon.html#GtkStatusIcon-popup-menu">popup-menu</a>                                     : Run First / Action
+  <a href="GtkStatusIcon.html#GtkStatusIcon-size-changed">size-changed</a>                                   : Run Last
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3102677"></a><h2>Description</h2>
+<p>
+The "system tray" or notification area is normally used for transient icons 
+that indicate some special state. For example, a system tray icon might 
+appear to tell the user that they have new mail, or have an incoming instant 
+message, or something along those lines. The basic idea is that creating an 
+icon in the notification area is less annoying than popping up a dialog. 
+</p>
+<p>
+A <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a> object can be used to display an icon in a "system tray".
+The icon can have a tooltip, and the user can interact with it by
+activating it or popping up a context menu. Critical information should
+not solely be displayed in a <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>, since it may not be
+visible (e.g. when the user doesn't have a notification area on his panel).
+This can be checked with <a href="GtkStatusIcon.html#gtk-status-icon-is-embedded"><code class="function">gtk_status_icon_is_embedded()</code></a>.
+</p>
+<p>
+On X11, the implementation follows the freedesktop.org "System Tray" 
+<a href="http://www.freedesktop.org/wiki/Standards/systemtray-spec" target="_top">specification</a>. Implementations of the "tray" side of this specification can
+be found e.g. in the GNOME and KDE panel applications.
+</p>
+<p>
+Note that a GtkStatusIcon is <span class="emphasis"><em>not</em></span> a widget, but just
+a <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+><span class="type">GObject</span></a>. Making it a widget would be impractical, since the system tray
+on Win32 doesn't allow to embed arbitrary widgets.
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3102765"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3102775"></a><h3>
+<a name="GtkStatusIcon-struct"></a>GtkStatusIcon</h3>
+<a class="indexterm" name="id3102788"></a><pre class="programlisting">typedef struct _GtkStatusIcon GtkStatusIcon;</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3102804"></a><h3>
+<a name="gtk-status-icon-new"></a>gtk_status_icon_new ()</h3>
+<a class="indexterm" name="id3102819"></a><pre class="programlisting"><a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a>*      gtk_status_icon_new                 (void);</pre>
+<p>
+Creates an empty status icon object.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a new <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>
+
+</td>
+</tr></tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3102874"></a><h3>
+<a name="gtk-status-icon-new-from-pixbuf"></a>gtk_status_icon_new_from_pixbuf ()</h3>
+<a class="indexterm" name="id3102890"></a><pre class="programlisting"><a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a>*      gtk_status_icon_new_from_pixbuf     (<a
+href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
+>GdkPixbuf</a> *pixbuf);</pre>
+<p>
+Creates a status icon displaying <em class="parameter"><code>pixbuf</code></em>. 
+</p>
+<p>
+The image will be scaled down to fit in the available 
+space in the notification area, if necessary.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>pixbuf</code></em>&#160;:</span></td>
+<td> a <a
+href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
+><span class="type">GdkPixbuf</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a new <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3102985"></a><h3>
+<a name="gtk-status-icon-new-from-file"></a>gtk_status_icon_new_from_file ()</h3>
+<a class="indexterm" name="id3103000"></a><pre class="programlisting"><a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a>*      gtk_status_icon_new_from_file       (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *filename);</pre>
+<p>
+Creates a status icon displaying the file <em class="parameter"><code>filename</code></em>. 
+</p>
+<p>
+The image will be scaled down to fit in the available 
+space in the notification area, if necessary.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>filename</code></em>&#160;:</span></td>
+<td> a filename
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a new <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3103088"></a><h3>
+<a name="gtk-status-icon-new-from-stock"></a>gtk_status_icon_new_from_stock ()</h3>
+<a class="indexterm" name="id3103104"></a><pre class="programlisting"><a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a>*      gtk_status_icon_new_from_stock      (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *stock_id);</pre>
+<p>
+Creates a status icon displaying a stock icon. Sample stock icon
+names are <a href="gtk-Stock-Items.html#GTK-STOCK-OPEN:CAPS"><span class="type">GTK_STOCK_OPEN</span></a>, <a href="gtk-Stock-Items.html#GTK-STOCK-QUIT:CAPS"><span class="type">GTK_STOCK_QUIT</span></a>. You can register your 
+own stock icon names, see <a href="gtk-Themeable-Stock-Images.html#gtk-icon-factory-add-default"><code class="function">gtk_icon_factory_add_default()</code></a> and 
+<a href="gtk-Themeable-Stock-Images.html#gtk-icon-factory-add"><code class="function">gtk_icon_factory_add()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>stock_id</code></em>&#160;:</span></td>
+<td> a stock icon id
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a new <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3103221"></a><h3>
+<a name="gtk-status-icon-new-from-icon-name"></a>gtk_status_icon_new_from_icon_name ()</h3>
+<a class="indexterm" name="id3103237"></a><pre class="programlisting"><a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a>*      gtk_status_icon_new_from_icon_name  (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *icon_name);</pre>
+<p>
+Creates a status icon displaying an icon from the current icon theme.
+If the current icon theme is changed, the icon will be updated 
+appropriately.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_name</code></em>&#160;:</span></td>
+<td> an icon name
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a new <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3103315"></a><h3>
+<a name="gtk-status-icon-set-from-pixbuf"></a>gtk_status_icon_set_from_pixbuf ()</h3>
+<a class="indexterm" name="id3103330"></a><pre class="programlisting">void                gtk_status_icon_set_from_pixbuf     (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon,
+                                                         <a
+href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
+>GdkPixbuf</a> *pixbuf);</pre>
+<p>
+Makes <em class="parameter"><code>status_icon</code></em> display <em class="parameter"><code>pixbuf</code></em>. 
+See <a href="GtkStatusIcon.html#gtk-status-icon-new-from-pixbuf"><code class="function">gtk_status_icon_new_from_pixbuf()</code></a> for details.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>status_icon</code></em>&#160;:</span></td>
+<td> a <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>pixbuf</code></em>&#160;:</span></td>
+<td> a <a
+href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
+><span class="type">GdkPixbuf</span></a> or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3103459"></a><h3>
+<a name="gtk-status-icon-set-from-file"></a>gtk_status_icon_set_from_file ()</h3>
+<a class="indexterm" name="id3103474"></a><pre class="programlisting">void                gtk_status_icon_set_from_file       (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *filename);</pre>
+<p>
+Makes <em class="parameter"><code>status_icon</code></em> display the file <em class="parameter"><code>filename</code></em>.
+See <a href="GtkStatusIcon.html#gtk-status-icon-new-from-file"><code class="function">gtk_status_icon_new_from_file()</code></a> for details.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>status_icon</code></em>&#160;:</span></td>
+<td> a <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>filename</code></em>&#160;:</span></td>
+<td> a filename
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10 
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3103586"></a><h3>
+<a name="gtk-status-icon-set-from-stock"></a>gtk_status_icon_set_from_stock ()</h3>
+<a class="indexterm" name="id3103602"></a><pre class="programlisting">void                gtk_status_icon_set_from_stock      (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *stock_id);</pre>
+<p>
+Makes <em class="parameter"><code>status_icon</code></em> display the stock icon with the id <em class="parameter"><code>stock_id</code></em>.
+See <a href="GtkStatusIcon.html#gtk-status-icon-new-from-stock"><code class="function">gtk_status_icon_new_from_stock()</code></a> for details.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>status_icon</code></em>&#160;:</span></td>
+<td> a <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>stock_id</code></em>&#160;:</span></td>
+<td> a stock icon id
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10 
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3103713"></a><h3>
+<a name="gtk-status-icon-set-from-icon-name"></a>gtk_status_icon_set_from_icon_name ()</h3>
+<a class="indexterm" name="id3103730"></a><pre class="programlisting">void                gtk_status_icon_set_from_icon_name  (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *icon_name);</pre>
+<p>
+Makes <em class="parameter"><code>status_icon</code></em> display the icon named <em class="parameter"><code>icon_name</code></em> from the 
+current icon theme.
+See <a href="GtkStatusIcon.html#gtk-status-icon-new-from-icon-name"><code class="function">gtk_status_icon_new_from_icon_name()</code></a> for details.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>status_icon</code></em>&#160;:</span></td>
+<td> a <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_name</code></em>&#160;:</span></td>
+<td> an icon name
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10 
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3103842"></a><h3>
+<a name="gtk-status-icon-get-storage-type"></a>gtk_status_icon_get_storage_type ()</h3>
+<a class="indexterm" name="id3103856"></a><pre class="programlisting"><a href="GtkImage.html#GtkImageType">GtkImageType</a>        gtk_status_icon_get_storage_type    (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon);</pre>
+<p>
+Gets the type of representation being used by the <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>
+to store image data. If the <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a> has no image data,
+the return value will be <a href="GtkImage.html#GTK-IMAGE-EMPTY:CAPS"><code class="literal">GTK_IMAGE_EMPTY</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>status_icon</code></em>&#160;:</span></td>
+<td> a <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the image representation being used
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3103963"></a><h3>
+<a name="gtk-status-icon-get-pixbuf"></a>gtk_status_icon_get_pixbuf ()</h3>
+<a class="indexterm" name="id3103978"></a><pre class="programlisting"><a
+href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
+>GdkPixbuf</a>*          gtk_status_icon_get_pixbuf          (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon);</pre>
+<p>
+Gets the <a
+href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
+><span class="type">GdkPixbuf</span></a> being displayed by the <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>.
+The storage type of the status icon must be <a href="GtkImage.html#GTK-IMAGE-EMPTY:CAPS"><code class="literal">GTK_IMAGE_EMPTY</code></a> or
+<a href="GtkImage.html#GTK-IMAGE-PIXBUF:CAPS"><code class="literal">GTK_IMAGE_PIXBUF</code></a> (see <a href="GtkStatusIcon.html#gtk-status-icon-get-storage-type"><code class="function">gtk_status_icon_get_storage_type()</code></a>).
+The caller of this function does not own a reference to the
+returned pixbuf.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>status_icon</code></em>&#160;:</span></td>
+<td> a <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the displayed pixbuf, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a> if the image is empty.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3104116"></a><h3>
+<a name="gtk-status-icon-get-stock"></a>gtk_status_icon_get_stock ()</h3>
+<a class="indexterm" name="id3104132"></a><pre class="programlisting">const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gtk_status_icon_get_stock           (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon);</pre>
+<p>
+Gets the id of the stock icon being displayed by the <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>.
+The storage type of the status icon must be <a href="GtkImage.html#GTK-IMAGE-EMPTY:CAPS"><code class="literal">GTK_IMAGE_EMPTY</code></a> or
+<a href="GtkImage.html#GTK-IMAGE-STOCK:CAPS"><code class="literal">GTK_IMAGE_STOCK</code></a> (see <a href="GtkStatusIcon.html#gtk-status-icon-get-storage-type"><code class="function">gtk_status_icon_get_storage_type()</code></a>).
+The returned string is owned by the <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a> and should not
+be freed or modified.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>status_icon</code></em>&#160;:</span></td>
+<td> a <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> stock id of the displayed stock icon,
+  or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a> if the image is empty.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3104272"></a><h3>
+<a name="gtk-status-icon-get-icon-name"></a>gtk_status_icon_get_icon_name ()</h3>
+<a class="indexterm" name="id3104288"></a><pre class="programlisting">const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gtk_status_icon_get_icon_name       (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon);</pre>
+<p>
+Gets the name of the icon being displayed by the <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>.
+The storage type of the status icon must be <a href="GtkImage.html#GTK-IMAGE-EMPTY:CAPS"><code class="literal">GTK_IMAGE_EMPTY</code></a> or
+<a href="GtkImage.html#GTK-IMAGE-ICON-NAME:CAPS"><code class="literal">GTK_IMAGE_ICON_NAME</code></a> (see <a href="GtkStatusIcon.html#gtk-status-icon-get-storage-type"><code class="function">gtk_status_icon_get_storage_type()</code></a>).
+The returned string is owned by the <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a> and should not
+be freed or modified.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>status_icon</code></em>&#160;:</span></td>
+<td> a <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> name of the displayed icon, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a> if the image is empty.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3104428"></a><h3>
+<a name="gtk-status-icon-get-size"></a>gtk_status_icon_get_size ()</h3>
+<a class="indexterm" name="id3104443"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_status_icon_get_size            (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon);</pre>
+<p>
+Gets the size in pixels that is available for the image. 
+Stock icons and named icons adapt their size automatically
+if the size of the notification area changes. For other
+storage types, the size-changed signal can be used to
+react to size changes.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>status_icon</code></em>&#160;:</span></td>
+<td> a <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the size that is available for the image
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3104524"></a><h3>
+<a name="gtk-status-icon-set-tooltip"></a>gtk_status_icon_set_tooltip ()</h3>
+<a class="indexterm" name="id3104540"></a><pre class="programlisting">void                gtk_status_icon_set_tooltip         (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tooltip_text);</pre>
+<p>
+Sets the tooltip of the status icon.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>status_icon</code></em>&#160;:</span></td>
+<td> a <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>tooltip_text</code></em>&#160;:</span></td>
+<td> the tooltip text, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3104638"></a><h3>
+<a name="gtk-status-icon-set-visible"></a>gtk_status_icon_set_visible ()</h3>
+<a class="indexterm" name="id3104654"></a><pre class="programlisting">void                gtk_status_icon_set_visible         (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> visible);</pre>
+<p>
+Shows or hides a status icon.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>status_icon</code></em>&#160;:</span></td>
+<td> a <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>visible</code></em>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> to show the status icon, <a
+href="../glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> to hide it
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3104761"></a><h3>
+<a name="gtk-status-icon-get-visible"></a>gtk_status_icon_get_visible ()</h3>
+<a class="indexterm" name="id3104777"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_status_icon_get_visible         (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon);</pre>
+<p>
+Returns whether the status icon is visible or not. 
+Note that being visible does not guarantee that 
+the user can actually see the icon, see also 
+<a href="GtkStatusIcon.html#gtk-status-icon-is-embedded"><code class="function">gtk_status_icon_is_embedded()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>status_icon</code></em>&#160;:</span></td>
+<td> a <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the status icon is visible
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3104877"></a><h3>
+<a name="gtk-status-icon-set-blinking"></a>gtk_status_icon_set_blinking ()</h3>
+<a class="indexterm" name="id3104892"></a><pre class="programlisting">void                gtk_status_icon_set_blinking        (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> blinking);</pre>
+<p>
+Makes the status icon start or stop blinking. 
+Note that blinking user interface elements may be problematic
+for some users, and thus may be turned off, in which case
+this setting has no effect.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>status_icon</code></em>&#160;:</span></td>
+<td> a <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>blinking</code></em>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> to turn blinking on, <a
+href="../glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> to turn it off
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3105003"></a><h3>
+<a name="gtk-status-icon-get-blinking"></a>gtk_status_icon_get_blinking ()</h3>
+<a class="indexterm" name="id3105019"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_status_icon_get_blinking        (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon);</pre>
+<p>
+Returns whether the icon is blinking, see 
+<a href="GtkStatusIcon.html#gtk-status-icon-set-blinking"><code class="function">gtk_status_icon_set_blinking()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>status_icon</code></em>&#160;:</span></td>
+<td> a <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the icon is blinking
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3105117"></a><h3>
+<a name="gtk-status-icon-is-embedded"></a>gtk_status_icon_is_embedded ()</h3>
+<a class="indexterm" name="id3105133"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_status_icon_is_embedded         (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon);</pre>
+<p>
+Returns whether the status icon is embedded in a notification
+area.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>status_icon</code></em>&#160;:</span></td>
+<td> a <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the status icon is embedded in
+  a notification area.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3105220"></a><h3>
+<a name="gtk-status-icon-position-menu"></a>gtk_status_icon_position_menu ()</h3>
+<a class="indexterm" name="id3105236"></a><pre class="programlisting">void                gtk_status_icon_position_menu       (<a href="GtkMenu.html" title="GtkMenu">GtkMenu</a> *menu,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> *x,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> *y,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> *push_in,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
+<p>
+Menu positioning function to use with <a href="GtkMenu.html#gtk-menu-popup"><code class="function">gtk_menu_popup()</code></a>
+to position <em class="parameter"><code>menu</code></em> aligned to the status icon <em class="parameter"><code>user_data</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>menu</code></em>&#160;:</span></td>
+<td> the <a href="GtkMenu.html" title="GtkMenu"><span class="type">GtkMenu</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>x</code></em>&#160;:</span></td>
+<td> return location for the x position
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>y</code></em>&#160;:</span></td>
+<td> return location for the y position
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>push_in</code></em>&#160;:</span></td>
+<td> return location for whether the menu should be pushed in 
+    to be completely inside the screen instead of just clamped to the 
+    size to the screen.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td> the status icon to position the menu on
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3105415"></a><h3>
+<a name="gtk-status-icon-get-geometry"></a>gtk_status_icon_get_geometry ()</h3>
+<a class="indexterm" name="id3105431"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_status_icon_get_geometry        (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon,
+                                                         <a
+href="../gdk/GdkScreen.html"
+>GdkScreen</a> **screen,
+                                                         <a
+href="../gdk/gdk-Points-Rectangles-and-Regions.html#GdkRectangle"
+>GdkRectangle</a> *area,
+                                                         <a href="gtk-Standard-Enumerations.html#GtkOrientation">GtkOrientation</a> *orientation);</pre>
+<p>
+Obtains information about the location of the status icon
+on screen. This information can be used to e.g. position 
+popups like notification bubbles. 
+</p>
+<p>
+See <a href="GtkStatusIcon.html#gtk-status-icon-position-menu"><code class="function">gtk_status_icon_position_menu()</code></a> for a more convenient 
+alternative for positioning menus.
+</p>
+<p>
+Note that some platforms do not allow GTK+ to provide 
+this information, and even on platforms that do allow it,
+the information is not reliable unless the status icon
+is embedded in a notification area, see
+<a href="GtkStatusIcon.html#gtk-status-icon-is-embedded"><code class="function">gtk_status_icon_is_embedded()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>status_icon</code></em>&#160;:</span></td>
+<td> a <a href="GtkStatusIcon.html" title="GtkStatusIcon"><span class="type">GtkStatusIcon</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>screen</code></em>&#160;:</span></td>
+<td> return location for the screen, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a> if the
+         information is not needed 
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>area</code></em>&#160;:</span></td>
+<td> return location for the area occupied by the status 
+       icon, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>orientation</code></em>&#160;:</span></td>
+<td> return location for the orientation of the panel 
+   in which the status icon is embedded, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>. A panel 
+   at the top or bottom of the screen is horizontal, a panel 
+   at the left or right is vertical.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the location information has 
+              been filled in
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3105657"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3105667"></a><h3>
+<a name="GtkStatusIcon--blinking"></a>The :<code class="literal">blinking</code> property</h3>
+<a class="indexterm" name="id3105683"></a><pre class="programlisting">  blinking                 <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Whether or not the status icon is blinking.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3105710"></a><h3>
+<a name="GtkStatusIcon--file"></a>The :<code class="literal">file</code> property</h3>
+<a class="indexterm" name="id3105726"></a><pre class="programlisting">  file                     <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Write</pre>
+<p>Filename to load and display.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3105752"></a><h3>
+<a name="GtkStatusIcon--icon-name"></a>The :<code class="literal">icon-name</code> property</h3>
+<a class="indexterm" name="id3105768"></a><pre class="programlisting">  icon-name                <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>The name of the icon from the icon theme.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3105794"></a><h3>
+<a name="GtkStatusIcon--pixbuf"></a>The :<code class="literal">pixbuf</code> property</h3>
+<a class="indexterm" name="id3105810"></a><pre class="programlisting">  pixbuf                   <a
+href="../gdk-pixbuf/gdk-pixbuf-gdk-pixbuf.html#GdkPixbuf"
+>GdkPixbuf</a>             : Read / Write</pre>
+<p>A GdkPixbuf to display.</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3105833"></a><h3>
+<a name="GtkStatusIcon--size"></a>The :<code class="literal">size</code> property</h3>
+<a class="indexterm" name="id3105848"></a><pre class="programlisting">  size                     <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read</pre>
+<p>The size of the icon.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3105878"></a><h3>
+<a name="GtkStatusIcon--stock"></a>The :<code class="literal">stock</code> property</h3>
+<a class="indexterm" name="id3105895"></a><pre class="programlisting">  stock                    <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>Stock ID for a stock image to display.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3105921"></a><h3>
+<a name="GtkStatusIcon--storage-type"></a>The :<code class="literal">storage-type</code> property</h3>
+<a class="indexterm" name="id3105937"></a><pre class="programlisting">  storage-type             <a href="GtkImage.html#GtkImageType">GtkImageType</a>          : Read</pre>
+<p>The representation being used for image data.</p>
+<p>Default value: GTK_IMAGE_EMPTY</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3105964"></a><h3>
+<a name="GtkStatusIcon--visible"></a>The :<code class="literal">visible</code> property</h3>
+<a class="indexterm" name="id3105980"></a><pre class="programlisting">  visible                  <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Whether or not the status icon is visible.</p>
+<p>Default value: TRUE</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3106008"></a><h2>Signal Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3106018"></a><h3>
+<a name="GtkStatusIcon-activate"></a>The <code class="literal">::activate</code> signal</h3>
+<a class="indexterm" name="id3106034"></a><pre class="programlisting">void                user_function                      (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>       user_data)        : Run First / Action</pre>
+<p>
+Gets emitted when the user activates the status icon. 
+If and how status icons can activated is platform-dependent.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>status_icon</code></em>&#160;:</span></td>
+<td> the object which received the signal
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3106113"></a><h3>
+<a name="GtkStatusIcon-popup-menu"></a>The <code class="literal">::popup-menu</code> signal</h3>
+<a class="indexterm" name="id3106129"></a><pre class="programlisting">void                user_function                      (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon,
+                                                        <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>          button,
+                                                        <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>          activate_time,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>       user_data)          : Run First / Action</pre>
+<p>
+Gets emitted when the user brings up the context menu
+of the status icon. Whether status icons can have context 
+menus and how these are activated is platform-dependent.
+</p>
+<p>
+The <em class="parameter"><code>button</code></em> and <em class="parameter"><code>activate_timeout</code></em> parameters should be 
+passed as the last to arguments to <a href="GtkMenu.html#gtk-menu-popup"><code class="function">gtk_menu_popup()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>status_icon</code></em>&#160;:</span></td>
+<td> the object which received the signal
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>button</code></em>&#160;:</span></td>
+<td> the button that was pressed, or 0 if the 
+  signal is not emitted in response to a button press event
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>activate_time</code></em>&#160;:</span></td>
+<td> the timestamp of the event that
+  triggered the signal emission
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3106282"></a><h3>
+<a name="GtkStatusIcon-size-changed"></a>The <code class="literal">::size-changed</code> signal</h3>
+<a class="indexterm" name="id3106298"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            user_function                      (<a href="GtkStatusIcon.html" title="GtkStatusIcon">GtkStatusIcon</a> *status_icon,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>           size,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>       user_data)        : Run Last</pre>
+<p>
+Gets emitted when the size available for the image
+changes, e.g. because the notification area got resized.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>status_icon</code></em>&#160;:</span></td>
+<td> the object which received the signal
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>size</code></em>&#160;:</span></td>
+<td> the new size
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the icon was updated for the new
+size. Otherwise, GTK+ will scale the icon as necessary.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>Since  2.10
+</p>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,835 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>GtkFontButton</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GTK+ Reference Manual">
+<link rel="up" href="SelectorWidgets.html" title="Selectors (File/Font/Color/Input Devices)">
+<link rel="prev" href="gtk-gtkfilefilter.html" title="GtkFileFilter">
+<link rel="next" href="GtkFontSelection.html" title="GtkFontSelection">
+<meta name="generator" content="GTK-Doc V1.7 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gtk.html" title="Part&#160;I.&#160;GTK+ Overview">
+<link rel="part" href="gtkbase.html" title="Part&#160;II.&#160;GTK+ Core Reference">
+<link rel="part" href="gtkobjects.html" title="Part&#160;III.&#160;GTK+ Widgets and Objects">
+<link rel="chapter" href="ch01.html" title="Object Hierarchy">
+<link rel="chapter" href="ch02.html" title="Widget Gallery">
+<link rel="chapter" href="WindowWidgets.html" title="Windows">
+<link rel="chapter" href="DisplayWidgets.html" title="Display Widgets">
+<link rel="chapter" href="ButtonWidgets.html" title="Buttons and Toggles">
+<link rel="chapter" href="NumericEntry.html" title="Numeric/Text Data Entry">
+<link rel="chapter" href="TextWidgetObjects.html" title="Multiline Text Editor">
+<link rel="chapter" href="TreeWidgetObjects.html" title="Tree, List and Icon Grid Widgets">
+<link rel="chapter" href="MenusAndCombos.html" title="Menus, Combo Box, Toolbar">
+<link rel="chapter" href="Actions.html" title="Action-based menus and toolbars">
+<link rel="chapter" href="SelectorWidgets.html" title="Selectors (File/Font/Color/Input Devices)">
+<link rel="chapter" href="LayoutContainers.html" title="Layout Containers">
+<link rel="chapter" href="Ornaments.html" title="Ornaments">
+<link rel="chapter" href="ScrollingWidgets.html" title="Scrolling">
+<link rel="chapter" href="Printing.html" title="Printing">
+<link rel="chapter" href="MiscObjects.html" title="Miscellaneous">
+<link rel="chapter" href="AbstractObjects.html" title="Abstract Base Classes">
+<link rel="chapter" href="PlugSocket.html" title="Cross-process Embedding">
+<link rel="chapter" href="SpecialObjects.html" title="Special-purpose features">
+<link rel="chapter" href="RecentDocuments.html" title="Recently Used Documents">
+<link rel="chapter" href="DeprecatedObjects.html" title="Deprecated">
+<link rel="part" href="migrating.html" title="Part&#160;IV.&#160;Migrating from Previous Versions of GTK+">
+<link rel="chapter" href="gtk-migrating-checklist.html" title="Migration Checklist">
+<link rel="chapter" href="gtk-migrating-GtkFileChooser.html" title="Migrating from GtkFileSelection to GtkFileChooser">
+<link rel="chapter" href="gtk-migrating-GtkAction.html" title="Migrating from old menu and toolbar systems to GtkAction">
+<link rel="chapter" href="gtk-migrating-GtkComboBox.html" title="Migrating from GtkOptionMenu and GtkCombo to GtkComboBox and GtkComboBoxEntry">
+<link rel="chapter" href="gtk-migrating-GtkIconView.html" title="Migrating from GnomeIconList to GtkIconView">
+<link rel="chapter" href="gtk-migrating-GtkAboutDialog.html" title="Migrating from GnomeAbout to GtkAboutDialog">
+<link rel="chapter" href="gtk-migrating-GtkColorButton.html" title="Migrating from GnomeColorPicker to GtkColorButton">
+<link rel="chapter" href="gtk-migrating-GtkAssistant.html" title="Migrating from GnomeDruid to GtkAssistant">
+<link rel="chapter" href="gtk-migrating-GtkRecentChooser.html" title="Migrating from EggRecent to GtkRecentChooser">
+<link rel="chapter" href="gtk-migrating-GtkLinkButton.html" title="Migrating from GnomeHRef to GtkLinkButton">
+<link rel="part" href="pt05.html" title="Part&#160;V.&#160;GTK+ Tools">
+<link rel="glossary" href="glossary.html" title="Glossary">
+<link rel="index" href="ix01.html" title="Index">
+<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="ix03.html" title="Index of new symbols in 2.2">
+<link rel="index" href="ix04.html" title="Index of new symbols in 2.4">
+<link rel="index" href="ix05.html" title="Index of new symbols in 2.6">
+<link rel="index" href="ix06.html" title="Index of new symbols in 2.8">
+<link rel="index" href="ix07.html" title="Index of new symbols in 2.10">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gtk-gtkfilefilter.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="SelectorWidgets.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GTK+ Reference Manual</th>
+<td><a accesskey="n" href="GtkFontSelection.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id3642388" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id3643013" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id3642782" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id3642851" class="shortcut">Implemented Interfaces</a>
+                  &#160;|&#160;
+                  <a href="#id3642873" class="shortcut">Properties</a>
+                  &#160;|&#160;
+                  <a href="#id3642987" class="shortcut">Signals</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="GtkFontButton"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id3642388"></a><span class="refentrytitle">GtkFontButton</span>
+</h2>
+<p>GtkFontButton &#8212; A button to launch a font selection dialog</p>
+</td>
+<td valign="top" align="right"><img src="font-button.png"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <a href="GtkFontButton.html#GtkFontButton-struct">GtkFontButton</a>;
+<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          <a href="GtkFontButton.html#gtk-font-button-new">gtk_font_button_new</a>                 (void);
+<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          <a href="GtkFontButton.html#gtk-font-button-new-with-font">gtk_font_button_new_with_font</a>       (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *fontname);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkFontButton.html#gtk-font-button-set-font-name">gtk_font_button_set_font_name</a>       (<a href="GtkFontButton.html" title="GtkFontButton">GtkFontButton</a> *font_button,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *fontname);
+const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a href="GtkFontButton.html#gtk-font-button-get-font-name">gtk_font_button_get_font_name</a>       (<a href="GtkFontButton.html" title="GtkFontButton">GtkFontButton</a> *font_button);
+void                <a href="GtkFontButton.html#gtk-font-button-set-show-style">gtk_font_button_set_show_style</a>      (<a href="GtkFontButton.html" title="GtkFontButton">GtkFontButton</a> *font_button,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> show_style);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkFontButton.html#gtk-font-button-get-show-style">gtk_font_button_get_show_style</a>      (<a href="GtkFontButton.html" title="GtkFontButton">GtkFontButton</a> *font_button);
+void                <a href="GtkFontButton.html#gtk-font-button-set-show-size">gtk_font_button_set_show_size</a>       (<a href="GtkFontButton.html" title="GtkFontButton">GtkFontButton</a> *font_button,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> show_size);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkFontButton.html#gtk-font-button-get-show-size">gtk_font_button_get_show_size</a>       (<a href="GtkFontButton.html" title="GtkFontButton">GtkFontButton</a> *font_button);
+void                <a href="GtkFontButton.html#gtk-font-button-set-use-font">gtk_font_button_set_use_font</a>        (<a href="GtkFontButton.html" title="GtkFontButton">GtkFontButton</a> *font_button,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> use_font);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkFontButton.html#gtk-font-button-get-use-font">gtk_font_button_get_use_font</a>        (<a href="GtkFontButton.html" title="GtkFontButton">GtkFontButton</a> *font_button);
+void                <a href="GtkFontButton.html#gtk-font-button-set-use-size">gtk_font_button_set_use_size</a>        (<a href="GtkFontButton.html" title="GtkFontButton">GtkFontButton</a> *font_button,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> use_size);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkFontButton.html#gtk-font-button-get-use-size">gtk_font_button_get_use_size</a>        (<a href="GtkFontButton.html" title="GtkFontButton">GtkFontButton</a> *font_button);
+void                <a href="GtkFontButton.html#gtk-font-button-set-title">gtk_font_button_set_title</a>           (<a href="GtkFontButton.html" title="GtkFontButton">GtkFontButton</a> *font_button,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *title);
+const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a href="GtkFontButton.html#gtk-font-button-get-title">gtk_font_button_get_title</a>           (<a href="GtkFontButton.html" title="GtkFontButton">GtkFontButton</a> *font_button);
+
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3642782"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gobject/gobject-The-Base-Object-Type.html#GInitiallyUnowned"
+>GInitiallyUnowned</a>
+         +----<a href="GtkObject.html" title="GtkObject">GtkObject</a>
+               +----<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>
+                     +----<a href="GtkContainer.html" title="GtkContainer">GtkContainer</a>
+                           +----<a href="GtkBin.html" title="GtkBin">GtkBin</a>
+                                 +----<a href="GtkButton.html" title="GtkButton">GtkButton</a>
+                                       +----GtkFontButton
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3642851"></a><h2>Implemented Interfaces</h2>
+<p>
+GtkFontButton implements
+ AtkImplementorIface.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3642873"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  <a href="GtkFontButton.html#GtkFontButton--font-name">font-name</a>                <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  <a href="GtkFontButton.html#GtkFontButton--show-size">show-size</a>                <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkFontButton.html#GtkFontButton--show-style">show-style</a>               <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkFontButton.html#GtkFontButton--title">title</a>                    <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  <a href="GtkFontButton.html#GtkFontButton--use-font">use-font</a>                 <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkFontButton.html#GtkFontButton--use-size">use-size</a>                 <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3642987"></a><h2>Signals</h2>
+<pre class="synopsis">
+
+  <a href="GtkFontButton.html#GtkFontButton-font-set">font-set</a>                                       : Run First
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3643013"></a><h2>Description</h2>
+<p>
+The <a href="GtkFontButton.html" title="GtkFontButton"><span class="type">GtkFontButton</span></a> is a button which displays the currently selected font an allows to open a font selection 
+dialog to change the font. It is suitable widget for selecting a font in a preference dialog.
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3643039"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3643049"></a><h3>
+<a name="GtkFontButton-struct"></a>GtkFontButton</h3>
+<a class="indexterm" name="id3643062"></a><pre class="programlisting">typedef struct _GtkFontButton GtkFontButton;</pre>
+<p>
+The GtkFontButton struct has only private members and should not be used
+directly.
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3643080"></a><h3>
+<a name="gtk-font-button-new"></a>gtk_font_button_new ()</h3>
+<a class="indexterm" name="id3643095"></a><pre class="programlisting"><a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          gtk_font_button_new                 (void);</pre>
+<p>
+Creates a new font picker widget.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a new font picker widget.
+
+</td>
+</tr></tbody>
+</table></div>
+<p class="since">Since  2.4
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3643141"></a><h3>
+<a name="gtk-font-button-new-with-font"></a>gtk_font_button_new_with_font ()</h3>
+<a class="indexterm" name="id3643157"></a><pre class="programlisting"><a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          gtk_font_button_new_with_font       (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *fontname);</pre>
+<p>
+Creates a new font picker widget.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>fontname</code></em>&#160;:</span></td>
+<td> Name of font to display in font selection dialog
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a new font picker widget.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.4
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3643226"></a><h3>
+<a name="gtk-font-button-set-font-name"></a>gtk_font_button_set_font_name ()</h3>
+<a class="indexterm" name="id3643242"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_font_button_set_font_name       (<a href="GtkFontButton.html" title="GtkFontButton">GtkFontButton</a> *font_button,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *fontname);</pre>
+<p>
+Sets or updates the currently-displayed font in font picker dialog.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>font_button</code></em>&#160;:</span></td>
+<td> a <a href="GtkFontButton.html" title="GtkFontButton"><span class="type">GtkFontButton</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>fontname</code></em>&#160;:</span></td>
+<td> Name of font to display in font selection dialog
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> Return value of <a href="GtkFontSelectionDialog.html#gtk-font-selection-dialog-set-font-name"><code class="function">gtk_font_selection_dialog_set_font_name()</code></a> if the
+font selection dialog exists, otherwise <a
+href="../glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a>.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.4
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3643365"></a><h3>
+<a name="gtk-font-button-get-font-name"></a>gtk_font_button_get_font_name ()</h3>
+<a class="indexterm" name="id3643381"></a><pre class="programlisting">const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gtk_font_button_get_font_name       (<a href="GtkFontButton.html" title="GtkFontButton">GtkFontButton</a> *font_button);</pre>
+<p>
+Retrieves the name of the currently selected font.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>font_button</code></em>&#160;:</span></td>
+<td> a <a href="GtkFontButton.html" title="GtkFontButton"><span class="type">GtkFontButton</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> an internal copy of the font name which must not be freed.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.4
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3643459"></a><h3>
+<a name="gtk-font-button-set-show-style"></a>gtk_font_button_set_show_style ()</h3>
+<a class="indexterm" name="id3643475"></a><pre class="programlisting">void                gtk_font_button_set_show_style      (<a href="GtkFontButton.html" title="GtkFontButton">GtkFontButton</a> *font_button,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> show_style);</pre>
+<p>
+If <em class="parameter"><code>show_style</code></em> is <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, the font style will be displayed along with name of the selected font.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>font_button</code></em>&#160;:</span></td>
+<td> a <a href="GtkFontButton.html" title="GtkFontButton"><span class="type">GtkFontButton</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>show_style</code></em>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if font style should be displayed in label.
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.4
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3643590"></a><h3>
+<a name="gtk-font-button-get-show-style"></a>gtk_font_button_get_show_style ()</h3>
+<a class="indexterm" name="id3643606"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_font_button_get_show_style      (<a href="GtkFontButton.html" title="GtkFontButton">GtkFontButton</a> *font_button);</pre>
+<p>
+Returns whether the name of the font style will be shown in the label.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>font_button</code></em>&#160;:</span></td>
+<td> a <a href="GtkFontButton.html" title="GtkFontButton"><span class="type">GtkFontButton</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> whether the font style will be shown in the label.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.4
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3643684"></a><h3>
+<a name="gtk-font-button-set-show-size"></a>gtk_font_button_set_show_size ()</h3>
+<a class="indexterm" name="id3643700"></a><pre class="programlisting">void                gtk_font_button_set_show_size       (<a href="GtkFontButton.html" title="GtkFontButton">GtkFontButton</a> *font_button,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> show_size);</pre>
+<p>
+If <em class="parameter"><code>show_size</code></em> is <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, the font size will be displayed along with the name of the selected font.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>font_button</code></em>&#160;:</span></td>
+<td> a <a href="GtkFontButton.html" title="GtkFontButton"><span class="type">GtkFontButton</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>show_size</code></em>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if font size should be displayed in dialog.
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.4
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3643814"></a><h3>
+<a name="gtk-font-button-get-show-size"></a>gtk_font_button_get_show_size ()</h3>
+<a class="indexterm" name="id3643830"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_font_button_get_show_size       (<a href="GtkFontButton.html" title="GtkFontButton">GtkFontButton</a> *font_button);</pre>
+<p>
+Returns whether the font size will be shown in the label.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>font_button</code></em>&#160;:</span></td>
+<td> a <a href="GtkFontButton.html" title="GtkFontButton"><span class="type">GtkFontButton</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> whether the font size will be shown in the label.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.4
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3643908"></a><h3>
+<a name="gtk-font-button-set-use-font"></a>gtk_font_button_set_use_font ()</h3>
+<a class="indexterm" name="id3643924"></a><pre class="programlisting">void                gtk_font_button_set_use_font        (<a href="GtkFontButton.html" title="GtkFontButton">GtkFontButton</a> *font_button,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> use_font);</pre>
+<p>
+If <em class="parameter"><code>use_font</code></em> is <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, the font name will be written using the selected font.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>font_button</code></em>&#160;:</span></td>
+<td> a <a href="GtkFontButton.html" title="GtkFontButton"><span class="type">GtkFontButton</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>use_font</code></em>&#160;:</span></td>
+<td> If <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, font name will be written using font chosen.
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.4
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3644038"></a><h3>
+<a name="gtk-font-button-get-use-font"></a>gtk_font_button_get_use_font ()</h3>
+<a class="indexterm" name="id3644054"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_font_button_get_use_font        (<a href="GtkFontButton.html" title="GtkFontButton">GtkFontButton</a> *font_button);</pre>
+<p>
+Returns whether the selected font is used in the label.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>font_button</code></em>&#160;:</span></td>
+<td> a <a href="GtkFontButton.html" title="GtkFontButton"><span class="type">GtkFontButton</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> whether the selected font is used in the label.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.4
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3644131"></a><h3>
+<a name="gtk-font-button-set-use-size"></a>gtk_font_button_set_use_size ()</h3>
+<a class="indexterm" name="id3644147"></a><pre class="programlisting">void                gtk_font_button_set_use_size        (<a href="GtkFontButton.html" title="GtkFontButton">GtkFontButton</a> *font_button,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> use_size);</pre>
+<p>
+If <em class="parameter"><code>use_size</code></em> is <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, the font name will be written using the selected size.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>font_button</code></em>&#160;:</span></td>
+<td> a <a href="GtkFontButton.html" title="GtkFontButton"><span class="type">GtkFontButton</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>use_size</code></em>&#160;:</span></td>
+<td> If <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, font name will be written using the selected size.
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.4
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3644262"></a><h3>
+<a name="gtk-font-button-get-use-size"></a>gtk_font_button_get_use_size ()</h3>
+<a class="indexterm" name="id3644278"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_font_button_get_use_size        (<a href="GtkFontButton.html" title="GtkFontButton">GtkFontButton</a> *font_button);</pre>
+<p>
+Returns whether the selected size is used in the label.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>font_button</code></em>&#160;:</span></td>
+<td> a <a href="GtkFontButton.html" title="GtkFontButton"><span class="type">GtkFontButton</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> whether the selected size is used in the label.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.4
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3644355"></a><h3>
+<a name="gtk-font-button-set-title"></a>gtk_font_button_set_title ()</h3>
+<a class="indexterm" name="id3644371"></a><pre class="programlisting">void                gtk_font_button_set_title           (<a href="GtkFontButton.html" title="GtkFontButton">GtkFontButton</a> *font_button,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *title);</pre>
+<p>
+Sets the title for the font selection dialog.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>font_button</code></em>&#160;:</span></td>
+<td> a <a href="GtkFontButton.html" title="GtkFontButton"><span class="type">GtkFontButton</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>title</code></em>&#160;:</span></td>
+<td> a string containing the font selection dialog title
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.4
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3644459"></a><h3>
+<a name="gtk-font-button-get-title"></a>gtk_font_button_get_title ()</h3>
+<a class="indexterm" name="id3644475"></a><pre class="programlisting">const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gtk_font_button_get_title           (<a href="GtkFontButton.html" title="GtkFontButton">GtkFontButton</a> *font_button);</pre>
+<p>
+Retrieves the title of the font selection dialog.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>font_button</code></em>&#160;:</span></td>
+<td> a <a href="GtkFontButton.html" title="GtkFontButton"><span class="type">GtkFontButton</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> an internal copy of the title string which must not be freed.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.4
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3644554"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3644565"></a><h3>
+<a name="GtkFontButton--font-name"></a>The :<code class="literal">font-name</code> property</h3>
+<a class="indexterm" name="id3644581"></a><pre class="programlisting">  font-name                <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>
+The name of the currently selected font.</p>
+<p>
+
+</p>
+<p>Default value: "Sans 12"</p>
+<p>Since  2.4
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3644616"></a><h3>
+<a name="GtkFontButton--show-size"></a>The :<code class="literal">show-size</code> property</h3>
+<a class="indexterm" name="id3644633"></a><pre class="programlisting">  show-size                <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>
+If this property is set to <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, the selected font size will be shown 
+in the label. For a more WYSIWYG way to show the selected size, see the 
+::use-size property.</p>
+<p>
+
+</p>
+<p>Default value: TRUE</p>
+<p>Since  2.4
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3644680"></a><h3>
+<a name="GtkFontButton--show-style"></a>The :<code class="literal">show-style</code> property</h3>
+<a class="indexterm" name="id3644696"></a><pre class="programlisting">  show-style               <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>
+If this property is set to <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, the name of the selected font style 
+will be shown in the label. For a more WYSIWYG way to show the selected 
+style, see the ::use-font property.</p>
+<p>
+
+</p>
+<p>Default value: TRUE</p>
+<p>Since  2.4
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3644744"></a><h3>
+<a name="GtkFontButton--title"></a>The :<code class="literal">title</code> property</h3>
+<a class="indexterm" name="id3644760"></a><pre class="programlisting">  title                    <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>
+The title of the font selection dialog.</p>
+<p>
+
+</p>
+<p>Default value: "Pick a Font"</p>
+<p>Since  2.4
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3644795"></a><h3>
+<a name="GtkFontButton--use-font"></a>The :<code class="literal">use-font</code> property</h3>
+<a class="indexterm" name="id3644811"></a><pre class="programlisting">  use-font                 <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>
+If this property is set to <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, the label will be drawn 
+in the selected font.</p>
+<p>
+
+</p>
+<p>Default value: FALSE</p>
+<p>Since  2.4
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3644857"></a><h3>
+<a name="GtkFontButton--use-size"></a>The :<code class="literal">use-size</code> property</h3>
+<a class="indexterm" name="id3644874"></a><pre class="programlisting">  use-size                 <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>
+If this property is set to <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, the label will be drawn 
+with the selected font size.</p>
+<p>
+
+</p>
+<p>Default value: FALSE</p>
+<p>Since  2.4
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3644921"></a><h2>Signal Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3644931"></a><h3>
+<a name="GtkFontButton-font-set"></a>The <code class="literal">::font-set</code> signal</h3>
+<a class="indexterm" name="id3644947"></a><pre class="programlisting">void                user_function                      (<a href="GtkFontButton.html" title="GtkFontButton">GtkFontButton</a> *widget,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>       user_data)      : Run First</pre>
+<p>
+The ::font-set signal is emitted when the user selects a font. 
+When handling this signal, use <a href="GtkFontButton.html#gtk-font-button-get-font-name"><code class="function">gtk_font_button_get_font_name()</code></a> 
+to find out which font was just selected.
+</p>
+<p>
+Note that this signal is only emitted when the <span class="emphasis"><em>user</em></span>
+changes the font. If you need to react to programmatic font changes
+as well, use the notify::font-name signal.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>widget</code></em>&#160;:</span></td>
+<td> the object which received the signal.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Since  2.4
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3645049"></a><h2>See Also</h2>
+<p>
+<a href="GtkFontSelectionDialog.html" title="GtkFontSelectionDialog"><span class="type">GtkFontSelectionDialog</span></a>, <a href="GtkColorButton.html" title="GtkColorButton"><span class="type">GtkColorButton</span></a>.
+</p>
+</div>
+</div>
+</body>
+</html>

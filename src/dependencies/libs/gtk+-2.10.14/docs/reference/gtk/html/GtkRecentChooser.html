@@ -1,0 +1,1709 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>GtkRecentChooser</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GTK+ Reference Manual">
+<link rel="up" href="RecentDocuments.html" title="Recently Used Documents">
+<link rel="prev" href="GtkRecentManager.html" title="GtkRecentManager">
+<link rel="next" href="GtkRecentChooserDialog.html" title="GtkRecentChooserDialog">
+<meta name="generator" content="GTK-Doc V1.7 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gtk.html" title="Part&#160;I.&#160;GTK+ Overview">
+<link rel="part" href="gtkbase.html" title="Part&#160;II.&#160;GTK+ Core Reference">
+<link rel="part" href="gtkobjects.html" title="Part&#160;III.&#160;GTK+ Widgets and Objects">
+<link rel="chapter" href="ch01.html" title="Object Hierarchy">
+<link rel="chapter" href="ch02.html" title="Widget Gallery">
+<link rel="chapter" href="WindowWidgets.html" title="Windows">
+<link rel="chapter" href="DisplayWidgets.html" title="Display Widgets">
+<link rel="chapter" href="ButtonWidgets.html" title="Buttons and Toggles">
+<link rel="chapter" href="NumericEntry.html" title="Numeric/Text Data Entry">
+<link rel="chapter" href="TextWidgetObjects.html" title="Multiline Text Editor">
+<link rel="chapter" href="TreeWidgetObjects.html" title="Tree, List and Icon Grid Widgets">
+<link rel="chapter" href="MenusAndCombos.html" title="Menus, Combo Box, Toolbar">
+<link rel="chapter" href="Actions.html" title="Action-based menus and toolbars">
+<link rel="chapter" href="SelectorWidgets.html" title="Selectors (File/Font/Color/Input Devices)">
+<link rel="chapter" href="LayoutContainers.html" title="Layout Containers">
+<link rel="chapter" href="Ornaments.html" title="Ornaments">
+<link rel="chapter" href="ScrollingWidgets.html" title="Scrolling">
+<link rel="chapter" href="Printing.html" title="Printing">
+<link rel="chapter" href="MiscObjects.html" title="Miscellaneous">
+<link rel="chapter" href="AbstractObjects.html" title="Abstract Base Classes">
+<link rel="chapter" href="PlugSocket.html" title="Cross-process Embedding">
+<link rel="chapter" href="SpecialObjects.html" title="Special-purpose features">
+<link rel="chapter" href="RecentDocuments.html" title="Recently Used Documents">
+<link rel="chapter" href="DeprecatedObjects.html" title="Deprecated">
+<link rel="part" href="migrating.html" title="Part&#160;IV.&#160;Migrating from Previous Versions of GTK+">
+<link rel="chapter" href="gtk-migrating-checklist.html" title="Migration Checklist">
+<link rel="chapter" href="gtk-migrating-GtkFileChooser.html" title="Migrating from GtkFileSelection to GtkFileChooser">
+<link rel="chapter" href="gtk-migrating-GtkAction.html" title="Migrating from old menu and toolbar systems to GtkAction">
+<link rel="chapter" href="gtk-migrating-GtkComboBox.html" title="Migrating from GtkOptionMenu and GtkCombo to GtkComboBox and GtkComboBoxEntry">
+<link rel="chapter" href="gtk-migrating-GtkIconView.html" title="Migrating from GnomeIconList to GtkIconView">
+<link rel="chapter" href="gtk-migrating-GtkAboutDialog.html" title="Migrating from GnomeAbout to GtkAboutDialog">
+<link rel="chapter" href="gtk-migrating-GtkColorButton.html" title="Migrating from GnomeColorPicker to GtkColorButton">
+<link rel="chapter" href="gtk-migrating-GtkAssistant.html" title="Migrating from GnomeDruid to GtkAssistant">
+<link rel="chapter" href="gtk-migrating-GtkRecentChooser.html" title="Migrating from EggRecent to GtkRecentChooser">
+<link rel="chapter" href="gtk-migrating-GtkLinkButton.html" title="Migrating from GnomeHRef to GtkLinkButton">
+<link rel="part" href="pt05.html" title="Part&#160;V.&#160;GTK+ Tools">
+<link rel="glossary" href="glossary.html" title="Glossary">
+<link rel="index" href="ix01.html" title="Index">
+<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="ix03.html" title="Index of new symbols in 2.2">
+<link rel="index" href="ix04.html" title="Index of new symbols in 2.4">
+<link rel="index" href="ix05.html" title="Index of new symbols in 2.6">
+<link rel="index" href="ix06.html" title="Index of new symbols in 2.8">
+<link rel="index" href="ix07.html" title="Index of new symbols in 2.10">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="GtkRecentManager.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="RecentDocuments.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GTK+ Reference Manual</th>
+<td><a accesskey="n" href="GtkRecentChooserDialog.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id3993369" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id3994547" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id3994425" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#" class="shortcut"></a>
+                  &#160;|&#160;
+                  <a href="#id3994471" class="shortcut">Known Implementations</a>
+                  &#160;|&#160;
+                  <a href="#id3994510" class="shortcut">Signals</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="GtkRecentChooser"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id3993369"></a><span class="refentrytitle">GtkRecentChooser</span>
+</h2>
+<p>GtkRecentChooser &#8212; Interface implemented by GtkRecentChooserWidget, GtkRecentChooserMenu and GtkRecentChooserDialog</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <a href="GtkRecentChooser.html#GtkRecentChooser-struct">GtkRecentChooser</a>;
+                    <a href="GtkRecentChooser.html#GtkRecentChooserIface">GtkRecentChooserIface</a>;
+#define             <a href="GtkRecentChooser.html#GTK-RECENT-CHOOSER-ERROR:CAPS">GTK_RECENT_CHOOSER_ERROR</a>
+enum                <a href="GtkRecentChooser.html#GtkRecentChooserError">GtkRecentChooserError</a>;
+void                <a href="GtkRecentChooser.html#gtk-recent-chooser-set-show-private">gtk_recent_chooser_set_show_private</a> (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> show_private);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkRecentChooser.html#gtk-recent-chooser-get-show-private">gtk_recent_chooser_get_show_private</a> (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);
+void                <a href="GtkRecentChooser.html#gtk-recent-chooser-set-show-not-found">gtk_recent_chooser_set_show_not_found</a>
+                                                        (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> show_not_found);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkRecentChooser.html#gtk-recent-chooser-get-show-not-found">gtk_recent_chooser_get_show_not_found</a>
+                                                        (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);
+void                <a href="GtkRecentChooser.html#gtk-recent-chooser-set-show-icons">gtk_recent_chooser_set_show_icons</a>   (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> show_icons);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkRecentChooser.html#gtk-recent-chooser-get-show-icons">gtk_recent_chooser_get_show_icons</a>   (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);
+void                <a href="GtkRecentChooser.html#gtk-recent-chooser-set-select-multiple">gtk_recent_chooser_set_select_multiple</a>
+                                                        (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> select_multiple);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkRecentChooser.html#gtk-recent-chooser-get-select-multiple">gtk_recent_chooser_get_select_multiple</a>
+                                                        (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);
+void                <a href="GtkRecentChooser.html#gtk-recent-chooser-set-local-only">gtk_recent_chooser_set_local_only</a>   (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> local_only);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkRecentChooser.html#gtk-recent-chooser-get-local-only">gtk_recent_chooser_get_local_only</a>   (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);
+void                <a href="GtkRecentChooser.html#gtk-recent-chooser-set-limit">gtk_recent_chooser_set_limit</a>        (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> limit);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkRecentChooser.html#gtk-recent-chooser-get-limit">gtk_recent_chooser_get_limit</a>        (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);
+void                <a href="GtkRecentChooser.html#gtk-recent-chooser-set-show-tips">gtk_recent_chooser_set_show_tips</a>    (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> show_tips);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkRecentChooser.html#gtk-recent-chooser-get-show-tips">gtk_recent_chooser_get_show_tips</a>    (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);
+void                <a href="GtkRecentChooser.html#gtk-recent-chooser-set-show-numbers">gtk_recent_chooser_set_show_numbers</a> (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> show_numbers);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkRecentChooser.html#gtk-recent-chooser-get-show-numbers">gtk_recent_chooser_get_show_numbers</a> (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);
+enum                <a href="GtkRecentChooser.html#GtkRecentSortType">GtkRecentSortType</a>;
+void                <a href="GtkRecentChooser.html#gtk-recent-chooser-set-sort-type">gtk_recent_chooser_set_sort_type</a>    (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a href="GtkRecentChooser.html#GtkRecentSortType">GtkRecentSortType</a> sort_type);
+<a href="GtkRecentChooser.html#GtkRecentSortType">GtkRecentSortType</a>   <a href="GtkRecentChooser.html#gtk-recent-chooser-get-sort-type">gtk_recent_chooser_get_sort_type</a>    (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                (<a href="GtkRecentChooser.html#GtkRecentSortFunc">*GtkRecentSortFunc</a>)                (<a href="GtkRecentManager.html#GtkRecentInfo">GtkRecentInfo</a> *a,
+                                                         <a href="GtkRecentManager.html#GtkRecentInfo">GtkRecentInfo</a> *b,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+void                <a href="GtkRecentChooser.html#gtk-recent-chooser-set-sort-func">gtk_recent_chooser_set_sort_func</a>    (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a href="GtkRecentChooser.html#GtkRecentSortFunc">GtkRecentSortFunc</a> sort_func,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> sort_data,
+                                                         <a
+href="../glib/glib-Datasets.html#GDestroyNotify"
+>GDestroyNotify</a> data_destroy);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkRecentChooser.html#gtk-recent-chooser-set-current-uri">gtk_recent_chooser_set_current_uri</a>  (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *uri,
+                                                         <a
+href="../glib/glib-Error-Reporting.html#GError"
+>GError</a> **error);
+<a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              <a href="GtkRecentChooser.html#gtk-recent-chooser-get-current-uri">gtk_recent_chooser_get_current_uri</a>  (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);
+<a href="GtkRecentManager.html#GtkRecentInfo">GtkRecentInfo</a>*      <a href="GtkRecentChooser.html#gtk-recent-chooser-get-current-item">gtk_recent_chooser_get_current_item</a> (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkRecentChooser.html#gtk-recent-chooser-select-uri">gtk_recent_chooser_select_uri</a>       (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *uri,
+                                                         <a
+href="../glib/glib-Error-Reporting.html#GError"
+>GError</a> **error);
+void                <a href="GtkRecentChooser.html#gtk-recent-chooser-unselect-uri">gtk_recent_chooser_unselect_uri</a>     (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *uri);
+void                <a href="GtkRecentChooser.html#gtk-recent-chooser-select-all">gtk_recent_chooser_select_all</a>       (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);
+void                <a href="GtkRecentChooser.html#gtk-recent-chooser-unselect-all">gtk_recent_chooser_unselect_all</a>     (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);
+<a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              <a href="GtkRecentChooser.html#gtk-recent-chooser-get-items">gtk_recent_chooser_get_items</a>        (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);
+<a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>**             <a href="GtkRecentChooser.html#gtk-recent-chooser-get-uris">gtk_recent_chooser_get_uris</a>         (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gsize"
+>gsize</a> *length);
+void                <a href="GtkRecentChooser.html#gtk-recent-chooser-add-filter">gtk_recent_chooser_add_filter</a>       (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a href="GtkRecentFilter.html" title="GtkRecentFilter">GtkRecentFilter</a> *filter);
+void                <a href="GtkRecentChooser.html#gtk-recent-chooser-remove-filter">gtk_recent_chooser_remove_filter</a>    (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a href="GtkRecentFilter.html" title="GtkRecentFilter">GtkRecentFilter</a> *filter);
+<a
+href="../glib/glib-Singly-Linked-Lists.html#GSList"
+>GSList</a>*             <a href="GtkRecentChooser.html#gtk-recent-chooser-list-filters">gtk_recent_chooser_list_filters</a>     (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);
+void                <a href="GtkRecentChooser.html#gtk-recent-chooser-set-filter">gtk_recent_chooser_set_filter</a>       (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a href="GtkRecentFilter.html" title="GtkRecentFilter">GtkRecentFilter</a> *filter);
+<a href="GtkRecentFilter.html" title="GtkRecentFilter">GtkRecentFilter</a>*    <a href="GtkRecentChooser.html#gtk-recent-chooser-get-filter">gtk_recent_chooser_get_filter</a>       (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);
+
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3994425"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  GInterface
+   +----GtkRecentChooser
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3994449"></a><h2>Prerequisites</h2>
+<p>
+GtkRecentChooser requires
+ <a href="GtkObject.html" title="GtkObject">GtkObject</a>.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3994471"></a><h2>Known Implementations</h2>
+<p>
+GtkRecentChooser is implemented by
+ <a href="GtkRecentChooserDialog.html" title="GtkRecentChooserDialog">GtkRecentChooserDialog</a>,  <a href="GtkRecentChooserWidget.html" title="GtkRecentChooserWidget">GtkRecentChooserWidget</a> and  <a href="GtkRecentChooserMenu.html" title="GtkRecentChooserMenu">GtkRecentChooserMenu</a>.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3994510"></a><h2>Signals</h2>
+<pre class="synopsis">
+
+  <a href="GtkRecentChooser.html#GtkRecentChooser-item-activated">item-activated</a>                                 : Run Last
+  <a href="GtkRecentChooser.html#GtkRecentChooser-selection-changed">selection-changed</a>                              : Run Last
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3994547"></a><h2>Description</h2>
+<p>
+<a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a> is an interface that can be implemented by widgets
+displaying the list of recently used files.  In GTK+, the main objects
+that implement this interface are <a href="GtkRecentChooserWidget.html" title="GtkRecentChooserWidget"><span class="type">GtkRecentChooserWidget</span></a>,
+<a href="GtkRecentChooserDialog.html" title="GtkRecentChooserDialog"><span class="type">GtkRecentChooserDialog</span></a> and <a href="GtkRecentChooserMenu.html" title="GtkRecentChooserMenu"><span class="type">GtkRecentChooserMenu</span></a>.
+</p>
+<p>
+Recently used files are supported since GTK+ 2.10.
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3994603"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3994613"></a><h3>
+<a name="GtkRecentChooser-struct"></a>GtkRecentChooser</h3>
+<a class="indexterm" name="id3994627"></a><pre class="programlisting">typedef struct _GtkRecentChooser GtkRecentChooser;</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3994642"></a><h3>
+<a name="GtkRecentChooserIface"></a>GtkRecentChooserIface</h3>
+<a class="indexterm" name="id3994655"></a><pre class="programlisting">typedef struct {
+  GTypeInterface base_iface;
+  
+  /*
+   * Methods
+   */
+  gboolean          (* set_current_uri)    (GtkRecentChooser  *chooser,
+  					    const gchar       *uri,
+  					    GError           **error);
+  gchar *           (* get_current_uri)    (GtkRecentChooser  *chooser);
+  gboolean          (* select_uri)         (GtkRecentChooser  *chooser,
+  					    const gchar       *uri,
+  					    GError           **error);
+  void              (* unselect_uri)       (GtkRecentChooser  *chooser,
+                                            const gchar       *uri);
+  void              (* select_all)         (GtkRecentChooser  *chooser);
+  void              (* unselect_all)       (GtkRecentChooser  *chooser);
+  GList *           (* get_items)          (GtkRecentChooser  *chooser);
+  GtkRecentManager *(* get_recent_manager) (GtkRecentChooser  *chooser);
+  void              (* add_filter)         (GtkRecentChooser  *chooser,
+  					    GtkRecentFilter   *filter);
+  void              (* remove_filter)      (GtkRecentChooser  *chooser,
+  					    GtkRecentFilter   *filter);
+  GSList *          (* list_filters)       (GtkRecentChooser  *chooser);
+  void              (* set_sort_func)      (GtkRecentChooser  *chooser,
+  					    GtkRecentSortFunc  sort_func,
+  					    gpointer           data,
+  					    GDestroyNotify     destroy);
+  
+  /*
+   * Signals
+   */
+  void		    (* item_activated)     (GtkRecentChooser  *chooser);
+  void		    (* selection_changed)  (GtkRecentChooser  *chooser);
+} GtkRecentChooserIface;
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3994696"></a><h3>
+<a name="GTK-RECENT-CHOOSER-ERROR:CAPS"></a>GTK_RECENT_CHOOSER_ERROR</h3>
+<a class="indexterm" name="id3994709"></a><pre class="programlisting">#define GTK_RECENT_CHOOSER_ERROR	(gtk_recent_chooser_error_quark ())
+</pre>
+<p>
+Used to get the <a
+href="../glib/glib-Error-Reporting.html#GError"
+><span class="type">GError</span></a> quark for <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a> errors.
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3994742"></a><h3>
+<a name="GtkRecentChooserError"></a>enum GtkRecentChooserError</h3>
+<a class="indexterm" name="id3994755"></a><pre class="programlisting">typedef enum
+{
+  GTK_RECENT_CHOOSER_ERROR_NOT_FOUND,
+  GTK_RECENT_CHOOSER_ERROR_INVALID_URI
+} GtkRecentChooserError;
+</pre>
+<p>
+These identify the various errors that can occur while calling
+<a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a> functions.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><a name="GTK-RECENT-CHOOSER-ERROR-NOT-FOUND:CAPS"></a><code class="literal">GTK_RECENT_CHOOSER_ERROR_NOT_FOUND</code></span></td>
+<td>Indicates that a file does not exist
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-RECENT-CHOOSER-ERROR-INVALID-URI:CAPS"></a><code class="literal">GTK_RECENT_CHOOSER_ERROR_INVALID_URI</code></span></td>
+<td>Indicates a malformed URI
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3994833"></a><h3>
+<a name="gtk-recent-chooser-set-show-private"></a>gtk_recent_chooser_set_show_private ()</h3>
+<a class="indexterm" name="id3994850"></a><pre class="programlisting">void                gtk_recent_chooser_set_show_private (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> show_private);</pre>
+<p>
+Whether to show recently used resources marked registered as private.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>show_private</code></em>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> to show private items, <a
+href="../glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3994958"></a><h3>
+<a name="gtk-recent-chooser-get-show-private"></a>gtk_recent_chooser_get_show_private ()</h3>
+<a class="indexterm" name="id3994975"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_recent_chooser_get_show_private (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);</pre>
+<p>
+Returns whether <em class="parameter"><code>chooser</code></em> should display recently used resources
+registered as private.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the recent chooser should show private items,
+  <a
+href="../glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3995078"></a><h3>
+<a name="gtk-recent-chooser-set-show-not-found"></a>gtk_recent_chooser_set_show_not_found ()</h3>
+<a class="indexterm" name="id3995094"></a><pre class="programlisting">void                gtk_recent_chooser_set_show_not_found
+                                                        (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> show_not_found);</pre>
+<p>
+Sets whether <em class="parameter"><code>chooser</code></em> should display the recently used resources that
+it didn't find.  This only applies to local resources.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>show_not_found</code></em>&#160;:</span></td>
+<td> whether to show the local items we didn't find
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3995191"></a><h3>
+<a name="gtk-recent-chooser-get-show-not-found"></a>gtk_recent_chooser_get_show_not_found ()</h3>
+<a class="indexterm" name="id3995207"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_recent_chooser_get_show_not_found
+                                                        (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);</pre>
+<p>
+Retrieves whether <em class="parameter"><code>chooser</code></em> should show the recently used resources that
+were not found.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the resources not found should be displayed, and
+  <a
+href="../glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otheriwse.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3995312"></a><h3>
+<a name="gtk-recent-chooser-set-show-icons"></a>gtk_recent_chooser_set_show_icons ()</h3>
+<a class="indexterm" name="id3995329"></a><pre class="programlisting">void                gtk_recent_chooser_set_show_icons   (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> show_icons);</pre>
+<p>
+Sets whether <em class="parameter"><code>chooser</code></em> should show an icon near the resource when
+displaying it.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>show_icons</code></em>&#160;:</span></td>
+<td> whether to show an icon near the resource
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3995423"></a><h3>
+<a name="gtk-recent-chooser-get-show-icons"></a>gtk_recent_chooser_get_show_icons ()</h3>
+<a class="indexterm" name="id3995440"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_recent_chooser_get_show_icons   (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);</pre>
+<p>
+Retrieves whether <em class="parameter"><code>chooser</code></em> should show an icon near the resource.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the icons should be displayed, <a
+href="../glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3995542"></a><h3>
+<a name="gtk-recent-chooser-set-select-multiple"></a>gtk_recent_chooser_set_select_multiple ()</h3>
+<a class="indexterm" name="id3995559"></a><pre class="programlisting">void                gtk_recent_chooser_set_select_multiple
+                                                        (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> select_multiple);</pre>
+<p>
+Sets whether <em class="parameter"><code>chooser</code></em> can select multiple items.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>select_multiple</code></em>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if <em class="parameter"><code>chooser</code></em> can select more than one item
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3995670"></a><h3>
+<a name="gtk-recent-chooser-get-select-multiple"></a>gtk_recent_chooser_get_select_multiple ()</h3>
+<a class="indexterm" name="id3995687"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_recent_chooser_get_select_multiple
+                                                        (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);</pre>
+<p>
+Gets whether <em class="parameter"><code>chooser</code></em> can select multiple items.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if <em class="parameter"><code>chooser</code></em> can select more than one item.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3995786"></a><h3>
+<a name="gtk-recent-chooser-set-local-only"></a>gtk_recent_chooser_set_local_only ()</h3>
+<a class="indexterm" name="id3995803"></a><pre class="programlisting">void                gtk_recent_chooser_set_local_only   (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> local_only);</pre>
+<p>
+Sets whether only local resources, that is resources using the file:// URI
+scheme, should be shown in the recently used resources selector.  If
+<em class="parameter"><code>local_only</code></em> is <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> (the default) then the shown resources are guaranteed
+to be accessible through the operating system native file system.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>local_only</code></em>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if only local files can be shown
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3995921"></a><h3>
+<a name="gtk-recent-chooser-get-local-only"></a>gtk_recent_chooser_get_local_only ()</h3>
+<a class="indexterm" name="id3995937"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_recent_chooser_get_local_only   (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);</pre>
+<p>
+Gets whether only local resources should be shown in the recently used
+resources selector.  See <a href="GtkRecentChooser.html#gtk-recent-chooser-set-local-only"><code class="function">gtk_recent_chooser_set_local_only()</code></a></p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if only local resources should be shown.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3996035"></a><h3>
+<a name="gtk-recent-chooser-set-limit"></a>gtk_recent_chooser_set_limit ()</h3>
+<a class="indexterm" name="id3996051"></a><pre class="programlisting">void                gtk_recent_chooser_set_limit        (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> limit);</pre>
+<p>
+Sets the number of items that should be returned by
+<a href="GtkRecentChooser.html#gtk-recent-chooser-get-items"><code class="function">gtk_recent_chooser_get_items()</code></a> and <a href="GtkRecentChooser.html#gtk-recent-chooser-get-uris"><code class="function">gtk_recent_chooser_get_uris()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>limit</code></em>&#160;:</span></td>
+<td> a positive integer, or -1 for all items
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3996162"></a><h3>
+<a name="gtk-recent-chooser-get-limit"></a>gtk_recent_chooser_get_limit ()</h3>
+<a class="indexterm" name="id3996178"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_recent_chooser_get_limit        (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);</pre>
+<p>
+Gets the number of items returned by <a href="GtkRecentChooser.html#gtk-recent-chooser-get-items"><code class="function">gtk_recent_chooser_get_items()</code></a>
+and <a href="GtkRecentChooser.html#gtk-recent-chooser-get-uris"><code class="function">gtk_recent_chooser_get_uris()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> A positive integer, or -1 meaning that all items are
+  returned.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3996278"></a><h3>
+<a name="gtk-recent-chooser-set-show-tips"></a>gtk_recent_chooser_set_show_tips ()</h3>
+<a class="indexterm" name="id3996293"></a><pre class="programlisting">void                gtk_recent_chooser_set_show_tips    (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> show_tips);</pre>
+<p>
+Sets whether to show a tooltips on the widget.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>show_tips</code></em>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if tooltips should be shown
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3996392"></a><h3>
+<a name="gtk-recent-chooser-get-show-tips"></a>gtk_recent_chooser_get_show_tips ()</h3>
+<a class="indexterm" name="id3996408"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_recent_chooser_get_show_tips    (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);</pre>
+<p>
+Gets whether <em class="parameter"><code>chooser</code></em> should display tooltips.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the recent chooser should show tooltips,
+  <a
+href="../glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3996511"></a><h3>
+<a name="gtk-recent-chooser-set-show-numbers"></a>gtk_recent_chooser_set_show_numbers ()</h3>
+<a class="indexterm" name="id3996528"></a><pre class="programlisting">void                gtk_recent_chooser_set_show_numbers (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> show_numbers);</pre>
+<p>
+Whether to show recently used resources prepended by a unique number.
+</p>
+<p>
+Do not use this function: use <a href="GtkRecentChooserMenu.html#gtk-recent-chooser-menu-set-show-numbers"><code class="function">gtk_recent_chooser_menu_set_show_numbers()</code></a>
+instead.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>show_numbers</code></em>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> to show numbers, <a
+href="../glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3996653"></a><h3>
+<a name="gtk-recent-chooser-get-show-numbers"></a>gtk_recent_chooser_get_show_numbers ()</h3>
+<a class="indexterm" name="id3996670"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_recent_chooser_get_show_numbers (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);</pre>
+<p>
+Returns whether <em class="parameter"><code>chooser</code></em> should display recently used resources
+prepended by a unique number.
+</p>
+<p>
+Do not use this function: use <a href="GtkRecentChooserMenu.html#gtk-recent-chooser-menu-get-show-numbers"><code class="function">gtk_recent_chooser_menu_get_show_numbers()</code></a>
+instead.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the recent chooser should show display numbers,
+  <a
+href="../glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> otherwise.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3996791"></a><h3>
+<a name="GtkRecentSortType"></a>enum GtkRecentSortType</h3>
+<a class="indexterm" name="id3996804"></a><pre class="programlisting">typedef enum
+{
+  GTK_RECENT_SORT_NONE = 0,
+  GTK_RECENT_SORT_MRU,
+  GTK_RECENT_SORT_LRU,
+  GTK_RECENT_SORT_CUSTOM
+} GtkRecentSortType;
+</pre>
+<p>
+Used to specify the sorting method to be applyed to the recently
+used resource list.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><a name="GTK-RECENT-SORT-NONE:CAPS"></a><code class="literal">GTK_RECENT_SORT_NONE</code></span></td>
+<td> Do not sort the returned list of recently used
+  resources.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-RECENT-SORT-MRU:CAPS"></a><code class="literal">GTK_RECENT_SORT_MRU</code></span></td>
+<td> Sort the returned list with the most recently used
+  items first.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-RECENT-SORT-LRU:CAPS"></a><code class="literal">GTK_RECENT_SORT_LRU</code></span></td>
+<td> Sort the returned list with the least recently used
+  items first.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-RECENT-SORT-CUSTOM:CAPS"></a><code class="literal">GTK_RECENT_SORT_CUSTOM</code></span></td>
+<td> Sort the returned list using a custom sorting
+  function passed using <code class="function">gtk_recent_manager_set_sort_func()</code>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3996936"></a><h3>
+<a name="gtk-recent-chooser-set-sort-type"></a>gtk_recent_chooser_set_sort_type ()</h3>
+<a class="indexterm" name="id3996952"></a><pre class="programlisting">void                gtk_recent_chooser_set_sort_type    (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a href="GtkRecentChooser.html#GtkRecentSortType">GtkRecentSortType</a> sort_type);</pre>
+<p>
+Changes the sorting order of the recently used resources list displayed by
+<em class="parameter"><code>chooser</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>sort_type</code></em>&#160;:</span></td>
+<td> sort order that the chooser should use
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3997048"></a><h3>
+<a name="gtk-recent-chooser-get-sort-type"></a>gtk_recent_chooser_get_sort_type ()</h3>
+<a class="indexterm" name="id3997064"></a><pre class="programlisting"><a href="GtkRecentChooser.html#GtkRecentSortType">GtkRecentSortType</a>   gtk_recent_chooser_get_sort_type    (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);</pre>
+<p>
+Gets the value set by <a href="GtkRecentChooser.html#gtk-recent-chooser-set-sort-type"><code class="function">gtk_recent_chooser_set_sort_type()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the sorting order of the <em class="parameter"><code>chooser</code></em>.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3997157"></a><h3>
+<a name="GtkRecentSortFunc"></a>GtkRecentSortFunc ()</h3>
+<a class="indexterm" name="id3997171"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                (*GtkRecentSortFunc)                (<a href="GtkRecentManager.html#GtkRecentInfo">GtkRecentInfo</a> *a,
+                                                         <a href="GtkRecentManager.html#GtkRecentInfo">GtkRecentInfo</a> *b,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>a</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>b</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td>
+
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3997270"></a><h3>
+<a name="gtk-recent-chooser-set-sort-func"></a>gtk_recent_chooser_set_sort_func ()</h3>
+<a class="indexterm" name="id3997285"></a><pre class="programlisting">void                gtk_recent_chooser_set_sort_func    (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a href="GtkRecentChooser.html#GtkRecentSortFunc">GtkRecentSortFunc</a> sort_func,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> sort_data,
+                                                         <a
+href="../glib/glib-Datasets.html#GDestroyNotify"
+>GDestroyNotify</a> data_destroy);</pre>
+<p>
+Sets the comparison function used when sorting to be <em class="parameter"><code>sort_func</code></em>.  If
+the <em class="parameter"><code>chooser</code></em> has the sort type set to <a href="GtkRecentChooser.html#GTK-RECENT-SORT-CUSTOM:CAPS"><span class="type">GTK_RECENT_SORT_CUSTOM</span></a> then
+the chooser will sort using this function.
+</p>
+<p>
+To the comparison function will be passed two <a href="GtkRecentManager.html#GtkRecentInfo"><span class="type">GtkRecentInfo</span></a> structs and
+<em class="parameter"><code>sort_data</code></em>;  <em class="parameter"><code>sort_func</code></em> should return a positive integer if the first
+item comes before the second, zero if the two items are equal and
+a negative integer if the first item comes after the second.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>sort_func</code></em>&#160;:</span></td>
+<td> the comparison function
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>sort_data</code></em>&#160;:</span></td>
+<td> user data to pass to <em class="parameter"><code>sort_func</code></em>, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>data_destroy</code></em>&#160;:</span></td>
+<td> destroy notifier for <em class="parameter"><code>sort_data</code></em>, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3997501"></a><h3>
+<a name="gtk-recent-chooser-set-current-uri"></a>gtk_recent_chooser_set_current_uri ()</h3>
+<a class="indexterm" name="id3997518"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_recent_chooser_set_current_uri  (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *uri,
+                                                         <a
+href="../glib/glib-Error-Reporting.html#GError"
+>GError</a> **error);</pre>
+<p>
+Sets <em class="parameter"><code>uri</code></em> as the current URI for <em class="parameter"><code>chooser</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>uri</code></em>&#160;:</span></td>
+<td> a URI
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>error</code></em>&#160;:</span></td>
+<td> return location for a <a
+href="../glib/glib-Error-Reporting.html#GError"
+><span class="type">GError</span></a>, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the URI was found.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3997676"></a><h3>
+<a name="gtk-recent-chooser-get-current-uri"></a>gtk_recent_chooser_get_current_uri ()</h3>
+<a class="indexterm" name="id3997693"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*              gtk_recent_chooser_get_current_uri  (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);</pre>
+<p>
+Gets the URI currently selected by <em class="parameter"><code>chooser</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a newly allocated string holding a URI.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3997775"></a><h3>
+<a name="gtk-recent-chooser-get-current-item"></a>gtk_recent_chooser_get_current_item ()</h3>
+<a class="indexterm" name="id3997792"></a><pre class="programlisting"><a href="GtkRecentManager.html#GtkRecentInfo">GtkRecentInfo</a>*      gtk_recent_chooser_get_current_item (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);</pre>
+<p>
+Gets the <a href="GtkRecentManager.html#GtkRecentInfo"><span class="type">GtkRecentInfo</span></a> currently selected by <em class="parameter"><code>chooser</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="GtkRecentManager.html#GtkRecentInfo"><span class="type">GtkRecentInfo</span></a>.  Use <a href="GtkRecentManager.html#gtk-recent-info-unref"><code class="function">gtk_recent_info_unref()</code></a> when
+  when you have finished using it.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3997901"></a><h3>
+<a name="gtk-recent-chooser-select-uri"></a>gtk_recent_chooser_select_uri ()</h3>
+<a class="indexterm" name="id3997917"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_recent_chooser_select_uri       (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *uri,
+                                                         <a
+href="../glib/glib-Error-Reporting.html#GError"
+>GError</a> **error);</pre>
+<p>
+Selects <em class="parameter"><code>uri</code></em> inside <em class="parameter"><code>chooser</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>uri</code></em>&#160;:</span></td>
+<td> a URI
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>error</code></em>&#160;:</span></td>
+<td> return location for a <a
+href="../glib/glib-Error-Reporting.html#GError"
+><span class="type">GError</span></a>, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if <em class="parameter"><code>uri</code></em> was found.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3998082"></a><h3>
+<a name="gtk-recent-chooser-unselect-uri"></a>gtk_recent_chooser_unselect_uri ()</h3>
+<a class="indexterm" name="id3998098"></a><pre class="programlisting">void                gtk_recent_chooser_unselect_uri     (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *uri);</pre>
+<p>
+Unselects <em class="parameter"><code>uri</code></em> inside <em class="parameter"><code>chooser</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>uri</code></em>&#160;:</span></td>
+<td> a URI
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3998196"></a><h3>
+<a name="gtk-recent-chooser-select-all"></a>gtk_recent_chooser_select_all ()</h3>
+<a class="indexterm" name="id3998212"></a><pre class="programlisting">void                gtk_recent_chooser_select_all       (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);</pre>
+<p>
+Selects all the items inside <em class="parameter"><code>chooser</code></em>, if the <em class="parameter"><code>chooser</code></em> supports
+multiple selection.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr></tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3998290"></a><h3>
+<a name="gtk-recent-chooser-unselect-all"></a>gtk_recent_chooser_unselect_all ()</h3>
+<a class="indexterm" name="id3998306"></a><pre class="programlisting">void                gtk_recent_chooser_unselect_all     (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);</pre>
+<p>
+Unselects all the items inside <em class="parameter"><code>chooser</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr></tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3998378"></a><h3>
+<a name="gtk-recent-chooser-get-items"></a>gtk_recent_chooser_get_items ()</h3>
+<a class="indexterm" name="id3998394"></a><pre class="programlisting"><a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              gtk_recent_chooser_get_items        (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);</pre>
+<p>
+Gets the list of recently used resources in form of <a href="GtkRecentManager.html#GtkRecentInfo"><span class="type">GtkRecentInfo</span></a> objects.
+</p>
+<p>
+The return value of this function is affected by the "sort-type" and
+"limit" properties of <em class="parameter"><code>chooser</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> A newly allocated list of <a href="GtkRecentManager.html#GtkRecentInfo"><span class="type">GtkRecentInfo</span></a> objects.  You should
+  use <a href="GtkRecentManager.html#gtk-recent-info-unref"><code class="function">gtk_recent_info_unref()</code></a> on every item of the list, and then free
+  the list itself using <a
+href="../glib/glib-Doubly-Linked-Lists.html#g-list-free"
+><code class="function">g_list_free()</code></a>.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3998521"></a><h3>
+<a name="gtk-recent-chooser-get-uris"></a>gtk_recent_chooser_get_uris ()</h3>
+<a class="indexterm" name="id3998537"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>**             gtk_recent_chooser_get_uris         (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gsize"
+>gsize</a> *length);</pre>
+<p>
+Gets the URI of the recently used resources.
+</p>
+<p>
+The return value of this function is affected by the "sort-type" and "limit"
+properties of <em class="parameter"><code>chooser</code></em>.
+</p>
+<p>
+Since the returned array is <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a> terminated, <em class="parameter"><code>length</code></em> may be <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>length</code></em>&#160;:</span></td>
+<td> return location for a the length of the URI list, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> A newly allocated, <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a> terminated array of strings. Use
+  <a
+href="../glib/glib-String-Utility-Functions.html#g-strfreev"
+><code class="function">g_strfreev()</code></a> to free it.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3998708"></a><h3>
+<a name="gtk-recent-chooser-add-filter"></a>gtk_recent_chooser_add_filter ()</h3>
+<a class="indexterm" name="id3998724"></a><pre class="programlisting">void                gtk_recent_chooser_add_filter       (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a href="GtkRecentFilter.html" title="GtkRecentFilter">GtkRecentFilter</a> *filter);</pre>
+<p>
+Adds <em class="parameter"><code>filter</code></em> to the list of <a href="GtkRecentFilter.html" title="GtkRecentFilter"><span class="type">GtkRecentFilter</span></a> objects held by <em class="parameter"><code>chooser</code></em>.
+</p>
+<p>
+If no previous filter objects were defined, this function will call
+<a href="GtkRecentChooser.html#gtk-recent-chooser-set-filter"><code class="function">gtk_recent_chooser_set_filter()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>filter</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentFilter.html" title="GtkRecentFilter"><span class="type">GtkRecentFilter</span></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3998856"></a><h3>
+<a name="gtk-recent-chooser-remove-filter"></a>gtk_recent_chooser_remove_filter ()</h3>
+<a class="indexterm" name="id3998872"></a><pre class="programlisting">void                gtk_recent_chooser_remove_filter    (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a href="GtkRecentFilter.html" title="GtkRecentFilter">GtkRecentFilter</a> *filter);</pre>
+<p>
+Removes <em class="parameter"><code>filter</code></em> from the list of <a href="GtkRecentFilter.html" title="GtkRecentFilter"><span class="type">GtkRecentFilter</span></a> objects held by <em class="parameter"><code>chooser</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>filter</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentFilter.html" title="GtkRecentFilter"><span class="type">GtkRecentFilter</span></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3998987"></a><h3>
+<a name="gtk-recent-chooser-list-filters"></a>gtk_recent_chooser_list_filters ()</h3>
+<a class="indexterm" name="id3999003"></a><pre class="programlisting"><a
+href="../glib/glib-Singly-Linked-Lists.html#GSList"
+>GSList</a>*             gtk_recent_chooser_list_filters     (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);</pre>
+<p>
+Gets the <a href="GtkRecentFilter.html" title="GtkRecentFilter"><span class="type">GtkRecentFilter</span></a> objects held by <em class="parameter"><code>chooser</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> A singly linked list of <a href="GtkRecentFilter.html" title="GtkRecentFilter"><span class="type">GtkRecentFilter</span></a> objects.  You
+  should just free the returned list using <a
+href="../glib/glib-Singly-Linked-Lists.html#g-slist-free"
+><code class="function">g_slist_free()</code></a>.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3999113"></a><h3>
+<a name="gtk-recent-chooser-set-filter"></a>gtk_recent_chooser_set_filter ()</h3>
+<a class="indexterm" name="id3999129"></a><pre class="programlisting">void                gtk_recent_chooser_set_filter       (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                         <a href="GtkRecentFilter.html" title="GtkRecentFilter">GtkRecentFilter</a> *filter);</pre>
+<p>
+Sets <em class="parameter"><code>filter</code></em> as the current <a href="GtkRecentFilter.html" title="GtkRecentFilter"><span class="type">GtkRecentFilter</span></a> object used by <em class="parameter"><code>chooser</code></em>
+to affect the displayed recently used resources.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>filter</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentFilter.html" title="GtkRecentFilter"><span class="type">GtkRecentFilter</span></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3999246"></a><h3>
+<a name="gtk-recent-chooser-get-filter"></a>gtk_recent_chooser_get_filter ()</h3>
+<a class="indexterm" name="id3999262"></a><pre class="programlisting"><a href="GtkRecentFilter.html" title="GtkRecentFilter">GtkRecentFilter</a>*    gtk_recent_chooser_get_filter       (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser);</pre>
+<p>
+Gets the <a href="GtkRecentFilter.html" title="GtkRecentFilter"><span class="type">GtkRecentFilter</span></a> object currently used by <em class="parameter"><code>chooser</code></em> to affect
+the display of the recently used resources.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> a <a href="GtkRecentChooser.html" title="GtkRecentChooser"><span class="type">GtkRecentChooser</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="GtkRecentFilter.html" title="GtkRecentFilter"><span class="type">GtkRecentFilter</span></a> object.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3999363"></a><h2>Signal Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3999373"></a><h3>
+<a name="GtkRecentChooser-item-activated"></a>The <code class="literal">::item-activated</code> signal</h3>
+<a class="indexterm" name="id3999390"></a><pre class="programlisting">void                user_function                      (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>          user_data)      : Run Last</pre>
+<p>
+This signal is emitted when the user "activates" a recent item
+in the recent chooser.  This can happen by double-clicking on an item
+in the recently used resources list, or by pressing
+<span><strong class="keycap">Enter</strong></span>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> the object which received the signal
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3999476"></a><h3>
+<a name="GtkRecentChooser-selection-changed"></a>The <code class="literal">::selection-changed</code> signal</h3>
+<a class="indexterm" name="id3999492"></a><pre class="programlisting">void                user_function                      (<a href="GtkRecentChooser.html" title="GtkRecentChooser">GtkRecentChooser</a> *chooser,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>          user_data)      : Run Last</pre>
+<p>
+This signal is emitted when there is a change in the set of
+selected recently used resources.  This can happen when a user
+modifies the selection with the mouse or the keyboard, or when
+explicitely calling functions to change the selection.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>chooser</code></em>&#160;:</span></td>
+<td> the object which received the signal
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Since  2.10
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3999576"></a><h2>See Also</h2>
+<p>
+<a href="GtkRecentManager.html" title="GtkRecentManager"><span class="type">GtkRecentManager</span></a>, <a href="GtkRecentChooserDialog.html" title="GtkRecentChooserDialog"><span class="type">GtkRecentChooserDialog</span></a>, <a href="GtkRecentChooserWidget.html" title="GtkRecentChooserWidget"><span class="type">GtkRecentChooserWidget</span></a>,
+<a href="GtkRecentChooserMenu.html" title="GtkRecentChooserMenu"><span class="type">GtkRecentChooserMenu</span></a>
+</p>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,256 @@
+<refentry id="GtkLinkButton">
+<refmeta>
+<refentrytitle role="top_of_page">GtkLinkButton</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GTK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GtkLinkButton</refname>
+<refpurpose>Create buttons bound to a URL</refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
+</refnamediv>
+
+<refsynopsisdiv role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <link linkend="GtkLinkButton-struct">GtkLinkButton</link>;
+<link linkend="GtkWidget">GtkWidget</link>*          <link linkend="gtk-link-button-new">gtk_link_button_new</link>                 (const <link linkend="gchar">gchar</link> *uri);
+<link linkend="GtkWidget">GtkWidget</link>*          <link linkend="gtk-link-button-new-with-label">gtk_link_button_new_with_label</link>      (const <link linkend="gchar">gchar</link> *uri,
+                                                         const <link linkend="gchar">gchar</link> *label);
+const <link linkend="gchar">gchar</link>*        <link linkend="gtk-link-button-get-uri">gtk_link_button_get_uri</link>             (<link linkend="GtkLinkButton">GtkLinkButton</link> *link_button);
+<link linkend="void">void</link>                <link linkend="gtk-link-button-set-uri">gtk_link_button_set_uri</link>             (<link linkend="GtkLinkButton">GtkLinkButton</link> *link_button,
+                                                         const <link linkend="gchar">gchar</link> *uri);
+<link linkend="void">void</link>                (<link linkend="GtkLinkButtonUriFunc">*GtkLinkButtonUriFunc</link>)             (<link linkend="GtkLinkButton">GtkLinkButton</link> *button,
+                                                         const <link linkend="gchar">gchar</link> *link_,
+                                                         <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="GtkLinkButtonUriFunc">GtkLinkButtonUriFunc</link> <link linkend="gtk-link-button-set-uri-hook">gtk_link_button_set_uri_hook</link>       (<link linkend="GtkLinkButtonUriFunc">GtkLinkButtonUriFunc</link> func,
+                                                         <link linkend="gpointer">gpointer</link> data,
+                                                         <link linkend="GDestroyNotify">GDestroyNotify</link> destroy);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1 role="object_hierarchy">
+<title role="object_hierarchy.title">Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GInitiallyUnowned">GInitiallyUnowned</link>
+         +----<link linkend="GtkObject">GtkObject</link>
+               +----<link linkend="GtkWidget">GtkWidget</link>
+                     +----<link linkend="GtkContainer">GtkContainer</link>
+                           +----<link linkend="GtkBin">GtkBin</link>
+                                 +----<link linkend="GtkButton">GtkButton</link>
+                                       +----GtkLinkButton
+</synopsis>
+
+</refsect1>
+
+
+
+<refsect1 role="impl_interfaces">
+<title role="impl_interfaces.title">Implemented Interfaces</title>
+<para>
+GtkLinkButton implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
+</refsect1>
+
+
+<refsect1 role="properties">
+<title role="properties.title">Properties</title>
+<synopsis>
+
+  <link linkend="GtkLinkButton--uri">uri</link>                      <link linkend="gchararray">gchararray</link>            : Read / Write
+</synopsis>
+</refsect1>
+
+
+
+<refsect1 role="desc">
+<title role="desc.title">Description</title>
+<para>
+A <link linkend="GtkLinkButton"><type>GtkLinkButton</type></link> is a <link linkend="GtkButton"><type>GtkButton</type></link> with a hyperlink, similar to the one
+used by web browsers, which triggers an action when clicked. It is useful
+to show quick links to resources.
+</para>
+
+<para>
+A link button is created by calling either <link linkend="gtk-link-button-new"><function>gtk_link_button_new()</function></link> or
+<link linkend="gtk-link-button-new-with-label"><function>gtk_link_button_new_with_label()</function></link>. If using the former, the URI you pass
+to the constructor is used as a label for the widget.
+</para>
+
+<para>
+The URI bound to a <link linkend="GtkLinkButton"><type>GtkLinkButton</type></link> can be set specifically using
+<link linkend="gtk-link-button-set-uri"><function>gtk_link_button_set_uri()</function></link>, and retrieved using <link linkend="gtk-link-button-get-uri"><function>gtk_link_button_get_uri()</function></link>.
+</para>
+
+<para>
+<link linkend="GtkLinkButton"><type>GtkLinkButton</type></link> offers a global hook, which is called when the used clicks
+on it: see <link linkend="gtk-link-button-set-uri-hook"><function>gtk_link_button_set_uri_hook()</function></link>.
+</para>
+
+<para>
+<link linkend="GtkLinkButton"><type>GtkLinkButton</type></link> was added in GTK+ 2.10.
+</para>
+</refsect1>
+
+<refsect1 role="details">
+<title role="details.title">Details</title>
+<refsect2>
+<title><anchor id="GtkLinkButton-struct" role="struct"/>GtkLinkButton</title>
+<indexterm><primary>GtkLinkButton</primary></indexterm><programlisting>typedef struct _GtkLinkButton GtkLinkButton;</programlisting>
+<para>
+The <link linkend="GtkLinkButton"><type>GtkLinkButton</type></link> struct contains private data only, and should be
+manipulated using the functions below.
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-link-button-new" role="function" condition="since:2.10"/>gtk_link_button_new ()</title>
+<indexterm role="2.10"><primary>gtk_link_button_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*          gtk_link_button_new                 (const <link linkend="gchar">gchar</link> *uri);</programlisting>
+<para>
+Creates a new <link linkend="GtkLinkButton"><type>GtkLinkButton</type></link> with the URI as its text.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>uri</parameter>&nbsp;:</term>
+<listitem><simpara> a valid URI
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a new link button widget.
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-link-button-new-with-label" role="function" condition="since:2.10"/>gtk_link_button_new_with_label ()</title>
+<indexterm role="2.10"><primary>gtk_link_button_new_with_label</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*          gtk_link_button_new_with_label      (const <link linkend="gchar">gchar</link> *uri,
+                                                         const <link linkend="gchar">gchar</link> *label);</programlisting>
+<para>
+Creates a new <link linkend="GtkLinkButton"><type>GtkLinkButton</type></link> containing a label.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>uri</parameter>&nbsp;:</term>
+<listitem><simpara> a valid URI
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>label</parameter>&nbsp;:</term>
+<listitem><simpara> the text of the button
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a new link button widget.
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-link-button-get-uri" role="function" condition="since:2.10"/>gtk_link_button_get_uri ()</title>
+<indexterm role="2.10"><primary>gtk_link_button_get_uri</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>*        gtk_link_button_get_uri             (<link linkend="GtkLinkButton">GtkLinkButton</link> *link_button);</programlisting>
+<para>
+Retrieves the URI set using <link linkend="gtk-link-button-set-uri"><function>gtk_link_button_set_uri()</function></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>link_button</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkLinkButton"><type>GtkLinkButton</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a valid URI.  The returned string is owned by the link button
+  and should not be modified or freed.
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-link-button-set-uri" role="function" condition="since:2.10"/>gtk_link_button_set_uri ()</title>
+<indexterm role="2.10"><primary>gtk_link_button_set_uri</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_link_button_set_uri             (<link linkend="GtkLinkButton">GtkLinkButton</link> *link_button,
+                                                         const <link linkend="gchar">gchar</link> *uri);</programlisting>
+<para>
+Sets <parameter>uri</parameter> as the URI where the <link linkend="GtkLinkButton"><type>GtkLinkButton</type></link> points.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>link_button</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkLinkButton"><type>GtkLinkButton</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>uri</parameter>&nbsp;:</term>
+<listitem><simpara> a valid URI
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="GtkLinkButtonUriFunc" role="function"/>GtkLinkButtonUriFunc ()</title>
+<indexterm><primary>GtkLinkButtonUriFunc</primary></indexterm><programlisting><link linkend="void">void</link>                (*GtkLinkButtonUriFunc)             (<link linkend="GtkLinkButton">GtkLinkButton</link> *button,
+                                                         const <link linkend="gchar">gchar</link> *link_,
+                                                         <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+The type of a function which is called when the <link linkend="GtkLinkButton"><type>GtkLinkButton</type></link> is
+clicked.
+</para><variablelist role="params">
+<varlistentry><term><parameter>button</parameter>&nbsp;:</term>
+<listitem><simpara>the <link linkend="GtkLinkButton"><type>GtkLinkButton</type></link> which was clicked
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>link_</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-link-button-set-uri-hook" role="function" condition="since:2.10"/>gtk_link_button_set_uri_hook ()</title>
+<indexterm role="2.10"><primary>gtk_link_button_set_uri_hook</primary></indexterm><programlisting><link linkend="GtkLinkButtonUriFunc">GtkLinkButtonUriFunc</link> gtk_link_button_set_uri_hook       (<link linkend="GtkLinkButtonUriFunc">GtkLinkButtonUriFunc</link> func,
+                                                         <link linkend="gpointer">gpointer</link> data,
+                                                         <link linkend="GDestroyNotify">GDestroyNotify</link> destroy);</programlisting>
+<para>
+Sets <parameter>func</parameter> as the function that should be invoked every time a user clicks
+a <link linkend="GtkLinkButton"><type>GtkLinkButton</type></link>. This function is called before every callback registered
+for the "clicked" signal.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>func</parameter>&nbsp;:</term>
+<listitem><simpara> a function called each time a <link linkend="GtkLinkButton"><type>GtkLinkButton</type></link> is clicked, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> user data to be passed to <parameter>func</parameter>, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>destroy</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GDestroyNotify"><type>GDestroyNotify</type></link> that gets called when <parameter>data</parameter> is no longer needed, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the previously set hook function.
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+
+</refsect1>
+<refsect1 role="property_details">
+<title role="property_details.title">Property Details</title>
+<refsect2><title><anchor id="GtkLinkButton--uri"/>The :<literal>uri</literal> property</title>
+<indexterm role="2.10"><primary>GtkLinkButton:uri</primary></indexterm><programlisting>  uri                      <link linkend="gchararray">gchararray</link>            : Read / Write</programlisting>
+<para>
+The URI bound to this button.</para>
+<para>
+
+</para><para>Default value: "http://www.gtk.org"</para>
+<para>Since  2.10
+</para>
+</refsect2>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>See Also</title>
+<para>
+<link linkend="GtkButton"><type>GtkButton</type></link>
+</para>
+</refsect1>
+
+</refentry>

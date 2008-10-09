@@ -1,0 +1,1470 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Settings</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GTK+ Reference Manual">
+<link rel="up" href="gtkbase.html" title="Part&#160;II.&#160;GTK+ Core Reference">
+<link rel="prev" href="gtk-Resource-Files.html" title="Resource Files">
+<link rel="next" href="gtk-Bindings.html" title="Bindings">
+<meta name="generator" content="GTK-Doc V1.7 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gtk.html" title="Part&#160;I.&#160;GTK+ Overview">
+<link rel="part" href="gtkbase.html" title="Part&#160;II.&#160;GTK+ Core Reference">
+<link rel="part" href="gtkobjects.html" title="Part&#160;III.&#160;GTK+ Widgets and Objects">
+<link rel="chapter" href="ch01.html" title="Object Hierarchy">
+<link rel="chapter" href="ch02.html" title="Widget Gallery">
+<link rel="chapter" href="WindowWidgets.html" title="Windows">
+<link rel="chapter" href="DisplayWidgets.html" title="Display Widgets">
+<link rel="chapter" href="ButtonWidgets.html" title="Buttons and Toggles">
+<link rel="chapter" href="NumericEntry.html" title="Numeric/Text Data Entry">
+<link rel="chapter" href="TextWidgetObjects.html" title="Multiline Text Editor">
+<link rel="chapter" href="TreeWidgetObjects.html" title="Tree, List and Icon Grid Widgets">
+<link rel="chapter" href="MenusAndCombos.html" title="Menus, Combo Box, Toolbar">
+<link rel="chapter" href="Actions.html" title="Action-based menus and toolbars">
+<link rel="chapter" href="SelectorWidgets.html" title="Selectors (File/Font/Color/Input Devices)">
+<link rel="chapter" href="LayoutContainers.html" title="Layout Containers">
+<link rel="chapter" href="Ornaments.html" title="Ornaments">
+<link rel="chapter" href="ScrollingWidgets.html" title="Scrolling">
+<link rel="chapter" href="Printing.html" title="Printing">
+<link rel="chapter" href="MiscObjects.html" title="Miscellaneous">
+<link rel="chapter" href="AbstractObjects.html" title="Abstract Base Classes">
+<link rel="chapter" href="PlugSocket.html" title="Cross-process Embedding">
+<link rel="chapter" href="SpecialObjects.html" title="Special-purpose features">
+<link rel="chapter" href="RecentDocuments.html" title="Recently Used Documents">
+<link rel="chapter" href="DeprecatedObjects.html" title="Deprecated">
+<link rel="part" href="migrating.html" title="Part&#160;IV.&#160;Migrating from Previous Versions of GTK+">
+<link rel="chapter" href="gtk-migrating-checklist.html" title="Migration Checklist">
+<link rel="chapter" href="gtk-migrating-GtkFileChooser.html" title="Migrating from GtkFileSelection to GtkFileChooser">
+<link rel="chapter" href="gtk-migrating-GtkAction.html" title="Migrating from old menu and toolbar systems to GtkAction">
+<link rel="chapter" href="gtk-migrating-GtkComboBox.html" title="Migrating from GtkOptionMenu and GtkCombo to GtkComboBox and GtkComboBoxEntry">
+<link rel="chapter" href="gtk-migrating-GtkIconView.html" title="Migrating from GnomeIconList to GtkIconView">
+<link rel="chapter" href="gtk-migrating-GtkAboutDialog.html" title="Migrating from GnomeAbout to GtkAboutDialog">
+<link rel="chapter" href="gtk-migrating-GtkColorButton.html" title="Migrating from GnomeColorPicker to GtkColorButton">
+<link rel="chapter" href="gtk-migrating-GtkAssistant.html" title="Migrating from GnomeDruid to GtkAssistant">
+<link rel="chapter" href="gtk-migrating-GtkRecentChooser.html" title="Migrating from EggRecent to GtkRecentChooser">
+<link rel="chapter" href="gtk-migrating-GtkLinkButton.html" title="Migrating from GnomeHRef to GtkLinkButton">
+<link rel="part" href="pt05.html" title="Part&#160;V.&#160;GTK+ Tools">
+<link rel="glossary" href="glossary.html" title="Glossary">
+<link rel="index" href="ix01.html" title="Index">
+<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="ix03.html" title="Index of new symbols in 2.2">
+<link rel="index" href="ix04.html" title="Index of new symbols in 2.4">
+<link rel="index" href="ix05.html" title="Index of new symbols in 2.6">
+<link rel="index" href="ix06.html" title="Index of new symbols in 2.8">
+<link rel="index" href="ix07.html" title="Index of new symbols in 2.10">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gtk-Resource-Files.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="gtkbase.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GTK+ Reference Manual</th>
+<td><a accesskey="n" href="gtk-Bindings.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2875204" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2876480" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2875711" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id2875736" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="GtkSettings"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2875204"></a><span class="refentrytitle">Settings</span>
+</h2>
+<p>Settings &#8212; Sharing settings between applications</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <a href="GtkSettings.html#GtkSettings-struct">GtkSettings</a>;
+                    <a href="GtkSettings.html#GtkSettingsValue">GtkSettingsValue</a>;
+<a href="GtkSettings.html" title="Settings">GtkSettings</a>*        <a href="GtkSettings.html#gtk-settings-get-default">gtk_settings_get_default</a>            (void);
+<a href="GtkSettings.html" title="Settings">GtkSettings</a>*        <a href="GtkSettings.html#gtk-settings-get-for-screen">gtk_settings_get_for_screen</a>         (<a
+href="../gdk/GdkScreen.html"
+>GdkScreen</a> *screen);
+void                <a href="GtkSettings.html#gtk-settings-install-property">gtk_settings_install_property</a>       (<a
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
+>GParamSpec</a> *pspec);
+void                <a href="GtkSettings.html#gtk-settings-install-property-parser">gtk_settings_install_property_parser</a>
+                                                        (<a
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
+>GParamSpec</a> *pspec,
+                                                         <a href="GtkStyle.html#GtkRcPropertyParser">GtkRcPropertyParser</a> parser);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkSettings.html#gtk-rc-property-parse-color">gtk_rc_property_parse_color</a>         (const <a
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
+>GParamSpec</a> *pspec,
+                                                         const <a
+href="../glib/glib-Strings.html#GString"
+>GString</a> *gstring,
+                                                         <a
+href="../gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *property_value);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkSettings.html#gtk-rc-property-parse-enum">gtk_rc_property_parse_enum</a>          (const <a
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
+>GParamSpec</a> *pspec,
+                                                         const <a
+href="../glib/glib-Strings.html#GString"
+>GString</a> *gstring,
+                                                         <a
+href="../gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *property_value);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkSettings.html#gtk-rc-property-parse-flags">gtk_rc_property_parse_flags</a>         (const <a
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
+>GParamSpec</a> *pspec,
+                                                         const <a
+href="../glib/glib-Strings.html#GString"
+>GString</a> *gstring,
+                                                         <a
+href="../gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *property_value);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkSettings.html#gtk-rc-property-parse-requisition">gtk_rc_property_parse_requisition</a>   (const <a
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
+>GParamSpec</a> *pspec,
+                                                         const <a
+href="../glib/glib-Strings.html#GString"
+>GString</a> *gstring,
+                                                         <a
+href="../gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *property_value);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkSettings.html#gtk-rc-property-parse-border">gtk_rc_property_parse_border</a>        (const <a
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
+>GParamSpec</a> *pspec,
+                                                         const <a
+href="../glib/glib-Strings.html#GString"
+>GString</a> *gstring,
+                                                         <a
+href="../gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *property_value);
+void                <a href="GtkSettings.html#gtk-settings-set-property-value">gtk_settings_set_property_value</a>     (<a href="GtkSettings.html" title="Settings">GtkSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                                         const <a href="GtkSettings.html#GtkSettingsValue">GtkSettingsValue</a> *svalue);
+void                <a href="GtkSettings.html#gtk-settings-set-string-property">gtk_settings_set_string_property</a>    (<a href="GtkSettings.html" title="Settings">GtkSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *v_string,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *origin);
+void                <a href="GtkSettings.html#gtk-settings-set-long-property">gtk_settings_set_long_property</a>      (<a href="GtkSettings.html" title="Settings">GtkSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                                         <a
+href="../glib/glib-Basic-Types.html#glong"
+>glong</a> v_long,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *origin);
+void                <a href="GtkSettings.html#gtk-settings-set-double-property">gtk_settings_set_double_property</a>    (<a href="GtkSettings.html" title="Settings">GtkSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> v_double,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *origin);
+
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2875711"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----GtkSettings
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2875736"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  <a href="GtkSettings.html#GtkSettings--color-hash">color-hash</a>               <a
+href="../glib/glib-Hash-Tables.html#GHashTable"
+>GHashTable</a>            : Read
+  <a href="GtkSettings.html#GtkSettings--gtk-alternative-button-order">gtk-alternative-button-order</a> <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-button-images">gtk-button-images</a>        <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-can-change-accels">gtk-can-change-accels</a>    <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-color-palette">gtk-color-palette</a>        <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-color-scheme">gtk-color-scheme</a>         <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-cursor-blink">gtk-cursor-blink</a>         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-cursor-blink-time">gtk-cursor-blink-time</a>    <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-cursor-theme-name">gtk-cursor-theme-name</a>    <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-cursor-theme-size">gtk-cursor-theme-size</a>    <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-dnd-drag-threshold">gtk-dnd-drag-threshold</a>   <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-double-click-distance">gtk-double-click-distance</a> <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-double-click-time">gtk-double-click-time</a>    <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-enable-animations">gtk-enable-animations</a>    <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-entry-password-hint-timeout">gtk-entry-password-hint-timeout</a> <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-entry-select-on-focus">gtk-entry-select-on-focus</a> <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-fallback-icon-theme">gtk-fallback-icon-theme</a>  <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-font-name">gtk-font-name</a>            <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-icon-sizes">gtk-icon-sizes</a>           <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-icon-theme-name">gtk-icon-theme-name</a>      <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-key-theme-name">gtk-key-theme-name</a>       <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-label-select-on-focus">gtk-label-select-on-focus</a> <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-menu-bar-accel">gtk-menu-bar-accel</a>       <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-menu-bar-popup-delay">gtk-menu-bar-popup-delay</a> <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-menu-images">gtk-menu-images</a>          <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-menu-popdown-delay">gtk-menu-popdown-delay</a>   <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-menu-popup-delay">gtk-menu-popup-delay</a>     <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-modules">gtk-modules</a>              <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-scrolled-window-placement">gtk-scrolled-window-placement</a> <a href="gtk-Standard-Enumerations.html#GtkCornerType">GtkCornerType</a>         : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-show-input-method-menu">gtk-show-input-method-menu</a> <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-show-unicode-menu">gtk-show-unicode-menu</a>    <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-split-cursor">gtk-split-cursor</a>         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-theme-name">gtk-theme-name</a>           <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-timeout-expand">gtk-timeout-expand</a>       <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-timeout-initial">gtk-timeout-initial</a>      <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-timeout-repeat">gtk-timeout-repeat</a>       <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-toolbar-icon-size">gtk-toolbar-icon-size</a>    <a href="gtk-Themeable-Stock-Images.html#GtkIconSize">GtkIconSize</a>           : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-toolbar-style">gtk-toolbar-style</a>        <a href="gtk-Standard-Enumerations.html#GtkToolbarStyle">GtkToolbarStyle</a>       : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-touchscreen-mode">gtk-touchscreen-mode</a>     <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-xft-antialias">gtk-xft-antialias</a>        <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-xft-dpi">gtk-xft-dpi</a>              <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-xft-hinting">gtk-xft-hinting</a>          <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-xft-hintstyle">gtk-xft-hintstyle</a>        <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  <a href="GtkSettings.html#GtkSettings--gtk-xft-rgba">gtk-xft-rgba</a>             <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2876480"></a><h2>Description</h2>
+<p>
+
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2876494"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2876504"></a><h3>
+<a name="GtkSettings-struct"></a>GtkSettings</h3>
+<a class="indexterm" name="id2876518"></a><pre class="programlisting">typedef struct _GtkSettings GtkSettings;</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2876532"></a><h3>
+<a name="GtkSettingsValue"></a>GtkSettingsValue</h3>
+<a class="indexterm" name="id2876544"></a><pre class="programlisting">typedef struct {
+  /* origin should be something like "filename:linenumber" for rc files,
+   * or e.g. "XProperty" for other sources
+   */
+  gchar *origin;
+
+  /* valid types are LONG, DOUBLE and STRING corresponding to the token parsed,
+   * or a GSTRING holding an unparsed statement
+   */
+  GValue value;
+} GtkSettingsValue;
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2876564"></a><h3>
+<a name="gtk-settings-get-default"></a>gtk_settings_get_default ()</h3>
+<a class="indexterm" name="id2876578"></a><pre class="programlisting"><a href="GtkSettings.html" title="Settings">GtkSettings</a>*        gtk_settings_get_default            (void);</pre>
+<p>
+Gets the <a href="GtkSettings.html" title="Settings"><span class="type">GtkSettings</span></a> object for the default GDK screen, creating
+it if necessary. See <a href="GtkSettings.html#gtk-settings-get-for-screen"><code class="function">gtk_settings_get_for_screen()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="GtkSettings.html" title="Settings"><span class="type">GtkSettings</span></a> object. If there is no default
+ screen, then returns <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>.
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2876656"></a><h3>
+<a name="gtk-settings-get-for-screen"></a>gtk_settings_get_for_screen ()</h3>
+<a class="indexterm" name="id2876672"></a><pre class="programlisting"><a href="GtkSettings.html" title="Settings">GtkSettings</a>*        gtk_settings_get_for_screen         (<a
+href="../gdk/GdkScreen.html"
+>GdkScreen</a> *screen);</pre>
+<p>
+Gets the <a href="GtkSettings.html" title="Settings"><span class="type">GtkSettings</span></a> object for <em class="parameter"><code>screen</code></em>, creating it if necessary.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>screen</code></em>&#160;:</span></td>
+<td> a <a
+href="../gdk/GdkScreen.html"
+><span class="type">GdkScreen</span></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a <a href="GtkSettings.html" title="Settings"><span class="type">GtkSettings</span></a> object.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.2
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2876768"></a><h3>
+<a name="gtk-settings-install-property"></a>gtk_settings_install_property ()</h3>
+<a class="indexterm" name="id2876782"></a><pre class="programlisting">void                gtk_settings_install_property       (<a
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
+>GParamSpec</a> *pspec);</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>pspec</code></em>&#160;:</span></td>
+<td>
+
+
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2876828"></a><h3>
+<a name="gtk-settings-install-property-parser"></a>gtk_settings_install_property_parser ()</h3>
+<a class="indexterm" name="id2876842"></a><pre class="programlisting">void                gtk_settings_install_property_parser
+                                                        (<a
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
+>GParamSpec</a> *pspec,
+                                                         <a href="GtkStyle.html#GtkRcPropertyParser">GtkRcPropertyParser</a> parser);</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>pspec</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>parser</code></em>&#160;:</span></td>
+<td>
+
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2876911"></a><h3>
+<a name="gtk-rc-property-parse-color"></a>gtk_rc_property_parse_color ()</h3>
+<a class="indexterm" name="id2876925"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_rc_property_parse_color         (const <a
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
+>GParamSpec</a> *pspec,
+                                                         const <a
+href="../glib/glib-Strings.html#GString"
+>GString</a> *gstring,
+                                                         <a
+href="../gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *property_value);</pre>
+<p>
+A <a href="GtkStyle.html#GtkRcPropertyParser"><span class="type">GtkRcPropertyParser</span></a> for use with <a href="GtkSettings.html#gtk-settings-install-property-parser"><code class="function">gtk_settings_install_property_parser()</code></a>
+or <a href="GtkWidget.html#gtk-widget-class-install-style-property-parser"><code class="function">gtk_widget_class_install_style_property_parser()</code></a> which parses a
+color given either by its name or in the form 
+<code class="literal">{ red, green, blue }</code> where <code class="literal">red</code>, <code class="literal">green</code> and
+<code class="literal">blue</code> are integers between 0 and 65535 or floating-point numbers
+between 0 and 1.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>pspec</code></em>&#160;:</span></td>
+<td> a <a
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
+><span class="type">GParamSpec</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>gstring</code></em>&#160;:</span></td>
+<td> the <a
+href="../glib/glib-Strings.html#GString"
+><span class="type">GString</span></a> to be parsed
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>property_value</code></em>&#160;:</span></td>
+<td> a <a
+href="../gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> which must hold <a
+href="../gdk/gdk-Colormaps-and-Colors.html#GdkColor"
+><span class="type">GdkColor</span></a> values.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if <em class="parameter"><code>gstring</code></em> could be parsed and <em class="parameter"><code>property_value</code></em>
+has been set to the resulting <a
+href="../gdk/gdk-Colormaps-and-Colors.html#GdkColor"
+><span class="type">GdkColor</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2877167"></a><h3>
+<a name="gtk-rc-property-parse-enum"></a>gtk_rc_property_parse_enum ()</h3>
+<a class="indexterm" name="id2877181"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_rc_property_parse_enum          (const <a
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
+>GParamSpec</a> *pspec,
+                                                         const <a
+href="../glib/glib-Strings.html#GString"
+>GString</a> *gstring,
+                                                         <a
+href="../gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *property_value);</pre>
+<p>
+A <a href="GtkStyle.html#GtkRcPropertyParser"><span class="type">GtkRcPropertyParser</span></a> for use with <a href="GtkSettings.html#gtk-settings-install-property-parser"><code class="function">gtk_settings_install_property_parser()</code></a>
+or <a href="GtkWidget.html#gtk-widget-class-install-style-property-parser"><code class="function">gtk_widget_class_install_style_property_parser()</code></a> which parses a single
+enumeration value.
+</p>
+<p>
+The enumeration value can be specified by its name, its nickname or
+its numeric value. For consistency with flags parsing, the value
+may be surrounded by parentheses.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>pspec</code></em>&#160;:</span></td>
+<td> a <a
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
+><span class="type">GParamSpec</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>gstring</code></em>&#160;:</span></td>
+<td> the <a
+href="../glib/glib-Strings.html#GString"
+><span class="type">GString</span></a> to be parsed
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>property_value</code></em>&#160;:</span></td>
+<td> a <a
+href="../gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> which must hold enum values.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if <em class="parameter"><code>gstring</code></em> could be parsed and <em class="parameter"><code>property_value</code></em>
+has been set to the resulting <a
+href="../gobject/gobject-Enumeration-and-Flag-Types.html#GEnumValue"
+><span class="type">GEnumValue</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2877379"></a><h3>
+<a name="gtk-rc-property-parse-flags"></a>gtk_rc_property_parse_flags ()</h3>
+<a class="indexterm" name="id2877393"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_rc_property_parse_flags         (const <a
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
+>GParamSpec</a> *pspec,
+                                                         const <a
+href="../glib/glib-Strings.html#GString"
+>GString</a> *gstring,
+                                                         <a
+href="../gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *property_value);</pre>
+<p>
+A <a href="GtkStyle.html#GtkRcPropertyParser"><span class="type">GtkRcPropertyParser</span></a> for use with <a href="GtkSettings.html#gtk-settings-install-property-parser"><code class="function">gtk_settings_install_property_parser()</code></a>
+or <a href="GtkWidget.html#gtk-widget-class-install-style-property-parser"><code class="function">gtk_widget_class_install_style_property_parser()</code></a> which parses flags. 
+</p>
+<p>
+Flags can be specified by their name, their nickname or
+numerically. Multiple flags can be specified in the form 
+<code class="literal">"( flag1 | flag2 | ... )"</code>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>pspec</code></em>&#160;:</span></td>
+<td> a <a
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
+><span class="type">GParamSpec</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>gstring</code></em>&#160;:</span></td>
+<td> the <a
+href="../glib/glib-Strings.html#GString"
+><span class="type">GString</span></a> to be parsed
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>property_value</code></em>&#160;:</span></td>
+<td> a <a
+href="../gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> which must hold flags values.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if <em class="parameter"><code>gstring</code></em> could be parsed and <em class="parameter"><code>property_value</code></em>
+has been set to the resulting flags value.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2877588"></a><h3>
+<a name="gtk-rc-property-parse-requisition"></a>gtk_rc_property_parse_requisition ()</h3>
+<a class="indexterm" name="id2877602"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_rc_property_parse_requisition   (const <a
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
+>GParamSpec</a> *pspec,
+                                                         const <a
+href="../glib/glib-Strings.html#GString"
+>GString</a> *gstring,
+                                                         <a
+href="../gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *property_value);</pre>
+<p>
+A <a href="GtkStyle.html#GtkRcPropertyParser"><span class="type">GtkRcPropertyParser</span></a> for use with <a href="GtkSettings.html#gtk-settings-install-property-parser"><code class="function">gtk_settings_install_property_parser()</code></a>
+or <a href="GtkWidget.html#gtk-widget-class-install-style-property-parser"><code class="function">gtk_widget_class_install_style_property_parser()</code></a> which parses a
+requisition in the form 
+<code class="literal">"{ width, height }"</code> for integers <code class="literal">width</code> and <code class="literal">height</code>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>pspec</code></em>&#160;:</span></td>
+<td> a <a
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
+><span class="type">GParamSpec</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>gstring</code></em>&#160;:</span></td>
+<td> the <a
+href="../glib/glib-Strings.html#GString"
+><span class="type">GString</span></a> to be parsed
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>property_value</code></em>&#160;:</span></td>
+<td> a <a
+href="../gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> which must hold boxed values.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if <em class="parameter"><code>gstring</code></em> could be parsed and <em class="parameter"><code>property_value</code></em>
+has been set to the resulting <a href="GtkWidget.html#GtkRequisition"><span class="type">GtkRequisition</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2877824"></a><h3>
+<a name="gtk-rc-property-parse-border"></a>gtk_rc_property_parse_border ()</h3>
+<a class="indexterm" name="id2877837"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_rc_property_parse_border        (const <a
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
+>GParamSpec</a> *pspec,
+                                                         const <a
+href="../glib/glib-Strings.html#GString"
+>GString</a> *gstring,
+                                                         <a
+href="../gobject/gobject-Generic-values.html#GValue"
+>GValue</a> *property_value);</pre>
+<p>
+A <a href="GtkStyle.html#GtkRcPropertyParser"><span class="type">GtkRcPropertyParser</span></a> for use with <a href="GtkSettings.html#gtk-settings-install-property-parser"><code class="function">gtk_settings_install_property_parser()</code></a>
+or <a href="GtkWidget.html#gtk-widget-class-install-style-property-parser"><code class="function">gtk_widget_class_install_style_property_parser()</code></a> which parses
+borders in the form 
+<code class="literal">"{ left, right, top, bottom }"</code> for integers 
+<code class="literal">left</code>, <code class="literal">right</code>, <code class="literal">top</code> and <code class="literal">bottom</code>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>pspec</code></em>&#160;:</span></td>
+<td> a <a
+href="../gobject/gobject-GParamSpec.html#GParamSpec"
+><span class="type">GParamSpec</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>gstring</code></em>&#160;:</span></td>
+<td> the <a
+href="../glib/glib-Strings.html#GString"
+><span class="type">GString</span></a> to be parsed
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>property_value</code></em>&#160;:</span></td>
+<td> a <a
+href="../gobject/gobject-Generic-values.html#GValue"
+><span class="type">GValue</span></a> which must hold boxed values.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if <em class="parameter"><code>gstring</code></em> could be parsed and <em class="parameter"><code>property_value</code></em>
+has been set to the resulting <a href="GtkStyle.html#GtkBorder"><span class="type">GtkBorder</span></a>.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2878081"></a><h3>
+<a name="gtk-settings-set-property-value"></a>gtk_settings_set_property_value ()</h3>
+<a class="indexterm" name="id2878094"></a><pre class="programlisting">void                gtk_settings_set_property_value     (<a href="GtkSettings.html" title="Settings">GtkSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                                         const <a href="GtkSettings.html#GtkSettingsValue">GtkSettingsValue</a> *svalue);</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>name</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>svalue</code></em>&#160;:</span></td>
+<td>
+
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2878184"></a><h3>
+<a name="gtk-settings-set-string-property"></a>gtk_settings_set_string_property ()</h3>
+<a class="indexterm" name="id2878197"></a><pre class="programlisting">void                gtk_settings_set_string_property    (<a href="GtkSettings.html" title="Settings">GtkSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *v_string,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *origin);</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>name</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>v_string</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>origin</code></em>&#160;:</span></td>
+<td>
+
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2878308"></a><h3>
+<a name="gtk-settings-set-long-property"></a>gtk_settings_set_long_property ()</h3>
+<a class="indexterm" name="id2878321"></a><pre class="programlisting">void                gtk_settings_set_long_property      (<a href="GtkSettings.html" title="Settings">GtkSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                                         <a
+href="../glib/glib-Basic-Types.html#glong"
+>glong</a> v_long,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *origin);</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>name</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>v_long</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>origin</code></em>&#160;:</span></td>
+<td>
+
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2878432"></a><h3>
+<a name="gtk-settings-set-double-property"></a>gtk_settings_set_double_property ()</h3>
+<a class="indexterm" name="id2878446"></a><pre class="programlisting">void                gtk_settings_set_double_property    (<a href="GtkSettings.html" title="Settings">GtkSettings</a> *settings,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> v_double,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *origin);</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>name</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>v_double</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>origin</code></em>&#160;:</span></td>
+<td>
+
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2878557"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2878568"></a><h3>
+<a name="GtkSettings--color-hash"></a>The :<code class="literal">color-hash</code> property</h3>
+<a class="indexterm" name="id2878584"></a><pre class="programlisting">  color-hash               <a
+href="../glib/glib-Hash-Tables.html#GHashTable"
+>GHashTable</a>            : Read</pre>
+<p>
+Holds a hash table representation of the gtk-color-scheme setting,
+mapping color names to <a
+href="../gdk/gdk-Colormaps-and-Colors.html#GdkColor"
+><span class="type">GdkColor</span></a>s.</p>
+<p>
+
+</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2878627"></a><h3>
+<a name="GtkSettings--gtk-alternative-button-order"></a>The :<code class="literal">gtk-alternative-button-order</code> property</h3>
+<a class="indexterm" name="id2878644"></a><pre class="programlisting">  gtk-alternative-button-order <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Whether buttons in dialogs should use the alternative button order.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2878671"></a><h3>
+<a name="GtkSettings--gtk-button-images"></a>The :<code class="literal">gtk-button-images</code> property</h3>
+<a class="indexterm" name="id2878688"></a><pre class="programlisting">  gtk-button-images        <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Whether stock icons should be shown in buttons.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2878714"></a><h3>
+<a name="GtkSettings--gtk-can-change-accels"></a>The :<code class="literal">gtk-can-change-accels</code> property</h3>
+<a class="indexterm" name="id2878731"></a><pre class="programlisting">  gtk-can-change-accels    <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Whether menu accelerators can be changed by pressing a key over the menu item.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2878759"></a><h3>
+<a name="GtkSettings--gtk-color-palette"></a>The :<code class="literal">gtk-color-palette</code> property</h3>
+<a class="indexterm" name="id2878776"></a><pre class="programlisting">  gtk-color-palette        <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>Palette to use in the color selector.</p>
+<p>Default value: "black:white:gray50:red:purple:blue:light blue:green:yellow:orange:lavender:brown:goldenrod4:dodger blue:pink:light green:gray10:gray30:gray75:gray90"</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2878804"></a><h3>
+<a name="GtkSettings--gtk-color-scheme"></a>The :<code class="literal">gtk-color-scheme</code> property</h3>
+<a class="indexterm" name="id2878821"></a><pre class="programlisting">  gtk-color-scheme         <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>
+A palette of named colors for use in themes. The format of the string is
+</p>
+<pre class="programlisting">
+name1: color1
+name2: color2
+...
+</pre>
+<p>
+Color names must be acceptable as identifiers in the 
+<a href="gtk-Resource-Files.html" title="Resource Files">gtkrc</a> syntax, and
+color specifications must be in the format accepted by
+<a
+href="../gdk/gdk-Colormaps-and-Colors.html#gdk-color-parse"
+><code class="function">gdk_color_parse()</code></a>.
+</p>
+<p>
+Note that due to the way the color tables from different sources are
+merged, color specifications will be converted to hexadecimal form
+when getting this property.</p>
+<p>
+
+</p>
+<p>Default value: ""</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2878890"></a><h3>
+<a name="GtkSettings--gtk-cursor-blink"></a>The :<code class="literal">gtk-cursor-blink</code> property</h3>
+<a class="indexterm" name="id2878906"></a><pre class="programlisting">  gtk-cursor-blink         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Whether the cursor should blink.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2878932"></a><h3>
+<a name="GtkSettings--gtk-cursor-blink-time"></a>The :<code class="literal">gtk-cursor-blink-time</code> property</h3>
+<a class="indexterm" name="id2878949"></a><pre class="programlisting">  gtk-cursor-blink-time    <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Length of the cursor blink cycle, in milleseconds.</p>
+<p>Allowed values: &gt;= 100</p>
+<p>Default value: 1200</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2878980"></a><h3>
+<a name="GtkSettings--gtk-cursor-theme-name"></a>The :<code class="literal">gtk-cursor-theme-name</code> property</h3>
+<a class="indexterm" name="id2878997"></a><pre class="programlisting">  gtk-cursor-theme-name    <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>Name of the cursor theme to use, or NULL to use the default theme.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2879024"></a><h3>
+<a name="GtkSettings--gtk-cursor-theme-size"></a>The :<code class="literal">gtk-cursor-theme-size</code> property</h3>
+<a class="indexterm" name="id2879040"></a><pre class="programlisting">  gtk-cursor-theme-size    <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Size to use for cursors, or 0 to use the default size.</p>
+<p>Allowed values: [0,128]</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2879071"></a><h3>
+<a name="GtkSettings--gtk-dnd-drag-threshold"></a>The :<code class="literal">gtk-dnd-drag-threshold</code> property</h3>
+<a class="indexterm" name="id2879088"></a><pre class="programlisting">  gtk-dnd-drag-threshold   <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Number of pixels the cursor can move before dragging.</p>
+<p>Allowed values: &gt;= 1</p>
+<p>Default value: 8</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2879118"></a><h3>
+<a name="GtkSettings--gtk-double-click-distance"></a>The :<code class="literal">gtk-double-click-distance</code> property</h3>
+<a class="indexterm" name="id2879136"></a><pre class="programlisting">  gtk-double-click-distance <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Maximum distance allowed between two clicks for them to be considered a double click (in pixels).</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 5</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2879167"></a><h3>
+<a name="GtkSettings--gtk-double-click-time"></a>The :<code class="literal">gtk-double-click-time</code> property</h3>
+<a class="indexterm" name="id2879184"></a><pre class="programlisting">  gtk-double-click-time    <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Maximum time allowed between two clicks for them to be considered a double click (in milliseconds).</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 250</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2879215"></a><h3>
+<a name="GtkSettings--gtk-enable-animations"></a>The :<code class="literal">gtk-enable-animations</code> property</h3>
+<a class="indexterm" name="id2879232"></a><pre class="programlisting">  gtk-enable-animations    <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Whether to enable toolkit-wide animations.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2879259"></a><h3>
+<a name="GtkSettings--gtk-entry-password-hint-timeout"></a>The :<code class="literal">gtk-entry-password-hint-timeout</code> property</h3>
+<a class="indexterm" name="id2879276"></a><pre class="programlisting">  gtk-entry-password-hint-timeout <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
+<p>
+How long to show the last inputted character in hidden
+entries. This value is in milliseconds. 0 disables showing the
+last char. 600 is a good value for enabling it.</p>
+<p>
+
+</p>
+<p>Default value: 0</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2879314"></a><h3>
+<a name="GtkSettings--gtk-entry-select-on-focus"></a>The :<code class="literal">gtk-entry-select-on-focus</code> property</h3>
+<a class="indexterm" name="id2879331"></a><pre class="programlisting">  gtk-entry-select-on-focus <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Whether to select the contents of an entry when it is focused.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2879358"></a><h3>
+<a name="GtkSettings--gtk-fallback-icon-theme"></a>The :<code class="literal">gtk-fallback-icon-theme</code> property</h3>
+<a class="indexterm" name="id2879376"></a><pre class="programlisting">  gtk-fallback-icon-theme  <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>Name of a icon theme to fall back to.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2879402"></a><h3>
+<a name="GtkSettings--gtk-font-name"></a>The :<code class="literal">gtk-font-name</code> property</h3>
+<a class="indexterm" name="id2879418"></a><pre class="programlisting">  gtk-font-name            <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>Name of default font to use.</p>
+<p>Default value: "Sans 10"</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2879444"></a><h3>
+<a name="GtkSettings--gtk-icon-sizes"></a>The :<code class="literal">gtk-icon-sizes</code> property</h3>
+<a class="indexterm" name="id2879460"></a><pre class="programlisting">  gtk-icon-sizes           <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>List of icon sizes (gtk-menu=16,16:gtk-button=20,20...</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2879487"></a><h3>
+<a name="GtkSettings--gtk-icon-theme-name"></a>The :<code class="literal">gtk-icon-theme-name</code> property</h3>
+<a class="indexterm" name="id2879503"></a><pre class="programlisting">  gtk-icon-theme-name      <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>Name of icon theme to use.</p>
+<p>Default value: "hicolor"</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2879530"></a><h3>
+<a name="GtkSettings--gtk-key-theme-name"></a>The :<code class="literal">gtk-key-theme-name</code> property</h3>
+<a class="indexterm" name="id2879546"></a><pre class="programlisting">  gtk-key-theme-name       <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>Name of key theme RC file to load.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2879573"></a><h3>
+<a name="GtkSettings--gtk-label-select-on-focus"></a>The :<code class="literal">gtk-label-select-on-focus</code> property</h3>
+<a class="indexterm" name="id2879590"></a><pre class="programlisting">  gtk-label-select-on-focus <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Whether to select the contents of a selectable label when it is focused.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2879617"></a><h3>
+<a name="GtkSettings--gtk-menu-bar-accel"></a>The :<code class="literal">gtk-menu-bar-accel</code> property</h3>
+<a class="indexterm" name="id2879634"></a><pre class="programlisting">  gtk-menu-bar-accel       <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>Keybinding to activate the menu bar.</p>
+<p>Default value: "F10"</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2879661"></a><h3>
+<a name="GtkSettings--gtk-menu-bar-popup-delay"></a>The :<code class="literal">gtk-menu-bar-popup-delay</code> property</h3>
+<a class="indexterm" name="id2879678"></a><pre class="programlisting">  gtk-menu-bar-popup-delay <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Delay before the submenus of a menu bar appear.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2879708"></a><h3>
+<a name="GtkSettings--gtk-menu-images"></a>The :<code class="literal">gtk-menu-images</code> property</h3>
+<a class="indexterm" name="id2879725"></a><pre class="programlisting">  gtk-menu-images          <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Whether images should be shown in menus.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2879751"></a><h3>
+<a name="GtkSettings--gtk-menu-popdown-delay"></a>The :<code class="literal">gtk-menu-popdown-delay</code> property</h3>
+<a class="indexterm" name="id2879768"></a><pre class="programlisting">  gtk-menu-popdown-delay   <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>The time before hiding a submenu when the pointer is moving towards the submenu.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 1000</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2879799"></a><h3>
+<a name="GtkSettings--gtk-menu-popup-delay"></a>The :<code class="literal">gtk-menu-popup-delay</code> property</h3>
+<a class="indexterm" name="id2879816"></a><pre class="programlisting">  gtk-menu-popup-delay     <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Minimum time the pointer must stay over a menu item before the submenu appear.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 225</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2879847"></a><h3>
+<a name="GtkSettings--gtk-modules"></a>The :<code class="literal">gtk-modules</code> property</h3>
+<a class="indexterm" name="id2879863"></a><pre class="programlisting">  gtk-modules              <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>List of currently active GTK modules.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2879890"></a><h3>
+<a name="GtkSettings--gtk-scrolled-window-placement"></a>The :<code class="literal">gtk-scrolled-window-placement</code> property</h3>
+<a class="indexterm" name="id2879907"></a><pre class="programlisting">  gtk-scrolled-window-placement <a href="gtk-Standard-Enumerations.html#GtkCornerType">GtkCornerType</a>         : Read / Write</pre>
+<p>
+Where the contents of scrolled windows are located with respect to the 
+scrollbars, if not overridden by the scrolled window's own placement.</p>
+<p>
+
+</p>
+<p>Default value: GTK_CORNER_TOP_LEFT</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2879945"></a><h3>
+<a name="GtkSettings--gtk-show-input-method-menu"></a>The :<code class="literal">gtk-show-input-method-menu</code> property</h3>
+<a class="indexterm" name="id2879963"></a><pre class="programlisting">  gtk-show-input-method-menu <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Whether the context menus of entries and text views should offer to change the input method.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2879990"></a><h3>
+<a name="GtkSettings--gtk-show-unicode-menu"></a>The :<code class="literal">gtk-show-unicode-menu</code> property</h3>
+<a class="indexterm" name="id2880007"></a><pre class="programlisting">  gtk-show-unicode-menu    <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Whether the context menus of entries and text views should offer to insert control characters.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2880035"></a><h3>
+<a name="GtkSettings--gtk-split-cursor"></a>The :<code class="literal">gtk-split-cursor</code> property</h3>
+<a class="indexterm" name="id2880051"></a><pre class="programlisting">  gtk-split-cursor         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Whether two cursors should be displayed for mixed left-to-right and right-to-left text.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2880079"></a><h3>
+<a name="GtkSettings--gtk-theme-name"></a>The :<code class="literal">gtk-theme-name</code> property</h3>
+<a class="indexterm" name="id2880095"></a><pre class="programlisting">  gtk-theme-name           <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>Name of theme RC file to load.</p>
+<p>Default value: "Raleigh"</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2880122"></a><h3>
+<a name="GtkSettings--gtk-timeout-expand"></a>The :<code class="literal">gtk-timeout-expand</code> property</h3>
+<a class="indexterm" name="id2880138"></a><pre class="programlisting">  gtk-timeout-expand       <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Expand value for timeouts, when a widget is expanding a new region.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 500</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2880169"></a><h3>
+<a name="GtkSettings--gtk-timeout-initial"></a>The :<code class="literal">gtk-timeout-initial</code> property</h3>
+<a class="indexterm" name="id2880186"></a><pre class="programlisting">  gtk-timeout-initial      <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Starting value for timeouts, when button is pressed.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 200</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2880217"></a><h3>
+<a name="GtkSettings--gtk-timeout-repeat"></a>The :<code class="literal">gtk-timeout-repeat</code> property</h3>
+<a class="indexterm" name="id2880233"></a><pre class="programlisting">  gtk-timeout-repeat       <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Repeat value for timeouts, when button is pressed.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 20</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2880264"></a><h3>
+<a name="GtkSettings--gtk-toolbar-icon-size"></a>The :<code class="literal">gtk-toolbar-icon-size</code> property</h3>
+<a class="indexterm" name="id2880281"></a><pre class="programlisting">  gtk-toolbar-icon-size    <a href="gtk-Themeable-Stock-Images.html#GtkIconSize">GtkIconSize</a>           : Read / Write</pre>
+<p>Size of icons in default toolbars.</p>
+<p>Default value: GTK_ICON_SIZE_LARGE_TOOLBAR</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2880308"></a><h3>
+<a name="GtkSettings--gtk-toolbar-style"></a>The :<code class="literal">gtk-toolbar-style</code> property</h3>
+<a class="indexterm" name="id2880324"></a><pre class="programlisting">  gtk-toolbar-style        <a href="gtk-Standard-Enumerations.html#GtkToolbarStyle">GtkToolbarStyle</a>       : Read / Write</pre>
+<p>Whether default toolbars have text only, text and icons, icons only, etc.</p>
+<p>Default value: GTK_TOOLBAR_BOTH</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2880352"></a><h3>
+<a name="GtkSettings--gtk-touchscreen-mode"></a>The :<code class="literal">gtk-touchscreen-mode</code> property</h3>
+<a class="indexterm" name="id2880369"></a><pre class="programlisting">  gtk-touchscreen-mode     <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>
+When TRUE, there are no motion notify events delivered on this screen,
+and widgets can't use the pointer hovering them for any essential
+functionality.</p>
+<p>
+
+</p>
+<p>Default value: FALSE</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2880406"></a><h3>
+<a name="GtkSettings--gtk-xft-antialias"></a>The :<code class="literal">gtk-xft-antialias</code> property</h3>
+<a class="indexterm" name="id2880423"></a><pre class="programlisting">  gtk-xft-antialias        <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Whether to antialias Xft fonts; 0=no, 1=yes, -1=default.</p>
+<p>Allowed values: [-1,1]</p>
+<p>Default value: -1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2880454"></a><h3>
+<a name="GtkSettings--gtk-xft-dpi"></a>The :<code class="literal">gtk-xft-dpi</code> property</h3>
+<a class="indexterm" name="id2880470"></a><pre class="programlisting">  gtk-xft-dpi              <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Resolution for Xft, in 1024 * dots/inch. -1 to use default value.</p>
+<p>Allowed values: [-1,1048576]</p>
+<p>Default value: -1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2880501"></a><h3>
+<a name="GtkSettings--gtk-xft-hinting"></a>The :<code class="literal">gtk-xft-hinting</code> property</h3>
+<a class="indexterm" name="id2880518"></a><pre class="programlisting">  gtk-xft-hinting          <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Whether to hint Xft fonts; 0=no, 1=yes, -1=default.</p>
+<p>Allowed values: [-1,1]</p>
+<p>Default value: -1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2880548"></a><h3>
+<a name="GtkSettings--gtk-xft-hintstyle"></a>The :<code class="literal">gtk-xft-hintstyle</code> property</h3>
+<a class="indexterm" name="id2880565"></a><pre class="programlisting">  gtk-xft-hintstyle        <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>What degree of hinting to use; hintnone, hintslight, hintmedium, or hintfull.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2880592"></a><h3>
+<a name="GtkSettings--gtk-xft-rgba"></a>The :<code class="literal">gtk-xft-rgba</code> property</h3>
+<a class="indexterm" name="id2880608"></a><pre class="programlisting">  gtk-xft-rgba             <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>Type of subpixel antialiasing; none, rgb, bgr, vrgb, vbgr.</p>
+<p>Default value: NULL</p>
+</div>
+</div>
+</div>
+</body>
+</html>

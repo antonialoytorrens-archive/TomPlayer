@@ -1,0 +1,299 @@
+<!-- ##### SECTION Title ##### -->
+OpenType Font Handling
+
+<!-- ##### SECTION Short_Description ##### -->
+Obtaining information from OpenType tables
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+Functions and macros in this section are used to implement the OpenType Layout
+features and algorithms.  These are mostly useful when writing Fontconfig-based
+shaping engines
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### TYPEDEF PangoOTTag ##### -->
+<para>
+The <type>PangoOTTag</type> typedef is used to represent TrueType and OpenType
+four letter tags inside Pango. Use the <function>FT_MAKE_TAG()</function> macro
+defined in the FreeType2 header <filename>freetype/freetype.h</filename> to 
+create <type>PangoOTTag</type>s manually.
+</para>
+
+
+<!-- ##### STRUCT PangoOTInfo ##### -->
+<para>
+The #PangoOTInfo struct contains the various 
+tables associated with an OpenType font. It contains only private fields and
+should only be accessed via the <function>pango_ot_info_*</function> functions
+which are documented below. To obtain a #PangoOTInfo,
+use pango_ot_info_new().
+</para>
+
+
+<!-- ##### STRUCT PangoOTBuffer ##### -->
+<para>
+The #PangoOTBuffer structure is used to store strings of glyphs associated
+with a #PangoFcFont, suitable for OpenType layout processing.  It contains
+only private fields and should only be accessed via the
+<function>pango_ot_buffer_*</function> functions which are documented below.
+To obtain a #PangoOTBuffer, use pango_ot_buffer_new().
+</para>
+
+
+<!-- ##### STRUCT PangoOTGlyph ##### -->
+<para>
+The #PangoOTGlyph structure represents a single glyph together with
+information used for OpenType layout processing of the glyph.
+It contains the following fields.
+</para>
+
+@glyph: the glyph itself.
+@properties: the properties value, identifying which features should be
+	     applied on this glyph.  See pango_ruleset_add_feature().
+@cluster: the cluster that this glyph belongs to.
+@component: a component value, set by the OpenType layout engine.
+@ligID: a ligature index value, set by the OpenType layout engine.
+@property_cache: for internal use.
+
+<!-- ##### STRUCT PangoOTRuleset ##### -->
+<para>
+The #PangoOTRuleSet structure holds a
+set of features selected from the tables in an OpenType font.
+(A feature is an operation such as adjusting glyph positioning
+that should be applied to a text feature such as a certain
+type of accent.) A #PangoOTRuleSet
+is created with pango_ot_ruleset_new(), features are added
+to it with pango_ot_ruleset_add_feature(), then it is
+applied to a #PangoGlyphString with pango_ot_ruleset_shape().
+</para>
+
+
+<!-- ##### ENUM PangoOTTableType ##### -->
+<para>
+The <type>PangoOTTableType</type> enumeration values are used to
+identify the various OpenType tables in the
+<function>pango_ot_info_*</function> functions.
+</para>
+
+@PANGO_OT_TABLE_GSUB: The GSUB table.
+@PANGO_OT_TABLE_GPOS: The GPOS table.
+
+<!-- ##### MACRO PANGO_OT_ALL_GLYPHS ##### -->
+<para>
+This is used as the property bit in pango_ot_ruleset_add_feature() when a
+feature should be applied to all glyphs.
+</para>
+
+
+
+<!-- ##### MACRO PANGO_OT_DEFAULT_LANGUAGE ##### -->
+<para>
+This is used as the language index in pango_ot_info_find_feature() when a
+the default language system of the script is desired.
+</para>
+
+
+
+<!-- ##### FUNCTION pango_ot_info_get ##### -->
+<para>
+
+</para>
+
+@face: 
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_ot_info_find_script ##### -->
+<para>
+
+</para>
+
+@info: 
+@table_type: 
+@script_tag: 
+@script_index: 
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_ot_info_find_language ##### -->
+<para>
+
+</para>
+
+@info: 
+@table_type: 
+@script_index: 
+@language_tag: 
+@language_index: 
+@required_feature_index: 
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_ot_info_find_feature ##### -->
+<para>
+
+</para>
+
+@info: 
+@table_type: 
+@feature_tag: 
+@script_index: 
+@language_index: 
+@feature_index: 
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_ot_info_list_scripts ##### -->
+<para>
+
+</para>
+
+@info: 
+@table_type: 
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_ot_info_list_languages ##### -->
+<para>
+
+</para>
+
+@info: 
+@table_type: 
+@script_index: 
+@language_tag: 
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_ot_info_list_features ##### -->
+<para>
+
+</para>
+
+@info: 
+@table_type: 
+@tag: 
+@script_index: 
+@language_index: 
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_ot_buffer_new ##### -->
+<para>
+
+</para>
+
+@font: 
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_ot_buffer_destroy ##### -->
+<para>
+
+</para>
+
+@buffer: 
+
+
+<!-- ##### FUNCTION pango_ot_buffer_clear ##### -->
+<para>
+
+</para>
+
+@buffer: 
+
+
+<!-- ##### FUNCTION pango_ot_buffer_add_glyph ##### -->
+<para>
+
+</para>
+
+@buffer: 
+@glyph: 
+@properties: 
+@cluster: 
+
+
+<!-- ##### FUNCTION pango_ot_buffer_set_rtl ##### -->
+<para>
+
+</para>
+
+@buffer: 
+@rtl: 
+
+
+<!-- ##### FUNCTION pango_ot_buffer_set_zero_width_marks ##### -->
+<para>
+
+</para>
+
+@buffer: 
+@zero_width_marks: 
+
+
+<!-- ##### FUNCTION pango_ot_buffer_get_glyphs ##### -->
+<para>
+
+</para>
+
+@buffer: 
+@glyphs: 
+@n_glyphs: 
+
+
+<!-- ##### FUNCTION pango_ot_buffer_output ##### -->
+<para>
+
+</para>
+
+@buffer: 
+@glyphs: 
+
+
+<!-- ##### FUNCTION pango_ot_ruleset_new ##### -->
+<para>
+
+</para>
+
+@info: 
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_ot_ruleset_add_feature ##### -->
+<para>
+
+</para>
+
+@ruleset: 
+@table_type: 
+@feature_index: 
+@property_bit: 
+
+
+<!-- ##### FUNCTION pango_ot_ruleset_substitute ##### -->
+<para>
+
+</para>
+
+@ruleset: 
+@buffer: 
+
+
+<!-- ##### FUNCTION pango_ot_ruleset_position ##### -->
+<para>
+
+</para>
+
+@ruleset: 
+@buffer: 
+
+

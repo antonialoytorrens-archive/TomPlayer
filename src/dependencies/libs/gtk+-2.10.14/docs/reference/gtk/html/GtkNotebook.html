@@ -1,0 +1,3008 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>GtkNotebook</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GTK+ Reference Manual">
+<link rel="up" href="LayoutContainers.html" title="Layout Containers">
+<link rel="prev" href="GtkLayout.html" title="GtkLayout">
+<link rel="next" href="GtkTable.html" title="GtkTable">
+<meta name="generator" content="GTK-Doc V1.7 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gtk.html" title="Part&#160;I.&#160;GTK+ Overview">
+<link rel="part" href="gtkbase.html" title="Part&#160;II.&#160;GTK+ Core Reference">
+<link rel="part" href="gtkobjects.html" title="Part&#160;III.&#160;GTK+ Widgets and Objects">
+<link rel="chapter" href="ch01.html" title="Object Hierarchy">
+<link rel="chapter" href="ch02.html" title="Widget Gallery">
+<link rel="chapter" href="WindowWidgets.html" title="Windows">
+<link rel="chapter" href="DisplayWidgets.html" title="Display Widgets">
+<link rel="chapter" href="ButtonWidgets.html" title="Buttons and Toggles">
+<link rel="chapter" href="NumericEntry.html" title="Numeric/Text Data Entry">
+<link rel="chapter" href="TextWidgetObjects.html" title="Multiline Text Editor">
+<link rel="chapter" href="TreeWidgetObjects.html" title="Tree, List and Icon Grid Widgets">
+<link rel="chapter" href="MenusAndCombos.html" title="Menus, Combo Box, Toolbar">
+<link rel="chapter" href="Actions.html" title="Action-based menus and toolbars">
+<link rel="chapter" href="SelectorWidgets.html" title="Selectors (File/Font/Color/Input Devices)">
+<link rel="chapter" href="LayoutContainers.html" title="Layout Containers">
+<link rel="chapter" href="Ornaments.html" title="Ornaments">
+<link rel="chapter" href="ScrollingWidgets.html" title="Scrolling">
+<link rel="chapter" href="Printing.html" title="Printing">
+<link rel="chapter" href="MiscObjects.html" title="Miscellaneous">
+<link rel="chapter" href="AbstractObjects.html" title="Abstract Base Classes">
+<link rel="chapter" href="PlugSocket.html" title="Cross-process Embedding">
+<link rel="chapter" href="SpecialObjects.html" title="Special-purpose features">
+<link rel="chapter" href="RecentDocuments.html" title="Recently Used Documents">
+<link rel="chapter" href="DeprecatedObjects.html" title="Deprecated">
+<link rel="part" href="migrating.html" title="Part&#160;IV.&#160;Migrating from Previous Versions of GTK+">
+<link rel="chapter" href="gtk-migrating-checklist.html" title="Migration Checklist">
+<link rel="chapter" href="gtk-migrating-GtkFileChooser.html" title="Migrating from GtkFileSelection to GtkFileChooser">
+<link rel="chapter" href="gtk-migrating-GtkAction.html" title="Migrating from old menu and toolbar systems to GtkAction">
+<link rel="chapter" href="gtk-migrating-GtkComboBox.html" title="Migrating from GtkOptionMenu and GtkCombo to GtkComboBox and GtkComboBoxEntry">
+<link rel="chapter" href="gtk-migrating-GtkIconView.html" title="Migrating from GnomeIconList to GtkIconView">
+<link rel="chapter" href="gtk-migrating-GtkAboutDialog.html" title="Migrating from GnomeAbout to GtkAboutDialog">
+<link rel="chapter" href="gtk-migrating-GtkColorButton.html" title="Migrating from GnomeColorPicker to GtkColorButton">
+<link rel="chapter" href="gtk-migrating-GtkAssistant.html" title="Migrating from GnomeDruid to GtkAssistant">
+<link rel="chapter" href="gtk-migrating-GtkRecentChooser.html" title="Migrating from EggRecent to GtkRecentChooser">
+<link rel="chapter" href="gtk-migrating-GtkLinkButton.html" title="Migrating from GnomeHRef to GtkLinkButton">
+<link rel="part" href="pt05.html" title="Part&#160;V.&#160;GTK+ Tools">
+<link rel="glossary" href="glossary.html" title="Glossary">
+<link rel="index" href="ix01.html" title="Index">
+<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="ix03.html" title="Index of new symbols in 2.2">
+<link rel="index" href="ix04.html" title="Index of new symbols in 2.4">
+<link rel="index" href="ix05.html" title="Index of new symbols in 2.6">
+<link rel="index" href="ix06.html" title="Index of new symbols in 2.8">
+<link rel="index" href="ix07.html" title="Index of new symbols in 2.10">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="GtkLayout.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="LayoutContainers.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GTK+ Reference Manual</th>
+<td><a accesskey="n" href="GtkTable.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id3673437" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id3675753" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id3675101" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id3675155" class="shortcut">Implemented Interfaces</a>
+                  &#160;|&#160;
+                  <a href="#id3675178" class="shortcut">Properties</a>
+                  &#160;|&#160;
+                  <a href="#id3675371" class="shortcut">Child Properties</a>
+                  &#160;|&#160;
+                  <a href="#id3675515" class="shortcut">Style Properties</a>
+                  &#160;|&#160;
+                  <a href="#id3675646" class="shortcut">Signals</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="GtkNotebook"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id3673437"></a><span class="refentrytitle">GtkNotebook</span>
+</h2>
+<p>GtkNotebook &#8212; A tabbed notebook container</p>
+</td>
+<td valign="top" align="right"><img src="notebook.png"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <a href="GtkNotebook.html#GtkNotebook-struct">GtkNotebook</a>;
+                    <a href="GtkNotebook.html#GtkNotebookPage">GtkNotebookPage</a>;
+<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          <a href="GtkNotebook.html#gtk-notebook-new">gtk_notebook_new</a>                    (void);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkNotebook.html#gtk-notebook-append-page">gtk_notebook_append_page</a>            (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *tab_label);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkNotebook.html#gtk-notebook-append-page-menu">gtk_notebook_append_page_menu</a>       (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *tab_label,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *menu_label);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkNotebook.html#gtk-notebook-prepend-page">gtk_notebook_prepend_page</a>           (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *tab_label);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkNotebook.html#gtk-notebook-prepend-page-menu">gtk_notebook_prepend_page_menu</a>      (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *tab_label,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *menu_label);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkNotebook.html#gtk-notebook-insert-page">gtk_notebook_insert_page</a>            (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *tab_label,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> position);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkNotebook.html#gtk-notebook-insert-page-menu">gtk_notebook_insert_page_menu</a>       (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *tab_label,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *menu_label,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> position);
+void                <a href="GtkNotebook.html#gtk-notebook-remove-page">gtk_notebook_remove_page</a>            (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> page_num);
+#define             <a href="GtkNotebook.html#gtk-notebook-current-page">gtk_notebook_current_page</a>
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkNotebook.html#gtk-notebook-page-num">gtk_notebook_page_num</a>               (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child);
+#define             <a href="GtkNotebook.html#gtk-notebook-set-page">gtk_notebook_set_page</a>
+void                <a href="GtkNotebook.html#gtk-notebook-next-page">gtk_notebook_next_page</a>              (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook);
+void                <a href="GtkNotebook.html#gtk-notebook-prev-page">gtk_notebook_prev_page</a>              (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook);
+void                <a href="GtkNotebook.html#gtk-notebook-reorder-child">gtk_notebook_reorder_child</a>          (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> position);
+void                <a href="GtkNotebook.html#gtk-notebook-set-tab-pos">gtk_notebook_set_tab_pos</a>            (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="gtk-Standard-Enumerations.html#GtkPositionType">GtkPositionType</a> pos);
+void                <a href="GtkNotebook.html#gtk-notebook-set-show-tabs">gtk_notebook_set_show_tabs</a>          (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> show_tabs);
+void                <a href="GtkNotebook.html#gtk-notebook-set-show-border">gtk_notebook_set_show_border</a>        (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> show_border);
+void                <a href="GtkNotebook.html#gtk-notebook-set-scrollable">gtk_notebook_set_scrollable</a>         (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> scrollable);
+void                <a href="GtkNotebook.html#gtk-notebook-set-tab-border">gtk_notebook_set_tab_border</a>         (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> border_width);
+void                <a href="GtkNotebook.html#gtk-notebook-popup-enable">gtk_notebook_popup_enable</a>           (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook);
+void                <a href="GtkNotebook.html#gtk-notebook-popup-disable">gtk_notebook_popup_disable</a>          (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkNotebook.html#gtk-notebook-get-current-page">gtk_notebook_get_current_page</a>       (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook);
+<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          <a href="GtkNotebook.html#gtk-notebook-get-menu-label">gtk_notebook_get_menu_label</a>         (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child);
+<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          <a href="GtkNotebook.html#gtk-notebook-get-nth-page">gtk_notebook_get_nth_page</a>           (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> page_num);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkNotebook.html#gtk-notebook-get-n-pages">gtk_notebook_get_n_pages</a>            (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook);
+<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          <a href="GtkNotebook.html#gtk-notebook-get-tab-label">gtk_notebook_get_tab_label</a>          (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child);
+void                <a href="GtkNotebook.html#gtk-notebook-query-tab-label-packing">gtk_notebook_query_tab_label_packing</a>
+                                                        (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> *expand,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> *fill,
+                                                         <a href="gtk-Standard-Enumerations.html#GtkPackType">GtkPackType</a> *pack_type);
+void                <a href="GtkNotebook.html#gtk-notebook-set-homogeneous-tabs">gtk_notebook_set_homogeneous_tabs</a>   (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> homogeneous);
+void                <a href="GtkNotebook.html#gtk-notebook-set-menu-label">gtk_notebook_set_menu_label</a>         (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *menu_label);
+void                <a href="GtkNotebook.html#gtk-notebook-set-menu-label-text">gtk_notebook_set_menu_label_text</a>    (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *menu_text);
+void                <a href="GtkNotebook.html#gtk-notebook-set-tab-hborder">gtk_notebook_set_tab_hborder</a>        (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> tab_hborder);
+void                <a href="GtkNotebook.html#gtk-notebook-set-tab-label">gtk_notebook_set_tab_label</a>          (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *tab_label);
+void                <a href="GtkNotebook.html#gtk-notebook-set-tab-label-packing">gtk_notebook_set_tab_label_packing</a>  (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> expand,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> fill,
+                                                         <a href="gtk-Standard-Enumerations.html#GtkPackType">GtkPackType</a> pack_type);
+void                <a href="GtkNotebook.html#gtk-notebook-set-tab-label-text">gtk_notebook_set_tab_label_text</a>     (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tab_text);
+void                <a href="GtkNotebook.html#gtk-notebook-set-tab-vborder">gtk_notebook_set_tab_vborder</a>        (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> tab_vborder);
+void                <a href="GtkNotebook.html#gtk-notebook-set-tab-reorderable">gtk_notebook_set_tab_reorderable</a>    (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> reorderable);
+void                <a href="GtkNotebook.html#gtk-notebook-set-tab-detachable">gtk_notebook_set_tab_detachable</a>     (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> detachable);
+const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a href="GtkNotebook.html#gtk-notebook-get-menu-label-text">gtk_notebook_get_menu_label_text</a>    (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkNotebook.html#gtk-notebook-get-scrollable">gtk_notebook_get_scrollable</a>         (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkNotebook.html#gtk-notebook-get-show-border">gtk_notebook_get_show_border</a>        (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkNotebook.html#gtk-notebook-get-show-tabs">gtk_notebook_get_show_tabs</a>          (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook);
+const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a href="GtkNotebook.html#gtk-notebook-get-tab-label-text">gtk_notebook_get_tab_label_text</a>     (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child);
+<a href="gtk-Standard-Enumerations.html#GtkPositionType">GtkPositionType</a>     <a href="GtkNotebook.html#gtk-notebook-get-tab-pos">gtk_notebook_get_tab_pos</a>            (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkNotebook.html#gtk-notebook-get-tab-reorderable">gtk_notebook_get_tab_reorderable</a>    (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkNotebook.html#gtk-notebook-get-tab-detachable">gtk_notebook_get_tab_detachable</a>     (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child);
+void                <a href="GtkNotebook.html#gtk-notebook-set-current-page">gtk_notebook_set_current_page</a>       (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> page_num);
+void                <a href="GtkNotebook.html#gtk-notebook-set-group-id">gtk_notebook_set_group_id</a>           (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> group_id);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkNotebook.html#gtk-notebook-get-group-id">gtk_notebook_get_group_id</a>           (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook);
+<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a>*        (<a href="GtkNotebook.html#GtkNotebookWindowCreationFunc">*GtkNotebookWindowCreationFunc</a>)    (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *source,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *page,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> x,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> y,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);
+void                <a href="GtkNotebook.html#gtk-notebook-set-window-creation-hook">gtk_notebook_set_window_creation_hook</a>
+                                                        (<a href="GtkNotebook.html#GtkNotebookWindowCreationFunc">GtkNotebookWindowCreationFunc</a> func,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data,
+                                                         <a
+href="../glib/glib-Datasets.html#GDestroyNotify"
+>GDestroyNotify</a> destroy);
+
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3675101"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gobject/gobject-The-Base-Object-Type.html#GInitiallyUnowned"
+>GInitiallyUnowned</a>
+         +----<a href="GtkObject.html" title="GtkObject">GtkObject</a>
+               +----<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>
+                     +----<a href="GtkContainer.html" title="GtkContainer">GtkContainer</a>
+                           +----GtkNotebook
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3675155"></a><h2>Implemented Interfaces</h2>
+<p>
+GtkNotebook implements
+ AtkImplementorIface.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3675178"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  <a href="GtkNotebook.html#GtkNotebook--enable-popup">enable-popup</a>             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkNotebook.html#GtkNotebook--group-id">group-id</a>                 <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="GtkNotebook.html#GtkNotebook--homogeneous">homogeneous</a>              <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkNotebook.html#GtkNotebook--page">page</a>                     <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="GtkNotebook.html#GtkNotebook--scrollable">scrollable</a>               <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkNotebook.html#GtkNotebook--show-border">show-border</a>              <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkNotebook.html#GtkNotebook--show-tabs">show-tabs</a>                <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkNotebook.html#GtkNotebook--tab-border">tab-border</a>               <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Write
+  <a href="GtkNotebook.html#GtkNotebook--tab-hborder">tab-hborder</a>              <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+  <a href="GtkNotebook.html#GtkNotebook--tab-pos">tab-pos</a>                  <a href="gtk-Standard-Enumerations.html#GtkPositionType">GtkPositionType</a>       : Read / Write
+  <a href="GtkNotebook.html#GtkNotebook--tab-vborder">tab-vborder</a>              <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3675371"></a><h2>Child Properties</h2>
+<pre class="synopsis">
+
+  <a href="GtkNotebook.html#GtkNotebook--detachable">detachable</a>               <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkNotebook.html#GtkNotebook--menu-label">menu-label</a>               <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  <a href="GtkNotebook.html#GtkNotebook--position">position</a>                 <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="GtkNotebook.html#GtkNotebook--reorderable">reorderable</a>              <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkNotebook.html#GtkNotebook--tab-expand">tab-expand</a>               <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkNotebook.html#GtkNotebook--tab-fill">tab-fill</a>                 <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkNotebook.html#GtkNotebook--tab-label">tab-label</a>                <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  <a href="GtkNotebook.html#GtkNotebook--tab-pack">tab-pack</a>                 <a href="gtk-Standard-Enumerations.html#GtkPackType">GtkPackType</a>           : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3675515"></a><h2>Style Properties</h2>
+<pre class="synopsis">
+
+  <a href="GtkNotebook.html#GtkNotebook--arrow-spacing">arrow-spacing</a>            <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read
+  <a href="GtkNotebook.html#GtkNotebook--has-backward-stepper">has-backward-stepper</a>     <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read
+  <a href="GtkNotebook.html#GtkNotebook--has-forward-stepper">has-forward-stepper</a>      <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read
+  <a href="GtkNotebook.html#GtkNotebook--has-secondary-backward-stepper">has-secondary-backward-stepper</a> <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read
+  <a href="GtkNotebook.html#GtkNotebook--has-secondary-forward-stepper">has-secondary-forward-stepper</a> <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read
+  <a href="GtkNotebook.html#GtkNotebook--tab-curvature">tab-curvature</a>            <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read
+  <a href="GtkNotebook.html#GtkNotebook--tab-overlap">tab-overlap</a>              <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3675646"></a><h2>Signals</h2>
+<pre class="synopsis">
+
+  <a href="GtkNotebook.html#GtkNotebook-change-current-page">change-current-page</a>                            : Run Last / Action
+  <a href="GtkNotebook.html#GtkNotebook-focus-tab">focus-tab</a>                                      : Run Last / Action
+  <a href="GtkNotebook.html#GtkNotebook-move-focus-out">move-focus-out</a>                                 : Run Last / Action
+  <a href="GtkNotebook.html#GtkNotebook-page-added">page-added</a>                                     : Run Last
+  <a href="GtkNotebook.html#GtkNotebook-page-removed">page-removed</a>                                   : Run Last
+  <a href="GtkNotebook.html#GtkNotebook-page-reordered">page-reordered</a>                                 : Run Last
+  <a href="GtkNotebook.html#GtkNotebook-reorder-tab">reorder-tab</a>                                    : Run Last / Action
+  <a href="GtkNotebook.html#GtkNotebook-select-page">select-page</a>                                    : Run Last / Action
+  <a href="GtkNotebook.html#GtkNotebook-switch-page">switch-page</a>                                    : Run Last
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3675753"></a><h2>Description</h2>
+<p>
+The <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a> widget is a <a href="GtkContainer.html" title="GtkContainer"><span class="type">GtkContainer</span></a> whose children are pages that
+can be switched between using tab labels along one edge.
+</p>
+<p>
+There are many configuration options for <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>. Among other
+things, you can choose on which edge the tabs appear
+(see <a href="GtkNotebook.html#gtk-notebook-set-tab-pos"><code class="function">gtk_notebook_set_tab_pos()</code></a>), whether, if there are too many
+tabs to fit the noteobook should be made bigger or scrolling
+arrows added (see gtk_notebook_set_scrollable), and whether there
+will be a popup menu allowing the users to switch pages.
+(see <code class="function">gtk_notebook_enable_popup()</code>, <code class="function">gtk_noteobook_disable_popup()</code>)
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3675836"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3675846"></a><h3>
+<a name="GtkNotebook-struct"></a>GtkNotebook</h3>
+<a class="indexterm" name="id3675859"></a><pre class="programlisting">typedef struct _GtkNotebook GtkNotebook;</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3675874"></a><h3>
+<a name="GtkNotebookPage"></a>GtkNotebookPage</h3>
+<a class="indexterm" name="id3675887"></a><pre class="programlisting">typedef struct _GtkNotebookPage GtkNotebookPage;</pre>
+<p>
+The <a href="GtkNotebook.html#GtkNotebookPage"><span class="type">GtkNotebookPage</span></a> is an opaque implementation detail of <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>.
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3675919"></a><h3>
+<a name="gtk-notebook-new"></a>gtk_notebook_new ()</h3>
+<a class="indexterm" name="id3675932"></a><pre class="programlisting"><a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          gtk_notebook_new                    (void);</pre>
+<p>
+Creates a new <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a> widget with no pages.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the newly created <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3675988"></a><h3>
+<a name="gtk-notebook-append-page"></a>gtk_notebook_append_page ()</h3>
+<a class="indexterm" name="id3676002"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_notebook_append_page            (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *tab_label);</pre>
+<p>
+Appends a page to <em class="parameter"><code>notebook</code></em>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>child</code></em>&#160;:</span></td>
+<td> the <a href="GtkWidget.html" title="GtkWidget"><span class="type">GtkWidget</span></a> to use as the contents of the page.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>tab_label</code></em>&#160;:</span></td>
+<td> the <a href="GtkWidget.html" title="GtkWidget"><span class="type">GtkWidget</span></a> to be used as the label for the page,
+            or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a> to use the default label, 'page N'.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the index (starting from 0) of the appended
+page in the notebook, or -1 if function fails
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3676148"></a><h3>
+<a name="gtk-notebook-append-page-menu"></a>gtk_notebook_append_page_menu ()</h3>
+<a class="indexterm" name="id3676162"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_notebook_append_page_menu       (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *tab_label,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *menu_label);</pre>
+<p>
+Appends a page to <em class="parameter"><code>notebook</code></em>, specifying the widget to use as the
+label in the popup menu.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>child</code></em>&#160;:</span></td>
+<td> the <a href="GtkWidget.html" title="GtkWidget"><span class="type">GtkWidget</span></a> to use as the contents of the page.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>tab_label</code></em>&#160;:</span></td>
+<td> the <a href="GtkWidget.html" title="GtkWidget"><span class="type">GtkWidget</span></a> to be used as the label for the page,
+            or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a> to use the default label, 'page N'.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>menu_label</code></em>&#160;:</span></td>
+<td> the widget to use as a label for the page-switch
+             menu, if that is enabled. If <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>, and <em class="parameter"><code>tab_label</code></em>
+             is a <a href="GtkLabel.html" title="GtkLabel"><span class="type">GtkLabel</span></a> or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>, then the menu label will be
+             a newly created label with the same text as <em class="parameter"><code>tab_label</code></em>;
+             If <em class="parameter"><code>tab_label</code></em> is not a <a href="GtkLabel.html" title="GtkLabel"><span class="type">GtkLabel</span></a>, <em class="parameter"><code>menu_label</code></em> must be
+             specified if the page-switch menu is to be used.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the index (starting from 0) of the appended
+page in the notebook, or -1 if function fails
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3676396"></a><h3>
+<a name="gtk-notebook-prepend-page"></a>gtk_notebook_prepend_page ()</h3>
+<a class="indexterm" name="id3676410"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_notebook_prepend_page           (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *tab_label);</pre>
+<p>
+Prepends a page to <em class="parameter"><code>notebook</code></em>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>child</code></em>&#160;:</span></td>
+<td> the <a href="GtkWidget.html" title="GtkWidget"><span class="type">GtkWidget</span></a> to use as the contents of the page.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>tab_label</code></em>&#160;:</span></td>
+<td> the <a href="GtkWidget.html" title="GtkWidget"><span class="type">GtkWidget</span></a> to be used as the label for the page,
+            or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a> to use the default label, 'page N'.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the index (starting from 0) of the prepended
+page in the notebook, or -1 if function fails
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3676556"></a><h3>
+<a name="gtk-notebook-prepend-page-menu"></a>gtk_notebook_prepend_page_menu ()</h3>
+<a class="indexterm" name="id3676570"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_notebook_prepend_page_menu      (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *tab_label,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *menu_label);</pre>
+<p>
+Prepends a page to <em class="parameter"><code>notebook</code></em>, specifying the widget to use as the
+label in the popup menu.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>child</code></em>&#160;:</span></td>
+<td> the <a href="GtkWidget.html" title="GtkWidget"><span class="type">GtkWidget</span></a> to use as the contents of the page.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>tab_label</code></em>&#160;:</span></td>
+<td> the <a href="GtkWidget.html" title="GtkWidget"><span class="type">GtkWidget</span></a> to be used as the label for the page,
+            or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a> to use the default label, 'page N'.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>menu_label</code></em>&#160;:</span></td>
+<td> the widget to use as a label for the page-switch
+             menu, if that is enabled. If <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>, and <em class="parameter"><code>tab_label</code></em>
+             is a <a href="GtkLabel.html" title="GtkLabel"><span class="type">GtkLabel</span></a> or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>, then the menu label will be
+             a newly created label with the same text as <em class="parameter"><code>tab_label</code></em>;
+             If <em class="parameter"><code>tab_label</code></em> is not a <a href="GtkLabel.html" title="GtkLabel"><span class="type">GtkLabel</span></a>, <em class="parameter"><code>menu_label</code></em> must be
+             specified if the page-switch menu is to be used.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the index (starting from 0) of the prepended
+page in the notebook, or -1 if function fails
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3676805"></a><h3>
+<a name="gtk-notebook-insert-page"></a>gtk_notebook_insert_page ()</h3>
+<a class="indexterm" name="id3676818"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_notebook_insert_page            (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *tab_label,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> position);</pre>
+<p>
+Insert a page into <em class="parameter"><code>notebook</code></em> at the given position.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>child</code></em>&#160;:</span></td>
+<td> the <a href="GtkWidget.html" title="GtkWidget"><span class="type">GtkWidget</span></a> to use as the contents of the page.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>tab_label</code></em>&#160;:</span></td>
+<td> the <a href="GtkWidget.html" title="GtkWidget"><span class="type">GtkWidget</span></a> to be used as the label for the page,
+            or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a> to use the default label, 'page N'.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>position</code></em>&#160;:</span></td>
+<td> the index (starting at 0) at which to insert the page,
+           or -1 to append the page after all other pages.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the index (starting from 0) of the inserted
+page in the notebook, or -1 if function fails
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3676989"></a><h3>
+<a name="gtk-notebook-insert-page-menu"></a>gtk_notebook_insert_page_menu ()</h3>
+<a class="indexterm" name="id3677002"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_notebook_insert_page_menu       (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *tab_label,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *menu_label,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> position);</pre>
+<p>
+Insert a page into <em class="parameter"><code>notebook</code></em> at the given position, specifying
+the widget to use as the label in the popup menu.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>child</code></em>&#160;:</span></td>
+<td> the <a href="GtkWidget.html" title="GtkWidget"><span class="type">GtkWidget</span></a> to use as the contents of the page.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>tab_label</code></em>&#160;:</span></td>
+<td> the <a href="GtkWidget.html" title="GtkWidget"><span class="type">GtkWidget</span></a> to be used as the label for the page,
+            or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a> to use the default label, 'page N'.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>menu_label</code></em>&#160;:</span></td>
+<td> the widget to use as a label for the page-switch
+             menu, if that is enabled. If <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>, and <em class="parameter"><code>tab_label</code></em>
+             is a <a href="GtkLabel.html" title="GtkLabel"><span class="type">GtkLabel</span></a> or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>, then the menu label will be
+             a newly created label with the same text as <em class="parameter"><code>tab_label</code></em>;
+             If <em class="parameter"><code>tab_label</code></em> is not a <a href="GtkLabel.html" title="GtkLabel"><span class="type">GtkLabel</span></a>, <em class="parameter"><code>menu_label</code></em> must be
+             specified if the page-switch menu is to be used.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>position</code></em>&#160;:</span></td>
+<td> the index (starting at 0) at which to insert the page,
+           or -1 to append the page after all other pages.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the index (starting from 0) of the inserted
+page in the notebook
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3677260"></a><h3>
+<a name="gtk-notebook-remove-page"></a>gtk_notebook_remove_page ()</h3>
+<a class="indexterm" name="id3677273"></a><pre class="programlisting">void                gtk_notebook_remove_page            (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> page_num);</pre>
+<p>
+Removes a page from the notebook given its index
+in the notebook.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>page_num</code></em>&#160;:</span></td>
+<td> the index of a notebook page, starting
+           from 0. If -1, the last page will
+           be removed.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3677355"></a><h3>
+<a name="gtk-notebook-current-page"></a>gtk_notebook_current_page</h3>
+<a class="indexterm" name="id3677371"></a><pre class="programlisting">#define	gtk_notebook_current_page               gtk_notebook_get_current_page
+</pre>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p><code class="literal">gtk_notebook_current_page</code> is deprecated and should not be used in newly-written code.</p>
+</div>
+<p>
+Deprecated compatibility macro. Use
+<a href="GtkNotebook.html#gtk-notebook-get-current-page"><code class="function">gtk_notebook_get_current_page()</code></a> instead.
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3677412"></a><h3>
+<a name="gtk-notebook-page-num"></a>gtk_notebook_page_num ()</h3>
+<a class="indexterm" name="id3677425"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_notebook_page_num               (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child);</pre>
+<p>
+Finds the index of the page which contains the given child
+widget.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>child</code></em>&#160;:</span></td>
+<td> a <a href="GtkWidget.html" title="GtkWidget"><span class="type">GtkWidget</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the index of the page containing <em class="parameter"><code>child</code></em>, or
+  -1 if <em class="parameter"><code>child</code></em> is not in the notebook.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3677536"></a><h3>
+<a name="gtk-notebook-set-page"></a>gtk_notebook_set_page</h3>
+<a class="indexterm" name="id3677552"></a><pre class="programlisting">#define gtk_notebook_set_page                   gtk_notebook_set_current_page
+</pre>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p><code class="literal">gtk_notebook_set_page</code> is deprecated and should not be used in newly-written code.</p>
+</div>
+<p>
+Deprecated compatibility macro. Use
+<a href="GtkNotebook.html#gtk-notebook-set-current-page"><code class="function">gtk_notebook_set_current_page()</code></a> instead.
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3677593"></a><h3>
+<a name="gtk-notebook-next-page"></a>gtk_notebook_next_page ()</h3>
+<a class="indexterm" name="id3677606"></a><pre class="programlisting">void                gtk_notebook_next_page              (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook);</pre>
+<p>
+Switches to the next page. Nothing happens if the current page is
+the last page.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3677665"></a><h3>
+<a name="gtk-notebook-prev-page"></a>gtk_notebook_prev_page ()</h3>
+<a class="indexterm" name="id3677678"></a><pre class="programlisting">void                gtk_notebook_prev_page              (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook);</pre>
+<p>
+Switches to the previous page. Nothing happens if the current page
+is the first page.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3677737"></a><h3>
+<a name="gtk-notebook-reorder-child"></a>gtk_notebook_reorder_child ()</h3>
+<a class="indexterm" name="id3677751"></a><pre class="programlisting">void                gtk_notebook_reorder_child          (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> position);</pre>
+<p>
+Reorders the page containing <em class="parameter"><code>child</code></em>, so that it appears in position
+<em class="parameter"><code>position</code></em>. If <em class="parameter"><code>position</code></em> is greater than or equal to the number of
+children in the list or negative, <em class="parameter"><code>child</code></em> will be moved to the end
+of the list.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>child</code></em>&#160;:</span></td>
+<td> the child to move
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>position</code></em>&#160;:</span></td>
+<td> the new position, or -1 to move to the end
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3677879"></a><h3>
+<a name="gtk-notebook-set-tab-pos"></a>gtk_notebook_set_tab_pos ()</h3>
+<a class="indexterm" name="id3677892"></a><pre class="programlisting">void                gtk_notebook_set_tab_pos            (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="gtk-Standard-Enumerations.html#GtkPositionType">GtkPositionType</a> pos);</pre>
+<p>
+Sets the edge at which the tabs for switching pages in the
+notebook are drawn.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>pos</code></em>&#160;:</span></td>
+<td> the edge to draw the tabs at.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3677973"></a><h3>
+<a name="gtk-notebook-set-show-tabs"></a>gtk_notebook_set_show_tabs ()</h3>
+<a class="indexterm" name="id3677987"></a><pre class="programlisting">void                gtk_notebook_set_show_tabs          (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> show_tabs);</pre>
+<p>
+Sets whether to show the tabs for the notebook or not.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>show_tabs</code></em>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the tabs should be shown.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3678077"></a><h3>
+<a name="gtk-notebook-set-show-border"></a>gtk_notebook_set_show_border ()</h3>
+<a class="indexterm" name="id3678091"></a><pre class="programlisting">void                gtk_notebook_set_show_border        (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> show_border);</pre>
+<p>
+Sets whether a bevel will be drawn around the notebook pages.
+This only has a visual effect when the tabs are not shown.
+See <a href="GtkNotebook.html#gtk-notebook-set-show-tabs"><code class="function">gtk_notebook_set_show_tabs()</code></a>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>show_border</code></em>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if a bevel should be drawn around the notebook.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3678194"></a><h3>
+<a name="gtk-notebook-set-scrollable"></a>gtk_notebook_set_scrollable ()</h3>
+<a class="indexterm" name="id3678208"></a><pre class="programlisting">void                gtk_notebook_set_scrollable         (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> scrollable);</pre>
+<p>
+Sets whether the tab label area will have arrows for scrolling if
+there are too many tabs to fit in the area.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>scrollable</code></em>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if scroll arrows should be added
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3678299"></a><h3>
+<a name="gtk-notebook-set-tab-border"></a>gtk_notebook_set_tab_border ()</h3>
+<a class="indexterm" name="id3678315"></a><pre class="programlisting">void                gtk_notebook_set_tab_border         (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> border_width);</pre>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p><code class="literal">gtk_notebook_set_tab_border</code> is deprecated and should not be used in newly-written code.</p>
+</div>
+<p>
+Sets the width the border around the tab labels
+in a notebook. This is equivalent to calling
+gtk_notebook_set_tab_hborder (<em class="parameter"><code>notebook</code></em>, <em class="parameter"><code>border_width</code></em>) followed
+by gtk_notebook_set_tab_vborder (<em class="parameter"><code>notebook</code></em>, <em class="parameter"><code>border_width</code></em>).</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>border_width</code></em>&#160;:</span></td>
+<td> width of the border around the tab labels.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3678433"></a><h3>
+<a name="gtk-notebook-popup-enable"></a>gtk_notebook_popup_enable ()</h3>
+<a class="indexterm" name="id3678447"></a><pre class="programlisting">void                gtk_notebook_popup_enable           (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook);</pre>
+<p>
+Enables the popup menu: if the user clicks with the right mouse button on
+the bookmarks, a menu with all the pages will be popped up.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3678506"></a><h3>
+<a name="gtk-notebook-popup-disable"></a>gtk_notebook_popup_disable ()</h3>
+<a class="indexterm" name="id3678520"></a><pre class="programlisting">void                gtk_notebook_popup_disable          (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook);</pre>
+<p>
+Disables the popup menu.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3678578"></a><h3>
+<a name="gtk-notebook-get-current-page"></a>gtk_notebook_get_current_page ()</h3>
+<a class="indexterm" name="id3678591"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_notebook_get_current_page       (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook);</pre>
+<p>
+Returns the page number of the current page.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the index (starting from 0) of the current
+page in the notebook. If the notebook has no pages, then
+-1 will be returned.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3678662"></a><h3>
+<a name="gtk-notebook-get-menu-label"></a>gtk_notebook_get_menu_label ()</h3>
+<a class="indexterm" name="id3678675"></a><pre class="programlisting"><a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          gtk_notebook_get_menu_label         (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child);</pre>
+<p>
+Retrieves the menu label widget of the page containing <em class="parameter"><code>child</code></em>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>child</code></em>&#160;:</span></td>
+<td> a widget contained in a page of <em class="parameter"><code>notebook</code></em>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the menu label, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a> if the
+              notebook page does not have a menu label other
+              than the default (the tab label).
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3678789"></a><h3>
+<a name="gtk-notebook-get-nth-page"></a>gtk_notebook_get_nth_page ()</h3>
+<a class="indexterm" name="id3678803"></a><pre class="programlisting"><a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          gtk_notebook_get_nth_page           (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> page_num);</pre>
+<p>
+Returns the child widget contained in page number <em class="parameter"><code>page_num</code></em>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>page_num</code></em>&#160;:</span></td>
+<td> the index of a page in the noteobok, or -1
+           to get the last page.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the child widget, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a> if <em class="parameter"><code>page_num</code></em> is
+out of bounds.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3678917"></a><h3>
+<a name="gtk-notebook-get-n-pages"></a>gtk_notebook_get_n_pages ()</h3>
+<a class="indexterm" name="id3678932"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_notebook_get_n_pages            (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook);</pre>
+<p>
+Gets the number of pages in a notebook.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the number of pages in the notebook.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.2
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3679008"></a><h3>
+<a name="gtk-notebook-get-tab-label"></a>gtk_notebook_get_tab_label ()</h3>
+<a class="indexterm" name="id3679022"></a><pre class="programlisting"><a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          gtk_notebook_get_tab_label          (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child);</pre>
+<p>
+Returns the tab label widget for the page <em class="parameter"><code>child</code></em>. <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a> is returned
+if <em class="parameter"><code>child</code></em> is not in <em class="parameter"><code>notebook</code></em> or if no tab label has specifically
+been set for <em class="parameter"><code>child</code></em>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>child</code></em>&#160;:</span></td>
+<td> the page
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the tab label
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3679146"></a><h3>
+<a name="gtk-notebook-query-tab-label-packing"></a>gtk_notebook_query_tab_label_packing ()</h3>
+<a class="indexterm" name="id3679160"></a><pre class="programlisting">void                gtk_notebook_query_tab_label_packing
+                                                        (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> *expand,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> *fill,
+                                                         <a href="gtk-Standard-Enumerations.html#GtkPackType">GtkPackType</a> *pack_type);</pre>
+<p>
+Query the packing attributes for the tab label of the page
+containing <em class="parameter"><code>child</code></em>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>child</code></em>&#160;:</span></td>
+<td> the page
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>expand</code></em>&#160;:</span></td>
+<td> location to store the expand value (or NULL)
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>fill</code></em>&#160;:</span></td>
+<td> location to store the fill value (or NULL)
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>pack_type</code></em>&#160;:</span></td>
+<td> location to store the pack_type (or NULL)
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3679314"></a><h3>
+<a name="gtk-notebook-set-homogeneous-tabs"></a>gtk_notebook_set_homogeneous_tabs ()</h3>
+<a class="indexterm" name="id3679331"></a><pre class="programlisting">void                gtk_notebook_set_homogeneous_tabs   (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> homogeneous);</pre>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p><code class="literal">gtk_notebook_set_homogeneous_tabs</code> is deprecated and should not be used in newly-written code.</p>
+</div>
+<p>
+Sets whether the tabs must have all the same size or not.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>homogeneous</code></em>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if all tabs should be the same size.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3679434"></a><h3>
+<a name="gtk-notebook-set-menu-label"></a>gtk_notebook_set_menu_label ()</h3>
+<a class="indexterm" name="id3679448"></a><pre class="programlisting">void                gtk_notebook_set_menu_label         (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *menu_label);</pre>
+<p>
+Changes the menu label for the page containing <em class="parameter"><code>child</code></em>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>child</code></em>&#160;:</span></td>
+<td> the child widget
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>menu_label</code></em>&#160;:</span></td>
+<td> the menu label, or NULL for default
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3679555"></a><h3>
+<a name="gtk-notebook-set-menu-label-text"></a>gtk_notebook_set_menu_label_text ()</h3>
+<a class="indexterm" name="id3679569"></a><pre class="programlisting">void                gtk_notebook_set_menu_label_text    (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *menu_text);</pre>
+<p>
+Creates a new label and sets it as the menu label of <em class="parameter"><code>child</code></em>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>child</code></em>&#160;:</span></td>
+<td> the child widget
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>menu_text</code></em>&#160;:</span></td>
+<td> the label text
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3679677"></a><h3>
+<a name="gtk-notebook-set-tab-hborder"></a>gtk_notebook_set_tab_hborder ()</h3>
+<a class="indexterm" name="id3679693"></a><pre class="programlisting">void                gtk_notebook_set_tab_hborder        (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> tab_hborder);</pre>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p><code class="literal">gtk_notebook_set_tab_hborder</code> is deprecated and should not be used in newly-written code.</p>
+</div>
+<p>
+Sets the width of the horizontal border of tab labels.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>tab_hborder</code></em>&#160;:</span></td>
+<td> width of the horizontal border of tab labels.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3679786"></a><h3>
+<a name="gtk-notebook-set-tab-label"></a>gtk_notebook_set_tab_label ()</h3>
+<a class="indexterm" name="id3679800"></a><pre class="programlisting">void                gtk_notebook_set_tab_label          (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *tab_label);</pre>
+<p>
+Changes the tab label for <em class="parameter"><code>child</code></em>. If <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a> is specified
+for <em class="parameter"><code>tab_label</code></em>, then the page will have the label 'page N'.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>child</code></em>&#160;:</span></td>
+<td> the page
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>tab_label</code></em>&#160;:</span></td>
+<td> the tab label widget to use, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a> for default tab
+            label.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3679935"></a><h3>
+<a name="gtk-notebook-set-tab-label-packing"></a>gtk_notebook_set_tab_label_packing ()</h3>
+<a class="indexterm" name="id3679950"></a><pre class="programlisting">void                gtk_notebook_set_tab_label_packing  (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> expand,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> fill,
+                                                         <a href="gtk-Standard-Enumerations.html#GtkPackType">GtkPackType</a> pack_type);</pre>
+<p>
+Sets the packing parameters for the tab label of the page
+containing <em class="parameter"><code>child</code></em>. See <a href="GtkBox.html#gtk-box-pack-start"><code class="function">gtk_box_pack_start()</code></a> for the exact meaning
+of the parameters.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>child</code></em>&#160;:</span></td>
+<td> the child widget
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>expand</code></em>&#160;:</span></td>
+<td> whether to expand the bookmark or not
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>fill</code></em>&#160;:</span></td>
+<td> whether the bookmark should fill the allocated area or not
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>pack_type</code></em>&#160;:</span></td>
+<td> the position of the bookmark
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3680114"></a><h3>
+<a name="gtk-notebook-set-tab-label-text"></a>gtk_notebook_set_tab_label_text ()</h3>
+<a class="indexterm" name="id3680128"></a><pre class="programlisting">void                gtk_notebook_set_tab_label_text     (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *tab_text);</pre>
+<p>
+Creates a new label and sets it as the tab label for the page
+containing <em class="parameter"><code>child</code></em>.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>child</code></em>&#160;:</span></td>
+<td> the page
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>tab_text</code></em>&#160;:</span></td>
+<td> the label text
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3680236"></a><h3>
+<a name="gtk-notebook-set-tab-vborder"></a>gtk_notebook_set_tab_vborder ()</h3>
+<a class="indexterm" name="id3680252"></a><pre class="programlisting">void                gtk_notebook_set_tab_vborder        (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> tab_vborder);</pre>
+<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
+<h3 class="title">Warning</h3>
+<p><code class="literal">gtk_notebook_set_tab_vborder</code> is deprecated and should not be used in newly-written code.</p>
+</div>
+<p>
+Sets the width of the vertical border of tab labels.</p>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>tab_vborder</code></em>&#160;:</span></td>
+<td> width of the vertical border of tab labels.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3680345"></a><h3>
+<a name="gtk-notebook-set-tab-reorderable"></a>gtk_notebook_set_tab_reorderable ()</h3>
+<a class="indexterm" name="id3680361"></a><pre class="programlisting">void                gtk_notebook_set_tab_reorderable    (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> reorderable);</pre>
+<p>
+Sets whether the notebook tab can be reordered
+via drag and drop or not.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>child</code></em>&#160;:</span></td>
+<td> a child <a href="GtkWidget.html" title="GtkWidget"><span class="type">GtkWidget</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>reorderable</code></em>&#160;:</span></td>
+<td> whether the tab is reorderable or not.
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3680478"></a><h3>
+<a name="gtk-notebook-set-tab-detachable"></a>gtk_notebook_set_tab_detachable ()</h3>
+<a class="indexterm" name="id3680494"></a><pre class="programlisting">void                gtk_notebook_set_tab_detachable     (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> detachable);</pre>
+<p>
+Sets whether the tab can be detached from <em class="parameter"><code>notebook</code></em> to another
+notebook or widget.
+</p>
+<p>
+Note that 2 notebooks must share a common group identificator
+(see <a href="GtkNotebook.html#gtk-notebook-set-group-id"><code class="function">gtk_notebook_set_group_id()</code></a>) to allow automatic tabs
+interchange between them.
+</p>
+<p>
+If you want a widget to interact with a notebook through DnD
+(i.e.: accept dragged tabs from it) it must be set as a drop
+destination and accept the target "GTK_NOTEBOOK_TAB". The notebook
+will fill the selection with a GtkWidget** pointing to the child
+widget that corresponds to the dropped tab.
+</p>
+<p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+ static void
+ on_drop_zone_drag_data_received (GtkWidget        *widget,
+                                  GdkDragContext   *context,
+                                  gint              x,
+                                  gint              y,
+                                  GtkSelectionData *selection_data,
+                                  guint             info,
+                                  guint             time,
+                                  gpointer          user_data)
+ {
+   GtkWidget *notebook;
+   GtkWidget **child;
+   
+   notebook = gtk_drag_get_source_widget (context);
+   child = (void*) selection_data-&gt;data;
+   
+   process_widget (*child);
+   gtk_container_remove (GTK_CONTAINER (notebook), *child);
+ }
+</pre></div>
+<p>
+</p>
+<p>
+If you want a notebook to accept drags from other widgets,
+you will have to set your own DnD code to do it.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>child</code></em>&#160;:</span></td>
+<td> a child <a href="GtkWidget.html" title="GtkWidget"><span class="type">GtkWidget</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>detachable</code></em>&#160;:</span></td>
+<td> whether the tab is detachable or not
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3680670"></a><h3>
+<a name="gtk-notebook-get-menu-label-text"></a>gtk_notebook_get_menu_label_text ()</h3>
+<a class="indexterm" name="id3680684"></a><pre class="programlisting">const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gtk_notebook_get_menu_label_text    (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child);</pre>
+<p>
+Retrieves the text of the menu label for the page containing
+   <em class="parameter"><code>child</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>child</code></em>&#160;:</span></td>
+<td> the child widget of a page of the notebook.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td>value: the text of the tab label, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a> if the
+               widget does not have a menu label other than
+               the default menu label, or the menu label widget
+               is not a <a href="GtkLabel.html" title="GtkLabel"><span class="type">GtkLabel</span></a>. The string is owned by
+               the widget and must not be freed.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3680804"></a><h3>
+<a name="gtk-notebook-get-scrollable"></a>gtk_notebook_get_scrollable ()</h3>
+<a class="indexterm" name="id3680818"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_notebook_get_scrollable         (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook);</pre>
+<p>
+Returns whether the tab label area has arrows for scrolling. See
+<a href="GtkNotebook.html#gtk-notebook-set-scrollable"><code class="function">gtk_notebook_set_scrollable()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if arrows for scrolling are present
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3680908"></a><h3>
+<a name="gtk-notebook-get-show-border"></a>gtk_notebook_get_show_border ()</h3>
+<a class="indexterm" name="id3680921"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_notebook_get_show_border        (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook);</pre>
+<p>
+Returns whether a bevel will be drawn around the notebook pages. See
+<a href="GtkNotebook.html#gtk-notebook-set-show-border"><code class="function">gtk_notebook_set_show_border()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the bevel is drawn
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3681012"></a><h3>
+<a name="gtk-notebook-get-show-tabs"></a>gtk_notebook_get_show_tabs ()</h3>
+<a class="indexterm" name="id3681026"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_notebook_get_show_tabs          (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook);</pre>
+<p>
+Returns whether the tabs of the notebook are shown. See
+<a href="GtkNotebook.html#gtk-notebook-set-show-tabs"><code class="function">gtk_notebook_set_show_tabs()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the tabs are shown
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3681115"></a><h3>
+<a name="gtk-notebook-get-tab-label-text"></a>gtk_notebook_get_tab_label_text ()</h3>
+<a class="indexterm" name="id3681129"></a><pre class="programlisting">const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gtk_notebook_get_tab_label_text     (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child);</pre>
+<p>
+Retrieves the text of the tab label for the page containing
+   <em class="parameter"><code>child</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>child</code></em>&#160;:</span></td>
+<td> a widget contained in a page of <em class="parameter"><code>notebook</code></em>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td>value: the text of the tab label, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a> if the
+               tab label widget is not a <a href="GtkLabel.html" title="GtkLabel"><span class="type">GtkLabel</span></a>. The
+               string is owned by the widget and must not
+               be freed.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3681253"></a><h3>
+<a name="gtk-notebook-get-tab-pos"></a>gtk_notebook_get_tab_pos ()</h3>
+<a class="indexterm" name="id3681267"></a><pre class="programlisting"><a href="gtk-Standard-Enumerations.html#GtkPositionType">GtkPositionType</a>     gtk_notebook_get_tab_pos            (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook);</pre>
+<p>
+Gets the edge at which the tabs for switching pages in the
+notebook are drawn.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the edge at which the tabs are drawn
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3681336"></a><h3>
+<a name="gtk-notebook-get-tab-reorderable"></a>gtk_notebook_get_tab_reorderable ()</h3>
+<a class="indexterm" name="id3681352"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_notebook_get_tab_reorderable    (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child);</pre>
+<p>
+Gets whether the tab can be reordered via drag and drop or not.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>child</code></em>&#160;:</span></td>
+<td> a child <a href="GtkWidget.html" title="GtkWidget"><span class="type">GtkWidget</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the tab is reorderable.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3681468"></a><h3>
+<a name="gtk-notebook-get-tab-detachable"></a>gtk_notebook_get_tab_detachable ()</h3>
+<a class="indexterm" name="id3681484"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_notebook_get_tab_detachable     (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *child);</pre>
+<p>
+Returns whether the tab contents can be detached from <em class="parameter"><code>notebook</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>child</code></em>&#160;:</span></td>
+<td> a child <a href="GtkWidget.html" title="GtkWidget"><span class="type">GtkWidget</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> TRUE if the tab is detachable.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3681596"></a><h3>
+<a name="gtk-notebook-set-current-page"></a>gtk_notebook_set_current_page ()</h3>
+<a class="indexterm" name="id3681609"></a><pre class="programlisting">void                gtk_notebook_set_current_page       (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> page_num);</pre>
+<p>
+Switches to the page number <em class="parameter"><code>page_num</code></em>. 
+</p>
+<p>
+Note that due to historical reasons, GtkNotebook refuses
+to switch to a page unless the child widget is visible. 
+Therefore, it is recommended to show child widgets before
+adding them to a notebook.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>page_num</code></em>&#160;:</span></td>
+<td> index of the page to switch to, starting from 0.
+           If negative, the last page will be used. If greater
+           than the number of pages in the notebook, nothing
+           will be done.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3681705"></a><h3>
+<a name="gtk-notebook-set-group-id"></a>gtk_notebook_set_group_id ()</h3>
+<a class="indexterm" name="id3681721"></a><pre class="programlisting">void                gtk_notebook_set_group_id           (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> group_id);</pre>
+<p>
+Sets an group identificator for <em class="parameter"><code>notebook</code></em>, notebooks sharing
+the same group identificator will be able to exchange tabs
+via drag and drop. A notebook with group identificator -1 will
+not be able to exchange tabs with any other notebook.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>group_id</code></em>&#160;:</span></td>
+<td> a group identificator, or -1 to unset it
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3681817"></a><h3>
+<a name="gtk-notebook-get-group-id"></a>gtk_notebook_get_group_id ()</h3>
+<a class="indexterm" name="id3681833"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_notebook_get_group_id           (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook);</pre>
+<p>
+Gets the current group identificator for <em class="parameter"><code>notebook</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> a <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the group identificator, or -1 if none is set.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3681914"></a><h3>
+<a name="GtkNotebookWindowCreationFunc"></a>GtkNotebookWindowCreationFunc ()</h3>
+<a class="indexterm" name="id3681928"></a><pre class="programlisting"><a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a>*        (*GtkNotebookWindowCreationFunc)    (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *source,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *page,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> x,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> y,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);</pre>
+<p>
+A function used by GtkNotebook when a detachable tab is dropped
+in the root window, it's used to create a window containing a notebook
+where the tab will be attached. This function will also be responsible
+of moving/resizing the window and adding the necessary properties to
+the notebook (i.e.: group-id).
+
+If the function returns <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>, the drag will be cancelled.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>source</code></em>&#160;:</span></td>
+<td>The source <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a> of the drag operation
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>page</code></em>&#160;:</span></td>
+<td>the child <a href="GtkWidget.html" title="GtkWidget"><span class="type">GtkWidget</span></a> affected
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>x</code></em>&#160;:</span></td>
+<td>the X coordinate where the drop happens
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>y</code></em>&#160;:</span></td>
+<td>the Y coordinate where the drop happens
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td>user data
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td>The created <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a> where the tab will be attached, or NULL to cancel the drag
+
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3682114"></a><h3>
+<a name="gtk-notebook-set-window-creation-hook"></a>gtk_notebook_set_window_creation_hook ()</h3>
+<a class="indexterm" name="id3682130"></a><pre class="programlisting">void                gtk_notebook_set_window_creation_hook
+                                                        (<a href="GtkNotebook.html#GtkNotebookWindowCreationFunc">GtkNotebookWindowCreationFunc</a> func,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data,
+                                                         <a
+href="../glib/glib-Datasets.html#GDestroyNotify"
+>GDestroyNotify</a> destroy);</pre>
+<p>
+Installs a global function used to create a window
+when a detached tab is dropped in an empty area.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>func</code></em>&#160;:</span></td>
+<td> the <a href="GtkNotebook.html#GtkNotebookWindowCreationFunc"><span class="type">GtkNotebookWindowCreationFunc</span></a>, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td> user data for <em class="parameter"><code>func</code></em>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>destroy</code></em>&#160;:</span></td>
+<td> Destroy notifier for <em class="parameter"><code>data</code></em>, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3682277"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3682288"></a><h3>
+<a name="GtkNotebook--enable-popup"></a>The :<code class="literal">enable-popup</code> property</h3>
+<a class="indexterm" name="id3682304"></a><pre class="programlisting">  enable-popup             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>If TRUE, pressing the right mouse button on the notebook pops up a menu that you can use to go to a page.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3682332"></a><h3>
+<a name="GtkNotebook--group-id"></a>The :<code class="literal">group-id</code> property</h3>
+<a class="indexterm" name="id3682348"></a><pre class="programlisting">  group-id                 <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Group ID for tabs drag and drop.</p>
+<p>Allowed values: &gt;= -1</p>
+<p>Default value: -1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3682378"></a><h3>
+<a name="GtkNotebook--homogeneous"></a>The :<code class="literal">homogeneous</code> property</h3>
+<a class="indexterm" name="id3682395"></a><pre class="programlisting">  homogeneous              <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Whether tabs should have homogeneous sizes.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3682421"></a><h3>
+<a name="GtkNotebook--page"></a>The :<code class="literal">page</code> property</h3>
+<a class="indexterm" name="id3682437"></a><pre class="programlisting">  page                     <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>The index of the current page.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3682468"></a><h3>
+<a name="GtkNotebook--scrollable"></a>The :<code class="literal">scrollable</code> property</h3>
+<a class="indexterm" name="id3682483"></a><pre class="programlisting">  scrollable               <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>If TRUE, scroll arrows are added if there are too many tabs to fit.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3682510"></a><h3>
+<a name="GtkNotebook--show-border"></a>The :<code class="literal">show-border</code> property</h3>
+<a class="indexterm" name="id3682527"></a><pre class="programlisting">  show-border              <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Whether the border should be shown or not.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3682553"></a><h3>
+<a name="GtkNotebook--show-tabs"></a>The :<code class="literal">show-tabs</code> property</h3>
+<a class="indexterm" name="id3682569"></a><pre class="programlisting">  show-tabs                <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Whether tabs should be shown or not.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3682596"></a><h3>
+<a name="GtkNotebook--tab-border"></a>The :<code class="literal">tab-border</code> property</h3>
+<a class="indexterm" name="id3682612"></a><pre class="programlisting">  tab-border               <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Write</pre>
+<p>Width of the border around the tab labels.</p>
+<p>Default value: 2</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3682639"></a><h3>
+<a name="GtkNotebook--tab-hborder"></a>The :<code class="literal">tab-hborder</code> property</h3>
+<a class="indexterm" name="id3682655"></a><pre class="programlisting">  tab-hborder              <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
+<p>Width of the horizontal border of tab labels.</p>
+<p>Default value: 2</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3682682"></a><h3>
+<a name="GtkNotebook--tab-pos"></a>The :<code class="literal">tab-pos</code> property</h3>
+<a class="indexterm" name="id3682698"></a><pre class="programlisting">  tab-pos                  <a href="gtk-Standard-Enumerations.html#GtkPositionType">GtkPositionType</a>       : Read / Write</pre>
+<p>Which side of the notebook holds the tabs.</p>
+<p>Default value: GTK_POS_TOP</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3682725"></a><h3>
+<a name="GtkNotebook--tab-vborder"></a>The :<code class="literal">tab-vborder</code> property</h3>
+<a class="indexterm" name="id3682741"></a><pre class="programlisting">  tab-vborder              <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
+<p>Width of the vertical border of tab labels.</p>
+<p>Default value: 2</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3682768"></a><h2>Child Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3682780"></a><h3>
+<a name="GtkNotebook--detachable"></a>The :<code class="literal">detachable</code> child property</h3>
+<a class="indexterm" name="id3682796"></a><pre class="programlisting">  detachable               <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Whether the tab is detachable.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3682822"></a><h3>
+<a name="GtkNotebook--menu-label"></a>The :<code class="literal">menu-label</code> child property</h3>
+<a class="indexterm" name="id3682838"></a><pre class="programlisting">  menu-label               <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>The string displayed in the child's menu entry.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3682865"></a><h3>
+<a name="GtkNotebook--position"></a>The :<code class="literal">position</code> child property</h3>
+<a class="indexterm" name="id3682881"></a><pre class="programlisting">  position                 <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>The index of the child in the parent.</p>
+<p>Allowed values: &gt;= -1</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3682912"></a><h3>
+<a name="GtkNotebook--reorderable"></a>The :<code class="literal">reorderable</code> child property</h3>
+<a class="indexterm" name="id3682928"></a><pre class="programlisting">  reorderable              <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Whether the tab is reorderable by user action or not.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3682955"></a><h3>
+<a name="GtkNotebook--tab-expand"></a>The :<code class="literal">tab-expand</code> child property</h3>
+<a class="indexterm" name="id3682971"></a><pre class="programlisting">  tab-expand               <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Whether to expand the child's tab or not.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3682998"></a><h3>
+<a name="GtkNotebook--tab-fill"></a>The :<code class="literal">tab-fill</code> child property</h3>
+<a class="indexterm" name="id3683014"></a><pre class="programlisting">  tab-fill                 <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Whether the child's tab should fill the allocated area or not.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3683041"></a><h3>
+<a name="GtkNotebook--tab-label"></a>The :<code class="literal">tab-label</code> child property</h3>
+<a class="indexterm" name="id3683058"></a><pre class="programlisting">  tab-label                <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>The string displayed on the child's tab label.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3683084"></a><h3>
+<a name="GtkNotebook--tab-pack"></a>The :<code class="literal">tab-pack</code> child property</h3>
+<a class="indexterm" name="id3683101"></a><pre class="programlisting">  tab-pack                 <a href="gtk-Standard-Enumerations.html#GtkPackType">GtkPackType</a>           : Read / Write</pre>
+<p>A GtkPackType indicating whether the child is packed with reference to the start or end of the parent.</p>
+<p>Default value: GTK_PACK_START</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3683129"></a><h2>Style Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3683140"></a><h3>
+<a name="GtkNotebook--arrow-spacing"></a>The :<code class="literal">arrow-spacing</code> style property</h3>
+<a class="indexterm" name="id3683156"></a><pre class="programlisting">  arrow-spacing            <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read</pre>
+<p>
+The "arrow-size" property defines the spacing between the scroll
+arrows and the tabs.</p>
+<p>
+
+</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3683197"></a><h3>
+<a name="GtkNotebook--has-backward-stepper"></a>The :<code class="literal">has-backward-stepper</code> style property</h3>
+<a class="indexterm" name="id3683214"></a><pre class="programlisting">  has-backward-stepper     <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read</pre>
+<p>
+The "has-backward-stepper" property determines whether 
+the standard backward arrow button is displayed.</p>
+<p>
+
+</p>
+<p>Default value: TRUE</p>
+<p>Since  2.4
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3683250"></a><h3>
+<a name="GtkNotebook--has-forward-stepper"></a>The :<code class="literal">has-forward-stepper</code> style property</h3>
+<a class="indexterm" name="id3683267"></a><pre class="programlisting">  has-forward-stepper      <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read</pre>
+<p>
+The "has-forward-stepper" property determines whether 
+the standard forward arrow button is displayed.</p>
+<p>
+
+</p>
+<p>Default value: TRUE</p>
+<p>Since  2.4
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3683303"></a><h3>
+<a name="GtkNotebook--has-secondary-backward-stepper"></a>The :<code class="literal">has-secondary-backward-stepper</code> style property</h3>
+<a class="indexterm" name="id3683320"></a><pre class="programlisting">  has-secondary-backward-stepper <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read</pre>
+<p>
+The "has-secondary-backward-stepper" property determines whether 
+a second backward arrow button is displayed on the opposite end 
+of the tab area.</p>
+<p>
+
+</p>
+<p>Default value: FALSE</p>
+<p>Since  2.4
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3683357"></a><h3>
+<a name="GtkNotebook--has-secondary-forward-stepper"></a>The :<code class="literal">has-secondary-forward-stepper</code> style property</h3>
+<a class="indexterm" name="id3683375"></a><pre class="programlisting">  has-secondary-forward-stepper <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read</pre>
+<p>
+The "has-secondary-forward-stepper" property determines whether 
+a second forward arrow button is displayed on the opposite end 
+of the tab area.</p>
+<p>
+
+</p>
+<p>Default value: FALSE</p>
+<p>Since  2.4
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3683412"></a><h3>
+<a name="GtkNotebook--tab-curvature"></a>The :<code class="literal">tab-curvature</code> style property</h3>
+<a class="indexterm" name="id3683428"></a><pre class="programlisting">  tab-curvature            <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read</pre>
+<p>
+The "tab-curvature" property defines size of tab curvature.</p>
+<p>
+
+</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 1</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3683468"></a><h3>
+<a name="GtkNotebook--tab-overlap"></a>The :<code class="literal">tab-overlap</code> style property</h3>
+<a class="indexterm" name="id3683484"></a><pre class="programlisting">  tab-overlap              <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read</pre>
+<p>
+The "tab-overlap" property defines size of tab overlap
+area.</p>
+<p>
+
+</p>
+<p>Default value: 2</p>
+<p>Since  2.10
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3683521"></a><h2>Signal Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3683532"></a><h3>
+<a name="GtkNotebook-change-current-page"></a>The <code class="literal">::change-current-page</code> signal</h3>
+<a class="indexterm" name="id3683549"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            user_function                      (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>         arg1,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>     user_data)      : Run Last / Action</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td>the object which received the signal.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>arg1</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3683649"></a><h3>
+<a name="GtkNotebook-focus-tab"></a>The <code class="literal">::focus-tab</code> signal</h3>
+<a class="indexterm" name="id3683665"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            user_function                      (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a>   *notebook,
+                                                        GtkNotebookTab arg1,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>       user_data)      : Run Last / Action</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td>the object which received the signal.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>arg1</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3683767"></a><h3>
+<a name="GtkNotebook-move-focus-out"></a>The <code class="literal">::move-focus-out</code> signal</h3>
+<a class="indexterm" name="id3683783"></a><pre class="programlisting">void                user_function                      (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a>     *notebook,
+                                                        <a href="gtk-Standard-Enumerations.html#GtkDirectionType">GtkDirectionType</a> arg1,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>         user_data)      : Run Last / Action</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td>the object which received the signal.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>arg1</code></em>&#160;:</span></td>
+<td>
+
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3683874"></a><h3>
+<a name="GtkNotebook-page-added"></a>The <code class="literal">::page-added</code> signal</h3>
+<a class="indexterm" name="id3683890"></a><pre class="programlisting">void                user_function                      (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                        <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>   *child,
+                                                        <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>        page_num,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>     user_data)      : Run Last</pre>
+<p>
+the ::page-added signal is emitted in the notebook
+right after a page is added to the notebook.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> the <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>child</code></em>&#160;:</span></td>
+<td> the child <a href="GtkWidget.html" title="GtkWidget"><span class="type">GtkWidget</span></a> affected
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>page_num</code></em>&#160;:</span></td>
+<td> the new page number for <em class="parameter"><code>child</code></em>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3684033"></a><h3>
+<a name="GtkNotebook-page-removed"></a>The <code class="literal">::page-removed</code> signal</h3>
+<a class="indexterm" name="id3684049"></a><pre class="programlisting">void                user_function                      (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                        <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>   *child,
+                                                        <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>        page_num,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>     user_data)      : Run Last</pre>
+<p>
+the ::page-removed signal is emitted in the notebook
+right after a page is removed from the notebook.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> the <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>child</code></em>&#160;:</span></td>
+<td> the child <a href="GtkWidget.html" title="GtkWidget"><span class="type">GtkWidget</span></a> affected
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>page_num</code></em>&#160;:</span></td>
+<td> the <em class="parameter"><code>child</code></em> page number
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3684192"></a><h3>
+<a name="GtkNotebook-page-reordered"></a>The <code class="literal">::page-reordered</code> signal</h3>
+<a class="indexterm" name="id3684208"></a><pre class="programlisting">void                user_function                      (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                        <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>   *child,
+                                                        <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>        page_num,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>     user_data)      : Run Last</pre>
+<p>
+the ::page-reordered signal is emitted in the notebook
+right after a page has been reordered.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td> the <a href="GtkNotebook.html" title="GtkNotebook"><span class="type">GtkNotebook</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>child</code></em>&#160;:</span></td>
+<td> the child <a href="GtkWidget.html" title="GtkWidget"><span class="type">GtkWidget</span></a> affected
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>page_num</code></em>&#160;:</span></td>
+<td> the new page number for <em class="parameter"><code>child</code></em>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3684351"></a><h3>
+<a name="GtkNotebook-reorder-tab"></a>The <code class="literal">::reorder-tab</code> signal</h3>
+<a class="indexterm" name="id3684367"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            user_function                      (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a>     *notebook,
+                                                        <a href="gtk-Standard-Enumerations.html#GtkDirectionType">GtkDirectionType</a> arg1,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>         arg2,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>         user_data)      : Run Last / Action</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td>the object which received the signal.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>arg1</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>Param3</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3684489"></a><h3>
+<a name="GtkNotebook-select-page"></a>The <code class="literal">::select-page</code> signal</h3>
+<a class="indexterm" name="id3684506"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            user_function                      (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a> *notebook,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>     arg1,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>     user_data)      : Run Last / Action</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td>the object which received the signal.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>arg1</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3684606"></a><h3>
+<a name="GtkNotebook-switch-page"></a>The <code class="literal">::switch-page</code> signal</h3>
+<a class="indexterm" name="id3684622"></a><pre class="programlisting">void                user_function                      (<a href="GtkNotebook.html" title="GtkNotebook">GtkNotebook</a>     *notebook,
+                                                        <a href="GtkNotebook.html#GtkNotebookPage">GtkNotebookPage</a> *page,
+                                                        <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>            page_num,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>         user_data)      : Run Last</pre>
+<p>
+Emitted when the user or a function changes the current page.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>notebook</code></em>&#160;:</span></td>
+<td>the object which received the signal.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>page</code></em>&#160;:</span></td>
+<td>the new current page
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>page_num</code></em>&#160;:</span></td>
+<td>the index of the page
+
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3684738"></a><h2>See Also</h2>
+<p>
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><a href="GtkContainer.html" title="GtkContainer"><span class="type">GtkContainer</span></a></span></td>
+<td><p>For functions that apply to every <a href="GtkContainer.html" title="GtkContainer"><span class="type">GtkContainer</span></a>
+(like <a href="GtkList.html" title="GtkList"><span class="type">GtkList</span></a>).</p></td>
+</tr></tbody>
+</table></div>
+<p>
+</p>
+</div>
+</div>
+</body>
+</html>

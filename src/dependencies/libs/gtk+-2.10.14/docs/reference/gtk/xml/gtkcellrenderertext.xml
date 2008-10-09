@@ -1,0 +1,428 @@
+<refentry id="GtkCellRendererText">
+<refmeta>
+<refentrytitle role="top_of_page">GtkCellRendererText</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GTK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GtkCellRendererText</refname>
+<refpurpose>Renders text in a cell</refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
+</refnamediv>
+
+<refsynopsisdiv role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <link linkend="GtkCellRendererText-struct">GtkCellRendererText</link>;
+<link linkend="GtkCellRenderer">GtkCellRenderer</link>*    <link linkend="gtk-cell-renderer-text-new">gtk_cell_renderer_text_new</link>          (void);
+<link linkend="void">void</link>                <link linkend="gtk-cell-renderer-text-set-fixed-height-from-font">gtk_cell_renderer_text_set_fixed_height_from_font</link>
+                                                        (<link linkend="GtkCellRendererText">GtkCellRendererText</link> *renderer,
+                                                         <link linkend="gint">gint</link> number_of_rows);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1 role="object_hierarchy">
+<title role="object_hierarchy.title">Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GInitiallyUnowned">GInitiallyUnowned</link>
+         +----<link linkend="GtkObject">GtkObject</link>
+               +----<link linkend="GtkCellRenderer">GtkCellRenderer</link>
+                     +----GtkCellRendererText
+                           +----<link linkend="GtkCellRendererAccel">GtkCellRendererAccel</link>
+                           +----<link linkend="GtkCellRendererCombo">GtkCellRendererCombo</link>
+                           +----<link linkend="GtkCellRendererSpin">GtkCellRendererSpin</link>
+</synopsis>
+
+</refsect1>
+
+
+
+
+
+<refsect1 role="properties">
+<title role="properties.title">Properties</title>
+<synopsis>
+
+  <link linkend="GtkCellRendererText--alignment">alignment</link>                <link linkend="PangoAlignment">PangoAlignment</link>        : Read / Write
+  <link linkend="GtkCellRendererText--attributes">attributes</link>               <link linkend="PangoAttrList">PangoAttrList</link>         : Read / Write
+  <link linkend="GtkCellRendererText--background">background</link>               <link linkend="gchararray">gchararray</link>            : Write
+  <link linkend="GtkCellRendererText--background-gdk">background-gdk</link>           <link linkend="GdkColor">GdkColor</link>              : Read / Write
+  <link linkend="GtkCellRendererText--background-set">background-set</link>           <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkCellRendererText--editable">editable</link>                 <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkCellRendererText--editable-set">editable-set</link>             <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkCellRendererText--ellipsize">ellipsize</link>                <link linkend="PangoEllipsizeMode">PangoEllipsizeMode</link>    : Read / Write
+  <link linkend="GtkCellRendererText--ellipsize-set">ellipsize-set</link>            <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkCellRendererText--family">family</link>                   <link linkend="gchararray">gchararray</link>            : Read / Write
+  <link linkend="GtkCellRendererText--family-set">family-set</link>               <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkCellRendererText--font">font</link>                     <link linkend="gchararray">gchararray</link>            : Read / Write
+  <link linkend="GtkCellRendererText--font-desc">font-desc</link>                <link linkend="PangoFontDescription">PangoFontDescription</link>  : Read / Write
+  <link linkend="GtkCellRendererText--foreground">foreground</link>               <link linkend="gchararray">gchararray</link>            : Write
+  <link linkend="GtkCellRendererText--foreground-gdk">foreground-gdk</link>           <link linkend="GdkColor">GdkColor</link>              : Read / Write
+  <link linkend="GtkCellRendererText--foreground-set">foreground-set</link>           <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkCellRendererText--language">language</link>                 <link linkend="gchararray">gchararray</link>            : Read / Write
+  <link linkend="GtkCellRendererText--language-set">language-set</link>             <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkCellRendererText--markup">markup</link>                   <link linkend="gchararray">gchararray</link>            : Write
+  <link linkend="GtkCellRendererText--rise">rise</link>                     <link linkend="gint">gint</link>                  : Read / Write
+  <link linkend="GtkCellRendererText--rise-set">rise-set</link>                 <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkCellRendererText--scale">scale</link>                    <link linkend="gdouble">gdouble</link>               : Read / Write
+  <link linkend="GtkCellRendererText--scale-set">scale-set</link>                <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkCellRendererText--single-paragraph-mode">single-paragraph-mode</link>    <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkCellRendererText--size">size</link>                     <link linkend="gint">gint</link>                  : Read / Write
+  <link linkend="GtkCellRendererText--size-points">size-points</link>              <link linkend="gdouble">gdouble</link>               : Read / Write
+  <link linkend="GtkCellRendererText--size-set">size-set</link>                 <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkCellRendererText--stretch">stretch</link>                  <link linkend="PangoStretch">PangoStretch</link>          : Read / Write
+  <link linkend="GtkCellRendererText--stretch-set">stretch-set</link>              <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkCellRendererText--strikethrough">strikethrough</link>            <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkCellRendererText--strikethrough-set">strikethrough-set</link>        <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkCellRendererText--style">style</link>                    <link linkend="PangoStyle">PangoStyle</link>            : Read / Write
+  <link linkend="GtkCellRendererText--style-set">style-set</link>                <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkCellRendererText--text">text</link>                     <link linkend="gchararray">gchararray</link>            : Read / Write
+  <link linkend="GtkCellRendererText--underline">underline</link>                <link linkend="PangoUnderline">PangoUnderline</link>        : Read / Write
+  <link linkend="GtkCellRendererText--underline-set">underline-set</link>            <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkCellRendererText--variant">variant</link>                  <link linkend="PangoVariant">PangoVariant</link>          : Read / Write
+  <link linkend="GtkCellRendererText--variant-set">variant-set</link>              <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkCellRendererText--weight">weight</link>                   <link linkend="gint">gint</link>                  : Read / Write
+  <link linkend="GtkCellRendererText--weight-set">weight-set</link>               <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkCellRendererText--width-chars">width-chars</link>              <link linkend="gint">gint</link>                  : Read / Write
+  <link linkend="GtkCellRendererText--wrap-mode">wrap-mode</link>                <link linkend="PangoWrapMode">PangoWrapMode</link>         : Read / Write
+  <link linkend="GtkCellRendererText--wrap-width">wrap-width</link>               <link linkend="gint">gint</link>                  : Read / Write
+</synopsis>
+</refsect1>
+
+<refsect1 role="signal_proto">
+<title role="signal_proto.title">Signals</title>
+<synopsis>
+
+  <link linkend="GtkCellRendererText-edited">edited</link>                                         : Run Last
+</synopsis>
+</refsect1>
+
+
+<refsect1 role="desc">
+<title role="desc.title">Description</title>
+<para>
+A <link linkend="GtkCellRendererText"><type>GtkCellRendererText</type></link> renders a given text in its cell, using the font, color and 
+style information provided by its properties. The text will be ellipsized if it is 
+too long and the <link linkend="GtkCellRendererText--ellipsize">ellipsize</link> 
+property allows it.
+</para>
+
+<para>
+If the <link linkend="GtkCellRenderer--mode">mode</link> is <link linkend="GTK-CELL-RENDERER-MODE-EDITABLE:CAPS"><literal>GTK_CELL_RENDERER_MODE_EDITABLE</literal></link>,
+the <link linkend="GtkCellRendererText"><type>GtkCellRendererText</type></link> allows to edit its text using an entry.
+</para>
+</refsect1>
+
+<refsect1 role="details">
+<title role="details.title">Details</title>
+<refsect2>
+<title><anchor id="GtkCellRendererText-struct" role="struct"/>GtkCellRendererText</title>
+<indexterm><primary>GtkCellRendererText</primary></indexterm><programlisting>typedef struct _GtkCellRendererText GtkCellRendererText;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-cell-renderer-text-new" role="function"/>gtk_cell_renderer_text_new ()</title>
+<indexterm><primary>gtk_cell_renderer_text_new</primary></indexterm><programlisting><link linkend="GtkCellRenderer">GtkCellRenderer</link>*    gtk_cell_renderer_text_new          (void);</programlisting>
+<para>
+Creates a new <link linkend="GtkCellRendererText"><type>GtkCellRendererText</type></link>. Adjust how text is drawn using
+object properties. Object properties can be
+set globally (with <link linkend="g-object-set"><function>g_object_set()</function></link>). Also, with <link linkend="GtkTreeViewColumn"><type>GtkTreeViewColumn</type></link>,
+you can bind a property to a value in a <link linkend="GtkTreeModel"><type>GtkTreeModel</type></link>. For example,
+you can bind the "text" property on the cell renderer to a string
+value in the model, thus rendering a different string in each row
+of the <link linkend="GtkTreeView"><type>GtkTreeView</type></link></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the new cell renderer
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-cell-renderer-text-set-fixed-height-from-font" role="function"/>gtk_cell_renderer_text_set_fixed_height_from_font ()</title>
+<indexterm><primary>gtk_cell_renderer_text_set_fixed_height_from_font</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_cell_renderer_text_set_fixed_height_from_font
+                                                        (<link linkend="GtkCellRendererText">GtkCellRendererText</link> *renderer,
+                                                         <link linkend="gint">gint</link> number_of_rows);</programlisting>
+<para>
+Sets the height of a renderer to explicitly be determined by the "font" and
+"y_pad" property set on it.  Further changes in these properties do not
+affect the height, so they must be accompanied by a subsequent call to this
+function.  Using this function is unflexible, and should really only be used
+if calculating the size of a cell is too slow (ie, a massive number of cells
+displayed).  If <parameter>number_of_rows</parameter> is -1, then the fixed height is unset, and
+the height is determined by the properties again.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>renderer</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GtkCellRendererText"><type>GtkCellRendererText</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>number_of_rows</parameter>&nbsp;:</term>
+<listitem><simpara> Number of rows of text each cell renderer is allocated, or -1
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+<refsect1 role="property_details">
+<title role="property_details.title">Property Details</title>
+<refsect2><title><anchor id="GtkCellRendererText--alignment"/>The :<literal>alignment</literal> property</title>
+<indexterm role="2.10"><primary>GtkCellRendererText:alignment</primary></indexterm><programlisting>  alignment                <link linkend="PangoAlignment">PangoAlignment</link>        : Read / Write</programlisting>
+<para>
+Specifies how to align the lines of text with respect to each other. 
+</para>
+<para>
+Note that this property describes how to align the lines of text in 
+case there are several of them. The "xalign" property of <link linkend="GtkCellRenderer"><type>GtkCellRenderer</type></link>, 
+on the other hand, sets the horizontal alignment of the whole text.</para>
+<para>
+
+</para><para>Default value: PANGO_ALIGN_LEFT</para>
+<para>Since  2.10
+</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--attributes"/>The :<literal>attributes</literal> property</title>
+<indexterm><primary>GtkCellRendererText:attributes</primary></indexterm><programlisting>  attributes               <link linkend="PangoAttrList">PangoAttrList</link>         : Read / Write</programlisting>
+<para>A list of style attributes to apply to the text of the renderer.</para></refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--background"/>The :<literal>background</literal> property</title>
+<indexterm><primary>GtkCellRendererText:background</primary></indexterm><programlisting>  background               <link linkend="gchararray">gchararray</link>            : Write</programlisting>
+<para>Background color as a string.</para><para>Default value: NULL</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--background-gdk"/>The :<literal>background-gdk</literal> property</title>
+<indexterm><primary>GtkCellRendererText:background-gdk</primary></indexterm><programlisting>  background-gdk           <link linkend="GdkColor">GdkColor</link>              : Read / Write</programlisting>
+<para>Background color as a GdkColor.</para></refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--background-set"/>The :<literal>background-set</literal> property</title>
+<indexterm><primary>GtkCellRendererText:background-set</primary></indexterm><programlisting>  background-set           <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether this tag affects the background color.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--editable"/>The :<literal>editable</literal> property</title>
+<indexterm><primary>GtkCellRendererText:editable</primary></indexterm><programlisting>  editable                 <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether the text can be modified by the user.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--editable-set"/>The :<literal>editable-set</literal> property</title>
+<indexterm><primary>GtkCellRendererText:editable-set</primary></indexterm><programlisting>  editable-set             <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether this tag affects text editability.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--ellipsize"/>The :<literal>ellipsize</literal> property</title>
+<indexterm role="2.6"><primary>GtkCellRendererText:ellipsize</primary></indexterm><programlisting>  ellipsize                <link linkend="PangoEllipsizeMode">PangoEllipsizeMode</link>    : Read / Write</programlisting>
+<para>
+Specifies the preferred place to ellipsize the string, if the cell renderer 
+does not have enough room to display the entire string. Setting it to 
+<link linkend="PANGO-ELLIPSIZE-NONE:CAPS"><literal>PANGO_ELLIPSIZE_NONE</literal></link> turns off ellipsizing. See the wrap-width property
+for another way of making the text fit into a given width.</para>
+<para>
+
+</para><para>Default value: PANGO_ELLIPSIZE_NONE</para>
+<para>Since  2.6
+</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--ellipsize-set"/>The :<literal>ellipsize-set</literal> property</title>
+<indexterm><primary>GtkCellRendererText:ellipsize-set</primary></indexterm><programlisting>  ellipsize-set            <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether this tag affects the ellipsize mode.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--family"/>The :<literal>family</literal> property</title>
+<indexterm><primary>GtkCellRendererText:family</primary></indexterm><programlisting>  family                   <link linkend="gchararray">gchararray</link>            : Read / Write</programlisting>
+<para>Name of the font family, e.g. Sans, Helvetica, Times, Monospace.</para><para>Default value: NULL</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--family-set"/>The :<literal>family-set</literal> property</title>
+<indexterm><primary>GtkCellRendererText:family-set</primary></indexterm><programlisting>  family-set               <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether this tag affects the font family.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--font"/>The :<literal>font</literal> property</title>
+<indexterm><primary>GtkCellRendererText:font</primary></indexterm><programlisting>  font                     <link linkend="gchararray">gchararray</link>            : Read / Write</programlisting>
+<para>Font description as a string, e.g. "Sans Italic 12".</para><para>Default value: NULL</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--font-desc"/>The :<literal>font-desc</literal> property</title>
+<indexterm><primary>GtkCellRendererText:font-desc</primary></indexterm><programlisting>  font-desc                <link linkend="PangoFontDescription">PangoFontDescription</link>  : Read / Write</programlisting>
+<para>Font description as a PangoFontDescription struct.</para></refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--foreground"/>The :<literal>foreground</literal> property</title>
+<indexterm><primary>GtkCellRendererText:foreground</primary></indexterm><programlisting>  foreground               <link linkend="gchararray">gchararray</link>            : Write</programlisting>
+<para>Foreground color as a string.</para><para>Default value: NULL</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--foreground-gdk"/>The :<literal>foreground-gdk</literal> property</title>
+<indexterm><primary>GtkCellRendererText:foreground-gdk</primary></indexterm><programlisting>  foreground-gdk           <link linkend="GdkColor">GdkColor</link>              : Read / Write</programlisting>
+<para>Foreground color as a GdkColor.</para></refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--foreground-set"/>The :<literal>foreground-set</literal> property</title>
+<indexterm><primary>GtkCellRendererText:foreground-set</primary></indexterm><programlisting>  foreground-set           <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether this tag affects the foreground color.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--language"/>The :<literal>language</literal> property</title>
+<indexterm><primary>GtkCellRendererText:language</primary></indexterm><programlisting>  language                 <link linkend="gchararray">gchararray</link>            : Read / Write</programlisting>
+<para>The language this text is in, as an ISO code. Pango can use this as a hint when rendering the text. If you don't understand this parameter, you probably don't need it.</para><para>Default value: NULL</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--language-set"/>The :<literal>language-set</literal> property</title>
+<indexterm><primary>GtkCellRendererText:language-set</primary></indexterm><programlisting>  language-set             <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether this tag affects the language the text is rendered as.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--markup"/>The :<literal>markup</literal> property</title>
+<indexterm><primary>GtkCellRendererText:markup</primary></indexterm><programlisting>  markup                   <link linkend="gchararray">gchararray</link>            : Write</programlisting>
+<para>Marked up text to render.</para><para>Default value: NULL</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--rise"/>The :<literal>rise</literal> property</title>
+<indexterm><primary>GtkCellRendererText:rise</primary></indexterm><programlisting>  rise                     <link linkend="gint">gint</link>                  : Read / Write</programlisting>
+<para>Offset of text above the baseline (below the baseline if rise is negative).</para><para>Allowed values: &gt;= -2147483647</para>
+<para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--rise-set"/>The :<literal>rise-set</literal> property</title>
+<indexterm><primary>GtkCellRendererText:rise-set</primary></indexterm><programlisting>  rise-set                 <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether this tag affects the rise.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--scale"/>The :<literal>scale</literal> property</title>
+<indexterm><primary>GtkCellRendererText:scale</primary></indexterm><programlisting>  scale                    <link linkend="gdouble">gdouble</link>               : Read / Write</programlisting>
+<para>Font scaling factor.</para><para>Allowed values: &gt;= 0</para>
+<para>Default value: 1</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--scale-set"/>The :<literal>scale-set</literal> property</title>
+<indexterm><primary>GtkCellRendererText:scale-set</primary></indexterm><programlisting>  scale-set                <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether this tag scales the font size by a factor.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--single-paragraph-mode"/>The :<literal>single-paragraph-mode</literal> property</title>
+<indexterm><primary>GtkCellRendererText:single-paragraph-mode</primary></indexterm><programlisting>  single-paragraph-mode    <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether or not to keep all text in a single paragraph.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--size"/>The :<literal>size</literal> property</title>
+<indexterm><primary>GtkCellRendererText:size</primary></indexterm><programlisting>  size                     <link linkend="gint">gint</link>                  : Read / Write</programlisting>
+<para>Font size.</para><para>Allowed values: &gt;= 0</para>
+<para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--size-points"/>The :<literal>size-points</literal> property</title>
+<indexterm><primary>GtkCellRendererText:size-points</primary></indexterm><programlisting>  size-points              <link linkend="gdouble">gdouble</link>               : Read / Write</programlisting>
+<para>Font size in points.</para><para>Allowed values: &gt;= 0</para>
+<para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--size-set"/>The :<literal>size-set</literal> property</title>
+<indexterm><primary>GtkCellRendererText:size-set</primary></indexterm><programlisting>  size-set                 <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether this tag affects the font size.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--stretch"/>The :<literal>stretch</literal> property</title>
+<indexterm><primary>GtkCellRendererText:stretch</primary></indexterm><programlisting>  stretch                  <link linkend="PangoStretch">PangoStretch</link>          : Read / Write</programlisting>
+<para>Font stretch.</para><para>Default value: PANGO_STRETCH_NORMAL</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--stretch-set"/>The :<literal>stretch-set</literal> property</title>
+<indexterm><primary>GtkCellRendererText:stretch-set</primary></indexterm><programlisting>  stretch-set              <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether this tag affects the font stretch.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--strikethrough"/>The :<literal>strikethrough</literal> property</title>
+<indexterm><primary>GtkCellRendererText:strikethrough</primary></indexterm><programlisting>  strikethrough            <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether to strike through the text.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--strikethrough-set"/>The :<literal>strikethrough-set</literal> property</title>
+<indexterm><primary>GtkCellRendererText:strikethrough-set</primary></indexterm><programlisting>  strikethrough-set        <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether this tag affects strikethrough.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--style"/>The :<literal>style</literal> property</title>
+<indexterm><primary>GtkCellRendererText:style</primary></indexterm><programlisting>  style                    <link linkend="PangoStyle">PangoStyle</link>            : Read / Write</programlisting>
+<para>Font style.</para><para>Default value: PANGO_STYLE_NORMAL</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--style-set"/>The :<literal>style-set</literal> property</title>
+<indexterm><primary>GtkCellRendererText:style-set</primary></indexterm><programlisting>  style-set                <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether this tag affects the font style.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--text"/>The :<literal>text</literal> property</title>
+<indexterm><primary>GtkCellRendererText:text</primary></indexterm><programlisting>  text                     <link linkend="gchararray">gchararray</link>            : Read / Write</programlisting>
+<para>Text to render.</para><para>Default value: NULL</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--underline"/>The :<literal>underline</literal> property</title>
+<indexterm><primary>GtkCellRendererText:underline</primary></indexterm><programlisting>  underline                <link linkend="PangoUnderline">PangoUnderline</link>        : Read / Write</programlisting>
+<para>Style of underline for this text.</para><para>Default value: PANGO_UNDERLINE_NONE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--underline-set"/>The :<literal>underline-set</literal> property</title>
+<indexterm><primary>GtkCellRendererText:underline-set</primary></indexterm><programlisting>  underline-set            <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether this tag affects underlining.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--variant"/>The :<literal>variant</literal> property</title>
+<indexterm><primary>GtkCellRendererText:variant</primary></indexterm><programlisting>  variant                  <link linkend="PangoVariant">PangoVariant</link>          : Read / Write</programlisting>
+<para>Font variant.</para><para>Default value: PANGO_VARIANT_NORMAL</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--variant-set"/>The :<literal>variant-set</literal> property</title>
+<indexterm><primary>GtkCellRendererText:variant-set</primary></indexterm><programlisting>  variant-set              <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether this tag affects the font variant.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--weight"/>The :<literal>weight</literal> property</title>
+<indexterm><primary>GtkCellRendererText:weight</primary></indexterm><programlisting>  weight                   <link linkend="gint">gint</link>                  : Read / Write</programlisting>
+<para>Font weight.</para><para>Allowed values: &gt;= 0</para>
+<para>Default value: 400</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--weight-set"/>The :<literal>weight-set</literal> property</title>
+<indexterm><primary>GtkCellRendererText:weight-set</primary></indexterm><programlisting>  weight-set               <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether this tag affects the font weight.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--width-chars"/>The :<literal>width-chars</literal> property</title>
+<indexterm role="2.6"><primary>GtkCellRendererText:width-chars</primary></indexterm><programlisting>  width-chars              <link linkend="gint">gint</link>                  : Read / Write</programlisting>
+<para>
+The desired width of the cell, in characters. If this property is set to
+-1, the width will be calculated automatically, otherwise the cell will
+request either 3 characters or the property value, whichever is greater.</para>
+<para>
+
+</para><para>Allowed values: &gt;= -1</para>
+<para>Default value: -1</para>
+<para>Since  2.6
+</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--wrap-mode"/>The :<literal>wrap-mode</literal> property</title>
+<indexterm role="2.8"><primary>GtkCellRendererText:wrap-mode</primary></indexterm><programlisting>  wrap-mode                <link linkend="PangoWrapMode">PangoWrapMode</link>         : Read / Write</programlisting>
+<para>
+Specifies how to break the string into multiple lines, if the cell 
+renderer does not have enough room to display the entire string. 
+This property has no effect unless the wrap-width property is set.</para>
+<para>
+
+</para><para>Default value: PANGO_WRAP_CHAR</para>
+<para>Since  2.8
+</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererText--wrap-width"/>The :<literal>wrap-width</literal> property</title>
+<indexterm role="2.8"><primary>GtkCellRendererText:wrap-width</primary></indexterm><programlisting>  wrap-width               <link linkend="gint">gint</link>                  : Read / Write</programlisting>
+<para>
+Specifies the width at which the text is wrapped. The wrap-mode property can 
+be used to influence at what character positions the line breaks can be placed.
+Setting wrap-width to -1 turns wrapping off.</para>
+<para>
+
+</para><para>Allowed values: &gt;= -1</para>
+<para>Default value: -1</para>
+<para>Since  2.8
+</para>
+</refsect2>
+
+</refsect1>
+
+<refsect1 role="signals">
+<title role="signals.title">Signal Details</title>
+<refsect2><title><anchor id="GtkCellRendererText-edited"/>The <literal>::edited</literal> signal</title>
+<indexterm><primary>GtkCellRendererText::edited</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="GtkCellRendererText">GtkCellRendererText</link> *renderer,
+                                                        <link linkend="gchar">gchar</link>               *path,
+                                                        <link linkend="gchar">gchar</link>               *new_text,
+                                                        <link linkend="gpointer">gpointer</link>             user_data)      : Run Last</programlisting>
+<para>
+This signal is emitted after <parameter>renderer</parameter> has been edited.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>renderer</parameter>&nbsp;:</term>
+<listitem><simpara> the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> the path identifying the edited cell.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>new_text</parameter>&nbsp;:</term>
+<listitem><simpara> the new text.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+</refsect1>
+
+
+
+</refentry>

@@ -1,0 +1,825 @@
+<refentry id="GtkAssistant">
+<refmeta>
+<refentrytitle role="top_of_page">GtkAssistant</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GTK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GtkAssistant</refname>
+<refpurpose>A widget used to guide users through multi-step operations</refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
+</refnamediv>
+
+<refsynopsisdiv role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <link linkend="GtkAssistant-struct">GtkAssistant</link>;
+<link linkend="GtkWidget">GtkWidget</link>*          <link linkend="gtk-assistant-new">gtk_assistant_new</link>                   (void);
+<link linkend="gint">gint</link>                <link linkend="gtk-assistant-get-current-page">gtk_assistant_get_current_page</link>      (<link linkend="GtkAssistant">GtkAssistant</link> *assistant);
+<link linkend="void">void</link>                <link linkend="gtk-assistant-set-current-page">gtk_assistant_set_current_page</link>      (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="gint">gint</link> page_num);
+<link linkend="gint">gint</link>                <link linkend="gtk-assistant-get-n-pages">gtk_assistant_get_n_pages</link>           (<link linkend="GtkAssistant">GtkAssistant</link> *assistant);
+<link linkend="GtkWidget">GtkWidget</link>*          <link linkend="gtk-assistant-get-nth-page">gtk_assistant_get_nth_page</link>          (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="gint">gint</link> page_num);
+<link linkend="gint">gint</link>                <link linkend="gtk-assistant-prepend-page">gtk_assistant_prepend_page</link>          (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page);
+<link linkend="gint">gint</link>                <link linkend="gtk-assistant-append-page">gtk_assistant_append_page</link>           (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page);
+<link linkend="gint">gint</link>                <link linkend="gtk-assistant-insert-page">gtk_assistant_insert_page</link>           (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page,
+                                                         <link linkend="gint">gint</link> position);
+<link linkend="gint">gint</link>                (<link linkend="GtkAssistantPageFunc">*GtkAssistantPageFunc</link>)             (<link linkend="gint">gint</link> current_page,
+                                                         <link linkend="gpointer">gpointer</link> data);
+<link linkend="void">void</link>                <link linkend="gtk-assistant-set-forward-page-func">gtk_assistant_set_forward_page_func</link> (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkAssistantPageFunc">GtkAssistantPageFunc</link> page_func,
+                                                         <link linkend="gpointer">gpointer</link> data,
+                                                         <link linkend="GDestroyNotify">GDestroyNotify</link> destroy);
+enum                <link linkend="GtkAssistantPageType">GtkAssistantPageType</link>;
+<link linkend="void">void</link>                <link linkend="gtk-assistant-set-page-type">gtk_assistant_set_page_type</link>         (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page,
+                                                         <link linkend="GtkAssistantPageType">GtkAssistantPageType</link> type);
+<link linkend="GtkAssistantPageType">GtkAssistantPageType</link> <link linkend="gtk-assistant-get-page-type">gtk_assistant_get_page_type</link>        (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page);
+<link linkend="void">void</link>                <link linkend="gtk-assistant-set-page-title">gtk_assistant_set_page_title</link>        (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page,
+                                                         const <link linkend="gchar">gchar</link> *title);
+const <link linkend="gchar">gchar</link>*        <link linkend="gtk-assistant-get-page-title">gtk_assistant_get_page_title</link>        (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page);
+<link linkend="void">void</link>                <link linkend="gtk-assistant-set-page-header-image">gtk_assistant_set_page_header_image</link> (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page,
+                                                         <link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf);
+<link linkend="GdkPixbuf">GdkPixbuf</link>*          <link linkend="gtk-assistant-get-page-header-image">gtk_assistant_get_page_header_image</link> (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page);
+<link linkend="void">void</link>                <link linkend="gtk-assistant-set-page-side-image">gtk_assistant_set_page_side_image</link>   (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page,
+                                                         <link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf);
+<link linkend="GdkPixbuf">GdkPixbuf</link>*          <link linkend="gtk-assistant-get-page-side-image">gtk_assistant_get_page_side_image</link>   (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page);
+<link linkend="void">void</link>                <link linkend="gtk-assistant-set-page-complete">gtk_assistant_set_page_complete</link>     (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page,
+                                                         <link linkend="gboolean">gboolean</link> complete);
+<link linkend="gboolean">gboolean</link>            <link linkend="gtk-assistant-get-page-complete">gtk_assistant_get_page_complete</link>     (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page);
+<link linkend="void">void</link>                <link linkend="gtk-assistant-add-action-widget">gtk_assistant_add_action_widget</link>     (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *child);
+<link linkend="void">void</link>                <link linkend="gtk-assistant-remove-action-widget">gtk_assistant_remove_action_widget</link>  (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *child);
+<link linkend="void">void</link>                <link linkend="gtk-assistant-update-buttons-state">gtk_assistant_update_buttons_state</link>  (<link linkend="GtkAssistant">GtkAssistant</link> *assistant);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1 role="object_hierarchy">
+<title role="object_hierarchy.title">Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GInitiallyUnowned">GInitiallyUnowned</link>
+         +----<link linkend="GtkObject">GtkObject</link>
+               +----<link linkend="GtkWidget">GtkWidget</link>
+                     +----<link linkend="GtkContainer">GtkContainer</link>
+                           +----<link linkend="GtkBin">GtkBin</link>
+                                 +----<link linkend="GtkWindow">GtkWindow</link>
+                                       +----GtkAssistant
+</synopsis>
+
+</refsect1>
+
+
+
+<refsect1 role="impl_interfaces">
+<title role="impl_interfaces.title">Implemented Interfaces</title>
+<para>
+GtkAssistant implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
+</refsect1>
+
+
+<refsect1 role="child_properties">
+<title role="child_properties.title">Child Properties</title>
+<synopsis>
+
+  <link linkend="GtkAssistant--complete">complete</link>                 <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkAssistant--header-image">header-image</link>             <link linkend="GdkPixbuf">GdkPixbuf</link>             : Read / Write
+  <link linkend="GtkAssistant--page-type">page-type</link>                <link linkend="GtkAssistantPageType">GtkAssistantPageType</link>  : Read / Write
+  <link linkend="GtkAssistant--sidebar-image">sidebar-image</link>            <link linkend="GdkPixbuf">GdkPixbuf</link>             : Read / Write
+  <link linkend="GtkAssistant--title">title</link>                    <link linkend="gchararray">gchararray</link>            : Read / Write
+</synopsis>
+</refsect1>
+<refsect1 role="style_properties">
+<title role="style_properties.title">Style Properties</title>
+<synopsis>
+
+  <link linkend="GtkAssistant--content-padding">content-padding</link>          <link linkend="gint">gint</link>                  : Read
+  <link linkend="GtkAssistant--header-padding">header-padding</link>           <link linkend="gint">gint</link>                  : Read
+</synopsis>
+</refsect1>
+
+<refsect1 role="signal_proto">
+<title role="signal_proto.title">Signals</title>
+<synopsis>
+
+  <link linkend="GtkAssistant-apply">apply</link>                                          : Run Last
+  <link linkend="GtkAssistant-cancel">cancel</link>                                         : Run Last
+  <link linkend="GtkAssistant-close">close</link>                                          : Run Last
+  <link linkend="GtkAssistant-prepare">prepare</link>                                        : Run Last
+</synopsis>
+</refsect1>
+
+
+<refsect1 role="desc">
+<title role="desc.title">Description</title>
+<para>
+A <link linkend="GtkAssistant"><type>GtkAssistant</type></link> is a widget used to represent a generally complex
+operation splitted in several steps, guiding the user through its pages
+and controlling the page flow to collect the necessary data.
+</para>
+</refsect1>
+
+<refsect1 role="details">
+<title role="details.title">Details</title>
+<refsect2>
+<title><anchor id="GtkAssistant-struct" role="struct"/>GtkAssistant</title>
+<indexterm><primary>GtkAssistant</primary></indexterm><programlisting>typedef struct _GtkAssistant GtkAssistant;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-assistant-new" role="function" condition="since:2.10"/>gtk_assistant_new ()</title>
+<indexterm role="2.10"><primary>gtk_assistant_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*          gtk_assistant_new                   (void);</programlisting>
+<para>
+Creates a new <link linkend="GtkAssistant"><type>GtkAssistant</type></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a newly created <link linkend="GtkAssistant"><type>GtkAssistant</type></link>
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-assistant-get-current-page" role="function" condition="since:2.10"/>gtk_assistant_get_current_page ()</title>
+<indexterm role="2.10"><primary>gtk_assistant_get_current_page</primary></indexterm><programlisting><link linkend="gint">gint</link>                gtk_assistant_get_current_page      (<link linkend="GtkAssistant">GtkAssistant</link> *assistant);</programlisting>
+<para>
+Returns the page number of the current page</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>assistant</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkAssistant"><type>GtkAssistant</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The index (starting from 0) of the current page in
+the <parameter>assistant</parameter>, if the <parameter>assistant</parameter> has no pages, -1 will be returned
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-assistant-set-current-page" role="function" condition="since:2.10"/>gtk_assistant_set_current_page ()</title>
+<indexterm role="2.10"><primary>gtk_assistant_set_current_page</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_assistant_set_current_page      (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="gint">gint</link> page_num);</programlisting>
+<para>
+Switches the page to <parameter>page_num</parameter>. Note that this will only be necessary
+in custom buttons, as the <parameter>assistant</parameter> flow can be set with
+<link linkend="gtk-assistant-set-forward-page-func"><function>gtk_assistant_set_forward_page_func()</function></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>assistant</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkAssistant"><type>GtkAssistant</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>page_num</parameter>&nbsp;:</term>
+<listitem><simpara> index of the page to switch to, starting from 0.
+           If negative, the last page will be used. If greater
+           than the number of pages in the <parameter>assistant</parameter>, nothing
+           will be done.
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-assistant-get-n-pages" role="function" condition="since:2.10"/>gtk_assistant_get_n_pages ()</title>
+<indexterm role="2.10"><primary>gtk_assistant_get_n_pages</primary></indexterm><programlisting><link linkend="gint">gint</link>                gtk_assistant_get_n_pages           (<link linkend="GtkAssistant">GtkAssistant</link> *assistant);</programlisting>
+<para>
+Returns the number of pages in the <parameter>assistant</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>assistant</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkAssistant"><type>GtkAssistant</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The number of pages in the <parameter>assistant</parameter>.
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-assistant-get-nth-page" role="function" condition="since:2.10"/>gtk_assistant_get_nth_page ()</title>
+<indexterm role="2.10"><primary>gtk_assistant_get_nth_page</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*          gtk_assistant_get_nth_page          (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="gint">gint</link> page_num);</programlisting>
+<para>
+Returns the child widget contained in page number <parameter>page_num</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>assistant</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkAssistant"><type>GtkAssistant</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>page_num</parameter>&nbsp;:</term>
+<listitem><simpara> The index of a page in the <parameter>assistant</parameter>, or -1 to get the last page;
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The child widget, or <link linkend="NULL:CAPS"><literal>NULL</literal></link> if <parameter>page_num</parameter> is out of bounds.
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-assistant-prepend-page" role="function" condition="since:2.10"/>gtk_assistant_prepend_page ()</title>
+<indexterm role="2.10"><primary>gtk_assistant_prepend_page</primary></indexterm><programlisting><link linkend="gint">gint</link>                gtk_assistant_prepend_page          (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page);</programlisting>
+<para>
+Prepends a page to the <parameter>assistant</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>assistant</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkAssistant"><type>GtkAssistant</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>page</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkWidget"><type>GtkWidget</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the index (starting at 0) of the inserted page
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-assistant-append-page" role="function" condition="since:2.10"/>gtk_assistant_append_page ()</title>
+<indexterm role="2.10"><primary>gtk_assistant_append_page</primary></indexterm><programlisting><link linkend="gint">gint</link>                gtk_assistant_append_page           (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page);</programlisting>
+<para>
+Appends a page to the <parameter>assistant</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>assistant</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkAssistant"><type>GtkAssistant</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>page</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkWidget"><type>GtkWidget</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the index (starting at 0) of the inserted page
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-assistant-insert-page" role="function" condition="since:2.10"/>gtk_assistant_insert_page ()</title>
+<indexterm role="2.10"><primary>gtk_assistant_insert_page</primary></indexterm><programlisting><link linkend="gint">gint</link>                gtk_assistant_insert_page           (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page,
+                                                         <link linkend="gint">gint</link> position);</programlisting>
+<para>
+Inserts a page in the <parameter>assistant</parameter> at a given position.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>assistant</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkAssistant"><type>GtkAssistant</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>page</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkWidget"><type>GtkWidget</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>position</parameter>&nbsp;:</term>
+<listitem><simpara> the index (starting at 0) at which to insert the page,
+           or -1 to append the page to the <parameter>assistant</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the index (starting from 0) of the inserted page
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="GtkAssistantPageFunc" role="function"/>GtkAssistantPageFunc ()</title>
+<indexterm><primary>GtkAssistantPageFunc</primary></indexterm><programlisting><link linkend="gint">gint</link>                (*GtkAssistantPageFunc)             (<link linkend="gint">gint</link> current_page,
+                                                         <link linkend="gpointer">gpointer</link> data);</programlisting>
+<para>
+A function used by <link linkend="gtk-assistant-set-forward-page-func"><function>gtk_assistant_set_forward_page_func()</function></link> to know which
+is the next page given a current one. It's called both for computing the
+next page when the user presses the "forward" button and for handling
+the behavior of the "last" button.
+</para><variablelist role="params">
+<varlistentry><term><parameter>current_page</parameter>&nbsp;:</term>
+<listitem><simpara>The page number used to calculate the next page.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>user data.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>The next page number.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-assistant-set-forward-page-func" role="function" condition="since:2.10"/>gtk_assistant_set_forward_page_func ()</title>
+<indexterm role="2.10"><primary>gtk_assistant_set_forward_page_func</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_assistant_set_forward_page_func (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkAssistantPageFunc">GtkAssistantPageFunc</link> page_func,
+                                                         <link linkend="gpointer">gpointer</link> data,
+                                                         <link linkend="GDestroyNotify">GDestroyNotify</link> destroy);</programlisting>
+<para>
+Sets the page forwarding function to be <parameter>page_func</parameter>, this function will
+be used to determine what will be the next page when the user presses
+the forward button. Setting <parameter>page_func</parameter> to <link linkend="NULL:CAPS"><literal>NULL</literal></link> will make the assistant
+to use the default forward function, which just goes to the next visible 
+page.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>assistant</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkAssistant"><type>GtkAssistant</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>page_func</parameter>&nbsp;:</term>
+<listitem><simpara> the <link linkend="GtkAssistantPageFunc"><type>GtkAssistantPageFunc</type></link>, or <link linkend="NULL:CAPS"><literal>NULL</literal></link> to use the default one
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> user data for <parameter>page_func</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>destroy</parameter>&nbsp;:</term>
+<listitem><simpara> destroy notifier for <parameter>data</parameter>
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="GtkAssistantPageType" role="enum"/>enum GtkAssistantPageType</title>
+<indexterm><primary>GtkAssistantPageType</primary></indexterm><programlisting>typedef enum
+{
+  GTK_ASSISTANT_PAGE_CONTENT,
+  GTK_ASSISTANT_PAGE_INTRO,
+  GTK_ASSISTANT_PAGE_CONFIRM,
+  GTK_ASSISTANT_PAGE_SUMMARY,
+  GTK_ASSISTANT_PAGE_PROGRESS
+} GtkAssistantPageType;
+</programlisting>
+<para>
+An enum for determining the page role inside the <link linkend="GtkAssistant"><type>GtkAssistant</type></link>. It's used to
+handle buttons sensitivity and visibility.
+</para>
+
+<para>
+Note that an assistant needs to end its page flow with a page of type GTK_ASSISTANT_PAGE_CONFIRM
+or GTK_ASSISTANT_PAGE_SUMMARY to be correct.
+</para><variablelist role="enum">
+<varlistentry>
+<term><anchor id="GTK-ASSISTANT-PAGE-CONTENT:CAPS" role="constant"/><literal>GTK_ASSISTANT_PAGE_CONTENT</literal></term>
+<listitem><simpara>The page has regular contents.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><anchor id="GTK-ASSISTANT-PAGE-INTRO:CAPS" role="constant"/><literal>GTK_ASSISTANT_PAGE_INTRO</literal></term>
+<listitem><simpara>The page contains an introduction to the assistant task.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><anchor id="GTK-ASSISTANT-PAGE-CONFIRM:CAPS" role="constant"/><literal>GTK_ASSISTANT_PAGE_CONFIRM</literal></term>
+<listitem><simpara>The page lets the user confirm or deny the changes.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><anchor id="GTK-ASSISTANT-PAGE-SUMMARY:CAPS" role="constant"/><literal>GTK_ASSISTANT_PAGE_SUMMARY</literal></term>
+<listitem><simpara>The page informs the user of the changes done.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><anchor id="GTK-ASSISTANT-PAGE-PROGRESS:CAPS" role="constant"/><literal>GTK_ASSISTANT_PAGE_PROGRESS</literal></term>
+<listitem><simpara>Used for tasks that take a long time to complete, blocks the assistant until the page is marked as complete.
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-assistant-set-page-type" role="function" condition="since:2.10"/>gtk_assistant_set_page_type ()</title>
+<indexterm role="2.10"><primary>gtk_assistant_set_page_type</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_assistant_set_page_type         (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page,
+                                                         <link linkend="GtkAssistantPageType">GtkAssistantPageType</link> type);</programlisting>
+<para>
+Sets the page type for <parameter>page</parameter>. The page type determines the page
+behavior in the <parameter>assistant</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>assistant</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkAssistant"><type>GtkAssistant</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>page</parameter>&nbsp;:</term>
+<listitem><simpara> a page of <parameter>assistant</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara> the new type for <parameter>page</parameter>
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-assistant-get-page-type" role="function" condition="since:2.10"/>gtk_assistant_get_page_type ()</title>
+<indexterm role="2.10"><primary>gtk_assistant_get_page_type</primary></indexterm><programlisting><link linkend="GtkAssistantPageType">GtkAssistantPageType</link> gtk_assistant_get_page_type        (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page);</programlisting>
+<para>
+Gets the page type of <parameter>page</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>assistant</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkAssistant"><type>GtkAssistant</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>page</parameter>&nbsp;:</term>
+<listitem><simpara> a page of <parameter>assistant</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the page type of <parameter>page</parameter>.
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-assistant-set-page-title" role="function" condition="since:2.10"/>gtk_assistant_set_page_title ()</title>
+<indexterm role="2.10"><primary>gtk_assistant_set_page_title</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_assistant_set_page_title        (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page,
+                                                         const <link linkend="gchar">gchar</link> *title);</programlisting>
+<para>
+Sets a title for <parameter>page</parameter>. The title is displayed in the header
+area of the assistant when <parameter>page</parameter> is the current page.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>assistant</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkAssistant"><type>GtkAssistant</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>page</parameter>&nbsp;:</term>
+<listitem><simpara> a page of <parameter>assistant</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>title</parameter>&nbsp;:</term>
+<listitem><simpara> the new title for <parameter>page</parameter>
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-assistant-get-page-title" role="function" condition="since:2.10"/>gtk_assistant_get_page_title ()</title>
+<indexterm role="2.10"><primary>gtk_assistant_get_page_title</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>*        gtk_assistant_get_page_title        (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page);</programlisting>
+<para>
+Gets the title for <parameter>page</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>assistant</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkAssistant"><type>GtkAssistant</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>page</parameter>&nbsp;:</term>
+<listitem><simpara> a page of <parameter>assistant</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the title for <parameter>page</parameter>.
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-assistant-set-page-header-image" role="function" condition="since:2.10"/>gtk_assistant_set_page_header_image ()</title>
+<indexterm role="2.10"><primary>gtk_assistant_set_page_header_image</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_assistant_set_page_header_image (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page,
+                                                         <link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf);</programlisting>
+<para>
+Sets a header image for <parameter>page</parameter>. This image is displayed in the header
+area of the assistant when <parameter>page</parameter> is the current page.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>assistant</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkAssistant"><type>GtkAssistant</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>page</parameter>&nbsp;:</term>
+<listitem><simpara> a page of <parameter>assistant</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pixbuf</parameter>&nbsp;:</term>
+<listitem><simpara> the new header image <parameter>page</parameter>
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-assistant-get-page-header-image" role="function" condition="since:2.10"/>gtk_assistant_get_page_header_image ()</title>
+<indexterm role="2.10"><primary>gtk_assistant_get_page_header_image</primary></indexterm><programlisting><link linkend="GdkPixbuf">GdkPixbuf</link>*          gtk_assistant_get_page_header_image (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page);</programlisting>
+<para>
+Gets the header image for <parameter>page</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>assistant</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkAssistant"><type>GtkAssistant</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>page</parameter>&nbsp;:</term>
+<listitem><simpara> a page of <parameter>assistant</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the header image for <parameter>page</parameter>, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+if there's no header image for the page.
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-assistant-set-page-side-image" role="function" condition="since:2.10"/>gtk_assistant_set_page_side_image ()</title>
+<indexterm role="2.10"><primary>gtk_assistant_set_page_side_image</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_assistant_set_page_side_image   (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page,
+                                                         <link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf);</programlisting>
+<para>
+Sets a header image for <parameter>page</parameter>. This image is displayed in the side
+area of the assistant when <parameter>page</parameter> is the current page.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>assistant</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkAssistant"><type>GtkAssistant</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>page</parameter>&nbsp;:</term>
+<listitem><simpara> a page of <parameter>assistant</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pixbuf</parameter>&nbsp;:</term>
+<listitem><simpara> the new header image <parameter>page</parameter>
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-assistant-get-page-side-image" role="function" condition="since:2.10"/>gtk_assistant_get_page_side_image ()</title>
+<indexterm role="2.10"><primary>gtk_assistant_get_page_side_image</primary></indexterm><programlisting><link linkend="GdkPixbuf">GdkPixbuf</link>*          gtk_assistant_get_page_side_image   (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page);</programlisting>
+<para>
+Gets the header image for <parameter>page</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>assistant</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkAssistant"><type>GtkAssistant</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>page</parameter>&nbsp;:</term>
+<listitem><simpara> a page of <parameter>assistant</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the side image for <parameter>page</parameter>, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+if there's no side image for the page.
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-assistant-set-page-complete" role="function" condition="since:2.10"/>gtk_assistant_set_page_complete ()</title>
+<indexterm role="2.10"><primary>gtk_assistant_set_page_complete</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_assistant_set_page_complete     (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page,
+                                                         <link linkend="gboolean">gboolean</link> complete);</programlisting>
+<para>
+Sets whether <parameter>page</parameter> contents are complete. This will make
+<parameter>assistant</parameter> update the buttons state to be able to continue the task.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>assistant</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkAssistant"><type>GtkAssistant</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>page</parameter>&nbsp;:</term>
+<listitem><simpara> a page of <parameter>assistant</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>complete</parameter>&nbsp;:</term>
+<listitem><simpara> the completeness status of the page
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-assistant-get-page-complete" role="function" condition="since:2.10"/>gtk_assistant_get_page_complete ()</title>
+<indexterm role="2.10"><primary>gtk_assistant_get_page_complete</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            gtk_assistant_get_page_complete     (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *page);</programlisting>
+<para>
+Gets whether <parameter>page</parameter> is complete..</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>assistant</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkAssistant"><type>GtkAssistant</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>page</parameter>&nbsp;:</term>
+<listitem><simpara> a page of <parameter>assistant</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if <parameter>page</parameter> is complete.
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-assistant-add-action-widget" role="function" condition="since:2.10"/>gtk_assistant_add_action_widget ()</title>
+<indexterm role="2.10"><primary>gtk_assistant_add_action_widget</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_assistant_add_action_widget     (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *child);</programlisting>
+<para>
+Adds a widget to the action area of a <link linkend="GtkAssistant"><type>GtkAssistant</type></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>assistant</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkAssistant"><type>GtkAssistant</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>child</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkWidget"><type>GtkWidget</type></link>
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-assistant-remove-action-widget" role="function" condition="since:2.10"/>gtk_assistant_remove_action_widget ()</title>
+<indexterm role="2.10"><primary>gtk_assistant_remove_action_widget</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_assistant_remove_action_widget  (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *child);</programlisting>
+<para>
+Removes a widget from the action area of a <link linkend="GtkAssistant"><type>GtkAssistant</type></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>assistant</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkAssistant"><type>GtkAssistant</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>child</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkWidget"><type>GtkWidget</type></link>
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-assistant-update-buttons-state" role="function" condition="since:2.10"/>gtk_assistant_update_buttons_state ()</title>
+<indexterm role="2.10"><primary>gtk_assistant_update_buttons_state</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_assistant_update_buttons_state  (<link linkend="GtkAssistant">GtkAssistant</link> *assistant);</programlisting>
+<para>
+Forces <parameter>assistant</parameter> to recompute the buttons state.
+</para>
+<para>
+GTK+ automatically takes care of this in most situations, 
+e.g. when the user goes to a different page, or when the
+visibility or completeness of a page changes.
+</para>
+<para>
+One situation where it can be necessary to call this
+function is when changing a value on the current page
+affects the future page flow of the assistant.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>assistant</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkAssistant"><type>GtkAssistant</type></link>
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+
+</refsect1>
+<refsect1 role="child_property_details">
+<title role="child_property_details.title">Child Property Details</title>
+<refsect2><title><anchor id="GtkAssistant--complete"/>The :<literal>complete</literal> child property</title>
+<indexterm role="2.10"><primary>GtkAssistant:complete</primary></indexterm><programlisting>  complete                 <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>
+Setting the "complete" child property to <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> marks a page as complete
+(i.e.: all the required fields are filled out). GTK+ uses this information
+to control the sensitivity of the navigation buttons.</para>
+<para>
+
+</para><para>Default value: FALSE</para>
+<para>Since  2.10
+</para>
+</refsect2>
+<refsect2><title><anchor id="GtkAssistant--header-image"/>The :<literal>header-image</literal> child property</title>
+<indexterm role="2.10"><primary>GtkAssistant:header-image</primary></indexterm><programlisting>  header-image             <link linkend="GdkPixbuf">GdkPixbuf</link>             : Read / Write</programlisting>
+<para>
+The image that is displayed next to the page. 
+</para>
+<para>
+Set this to <link linkend="NULL:CAPS"><literal>NULL</literal></link> to make the sidebar disappear.</para>
+<para>
+
+</para><para>Since  2.10
+</para>
+</refsect2>
+<refsect2><title><anchor id="GtkAssistant--page-type"/>The :<literal>page-type</literal> child property</title>
+<indexterm role="2.10"><primary>GtkAssistant:page-type</primary></indexterm><programlisting>  page-type                <link linkend="GtkAssistantPageType">GtkAssistantPageType</link>  : Read / Write</programlisting>
+<para>
+The type of the assistant page.</para>
+<para>
+
+</para><para>Default value: GTK_ASSISTANT_PAGE_CONTENT</para>
+<para>Since  2.10
+</para>
+</refsect2>
+<refsect2><title><anchor id="GtkAssistant--sidebar-image"/>The :<literal>sidebar-image</literal> child property</title>
+<indexterm><primary>GtkAssistant:sidebar-image</primary></indexterm><programlisting>  sidebar-image            <link linkend="GdkPixbuf">GdkPixbuf</link>             : Read / Write</programlisting>
+<para>Sidebar image for the assistant page.</para></refsect2>
+<refsect2><title><anchor id="GtkAssistant--title"/>The :<literal>title</literal> child property</title>
+<indexterm role="2.10"><primary>GtkAssistant:title</primary></indexterm><programlisting>  title                    <link linkend="gchararray">gchararray</link>            : Read / Write</programlisting>
+<para>
+The title that is displayed in the page header. 
+</para>
+<para>
+If title and header-image are both <link linkend="NULL:CAPS"><literal>NULL</literal></link>, no header is displayed.</para>
+<para>
+
+</para><para>Default value: NULL</para>
+<para>Since  2.10
+</para>
+</refsect2>
+
+</refsect1>
+<refsect1 role="style_properties_details">
+<title role="style_properties_details.title">Style Property Details</title>
+<refsect2><title><anchor id="GtkAssistant--content-padding"/>The :<literal>content-padding</literal> style property</title>
+<indexterm><primary>GtkAssistant:content-padding</primary></indexterm><programlisting>  content-padding          <link linkend="gint">gint</link>                  : Read</programlisting>
+<para>Number of pixels around the content pages.</para><para>Allowed values: &gt;= 0</para>
+<para>Default value: 1</para>
+</refsect2>
+<refsect2><title><anchor id="GtkAssistant--header-padding"/>The :<literal>header-padding</literal> style property</title>
+<indexterm><primary>GtkAssistant:header-padding</primary></indexterm><programlisting>  header-padding           <link linkend="gint">gint</link>                  : Read</programlisting>
+<para>Number of pixels around the header.</para><para>Allowed values: &gt;= 0</para>
+<para>Default value: 6</para>
+</refsect2>
+
+</refsect1>
+
+<refsect1 role="signals">
+<title role="signals.title">Signal Details</title>
+<refsect2><title><anchor id="GtkAssistant-apply"/>The <literal>::apply</literal> signal</title>
+<indexterm role="2.10"><primary>GtkAssistant::apply</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                        <link linkend="gpointer">gpointer</link>      user_data)      : Run Last</programlisting>
+<para>
+The ::apply signal is emitted when the apply button is clicked. The default
+behavior of the <link linkend="GtkAssistant"><type>GtkAssistant</type></link> is to switch to the page after the current page,
+unless the current page is the last one.
+</para>
+<para>
+A handler for the ::apply signal should carry out the actions for which the
+wizard has collected data. If the action takes a long time to complete, you
+might consider to put a page of type GTK_ASSISTANT_PAGE_PROGRESS after the
+confirmation page and handle this operation within the ::prepare signal of
+the progress page.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>assistant</parameter>&nbsp;:</term>
+<listitem><simpara> the <parameter>GtkAssistant</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist><para>Since  2.10
+</para></refsect2><refsect2><title><anchor id="GtkAssistant-cancel"/>The <literal>::cancel</literal> signal</title>
+<indexterm role="2.10"><primary>GtkAssistant::cancel</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                        <link linkend="gpointer">gpointer</link>      user_data)      : Run Last</programlisting>
+<para>
+The ::cancel signal is emitted when then the cancel button is clicked.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>assistant</parameter>&nbsp;:</term>
+<listitem><simpara> the <link linkend="GtkAssistant"><type>GtkAssistant</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist><para>Since  2.10
+</para></refsect2><refsect2><title><anchor id="GtkAssistant-close"/>The <literal>::close</literal> signal</title>
+<indexterm role="2.10"><primary>GtkAssistant::close</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                        <link linkend="gpointer">gpointer</link>      user_data)      : Run Last</programlisting>
+<para>
+The ::close signal is emitted either when the close button of
+a summary page is clicked, or when the apply button in the last
+page in the flow (of type GTK_ASSISTANT_PAGE_CONFIRM) is clicked.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>assistant</parameter>&nbsp;:</term>
+<listitem><simpara> the <link linkend="GtkAssistant"><type>GtkAssistant</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist><para>Since  2.10
+</para></refsect2><refsect2><title><anchor id="GtkAssistant-prepare"/>The <literal>::prepare</literal> signal</title>
+<indexterm role="2.10"><primary>GtkAssistant::prepare</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="GtkAssistant">GtkAssistant</link> *assistant,
+                                                        <link linkend="GtkWidget">GtkWidget</link>    *page,
+                                                        <link linkend="gpointer">gpointer</link>      user_data)      : Run Last</programlisting>
+<para>
+The ::prepared signal is emitted when a new page is set as the assistant's 
+current page, before making the new page visible. A handler for this signal 
+can do any preparation which are necessary before showing <parameter>page</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>assistant</parameter>&nbsp;:</term>
+<listitem><simpara> the <link linkend="GtkAssistant"><type>GtkAssistant</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>page</parameter>&nbsp;:</term>
+<listitem><simpara> the current page
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist><para>Since  2.10
+</para></refsect2>
+</refsect1>
+
+
+
+</refentry>

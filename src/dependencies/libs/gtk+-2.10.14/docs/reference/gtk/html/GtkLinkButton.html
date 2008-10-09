@@ -1,0 +1,449 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>GtkLinkButton</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GTK+ Reference Manual">
+<link rel="up" href="ButtonWidgets.html" title="Buttons and Toggles">
+<link rel="prev" href="GtkToggleButton.html" title="GtkToggleButton">
+<link rel="next" href="NumericEntry.html" title="Numeric/Text Data Entry">
+<meta name="generator" content="GTK-Doc V1.7 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gtk.html" title="Part&#160;I.&#160;GTK+ Overview">
+<link rel="part" href="gtkbase.html" title="Part&#160;II.&#160;GTK+ Core Reference">
+<link rel="part" href="gtkobjects.html" title="Part&#160;III.&#160;GTK+ Widgets and Objects">
+<link rel="chapter" href="ch01.html" title="Object Hierarchy">
+<link rel="chapter" href="ch02.html" title="Widget Gallery">
+<link rel="chapter" href="WindowWidgets.html" title="Windows">
+<link rel="chapter" href="DisplayWidgets.html" title="Display Widgets">
+<link rel="chapter" href="ButtonWidgets.html" title="Buttons and Toggles">
+<link rel="chapter" href="NumericEntry.html" title="Numeric/Text Data Entry">
+<link rel="chapter" href="TextWidgetObjects.html" title="Multiline Text Editor">
+<link rel="chapter" href="TreeWidgetObjects.html" title="Tree, List and Icon Grid Widgets">
+<link rel="chapter" href="MenusAndCombos.html" title="Menus, Combo Box, Toolbar">
+<link rel="chapter" href="Actions.html" title="Action-based menus and toolbars">
+<link rel="chapter" href="SelectorWidgets.html" title="Selectors (File/Font/Color/Input Devices)">
+<link rel="chapter" href="LayoutContainers.html" title="Layout Containers">
+<link rel="chapter" href="Ornaments.html" title="Ornaments">
+<link rel="chapter" href="ScrollingWidgets.html" title="Scrolling">
+<link rel="chapter" href="Printing.html" title="Printing">
+<link rel="chapter" href="MiscObjects.html" title="Miscellaneous">
+<link rel="chapter" href="AbstractObjects.html" title="Abstract Base Classes">
+<link rel="chapter" href="PlugSocket.html" title="Cross-process Embedding">
+<link rel="chapter" href="SpecialObjects.html" title="Special-purpose features">
+<link rel="chapter" href="RecentDocuments.html" title="Recently Used Documents">
+<link rel="chapter" href="DeprecatedObjects.html" title="Deprecated">
+<link rel="part" href="migrating.html" title="Part&#160;IV.&#160;Migrating from Previous Versions of GTK+">
+<link rel="chapter" href="gtk-migrating-checklist.html" title="Migration Checklist">
+<link rel="chapter" href="gtk-migrating-GtkFileChooser.html" title="Migrating from GtkFileSelection to GtkFileChooser">
+<link rel="chapter" href="gtk-migrating-GtkAction.html" title="Migrating from old menu and toolbar systems to GtkAction">
+<link rel="chapter" href="gtk-migrating-GtkComboBox.html" title="Migrating from GtkOptionMenu and GtkCombo to GtkComboBox and GtkComboBoxEntry">
+<link rel="chapter" href="gtk-migrating-GtkIconView.html" title="Migrating from GnomeIconList to GtkIconView">
+<link rel="chapter" href="gtk-migrating-GtkAboutDialog.html" title="Migrating from GnomeAbout to GtkAboutDialog">
+<link rel="chapter" href="gtk-migrating-GtkColorButton.html" title="Migrating from GnomeColorPicker to GtkColorButton">
+<link rel="chapter" href="gtk-migrating-GtkAssistant.html" title="Migrating from GnomeDruid to GtkAssistant">
+<link rel="chapter" href="gtk-migrating-GtkRecentChooser.html" title="Migrating from EggRecent to GtkRecentChooser">
+<link rel="chapter" href="gtk-migrating-GtkLinkButton.html" title="Migrating from GnomeHRef to GtkLinkButton">
+<link rel="part" href="pt05.html" title="Part&#160;V.&#160;GTK+ Tools">
+<link rel="glossary" href="glossary.html" title="Glossary">
+<link rel="index" href="ix01.html" title="Index">
+<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="ix03.html" title="Index of new symbols in 2.2">
+<link rel="index" href="ix04.html" title="Index of new symbols in 2.4">
+<link rel="index" href="ix05.html" title="Index of new symbols in 2.6">
+<link rel="index" href="ix06.html" title="Index of new symbols in 2.8">
+<link rel="index" href="ix07.html" title="Index of new symbols in 2.10">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="GtkToggleButton.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ButtonWidgets.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GTK+ Reference Manual</th>
+<td><a accesskey="n" href="NumericEntry.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id3130840" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id3131175" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id3131050" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id3131119" class="shortcut">Implemented Interfaces</a>
+                  &#160;|&#160;
+                  <a href="#id3131142" class="shortcut">Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="GtkLinkButton"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id3130840"></a><span class="refentrytitle">GtkLinkButton</span>
+</h2>
+<p>GtkLinkButton &#8212; Create buttons bound to a URL</p>
+</td>
+<td valign="top" align="right"><img src="link-button.png"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <a href="GtkLinkButton.html#GtkLinkButton-struct">GtkLinkButton</a>;
+<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          <a href="GtkLinkButton.html#gtk-link-button-new">gtk_link_button_new</a>                 (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *uri);
+<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          <a href="GtkLinkButton.html#gtk-link-button-new-with-label">gtk_link_button_new_with_label</a>      (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *uri,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *label);
+const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a href="GtkLinkButton.html#gtk-link-button-get-uri">gtk_link_button_get_uri</a>             (<a href="GtkLinkButton.html" title="GtkLinkButton">GtkLinkButton</a> *link_button);
+void                <a href="GtkLinkButton.html#gtk-link-button-set-uri">gtk_link_button_set_uri</a>             (<a href="GtkLinkButton.html" title="GtkLinkButton">GtkLinkButton</a> *link_button,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *uri);
+void                (<a href="GtkLinkButton.html#GtkLinkButtonUriFunc">*GtkLinkButtonUriFunc</a>)             (<a href="GtkLinkButton.html" title="GtkLinkButton">GtkLinkButton</a> *button,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *link_,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+<a href="GtkLinkButton.html#GtkLinkButtonUriFunc">GtkLinkButtonUriFunc</a> <a href="GtkLinkButton.html#gtk-link-button-set-uri-hook">gtk_link_button_set_uri_hook</a>       (<a href="GtkLinkButton.html#GtkLinkButtonUriFunc">GtkLinkButtonUriFunc</a> func,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data,
+                                                         <a
+href="../glib/glib-Datasets.html#GDestroyNotify"
+>GDestroyNotify</a> destroy);
+
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3131050"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gobject/gobject-The-Base-Object-Type.html#GInitiallyUnowned"
+>GInitiallyUnowned</a>
+         +----<a href="GtkObject.html" title="GtkObject">GtkObject</a>
+               +----<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>
+                     +----<a href="GtkContainer.html" title="GtkContainer">GtkContainer</a>
+                           +----<a href="GtkBin.html" title="GtkBin">GtkBin</a>
+                                 +----<a href="GtkButton.html" title="GtkButton">GtkButton</a>
+                                       +----GtkLinkButton
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3131119"></a><h2>Implemented Interfaces</h2>
+<p>
+GtkLinkButton implements
+ AtkImplementorIface.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3131142"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  <a href="GtkLinkButton.html#GtkLinkButton--uri">uri</a>                      <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3131175"></a><h2>Description</h2>
+<p>
+A <a href="GtkLinkButton.html" title="GtkLinkButton"><span class="type">GtkLinkButton</span></a> is a <a href="GtkButton.html" title="GtkButton"><span class="type">GtkButton</span></a> with a hyperlink, similar to the one
+used by web browsers, which triggers an action when clicked. It is useful
+to show quick links to resources.
+</p>
+<p>
+A link button is created by calling either <a href="GtkLinkButton.html#gtk-link-button-new"><code class="function">gtk_link_button_new()</code></a> or
+<a href="GtkLinkButton.html#gtk-link-button-new-with-label"><code class="function">gtk_link_button_new_with_label()</code></a>. If using the former, the URI you pass
+to the constructor is used as a label for the widget.
+</p>
+<p>
+The URI bound to a <a href="GtkLinkButton.html" title="GtkLinkButton"><span class="type">GtkLinkButton</span></a> can be set specifically using
+<a href="GtkLinkButton.html#gtk-link-button-set-uri"><code class="function">gtk_link_button_set_uri()</code></a>, and retrieved using <a href="GtkLinkButton.html#gtk-link-button-get-uri"><code class="function">gtk_link_button_get_uri()</code></a>.
+</p>
+<p>
+<a href="GtkLinkButton.html" title="GtkLinkButton"><span class="type">GtkLinkButton</span></a> offers a global hook, which is called when the used clicks
+on it: see <a href="GtkLinkButton.html#gtk-link-button-set-uri-hook"><code class="function">gtk_link_button_set_uri_hook()</code></a>.
+</p>
+<p>
+<a href="GtkLinkButton.html" title="GtkLinkButton"><span class="type">GtkLinkButton</span></a> was added in GTK+ 2.10.
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3131306"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3131317"></a><h3>
+<a name="GtkLinkButton-struct"></a>GtkLinkButton</h3>
+<a class="indexterm" name="id3131330"></a><pre class="programlisting">typedef struct _GtkLinkButton GtkLinkButton;</pre>
+<p>
+The <a href="GtkLinkButton.html" title="GtkLinkButton"><span class="type">GtkLinkButton</span></a> struct contains private data only, and should be
+manipulated using the functions below.
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3131355"></a><h3>
+<a name="gtk-link-button-new"></a>gtk_link_button_new ()</h3>
+<a class="indexterm" name="id3131371"></a><pre class="programlisting"><a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          gtk_link_button_new                 (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *uri);</pre>
+<p>
+Creates a new <a href="GtkLinkButton.html" title="GtkLinkButton"><span class="type">GtkLinkButton</span></a> with the URI as its text.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>uri</code></em>&#160;:</span></td>
+<td> a valid URI
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a new link button widget.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3131447"></a><h3>
+<a name="gtk-link-button-new-with-label"></a>gtk_link_button_new_with_label ()</h3>
+<a class="indexterm" name="id3131462"></a><pre class="programlisting"><a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          gtk_link_button_new_with_label      (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *uri,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *label);</pre>
+<p>
+Creates a new <a href="GtkLinkButton.html" title="GtkLinkButton"><span class="type">GtkLinkButton</span></a> containing a label.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>uri</code></em>&#160;:</span></td>
+<td> a valid URI
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>label</code></em>&#160;:</span></td>
+<td> the text of the button
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a new link button widget.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3131561"></a><h3>
+<a name="gtk-link-button-get-uri"></a>gtk_link_button_get_uri ()</h3>
+<a class="indexterm" name="id3131576"></a><pre class="programlisting">const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gtk_link_button_get_uri             (<a href="GtkLinkButton.html" title="GtkLinkButton">GtkLinkButton</a> *link_button);</pre>
+<p>
+Retrieves the URI set using <a href="GtkLinkButton.html#gtk-link-button-set-uri"><code class="function">gtk_link_button_set_uri()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>link_button</code></em>&#160;:</span></td>
+<td> a <a href="GtkLinkButton.html" title="GtkLinkButton"><span class="type">GtkLinkButton</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a valid URI.  The returned string is owned by the link button
+  and should not be modified or freed.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3131666"></a><h3>
+<a name="gtk-link-button-set-uri"></a>gtk_link_button_set_uri ()</h3>
+<a class="indexterm" name="id3131682"></a><pre class="programlisting">void                gtk_link_button_set_uri             (<a href="GtkLinkButton.html" title="GtkLinkButton">GtkLinkButton</a> *link_button,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *uri);</pre>
+<p>
+Sets <em class="parameter"><code>uri</code></em> as the URI where the <a href="GtkLinkButton.html" title="GtkLinkButton"><span class="type">GtkLinkButton</span></a> points.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>link_button</code></em>&#160;:</span></td>
+<td> a <a href="GtkLinkButton.html" title="GtkLinkButton"><span class="type">GtkLinkButton</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>uri</code></em>&#160;:</span></td>
+<td> a valid URI
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3131783"></a><h3>
+<a name="GtkLinkButtonUriFunc"></a>GtkLinkButtonUriFunc ()</h3>
+<a class="indexterm" name="id3131796"></a><pre class="programlisting">void                (*GtkLinkButtonUriFunc)             (<a href="GtkLinkButton.html" title="GtkLinkButton">GtkLinkButton</a> *button,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *link_,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre>
+<p>
+The type of a function which is called when the <a href="GtkLinkButton.html" title="GtkLinkButton"><span class="type">GtkLinkButton</span></a> is
+clicked.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>button</code></em>&#160;:</span></td>
+<td>the <a href="GtkLinkButton.html" title="GtkLinkButton"><span class="type">GtkLinkButton</span></a> which was clicked
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>link_</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3131904"></a><h3>
+<a name="gtk-link-button-set-uri-hook"></a>gtk_link_button_set_uri_hook ()</h3>
+<a class="indexterm" name="id3131920"></a><pre class="programlisting"><a href="GtkLinkButton.html#GtkLinkButtonUriFunc">GtkLinkButtonUriFunc</a> gtk_link_button_set_uri_hook       (<a href="GtkLinkButton.html#GtkLinkButtonUriFunc">GtkLinkButtonUriFunc</a> func,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data,
+                                                         <a
+href="../glib/glib-Datasets.html#GDestroyNotify"
+>GDestroyNotify</a> destroy);</pre>
+<p>
+Sets <em class="parameter"><code>func</code></em> as the function that should be invoked every time a user clicks
+a <a href="GtkLinkButton.html" title="GtkLinkButton"><span class="type">GtkLinkButton</span></a>. This function is called before every callback registered
+for the "clicked" signal.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>func</code></em>&#160;:</span></td>
+<td> a function called each time a <a href="GtkLinkButton.html" title="GtkLinkButton"><span class="type">GtkLinkButton</span></a> is clicked, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td> user data to be passed to <em class="parameter"><code>func</code></em>, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>destroy</code></em>&#160;:</span></td>
+<td> a <a
+href="../glib/glib-Datasets.html#GDestroyNotify"
+><span class="type">GDestroyNotify</span></a> that gets called when <em class="parameter"><code>data</code></em> is no longer needed, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the previously set hook function.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3132111"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3132121"></a><h3>
+<a name="GtkLinkButton--uri"></a>The :<code class="literal">uri</code> property</h3>
+<a class="indexterm" name="id3132137"></a><pre class="programlisting">  uri                      <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>
+The URI bound to this button.</p>
+<p>
+
+</p>
+<p>Default value: "http://www.gtk.org"</p>
+<p>Since  2.10
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3132174"></a><h2>See Also</h2>
+<p>
+<a href="GtkButton.html" title="GtkButton"><span class="type">GtkButton</span></a>
+</p>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,896 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>GtkPageSetup</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GTK+ Reference Manual">
+<link rel="up" href="Printing.html" title="Printing">
+<link rel="prev" href="GtkPrintSettings.html" title="GtkPrintSettings">
+<link rel="next" href="gtk-GtkPaperSize.html" title="GtkPaperSize">
+<meta name="generator" content="GTK-Doc V1.7 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gtk.html" title="Part&#160;I.&#160;GTK+ Overview">
+<link rel="part" href="gtkbase.html" title="Part&#160;II.&#160;GTK+ Core Reference">
+<link rel="part" href="gtkobjects.html" title="Part&#160;III.&#160;GTK+ Widgets and Objects">
+<link rel="chapter" href="ch01.html" title="Object Hierarchy">
+<link rel="chapter" href="ch02.html" title="Widget Gallery">
+<link rel="chapter" href="WindowWidgets.html" title="Windows">
+<link rel="chapter" href="DisplayWidgets.html" title="Display Widgets">
+<link rel="chapter" href="ButtonWidgets.html" title="Buttons and Toggles">
+<link rel="chapter" href="NumericEntry.html" title="Numeric/Text Data Entry">
+<link rel="chapter" href="TextWidgetObjects.html" title="Multiline Text Editor">
+<link rel="chapter" href="TreeWidgetObjects.html" title="Tree, List and Icon Grid Widgets">
+<link rel="chapter" href="MenusAndCombos.html" title="Menus, Combo Box, Toolbar">
+<link rel="chapter" href="Actions.html" title="Action-based menus and toolbars">
+<link rel="chapter" href="SelectorWidgets.html" title="Selectors (File/Font/Color/Input Devices)">
+<link rel="chapter" href="LayoutContainers.html" title="Layout Containers">
+<link rel="chapter" href="Ornaments.html" title="Ornaments">
+<link rel="chapter" href="ScrollingWidgets.html" title="Scrolling">
+<link rel="chapter" href="Printing.html" title="Printing">
+<link rel="chapter" href="MiscObjects.html" title="Miscellaneous">
+<link rel="chapter" href="AbstractObjects.html" title="Abstract Base Classes">
+<link rel="chapter" href="PlugSocket.html" title="Cross-process Embedding">
+<link rel="chapter" href="SpecialObjects.html" title="Special-purpose features">
+<link rel="chapter" href="RecentDocuments.html" title="Recently Used Documents">
+<link rel="chapter" href="DeprecatedObjects.html" title="Deprecated">
+<link rel="part" href="migrating.html" title="Part&#160;IV.&#160;Migrating from Previous Versions of GTK+">
+<link rel="chapter" href="gtk-migrating-checklist.html" title="Migration Checklist">
+<link rel="chapter" href="gtk-migrating-GtkFileChooser.html" title="Migrating from GtkFileSelection to GtkFileChooser">
+<link rel="chapter" href="gtk-migrating-GtkAction.html" title="Migrating from old menu and toolbar systems to GtkAction">
+<link rel="chapter" href="gtk-migrating-GtkComboBox.html" title="Migrating from GtkOptionMenu and GtkCombo to GtkComboBox and GtkComboBoxEntry">
+<link rel="chapter" href="gtk-migrating-GtkIconView.html" title="Migrating from GnomeIconList to GtkIconView">
+<link rel="chapter" href="gtk-migrating-GtkAboutDialog.html" title="Migrating from GnomeAbout to GtkAboutDialog">
+<link rel="chapter" href="gtk-migrating-GtkColorButton.html" title="Migrating from GnomeColorPicker to GtkColorButton">
+<link rel="chapter" href="gtk-migrating-GtkAssistant.html" title="Migrating from GnomeDruid to GtkAssistant">
+<link rel="chapter" href="gtk-migrating-GtkRecentChooser.html" title="Migrating from EggRecent to GtkRecentChooser">
+<link rel="chapter" href="gtk-migrating-GtkLinkButton.html" title="Migrating from GnomeHRef to GtkLinkButton">
+<link rel="part" href="pt05.html" title="Part&#160;V.&#160;GTK+ Tools">
+<link rel="glossary" href="glossary.html" title="Glossary">
+<link rel="index" href="ix01.html" title="Index">
+<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="ix03.html" title="Index of new symbols in 2.2">
+<link rel="index" href="ix04.html" title="Index of new symbols in 2.4">
+<link rel="index" href="ix05.html" title="Index of new symbols in 2.6">
+<link rel="index" href="ix06.html" title="Index of new symbols in 2.8">
+<link rel="index" href="ix07.html" title="Index of new symbols in 2.10">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="GtkPrintSettings.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="Printing.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GTK+ Reference Manual</th>
+<td><a accesskey="n" href="gtk-GtkPaperSize.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id3764358" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id3764997" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id3764973" class="shortcut">Object Hierarchy</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="GtkPageSetup"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id3764358"></a><span class="refentrytitle">GtkPageSetup</span>
+</h2>
+<p>GtkPageSetup &#8212; Stores page setup information</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <a href="GtkPageSetup.html#GtkPageSetup-struct">GtkPageSetup</a>;
+<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a>*       <a href="GtkPageSetup.html#gtk-page-setup-new">gtk_page_setup_new</a>                  (void);
+<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a>*       <a href="GtkPageSetup.html#gtk-page-setup-copy">gtk_page_setup_copy</a>                 (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *other);
+<a href="GtkPrintSettings.html#GtkPageOrientation">GtkPageOrientation</a>  <a href="GtkPageSetup.html#gtk-page-setup-get-orientation">gtk_page_setup_get_orientation</a>      (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup);
+void                <a href="GtkPageSetup.html#gtk-page-setup-set-orientation">gtk_page_setup_set_orientation</a>      (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a href="GtkPrintSettings.html#GtkPageOrientation">GtkPageOrientation</a> orientation);
+<a href="gtk-GtkPaperSize.html#GtkPaperSize">GtkPaperSize</a>*       <a href="GtkPageSetup.html#gtk-page-setup-get-paper-size">gtk_page_setup_get_paper_size</a>       (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup);
+void                <a href="GtkPageSetup.html#gtk-page-setup-set-paper-size">gtk_page_setup_set_paper_size</a>       (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a href="gtk-GtkPaperSize.html#GtkPaperSize">GtkPaperSize</a> *size);
+<a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             <a href="GtkPageSetup.html#gtk-page-setup-get-top-margin">gtk_page_setup_get_top_margin</a>       (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);
+void                <a href="GtkPageSetup.html#gtk-page-setup-set-top-margin">gtk_page_setup_set_top_margin</a>       (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> margin,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);
+<a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             <a href="GtkPageSetup.html#gtk-page-setup-get-bottom-margin">gtk_page_setup_get_bottom_margin</a>    (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);
+void                <a href="GtkPageSetup.html#gtk-page-setup-set-bottom-margin">gtk_page_setup_set_bottom_margin</a>    (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> margin,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);
+<a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             <a href="GtkPageSetup.html#gtk-page-setup-get-left-margin">gtk_page_setup_get_left_margin</a>      (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);
+void                <a href="GtkPageSetup.html#gtk-page-setup-set-left-margin">gtk_page_setup_set_left_margin</a>      (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> margin,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);
+<a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             <a href="GtkPageSetup.html#gtk-page-setup-get-right-margin">gtk_page_setup_get_right_margin</a>     (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);
+void                <a href="GtkPageSetup.html#gtk-page-setup-set-right-margin">gtk_page_setup_set_right_margin</a>     (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> margin,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);
+void                <a href="GtkPageSetup.html#gtk-page-setup-set-paper-size-and-default-margins">gtk_page_setup_set_paper_size_and_default_margins</a>
+                                                        (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a href="gtk-GtkPaperSize.html#GtkPaperSize">GtkPaperSize</a> *size);
+<a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             <a href="GtkPageSetup.html#gtk-page-setup-get-paper-width">gtk_page_setup_get_paper_width</a>      (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);
+<a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             <a href="GtkPageSetup.html#gtk-page-setup-get-paper-height">gtk_page_setup_get_paper_height</a>     (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);
+<a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             <a href="GtkPageSetup.html#gtk-page-setup-get-page-width">gtk_page_setup_get_page_width</a>       (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);
+<a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             <a href="GtkPageSetup.html#gtk-page-setup-get-page-height">gtk_page_setup_get_page_height</a>      (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);
+
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3764973"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----GtkPageSetup
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3764997"></a><h2>Description</h2>
+<p>
+A GtkPageSetup object stores the page size, orientation and margins. 
+The idea is that you can get one of these from the page setup dialog 
+and then pass it to the <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a> when printing. 
+The benefit of splitting this out of the <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a> is that 
+these affect the actual layout of the page, and thus need to be set 
+long before user prints. 
+</p>
+<p><a name="print-margins"></a>
+The margins specified in this object are the "print margins", i.e. the 
+parts of the page that the printer cannot print on. These are different
+from the layout margins that a word processor uses; they are typically
+used to determine the <span class="emphasis"><em>minimal</em></span> size for the layout 
+margins.
+</p>
+<p>
+To obtain a <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a> use <a href="GtkPageSetup.html#gtk-page-setup-new"><code class="function">gtk_page_setup_new()</code></a>
+to get the defaults, or use <a href="gtk-High-level-Printing-API.html#gtk-print-run-page-setup-dialog"><code class="function">gtk_print_run_page_setup_dialog()</code></a> to show 
+the page setup dialog and receive the resulting page setup.
+</p>
+<div class="example">
+<a name="id3765084"></a><p class="title"><b>Example&#160;32.&#160;A page setup dialog</b></p>
+<div class="example-contents"><pre class="programlisting">
+static GtkPrintSettings *settings = NULL;
+static GtkPageSetup *page_setup = NULL;
+
+static void
+do_page_setup (void)
+{
+  GtkPageSetup *new_page_setup;
+
+  if (settings == NULL)
+    settings = gtk_print_settings_new ();
+
+  new_page_setup = gtk_print_run_page_setup_dialog (GTK_WINDOW (main_window),
+                                                    page_setup, settings);
+
+  if (page_setup)
+    g_object_unref (page_setup);
+
+  page_setup = new_page_setup;
+}
+</pre></div>
+</div>
+<br class="example-break"><p>
+Printing support was added in GTK+ 2.10.
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3765112"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3765122"></a><h3>
+<a name="GtkPageSetup-struct"></a>GtkPageSetup</h3>
+<a class="indexterm" name="id3765135"></a><pre class="programlisting">typedef struct _GtkPageSetup GtkPageSetup;</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3765151"></a><h3>
+<a name="gtk-page-setup-new"></a>gtk_page_setup_new ()</h3>
+<a class="indexterm" name="id3765166"></a><pre class="programlisting"><a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a>*       gtk_page_setup_new                  (void);</pre>
+<p>
+Creates a new <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a new <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>.
+
+</td>
+</tr></tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3765229"></a><h3>
+<a name="gtk-page-setup-copy"></a>gtk_page_setup_copy ()</h3>
+<a class="indexterm" name="id3765245"></a><pre class="programlisting"><a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a>*       gtk_page_setup_copy                 (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *other);</pre>
+<p>
+Copies a <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>other</code></em>&#160;:</span></td>
+<td> the <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a> to copy
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a copy of <em class="parameter"><code>other</code></em>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3765335"></a><h3>
+<a name="gtk-page-setup-get-orientation"></a>gtk_page_setup_get_orientation ()</h3>
+<a class="indexterm" name="id3765351"></a><pre class="programlisting"><a href="GtkPrintSettings.html#GtkPageOrientation">GtkPageOrientation</a>  gtk_page_setup_get_orientation      (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup);</pre>
+<p>
+Gets the page orientation of the <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>setup</code></em>&#160;:</span></td>
+<td> a <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the page orientation
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3765436"></a><h3>
+<a name="gtk-page-setup-set-orientation"></a>gtk_page_setup_set_orientation ()</h3>
+<a class="indexterm" name="id3765452"></a><pre class="programlisting">void                gtk_page_setup_set_orientation      (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a href="GtkPrintSettings.html#GtkPageOrientation">GtkPageOrientation</a> orientation);</pre>
+<p>
+Sets the page orientation of the <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>setup</code></em>&#160;:</span></td>
+<td> a <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>orientation</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html#GtkPageOrientation"><span class="type">GtkPageOrientation</span></a> value
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3765556"></a><h3>
+<a name="gtk-page-setup-get-paper-size"></a>gtk_page_setup_get_paper_size ()</h3>
+<a class="indexterm" name="id3765572"></a><pre class="programlisting"><a href="gtk-GtkPaperSize.html#GtkPaperSize">GtkPaperSize</a>*       gtk_page_setup_get_paper_size       (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup);</pre>
+<p>
+Gets the paper size of the <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>setup</code></em>&#160;:</span></td>
+<td> a <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the paper size
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3765656"></a><h3>
+<a name="gtk-page-setup-set-paper-size"></a>gtk_page_setup_set_paper_size ()</h3>
+<a class="indexterm" name="id3765672"></a><pre class="programlisting">void                gtk_page_setup_set_paper_size       (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a href="gtk-GtkPaperSize.html#GtkPaperSize">GtkPaperSize</a> *size);</pre>
+<p>
+Sets the paper size of the <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a> without
+changing the margins. See 
+<a href="GtkPageSetup.html#gtk-page-setup-set-paper-size-and-default-margins"><code class="function">gtk_page_setup_set_paper_size_and_default_margins()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>setup</code></em>&#160;:</span></td>
+<td> a <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>size</code></em>&#160;:</span></td>
+<td> a <a href="gtk-GtkPaperSize.html#GtkPaperSize"><span class="type">GtkPaperSize</span></a> 
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3765789"></a><h3>
+<a name="gtk-page-setup-get-top-margin"></a>gtk_page_setup_get_top_margin ()</h3>
+<a class="indexterm" name="id3765804"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             gtk_page_setup_get_top_margin       (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);</pre>
+<p>
+Gets the top margin in units of <em class="parameter"><code>unit</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>setup</code></em>&#160;:</span></td>
+<td> a <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>unit</code></em>&#160;:</span></td>
+<td> the unit for the return value
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the top margin
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3765908"></a><h3>
+<a name="gtk-page-setup-set-top-margin"></a>gtk_page_setup_set_top_margin ()</h3>
+<a class="indexterm" name="id3765924"></a><pre class="programlisting">void                gtk_page_setup_set_top_margin       (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> margin,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);</pre>
+<p>
+Sets the top margin of the <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>setup</code></em>&#160;:</span></td>
+<td> a <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>margin</code></em>&#160;:</span></td>
+<td> the new top margin in units of <em class="parameter"><code>unit</code></em>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>unit</code></em>&#160;:</span></td>
+<td> the units for <em class="parameter"><code>margin</code></em>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3766054"></a><h3>
+<a name="gtk-page-setup-get-bottom-margin"></a>gtk_page_setup_get_bottom_margin ()</h3>
+<a class="indexterm" name="id3766070"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             gtk_page_setup_get_bottom_margin    (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);</pre>
+<p>
+Gets the bottom margin in units of <em class="parameter"><code>unit</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>setup</code></em>&#160;:</span></td>
+<td> a <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>unit</code></em>&#160;:</span></td>
+<td> the unit for the return value
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the bottom margin
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3766174"></a><h3>
+<a name="gtk-page-setup-set-bottom-margin"></a>gtk_page_setup_set_bottom_margin ()</h3>
+<a class="indexterm" name="id3766190"></a><pre class="programlisting">void                gtk_page_setup_set_bottom_margin    (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> margin,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);</pre>
+<p>
+Sets the bottom margin of the <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>setup</code></em>&#160;:</span></td>
+<td> a <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>margin</code></em>&#160;:</span></td>
+<td> the new bottom margin in units of <em class="parameter"><code>unit</code></em>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>unit</code></em>&#160;:</span></td>
+<td> the units for <em class="parameter"><code>margin</code></em>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3766319"></a><h3>
+<a name="gtk-page-setup-get-left-margin"></a>gtk_page_setup_get_left_margin ()</h3>
+<a class="indexterm" name="id3766335"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             gtk_page_setup_get_left_margin      (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);</pre>
+<p>
+Gets the left margin in units of <em class="parameter"><code>unit</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>setup</code></em>&#160;:</span></td>
+<td> a <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>unit</code></em>&#160;:</span></td>
+<td> the unit for the return value
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the left margin
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3766439"></a><h3>
+<a name="gtk-page-setup-set-left-margin"></a>gtk_page_setup_set_left_margin ()</h3>
+<a class="indexterm" name="id3766455"></a><pre class="programlisting">void                gtk_page_setup_set_left_margin      (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> margin,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);</pre>
+<p>
+Sets the left margin of the <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>setup</code></em>&#160;:</span></td>
+<td> a <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>margin</code></em>&#160;:</span></td>
+<td> the new left margin in units of <em class="parameter"><code>unit</code></em>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>unit</code></em>&#160;:</span></td>
+<td> the units for <em class="parameter"><code>margin</code></em>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3766584"></a><h3>
+<a name="gtk-page-setup-get-right-margin"></a>gtk_page_setup_get_right_margin ()</h3>
+<a class="indexterm" name="id3766600"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             gtk_page_setup_get_right_margin     (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);</pre>
+<p>
+Gets the right margin in units of <em class="parameter"><code>unit</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>setup</code></em>&#160;:</span></td>
+<td> a <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>unit</code></em>&#160;:</span></td>
+<td> the unit for the return value
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the right margin
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3766704"></a><h3>
+<a name="gtk-page-setup-set-right-margin"></a>gtk_page_setup_set_right_margin ()</h3>
+<a class="indexterm" name="id3766720"></a><pre class="programlisting">void                gtk_page_setup_set_right_margin     (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> margin,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);</pre>
+<p>
+Sets the right margin of the <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>setup</code></em>&#160;:</span></td>
+<td> a <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>margin</code></em>&#160;:</span></td>
+<td> the new right margin in units of <em class="parameter"><code>unit</code></em>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>unit</code></em>&#160;:</span></td>
+<td> the units for <em class="parameter"><code>margin</code></em>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3766850"></a><h3>
+<a name="gtk-page-setup-set-paper-size-and-default-margins"></a>gtk_page_setup_set_paper_size_and_default_margins ()</h3>
+<a class="indexterm" name="id3766866"></a><pre class="programlisting">void                gtk_page_setup_set_paper_size_and_default_margins
+                                                        (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a href="gtk-GtkPaperSize.html#GtkPaperSize">GtkPaperSize</a> *size);</pre>
+<p>
+Sets the paper size of the <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a> and modifies
+the margins according to the new paper size.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>setup</code></em>&#160;:</span></td>
+<td> a <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>size</code></em>&#160;:</span></td>
+<td> a <a href="gtk-GtkPaperSize.html#GtkPaperSize"><span class="type">GtkPaperSize</span></a> 
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3766973"></a><h3>
+<a name="gtk-page-setup-get-paper-width"></a>gtk_page_setup_get_paper_width ()</h3>
+<a class="indexterm" name="id3766989"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             gtk_page_setup_get_paper_width      (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);</pre>
+<p>
+Returns the paper width in units of <em class="parameter"><code>unit</code></em>.
+</p>
+<p>
+Note that this function takes orientation, but 
+not margins into consideration. 
+See <a href="GtkPageSetup.html#gtk-page-setup-get-page-width"><code class="function">gtk_page_setup_get_page_width()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>setup</code></em>&#160;:</span></td>
+<td> a <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>unit</code></em>&#160;:</span></td>
+<td> the unit for the return value
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the paper width.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3767109"></a><h3>
+<a name="gtk-page-setup-get-paper-height"></a>gtk_page_setup_get_paper_height ()</h3>
+<a class="indexterm" name="id3767125"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             gtk_page_setup_get_paper_height     (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);</pre>
+<p>
+Returns the paper height in units of <em class="parameter"><code>unit</code></em>.
+</p>
+<p>
+Note that this function takes orientation, but 
+not margins into consideration.
+See <a href="GtkPageSetup.html#gtk-page-setup-get-page-height"><code class="function">gtk_page_setup_get_page_height()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>setup</code></em>&#160;:</span></td>
+<td> a <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>unit</code></em>&#160;:</span></td>
+<td> the unit for the return value
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the paper height.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3767245"></a><h3>
+<a name="gtk-page-setup-get-page-width"></a>gtk_page_setup_get_page_width ()</h3>
+<a class="indexterm" name="id3767261"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             gtk_page_setup_get_page_width       (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);</pre>
+<p>
+Returns the page width in units of <em class="parameter"><code>unit</code></em>.
+</p>
+<p>
+Note that this function takes orientation and
+margins into consideration. 
+See <a href="GtkPageSetup.html#gtk-page-setup-get-paper-width"><code class="function">gtk_page_setup_get_paper_width()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>setup</code></em>&#160;:</span></td>
+<td> a <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>unit</code></em>&#160;:</span></td>
+<td> the unit for the return value
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the page width.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3767381"></a><h3>
+<a name="gtk-page-setup-get-page-height"></a>gtk_page_setup_get_page_height ()</h3>
+<a class="indexterm" name="id3767397"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>             gtk_page_setup_get_page_height      (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *setup,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);</pre>
+<p>
+Returns the page height in units of <em class="parameter"><code>unit</code></em>.
+</p>
+<p>
+Note that this function takes orientation and
+margins into consideration. 
+See <a href="GtkPageSetup.html#gtk-page-setup-get-paper-height"><code class="function">gtk_page_setup_get_paper_height()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>setup</code></em>&#160;:</span></td>
+<td> a <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>unit</code></em>&#160;:</span></td>
+<td> the unit for the return value
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the page height.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+</div>
+</div>
+</body>
+</html>

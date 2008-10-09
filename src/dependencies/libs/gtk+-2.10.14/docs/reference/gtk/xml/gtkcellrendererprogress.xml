@@ -1,0 +1,125 @@
+<refentry id="GtkCellRendererProgress">
+<refmeta>
+<refentrytitle role="top_of_page">GtkCellRendererProgress</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GTK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GtkCellRendererProgress</refname>
+<refpurpose>Renders numbers as progress bars</refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
+</refnamediv>
+
+<refsynopsisdiv role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <link linkend="GtkCellRendererProgress-struct">GtkCellRendererProgress</link>;
+<link linkend="GtkCellRenderer">GtkCellRenderer</link>*    <link linkend="gtk-cell-renderer-progress-new">gtk_cell_renderer_progress_new</link>      (void);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1 role="object_hierarchy">
+<title role="object_hierarchy.title">Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GInitiallyUnowned">GInitiallyUnowned</link>
+         +----<link linkend="GtkObject">GtkObject</link>
+               +----<link linkend="GtkCellRenderer">GtkCellRenderer</link>
+                     +----GtkCellRendererProgress
+</synopsis>
+
+</refsect1>
+
+
+
+
+
+<refsect1 role="properties">
+<title role="properties.title">Properties</title>
+<synopsis>
+
+  <link linkend="GtkCellRendererProgress--text">text</link>                     <link linkend="gchararray">gchararray</link>            : Read / Write
+  <link linkend="GtkCellRendererProgress--value">value</link>                    <link linkend="gint">gint</link>                  : Read / Write
+</synopsis>
+</refsect1>
+
+
+
+<refsect1 role="desc">
+<title role="desc.title">Description</title>
+<para>
+<link linkend="GtkCellRendererProgress"><type>GtkCellRendererProgress</type></link> renders a numeric value as a progress par in a cell.
+Additionally, it can display a text on top of the progress bar.
+</para>
+
+<para>
+The <link linkend="GtkCellRendererProgress"><type>GtkCellRendererProgress</type></link> cell renderer was added in GTK+ 2.6.
+</para>
+</refsect1>
+
+<refsect1 role="details">
+<title role="details.title">Details</title>
+<refsect2>
+<title><anchor id="GtkCellRendererProgress-struct" role="struct"/>GtkCellRendererProgress</title>
+<indexterm><primary>GtkCellRendererProgress</primary></indexterm><programlisting>typedef struct _GtkCellRendererProgress GtkCellRendererProgress;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-cell-renderer-progress-new" role="function" condition="since:2.6"/>gtk_cell_renderer_progress_new ()</title>
+<indexterm role="2.6"><primary>gtk_cell_renderer_progress_new</primary></indexterm><programlisting><link linkend="GtkCellRenderer">GtkCellRenderer</link>*    gtk_cell_renderer_progress_new      (void);</programlisting>
+<para>
+Creates a new <link linkend="GtkCellRendererProgress"><type>GtkCellRendererProgress</type></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the new cell renderer
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.6
+</para></refsect2>
+
+</refsect1>
+<refsect1 role="property_details">
+<title role="property_details.title">Property Details</title>
+<refsect2><title><anchor id="GtkCellRendererProgress--text"/>The :<literal>text</literal> property</title>
+<indexterm role="2.6"><primary>GtkCellRendererProgress:text</primary></indexterm><programlisting>  text                     <link linkend="gchararray">gchararray</link>            : Read / Write</programlisting>
+<para>
+The "text" property determines the label which will be drawn
+over the progress bar. Setting this property to <link linkend="NULL:CAPS"><literal>NULL</literal></link> causes the default 
+label to be displayed. Setting this property to an empty string causes 
+no label to be displayed.</para>
+<para>
+
+</para><para>Default value: NULL</para>
+<para>Since  2.6
+</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererProgress--value"/>The :<literal>value</literal> property</title>
+<indexterm role="2.6"><primary>GtkCellRendererProgress:value</primary></indexterm><programlisting>  value                    <link linkend="gint">gint</link>                  : Read / Write</programlisting>
+<para>
+The "value" property determines the percentage to which the
+progress bar will be "filled in".</para>
+<para>
+
+</para><para>Allowed values: [0,100]</para>
+<para>Default value: 0</para>
+<para>Since  2.6
+</para>
+</refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

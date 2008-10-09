@@ -1,0 +1,564 @@
+<refentry id="GtkMessageDialog">
+<refmeta>
+<refentrytitle role="top_of_page">GtkMessageDialog</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GTK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GtkMessageDialog</refname>
+<refpurpose>A convenient message window</refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
+</refnamediv>
+
+<refsynopsisdiv role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <link linkend="GtkMessageDialog-struct">GtkMessageDialog</link>;
+enum                <link linkend="GtkMessageType">GtkMessageType</link>;
+enum                <link linkend="GtkButtonsType">GtkButtonsType</link>;
+<link linkend="GtkWidget">GtkWidget</link>*          <link linkend="gtk-message-dialog-new">gtk_message_dialog_new</link>              (<link linkend="GtkWindow">GtkWindow</link> *parent,
+                                                         <link linkend="GtkDialogFlags">GtkDialogFlags</link> flags,
+                                                         <link linkend="GtkMessageType">GtkMessageType</link> type,
+                                                         <link linkend="GtkButtonsType">GtkButtonsType</link> buttons,
+                                                         const <link linkend="gchar">gchar</link> *message_format,
+                                                         ...);
+<link linkend="GtkWidget">GtkWidget</link>*          <link linkend="gtk-message-dialog-new-with-markup">gtk_message_dialog_new_with_markup</link>  (<link linkend="GtkWindow">GtkWindow</link> *parent,
+                                                         <link linkend="GtkDialogFlags">GtkDialogFlags</link> flags,
+                                                         <link linkend="GtkMessageType">GtkMessageType</link> type,
+                                                         <link linkend="GtkButtonsType">GtkButtonsType</link> buttons,
+                                                         const <link linkend="gchar">gchar</link> *message_format,
+                                                         ...);
+<link linkend="void">void</link>                <link linkend="gtk-message-dialog-set-markup">gtk_message_dialog_set_markup</link>       (<link linkend="GtkMessageDialog">GtkMessageDialog</link> *message_dialog,
+                                                         const <link linkend="gchar">gchar</link> *str);
+<link linkend="void">void</link>                <link linkend="gtk-message-dialog-set-image">gtk_message_dialog_set_image</link>        (<link linkend="GtkMessageDialog">GtkMessageDialog</link> *dialog,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *image);
+<link linkend="void">void</link>                <link linkend="gtk-message-dialog-format-secondary-text">gtk_message_dialog_format_secondary_text</link>
+                                                        (<link linkend="GtkMessageDialog">GtkMessageDialog</link> *message_dialog,
+                                                         const <link linkend="gchar">gchar</link> *message_format,
+                                                         ...);
+<link linkend="void">void</link>                <link linkend="gtk-message-dialog-format-secondary-markup">gtk_message_dialog_format_secondary_markup</link>
+                                                        (<link linkend="GtkMessageDialog">GtkMessageDialog</link> *message_dialog,
+                                                         const <link linkend="gchar">gchar</link> *message_format,
+                                                         ...);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1 role="object_hierarchy">
+<title role="object_hierarchy.title">Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GInitiallyUnowned">GInitiallyUnowned</link>
+         +----<link linkend="GtkObject">GtkObject</link>
+               +----<link linkend="GtkWidget">GtkWidget</link>
+                     +----<link linkend="GtkContainer">GtkContainer</link>
+                           +----<link linkend="GtkBin">GtkBin</link>
+                                 +----<link linkend="GtkWindow">GtkWindow</link>
+                                       +----<link linkend="GtkDialog">GtkDialog</link>
+                                             +----GtkMessageDialog
+</synopsis>
+
+</refsect1>
+
+
+
+<refsect1 role="impl_interfaces">
+<title role="impl_interfaces.title">Implemented Interfaces</title>
+<para>
+GtkMessageDialog implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
+</refsect1>
+
+
+<refsect1 role="properties">
+<title role="properties.title">Properties</title>
+<synopsis>
+
+  <link linkend="GtkMessageDialog--buttons">buttons</link>                  <link linkend="GtkButtonsType">GtkButtonsType</link>        : Write / Construct Only
+  <link linkend="GtkMessageDialog--image">image</link>                    <link linkend="GtkWidget">GtkWidget</link>             : Read / Write
+  <link linkend="GtkMessageDialog--message-type">message-type</link>             <link linkend="GtkMessageType">GtkMessageType</link>        : Read / Write / Construct
+  <link linkend="GtkMessageDialog--secondary-text">secondary-text</link>           <link linkend="gchararray">gchararray</link>            : Read / Write
+  <link linkend="GtkMessageDialog--secondary-use-markup">secondary-use-markup</link>     <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkMessageDialog--text">text</link>                     <link linkend="gchararray">gchararray</link>            : Read / Write
+  <link linkend="GtkMessageDialog--use-markup">use-markup</link>               <link linkend="gboolean">gboolean</link>              : Read / Write
+</synopsis>
+</refsect1>
+<refsect1 role="style_properties">
+<title role="style_properties.title">Style Properties</title>
+<synopsis>
+
+  <link linkend="GtkMessageDialog--message-border">message-border</link>           <link linkend="gint">gint</link>                  : Read
+  <link linkend="GtkMessageDialog--use-separator">use-separator</link>            <link linkend="gboolean">gboolean</link>              : Read
+</synopsis>
+</refsect1>
+
+
+
+<refsect1 role="desc">
+<title role="desc.title">Description</title>
+<para>
+<link linkend="GtkMessageDialog"><type>GtkMessageDialog</type></link> presents a dialog with an image representing the type of 
+message (Error, Question, etc.) alongside some message text. It's simply a 
+convenience widget; you could construct the equivalent of <link linkend="GtkMessageDialog"><type>GtkMessageDialog</type></link> 
+from <link linkend="GtkDialog"><type>GtkDialog</type></link> without too much effort, but <link linkend="GtkMessageDialog"><type>GtkMessageDialog</type></link> saves typing.
+</para>
+
+<para>
+The easiest way to do a modal message dialog is to use <link linkend="gtk-dialog-run"><function>gtk_dialog_run()</function></link>, though
+you can also pass in the <link linkend="GTK-DIALOG-MODAL:CAPS"><literal>GTK_DIALOG_MODAL</literal></link> flag, <link linkend="gtk-dialog-run"><function>gtk_dialog_run()</function></link> automatically
+makes the dialog modal and waits for the user to respond to it. <link linkend="gtk-dialog-run"><function>gtk_dialog_run()</function></link>
+returns when any dialog button is clicked.
+<example>
+<title>A modal dialog.</title>
+<programlisting>
+ dialog = gtk_message_dialog_new (main_application_window,
+                                  GTK_DIALOG_DESTROY_WITH_PARENT,
+                                  GTK_MESSAGE_ERROR,
+                                  GTK_BUTTONS_CLOSE,
+                                  "Error loading file '&percnt;s': &percnt;s",
+                                  filename, g_strerror (errno));
+ gtk_dialog_run (GTK_DIALOG (dialog));
+ gtk_widget_destroy (dialog);
+</programlisting>
+</example>
+</para>
+
+<para>
+You might do a non-modal <link linkend="GtkMessageDialog"><type>GtkMessageDialog</type></link> as follows:
+<example>
+<title>A non-modal dialog.</title>
+<programlisting>
+ dialog = gtk_message_dialog_new (main_application_window,
+                                  GTK_DIALOG_DESTROY_WITH_PARENT,
+                                  GTK_MESSAGE_ERROR,
+                                  GTK_BUTTONS_CLOSE,
+                                  "Error loading file '&percnt;s': &percnt;s",
+                                  filename, g_strerror (errno));
+
+ /* Destroy the dialog when the user responds to it (e.g. clicks a button) */
+ g_signal_connect_swapped (dialog, "response",
+                           G_CALLBACK (gtk_widget_destroy),
+                           dialog);
+</programlisting>
+</example>
+</para>
+</refsect1>
+
+<refsect1 role="details">
+<title role="details.title">Details</title>
+<refsect2>
+<title><anchor id="GtkMessageDialog-struct" role="struct"/>GtkMessageDialog</title>
+<indexterm><primary>GtkMessageDialog</primary></indexterm><programlisting>typedef struct _GtkMessageDialog GtkMessageDialog;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GtkMessageType" role="enum"/>enum GtkMessageType</title>
+<indexterm><primary>GtkMessageType</primary></indexterm><programlisting>typedef enum
+{
+  GTK_MESSAGE_INFO,
+  GTK_MESSAGE_WARNING,
+  GTK_MESSAGE_QUESTION,
+  GTK_MESSAGE_ERROR,
+  GTK_MESSAGE_OTHER
+} GtkMessageType;
+</programlisting>
+<para>
+The type of message being displayed in the dialog.
+</para><variablelist role="enum">
+<varlistentry>
+<term><anchor id="GTK-MESSAGE-INFO:CAPS" role="constant"/><literal>GTK_MESSAGE_INFO</literal></term>
+<listitem><simpara>Informational message
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><anchor id="GTK-MESSAGE-WARNING:CAPS" role="constant"/><literal>GTK_MESSAGE_WARNING</literal></term>
+<listitem><simpara>Nonfatal warning message
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><anchor id="GTK-MESSAGE-QUESTION:CAPS" role="constant"/><literal>GTK_MESSAGE_QUESTION</literal></term>
+<listitem><simpara>Question requiring a choice
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><anchor id="GTK-MESSAGE-ERROR:CAPS" role="constant"/><literal>GTK_MESSAGE_ERROR</literal></term>
+<listitem><simpara>Fatal error message
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><anchor id="GTK-MESSAGE-OTHER:CAPS" role="constant"/><literal>GTK_MESSAGE_OTHER</literal></term>
+<listitem><simpara>
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GtkButtonsType" role="enum"/>enum GtkButtonsType</title>
+<indexterm><primary>GtkButtonsType</primary></indexterm><programlisting>typedef enum
+{
+  GTK_BUTTONS_NONE,
+  GTK_BUTTONS_OK,
+  GTK_BUTTONS_CLOSE,
+  GTK_BUTTONS_CANCEL,
+  GTK_BUTTONS_YES_NO,
+  GTK_BUTTONS_OK_CANCEL
+} GtkButtonsType;
+</programlisting>
+<para>
+Prebuilt sets of buttons for the dialog. If 
+none of these choices are appropriate, simply use <link linkend="GTK-BUTTONS-NONE:CAPS"><literal>GTK_BUTTONS_NONE</literal></link>
+then call <link linkend="gtk-dialog-add-buttons"><function>gtk_dialog_add_buttons()</function></link>.
+</para><variablelist role="enum">
+<varlistentry>
+<term><anchor id="GTK-BUTTONS-NONE:CAPS" role="constant"/><literal>GTK_BUTTONS_NONE</literal></term>
+<listitem><simpara>no buttons at all
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><anchor id="GTK-BUTTONS-OK:CAPS" role="constant"/><literal>GTK_BUTTONS_OK</literal></term>
+<listitem><simpara>an OK button
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><anchor id="GTK-BUTTONS-CLOSE:CAPS" role="constant"/><literal>GTK_BUTTONS_CLOSE</literal></term>
+<listitem><simpara>a Close button
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><anchor id="GTK-BUTTONS-CANCEL:CAPS" role="constant"/><literal>GTK_BUTTONS_CANCEL</literal></term>
+<listitem><simpara>a Cancel button
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><anchor id="GTK-BUTTONS-YES-NO:CAPS" role="constant"/><literal>GTK_BUTTONS_YES_NO</literal></term>
+<listitem><simpara>Yes and No buttons
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><anchor id="GTK-BUTTONS-OK-CANCEL:CAPS" role="constant"/><literal>GTK_BUTTONS_OK_CANCEL</literal></term>
+<listitem><simpara>OK and Cancel buttons
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-message-dialog-new" role="function"/>gtk_message_dialog_new ()</title>
+<indexterm><primary>gtk_message_dialog_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*          gtk_message_dialog_new              (<link linkend="GtkWindow">GtkWindow</link> *parent,
+                                                         <link linkend="GtkDialogFlags">GtkDialogFlags</link> flags,
+                                                         <link linkend="GtkMessageType">GtkMessageType</link> type,
+                                                         <link linkend="GtkButtonsType">GtkButtonsType</link> buttons,
+                                                         const <link linkend="gchar">gchar</link> *message_format,
+                                                         ...);</programlisting>
+<para>
+Creates a new message dialog, which is a simple dialog with an icon
+indicating the dialog type (error, warning, etc.) and some text the
+user may want to see. When the user clicks a button a "response"
+signal is emitted with response IDs from <link linkend="GtkResponseType"><type>GtkResponseType</type></link>. See
+<link linkend="GtkDialog"><type>GtkDialog</type></link> for more details.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara> transient parent, or <link linkend="NULL:CAPS"><literal>NULL</literal></link> for none 
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
+<listitem><simpara> flags
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara> type of message
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>buttons</parameter>&nbsp;:</term>
+<listitem><simpara> set of buttons to use
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>message_format</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="printf"><function>printf()</function></link>-style format string, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>...</parameter>&nbsp;:</term>
+<listitem><simpara> arguments for <parameter>message_format</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a new <link linkend="GtkMessageDialog"><type>GtkMessageDialog</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-message-dialog-new-with-markup" role="function" condition="since:2.4"/>gtk_message_dialog_new_with_markup ()</title>
+<indexterm role="2.4"><primary>gtk_message_dialog_new_with_markup</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*          gtk_message_dialog_new_with_markup  (<link linkend="GtkWindow">GtkWindow</link> *parent,
+                                                         <link linkend="GtkDialogFlags">GtkDialogFlags</link> flags,
+                                                         <link linkend="GtkMessageType">GtkMessageType</link> type,
+                                                         <link linkend="GtkButtonsType">GtkButtonsType</link> buttons,
+                                                         const <link linkend="gchar">gchar</link> *message_format,
+                                                         ...);</programlisting>
+<para>
+Creates a new message dialog, which is a simple dialog with an icon
+indicating the dialog type (error, warning, etc.) and some text which
+is marked up with the <link linkend="PangoMarkupFormat">Pango text markup language</link>.
+When the user clicks a button a "response" signal is emitted with
+response IDs from <link linkend="GtkResponseType"><type>GtkResponseType</type></link>. See <link linkend="GtkDialog"><type>GtkDialog</type></link> for more details.
+</para>
+<para>
+Special XML characters in the <link linkend="printf"><function>printf()</function></link> arguments passed to this
+function will automatically be escaped as necessary.
+(See <link linkend="g-markup-printf-escaped"><function>g_markup_printf_escaped()</function></link> for how this is implemented.)
+Usually this is what you want, but if you have an existing
+Pango markup string that you want to use literally as the
+label, then you need to use <link linkend="gtk-message-dialog-set-markup"><function>gtk_message_dialog_set_markup()</function></link>
+instead, since you can't pass the markup string either
+as the format (it might contain '%' characters) or as a string
+argument.
+</para>
+<para>
+<informalexample><programlisting>
+ GtkWidget *dialog;
+ dialog = gtk_message_dialog_new (main_application_window,
+                                  GTK_DIALOG_DESTROY_WITH_PARENT,
+                                  GTK_MESSAGE_ERROR,
+                                  GTK_BUTTONS_CLOSE,
+                                  NULL);
+ gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (dialog),
+                                markup);
+</programlisting></informalexample></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara> transient parent, or <link linkend="NULL:CAPS"><literal>NULL</literal></link> for none 
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
+<listitem><simpara> flags
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara> type of message
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>buttons</parameter>&nbsp;:</term>
+<listitem><simpara> set of buttons to use
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>message_format</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="printf"><function>printf()</function></link>-style format string, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>...</parameter>&nbsp;:</term>
+<listitem><simpara> arguments for <parameter>message_format</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a new <link linkend="GtkMessageDialog"><type>GtkMessageDialog</type></link>
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.4
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-message-dialog-set-markup" role="function" condition="since:2.4"/>gtk_message_dialog_set_markup ()</title>
+<indexterm role="2.4"><primary>gtk_message_dialog_set_markup</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_message_dialog_set_markup       (<link linkend="GtkMessageDialog">GtkMessageDialog</link> *message_dialog,
+                                                         const <link linkend="gchar">gchar</link> *str);</programlisting>
+<para>
+Sets the text of the message dialog to be <parameter>str</parameter>, which is marked
+up with the <link linkend="PangoMarkupFormat">Pango text markup
+language</link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>message_dialog</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkMessageDialog"><type>GtkMessageDialog</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>str</parameter>&nbsp;:</term>
+<listitem><simpara> markup string (see <link linkend="PangoMarkupFormat">Pango markup format</link>)
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.4
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-message-dialog-set-image" role="function" condition="since:2.10"/>gtk_message_dialog_set_image ()</title>
+<indexterm role="2.10"><primary>gtk_message_dialog_set_image</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_message_dialog_set_image        (<link linkend="GtkMessageDialog">GtkMessageDialog</link> *dialog,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *image);</programlisting>
+<para>
+Sets the dialog's image to <parameter>image</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkMessageDialog"><type>GtkMessageDialog</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>image</parameter>&nbsp;:</term>
+<listitem><simpara> the image
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-message-dialog-format-secondary-text" role="function" condition="since:2.6"/>gtk_message_dialog_format_secondary_text ()</title>
+<indexterm role="2.6"><primary>gtk_message_dialog_format_secondary_text</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_message_dialog_format_secondary_text
+                                                        (<link linkend="GtkMessageDialog">GtkMessageDialog</link> *message_dialog,
+                                                         const <link linkend="gchar">gchar</link> *message_format,
+                                                         ...);</programlisting>
+<para>
+Sets the secondary text of the message dialog to be <parameter>message_format</parameter> 
+(with <link linkend="printf"><function>printf()</function></link>-style).
+</para>
+<para>
+Note that setting a secondary text makes the primary text become
+bold, unless you have provided explicit markup.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>message_dialog</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkMessageDialog"><type>GtkMessageDialog</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>message_format</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="printf"><function>printf()</function></link>-style format string, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>...</parameter>&nbsp;:</term>
+<listitem><simpara> arguments for <parameter>message_format</parameter>
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.6
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-message-dialog-format-secondary-markup" role="function" condition="since:2.6"/>gtk_message_dialog_format_secondary_markup ()</title>
+<indexterm role="2.6"><primary>gtk_message_dialog_format_secondary_markup</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_message_dialog_format_secondary_markup
+                                                        (<link linkend="GtkMessageDialog">GtkMessageDialog</link> *message_dialog,
+                                                         const <link linkend="gchar">gchar</link> *message_format,
+                                                         ...);</programlisting>
+<para>
+Sets the secondary text of the message dialog to be <parameter>message_format</parameter> (with 
+<link linkend="printf"><function>printf()</function></link>-style), which is marked up with the 
+<link linkend="PangoMarkupFormat">Pango text markup language</link>.
+</para>
+<para>
+Note that setting a secondary text makes the primary text become
+bold, unless you have provided explicit markup.
+</para>
+<para>
+Due to an oversight, this function does not escape special XML characters
+like <link linkend="gtk-message-dialog-new-with-markup"><function>gtk_message_dialog_new_with_markup()</function></link> does. Thus, if the arguments 
+may contain special XML characters, you should use <link linkend="g-markup-printf-escaped"><function>g_markup_printf_escaped()</function></link>
+to escape it.
+</para>
+<para>
+<informalexample><programlisting>
+gchar *msg;
+ 
+msg = g_markup_printf_escaped (message_format, ...);
+gtk_message_dialog_format_secondary_markup (message_dialog, "&percnt;s", msg);
+g_free (msg);
+</programlisting></informalexample></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>message_dialog</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkMessageDialog"><type>GtkMessageDialog</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>message_format</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="printf"><function>printf()</function></link>-style markup string (see 
+     <link linkend="PangoMarkupFormat">Pango markup format</link>), or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>...</parameter>&nbsp;:</term>
+<listitem><simpara> arguments for <parameter>message_format</parameter>
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.6
+</para></refsect2>
+
+</refsect1>
+<refsect1 role="property_details">
+<title role="property_details.title">Property Details</title>
+<refsect2><title><anchor id="GtkMessageDialog--buttons"/>The :<literal>buttons</literal> property</title>
+<indexterm><primary>GtkMessageDialog:buttons</primary></indexterm><programlisting>  buttons                  <link linkend="GtkButtonsType">GtkButtonsType</link>        : Write / Construct Only</programlisting>
+<para>The buttons shown in the message dialog.</para><para>Default value: GTK_BUTTONS_NONE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkMessageDialog--image"/>The :<literal>image</literal> property</title>
+<indexterm role="2.10"><primary>GtkMessageDialog:image</primary></indexterm><programlisting>  image                    <link linkend="GtkWidget">GtkWidget</link>             : Read / Write</programlisting>
+<para>
+The image for this dialog.</para>
+<para>
+
+</para><para>Since  2.10
+</para>
+</refsect2>
+<refsect2><title><anchor id="GtkMessageDialog--message-type"/>The :<literal>message-type</literal> property</title>
+<indexterm><primary>GtkMessageDialog:message-type</primary></indexterm><programlisting>  message-type             <link linkend="GtkMessageType">GtkMessageType</link>        : Read / Write / Construct</programlisting>
+<para>
+The type of the message. The type is used to determine
+the image that is shown in the dialog, unless the image is 
+explicitly set by the ::image property.</para>
+<para>
+
+</para><para>Default value: GTK_MESSAGE_INFO</para>
+</refsect2>
+<refsect2><title><anchor id="GtkMessageDialog--secondary-text"/>The :<literal>secondary-text</literal> property</title>
+<indexterm role="2.10"><primary>GtkMessageDialog:secondary-text</primary></indexterm><programlisting>  secondary-text           <link linkend="gchararray">gchararray</link>            : Read / Write</programlisting>
+<para>
+The secondary text of the message dialog.</para>
+<para>
+
+</para><para>Default value: NULL</para>
+<para>Since  2.10
+</para>
+</refsect2>
+<refsect2><title><anchor id="GtkMessageDialog--secondary-use-markup"/>The :<literal>secondary-use-markup</literal> property</title>
+<indexterm role="2.10"><primary>GtkMessageDialog:secondary-use-markup</primary></indexterm><programlisting>  secondary-use-markup     <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>
+<link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the secondary text of the dialog includes Pango markup. 
+See <link linkend="pango-parse-markup"><function>pango_parse_markup()</function></link>.</para>
+<para>
+
+</para><para>Default value: FALSE</para>
+<para>Since  2.10
+</para>
+</refsect2>
+<refsect2><title><anchor id="GtkMessageDialog--text"/>The :<literal>text</literal> property</title>
+<indexterm role="2.10"><primary>GtkMessageDialog:text</primary></indexterm><programlisting>  text                     <link linkend="gchararray">gchararray</link>            : Read / Write</programlisting>
+<para>
+The primary text of the message dialog. If the dialog has 
+a secondary text, this will appear as the title.</para>
+<para>
+
+</para><para>Default value: NULL</para>
+<para>Since  2.10
+</para>
+</refsect2>
+<refsect2><title><anchor id="GtkMessageDialog--use-markup"/>The :<literal>use-markup</literal> property</title>
+<indexterm role="2.10"><primary>GtkMessageDialog:use-markup</primary></indexterm><programlisting>  use-markup               <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>
+<link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the primary text of the dialog includes Pango markup. 
+See <link linkend="pango-parse-markup"><function>pango_parse_markup()</function></link>.</para>
+<para>
+
+</para><para>Default value: FALSE</para>
+<para>Since  2.10
+</para>
+</refsect2>
+
+</refsect1>
+<refsect1 role="style_properties_details">
+<title role="style_properties_details.title">Style Property Details</title>
+<refsect2><title><anchor id="GtkMessageDialog--message-border"/>The :<literal>message-border</literal> style property</title>
+<indexterm><primary>GtkMessageDialog:message-border</primary></indexterm><programlisting>  message-border           <link linkend="gint">gint</link>                  : Read</programlisting>
+<para>Width of border around the label and image in the message dialog.</para><para>Allowed values: &gt;= 0</para>
+<para>Default value: 12</para>
+</refsect2>
+<refsect2><title><anchor id="GtkMessageDialog--use-separator"/>The :<literal>use-separator</literal> style property</title>
+<indexterm role="2.4"><primary>GtkMessageDialog:use-separator</primary></indexterm><programlisting>  use-separator            <link linkend="gboolean">gboolean</link>              : Read</programlisting>
+<para>
+Whether to draw a separator line between the message label and the buttons
+in the dialog.</para>
+<para>
+
+</para><para>Default value: FALSE</para>
+<para>Since  2.4
+</para>
+</refsect2>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>See Also</title>
+<para>
+<link linkend="GtkDialog"><type>GtkDialog</type></link>
+</para>
+</refsect1>
+
+</refentry>

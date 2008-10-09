@@ -1,0 +1,222 @@
+<refentry id="GtkCellRendererAccel">
+<refmeta>
+<refentrytitle role="top_of_page">GtkCellRendererAccel</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GTK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GtkCellRendererAccel</refname>
+<refpurpose>Renders a keyboard accelerator in a cell</refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
+</refnamediv>
+
+<refsynopsisdiv role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <link linkend="GtkCellRendererAccel-struct">GtkCellRendererAccel</link>;
+enum                <link linkend="GtkCellRendererAccelMode">GtkCellRendererAccelMode</link>;
+<link linkend="GtkCellRenderer">GtkCellRenderer</link>*    <link linkend="gtk-cell-renderer-accel-new">gtk_cell_renderer_accel_new</link>         (void);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1 role="object_hierarchy">
+<title role="object_hierarchy.title">Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GInitiallyUnowned">GInitiallyUnowned</link>
+         +----<link linkend="GtkObject">GtkObject</link>
+               +----<link linkend="GtkCellRenderer">GtkCellRenderer</link>
+                     +----<link linkend="GtkCellRendererText">GtkCellRendererText</link>
+                           +----GtkCellRendererAccel
+</synopsis>
+
+</refsect1>
+
+
+
+
+
+<refsect1 role="properties">
+<title role="properties.title">Properties</title>
+<synopsis>
+
+  <link linkend="GtkCellRendererAccel--accel-key">accel-key</link>                <link linkend="guint">guint</link>                 : Read / Write
+  <link linkend="GtkCellRendererAccel--accel-mode">accel-mode</link>               <link linkend="GtkCellRendererAccelMode">GtkCellRendererAccelMode</link>  : Read / Write
+  <link linkend="GtkCellRendererAccel--accel-mods">accel-mods</link>               <link linkend="GdkModifierType">GdkModifierType</link>       : Read / Write
+  <link linkend="GtkCellRendererAccel--keycode">keycode</link>                  <link linkend="guint">guint</link>                 : Read / Write
+</synopsis>
+</refsect1>
+
+<refsect1 role="signal_proto">
+<title role="signal_proto.title">Signals</title>
+<synopsis>
+
+  <link linkend="GtkCellRendererAccel-accel-cleared">accel-cleared</link>                                  : Run Last
+  <link linkend="GtkCellRendererAccel-accel-edited">accel-edited</link>                                   : Run Last
+</synopsis>
+</refsect1>
+
+
+<refsect1 role="desc">
+<title role="desc.title">Description</title>
+<para>
+<link linkend="GtkCellRendererAccel"><type>GtkCellRendererAccel</type></link> displays a keyboard accelerator (i.e. a 
+key combination like &lt;Control&gt;-a). If the cell renderer is editable, the 
+accelerator can be changed by simply typing the new combination.
+</para>
+
+<para>
+The <link linkend="GtkCellRendererAccel"><type>GtkCellRendererAccel</type></link> cell renderer was added in GTK+ 2.10.
+</para>
+</refsect1>
+
+<refsect1 role="details">
+<title role="details.title">Details</title>
+<refsect2>
+<title><anchor id="GtkCellRendererAccel-struct" role="struct"/>GtkCellRendererAccel</title>
+<indexterm><primary>GtkCellRendererAccel</primary></indexterm><programlisting>typedef struct _GtkCellRendererAccel GtkCellRendererAccel;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GtkCellRendererAccelMode" role="enum"/>enum GtkCellRendererAccelMode</title>
+<indexterm><primary>GtkCellRendererAccelMode</primary></indexterm><programlisting>typedef enum
+{
+  GTK_CELL_RENDERER_ACCEL_MODE_GTK,
+  GTK_CELL_RENDERER_ACCEL_MODE_OTHER
+} GtkCellRendererAccelMode;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-cell-renderer-accel-new" role="function" condition="since:2.10"/>gtk_cell_renderer_accel_new ()</title>
+<indexterm role="2.10"><primary>gtk_cell_renderer_accel_new</primary></indexterm><programlisting><link linkend="GtkCellRenderer">GtkCellRenderer</link>*    gtk_cell_renderer_accel_new         (void);</programlisting>
+<para>
+Creates a new <link linkend="GtkCellRendererAccel"><type>GtkCellRendererAccel</type></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the new cell renderer
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+
+</refsect1>
+<refsect1 role="property_details">
+<title role="property_details.title">Property Details</title>
+<refsect2><title><anchor id="GtkCellRendererAccel--accel-key"/>The :<literal>accel-key</literal> property</title>
+<indexterm role="2.10"><primary>GtkCellRendererAccel:accel-key</primary></indexterm><programlisting>  accel-key                <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>
+The keyval of the accelerator.</para>
+<para>
+
+</para><para>Allowed values: &lt;= G_MAXINT</para>
+<para>Default value: 0</para>
+<para>Since  2.10
+</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererAccel--accel-mode"/>The :<literal>accel-mode</literal> property</title>
+<indexterm role="2.10"><primary>GtkCellRendererAccel:accel-mode</primary></indexterm><programlisting>  accel-mode               <link linkend="GtkCellRendererAccelMode">GtkCellRendererAccelMode</link>  : Read / Write</programlisting>
+<para>
+Determines if the edited accelerators are GTK+ accelerators. If
+they are, consumed modifiers are suppressed, only accelerators
+accepted by GTK+ are allowed, and the accelerators are rendered
+in the same way as they are in menus.</para>
+<para>
+
+</para><para>Default value: GTK_CELL_RENDERER_ACCEL_MODE_GTK</para>
+<para>Since  2.10
+</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererAccel--accel-mods"/>The :<literal>accel-mods</literal> property</title>
+<indexterm role="2.10"><primary>GtkCellRendererAccel:accel-mods</primary></indexterm><programlisting>  accel-mods               <link linkend="GdkModifierType">GdkModifierType</link>       : Read / Write</programlisting>
+<para>
+The modifier mask of the accelerator.</para>
+<para>
+
+</para><para>Since  2.10
+</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererAccel--keycode"/>The :<literal>keycode</literal> property</title>
+<indexterm role="2.10"><primary>GtkCellRendererAccel:keycode</primary></indexterm><programlisting>  keycode                  <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>
+The hardware keycode of the accelerator. Note that the hardware keycode is
+only relevant if the key does not have a keyval. Normally, the keyboard
+configuration should assign keyvals to all keys.</para>
+<para>
+
+</para><para>Allowed values: &lt;= G_MAXINT</para>
+<para>Default value: 0</para>
+<para>Since  2.10
+</para>
+</refsect2>
+
+</refsect1>
+
+<refsect1 role="signals">
+<title role="signals.title">Signal Details</title>
+<refsect2><title><anchor id="GtkCellRendererAccel-accel-cleared"/>The <literal>::accel-cleared</literal> signal</title>
+<indexterm role="2.10"><primary>GtkCellRendererAccel::accel-cleared</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="GtkCellRendererAccel">GtkCellRendererAccel</link> *accel,
+                                                        <link linkend="gchar">gchar</link>                *path_string,
+                                                        <link linkend="gpointer">gpointer</link>              user_data)        : Run Last</programlisting>
+<para>
+Gets emitted when the user has removed the accelerator.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>accel</parameter>&nbsp;:</term>
+<listitem><simpara> the object reveiving the signal
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>path_string</parameter>&nbsp;:</term>
+<listitem><simpara> the path identifying the row of the edited cell
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist><para>Since  2.10
+</para></refsect2><refsect2><title><anchor id="GtkCellRendererAccel-accel-edited"/>The <literal>::accel-edited</literal> signal</title>
+<indexterm role="2.10"><primary>GtkCellRendererAccel::accel-edited</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="GtkCellRendererAccel">GtkCellRendererAccel</link> *accel,
+                                                        <link linkend="gchar">gchar</link>                *path_string,
+                                                        <link linkend="guint">guint</link>                 accel_key,
+                                                        <link linkend="GdkModifierType">GdkModifierType</link>       accel_mods,
+                                                        <link linkend="guint">guint</link>                 hardware_keycode,
+                                                        <link linkend="gpointer">gpointer</link>              user_data)             : Run Last</programlisting>
+<para>
+Gets emitted when the user has selected a new accelerator.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>accel</parameter>&nbsp;:</term>
+<listitem><simpara> the object reveiving the signal
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>path_string</parameter>&nbsp;:</term>
+<listitem><simpara> the path identifying the row of the edited cell
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>accel_key</parameter>&nbsp;:</term>
+<listitem><simpara> the new accelerator keyval
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>accel_mods</parameter>&nbsp;:</term>
+<listitem><simpara> the new acclerator modifier mask
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>hardware_keycode</parameter>&nbsp;:</term>
+<listitem><simpara> the keycode of the new accelerator
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist><para>Since  2.10
+</para></refsect2>
+</refsect1>
+
+
+
+</refentry>

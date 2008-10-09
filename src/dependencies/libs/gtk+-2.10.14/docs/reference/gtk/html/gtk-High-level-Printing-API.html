@@ -1,0 +1,2556 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>GtkPrintOperation</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GTK+ Reference Manual">
+<link rel="up" href="Printing.html" title="Printing">
+<link rel="prev" href="Printing.html" title="Printing">
+<link rel="next" href="GtkPrintContext.html" title="GtkPrintContext">
+<meta name="generator" content="GTK-Doc V1.7 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gtk.html" title="Part&#160;I.&#160;GTK+ Overview">
+<link rel="part" href="gtkbase.html" title="Part&#160;II.&#160;GTK+ Core Reference">
+<link rel="part" href="gtkobjects.html" title="Part&#160;III.&#160;GTK+ Widgets and Objects">
+<link rel="chapter" href="ch01.html" title="Object Hierarchy">
+<link rel="chapter" href="ch02.html" title="Widget Gallery">
+<link rel="chapter" href="WindowWidgets.html" title="Windows">
+<link rel="chapter" href="DisplayWidgets.html" title="Display Widgets">
+<link rel="chapter" href="ButtonWidgets.html" title="Buttons and Toggles">
+<link rel="chapter" href="NumericEntry.html" title="Numeric/Text Data Entry">
+<link rel="chapter" href="TextWidgetObjects.html" title="Multiline Text Editor">
+<link rel="chapter" href="TreeWidgetObjects.html" title="Tree, List and Icon Grid Widgets">
+<link rel="chapter" href="MenusAndCombos.html" title="Menus, Combo Box, Toolbar">
+<link rel="chapter" href="Actions.html" title="Action-based menus and toolbars">
+<link rel="chapter" href="SelectorWidgets.html" title="Selectors (File/Font/Color/Input Devices)">
+<link rel="chapter" href="LayoutContainers.html" title="Layout Containers">
+<link rel="chapter" href="Ornaments.html" title="Ornaments">
+<link rel="chapter" href="ScrollingWidgets.html" title="Scrolling">
+<link rel="chapter" href="Printing.html" title="Printing">
+<link rel="chapter" href="MiscObjects.html" title="Miscellaneous">
+<link rel="chapter" href="AbstractObjects.html" title="Abstract Base Classes">
+<link rel="chapter" href="PlugSocket.html" title="Cross-process Embedding">
+<link rel="chapter" href="SpecialObjects.html" title="Special-purpose features">
+<link rel="chapter" href="RecentDocuments.html" title="Recently Used Documents">
+<link rel="chapter" href="DeprecatedObjects.html" title="Deprecated">
+<link rel="part" href="migrating.html" title="Part&#160;IV.&#160;Migrating from Previous Versions of GTK+">
+<link rel="chapter" href="gtk-migrating-checklist.html" title="Migration Checklist">
+<link rel="chapter" href="gtk-migrating-GtkFileChooser.html" title="Migrating from GtkFileSelection to GtkFileChooser">
+<link rel="chapter" href="gtk-migrating-GtkAction.html" title="Migrating from old menu and toolbar systems to GtkAction">
+<link rel="chapter" href="gtk-migrating-GtkComboBox.html" title="Migrating from GtkOptionMenu and GtkCombo to GtkComboBox and GtkComboBoxEntry">
+<link rel="chapter" href="gtk-migrating-GtkIconView.html" title="Migrating from GnomeIconList to GtkIconView">
+<link rel="chapter" href="gtk-migrating-GtkAboutDialog.html" title="Migrating from GnomeAbout to GtkAboutDialog">
+<link rel="chapter" href="gtk-migrating-GtkColorButton.html" title="Migrating from GnomeColorPicker to GtkColorButton">
+<link rel="chapter" href="gtk-migrating-GtkAssistant.html" title="Migrating from GnomeDruid to GtkAssistant">
+<link rel="chapter" href="gtk-migrating-GtkRecentChooser.html" title="Migrating from EggRecent to GtkRecentChooser">
+<link rel="chapter" href="gtk-migrating-GtkLinkButton.html" title="Migrating from GnomeHRef to GtkLinkButton">
+<link rel="part" href="pt05.html" title="Part&#160;V.&#160;GTK+ Tools">
+<link rel="glossary" href="glossary.html" title="Glossary">
+<link rel="index" href="ix01.html" title="Index">
+<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="ix03.html" title="Index of new symbols in 2.2">
+<link rel="index" href="ix04.html" title="Index of new symbols in 2.4">
+<link rel="index" href="ix05.html" title="Index of new symbols in 2.6">
+<link rel="index" href="ix06.html" title="Index of new symbols in 2.8">
+<link rel="index" href="ix07.html" title="Index of new symbols in 2.10">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="Printing.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="Printing.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GTK+ Reference Manual</th>
+<td><a accesskey="n" href="GtkPrintContext.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id3722486" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id3723923" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id3723458" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id3723517" class="shortcut">Implemented Interfaces</a>
+                  &#160;|&#160;
+                  <a href="#" class="shortcut"></a>
+                  &#160;|&#160;
+                  <a href="#id3723540" class="shortcut">Known Implementations</a>
+                  &#160;|&#160;
+                  <a href="#id3723563" class="shortcut">Properties</a>
+                  &#160;|&#160;
+                  <a href="#id3723808" class="shortcut">Signals</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gtk-High-level-Printing-API"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id3722486"></a><span class="refentrytitle">GtkPrintOperation</span>
+</h2>
+<p>GtkPrintOperation &#8212; High-level Printing API</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<a name="GtkPrintOperation"></a><a name="GtkPrintOperationPreview"></a><pre class="synopsis">
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <a href="gtk-High-level-Printing-API.html#GtkPrintOperation-struct">GtkPrintOperation</a>;
+enum                <a href="gtk-High-level-Printing-API.html#GtkPrintStatus">GtkPrintStatus</a>;
+enum                <a href="gtk-High-level-Printing-API.html#GtkPrintOperationAction">GtkPrintOperationAction</a>;
+enum                <a href="gtk-High-level-Printing-API.html#GtkPrintOperationResult">GtkPrintOperationResult</a>;
+enum                <a href="gtk-High-level-Printing-API.html#GtkPrintError">GtkPrintError</a>;
+#define             <a href="gtk-High-level-Printing-API.html#GTK-PRINT-ERROR:CAPS">GTK_PRINT_ERROR</a>
+<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a>*  <a href="gtk-High-level-Printing-API.html#gtk-print-operation-new">gtk_print_operation_new</a>             (void);
+void                <a href="gtk-High-level-Printing-API.html#gtk-print-operation-set-allow-async">gtk_print_operation_set_allow_async</a> (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> allow_async);
+void                <a href="gtk-High-level-Printing-API.html#gtk-print-operation-get-error">gtk_print_operation_get_error</a>       (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         <a
+href="../glib/glib-Error-Reporting.html#GError"
+>GError</a> **error);
+void                <a href="gtk-High-level-Printing-API.html#gtk-print-operation-set-default-page-setup">gtk_print_operation_set_default_page_setup</a>
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         <a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *default_page_setup);
+<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a>*       <a href="gtk-High-level-Printing-API.html#gtk-print-operation-get-default-page-setup">gtk_print_operation_get_default_page_setup</a>
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op);
+void                <a href="gtk-High-level-Printing-API.html#gtk-print-operation-set-print-settings">gtk_print_operation_set_print_settings</a>
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         <a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *print_settings);
+<a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a>*   <a href="gtk-High-level-Printing-API.html#gtk-print-operation-get-print-settings">gtk_print_operation_get_print_settings</a>
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op);
+void                <a href="gtk-High-level-Printing-API.html#gtk-print-operation-set-job-name">gtk_print_operation_set_job_name</a>    (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *job_name);
+void                <a href="gtk-High-level-Printing-API.html#gtk-print-operation-set-n-pages">gtk_print_operation_set_n_pages</a>     (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> n_pages);
+void                <a href="gtk-High-level-Printing-API.html#gtk-print-operation-set-current-page">gtk_print_operation_set_current_page</a>
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> current_page);
+void                <a href="gtk-High-level-Printing-API.html#gtk-print-operation-set-use-full-page">gtk_print_operation_set_use_full_page</a>
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> full_page);
+void                <a href="gtk-High-level-Printing-API.html#gtk-print-operation-set-unit">gtk_print_operation_set_unit</a>        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);
+void                <a href="gtk-High-level-Printing-API.html#gtk-print-operation-set-export-filename">gtk_print_operation_set_export_filename</a>
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *filename);
+void                <a href="gtk-High-level-Printing-API.html#gtk-print-operation-set-show-progress">gtk_print_operation_set_show_progress</a>
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> show_progress);
+void                <a href="gtk-High-level-Printing-API.html#gtk-print-operation-set-track-print-status">gtk_print_operation_set_track_print_status</a>
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> track_status);
+void                <a href="gtk-High-level-Printing-API.html#gtk-print-operation-set-custom-tab-label">gtk_print_operation_set_custom_tab_label</a>
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *label);
+<a href="gtk-High-level-Printing-API.html#GtkPrintOperationResult">GtkPrintOperationResult</a> <a href="gtk-High-level-Printing-API.html#gtk-print-operation-run">gtk_print_operation_run</a>         (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         <a href="gtk-High-level-Printing-API.html#GtkPrintOperationAction">GtkPrintOperationAction</a> action,
+                                                         <a href="GtkWindow.html" title="GtkWindow">GtkWindow</a> *parent,
+                                                         <a
+href="../glib/glib-Error-Reporting.html#GError"
+>GError</a> **error);
+void                <a href="gtk-High-level-Printing-API.html#gtk-print-operation-cancel">gtk_print_operation_cancel</a>          (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op);
+<a href="gtk-High-level-Printing-API.html#GtkPrintStatus">GtkPrintStatus</a>      <a href="gtk-High-level-Printing-API.html#gtk-print-operation-get-status">gtk_print_operation_get_status</a>      (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op);
+const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a href="gtk-High-level-Printing-API.html#gtk-print-operation-get-status-string">gtk_print_operation_get_status_string</a>
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="gtk-High-level-Printing-API.html#gtk-print-operation-is-finished">gtk_print_operation_is_finished</a>     (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op);
+void                <a href="gtk-High-level-Printing-API.html#gtk-print-operation-get-error">gtk_print_operation_get_error</a>       (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         <a
+href="../glib/glib-Error-Reporting.html#GError"
+>GError</a> **error);
+<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a>*       <a href="gtk-High-level-Printing-API.html#gtk-print-run-page-setup-dialog">gtk_print_run_page_setup_dialog</a>     (<a href="GtkWindow.html" title="GtkWindow">GtkWindow</a> *parent,
+                                                         <a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *page_setup,
+                                                         <a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);
+void                (<a href="gtk-High-level-Printing-API.html#GtkPageSetupDoneFunc">*GtkPageSetupDoneFunc</a>)             (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *page_setup,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);
+void                <a href="gtk-High-level-Printing-API.html#gtk-print-run-page-setup-dialog-async">gtk_print_run_page_setup_dialog_async</a>
+                                                        (<a href="GtkWindow.html" title="GtkWindow">GtkWindow</a> *parent,
+                                                         <a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *page_setup,
+                                                         <a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a href="gtk-High-level-Printing-API.html#GtkPageSetupDoneFunc">GtkPageSetupDoneFunc</a> done_cb,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);
+
+                    <a href="gtk-High-level-Printing-API.html#GtkPrintOperationPreview-struct">GtkPrintOperationPreview</a>;
+void                <a href="gtk-High-level-Printing-API.html#gtk-print-operation-preview-end-preview">gtk_print_operation_preview_end_preview</a>
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperationPreview">GtkPrintOperationPreview</a> *preview);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="gtk-High-level-Printing-API.html#gtk-print-operation-preview-is-selected">gtk_print_operation_preview_is_selected</a>
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperationPreview">GtkPrintOperationPreview</a> *preview,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> page_nr);
+void                <a href="gtk-High-level-Printing-API.html#gtk-print-operation-preview-render-page">gtk_print_operation_preview_render_page</a>
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperationPreview">GtkPrintOperationPreview</a> *preview,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> page_nr);
+
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3723458"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----GtkPrintOperation
+</pre>
+<pre class="synopsis">
+
+  GInterface
+   +----GtkPrintOperationPreview
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3723495"></a><h2>Prerequisites</h2>
+<p>
+GtkPrintOperationPreview requires
+ <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3723517"></a><h2>Implemented Interfaces</h2>
+<p>
+GtkPrintOperation implements
+ <a href="gtk-High-level-Printing-API.html#GtkPrintOperationPreview">GtkPrintOperationPreview</a>.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3723540"></a><h2>Known Implementations</h2>
+<p>
+GtkPrintOperationPreview is implemented by
+ <a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a>.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3723563"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  <a href="gtk-High-level-Printing-API.html#GtkPrintOperation--allow-async">allow-async</a>              <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="gtk-High-level-Printing-API.html#GtkPrintOperation--current-page">current-page</a>             <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="gtk-High-level-Printing-API.html#GtkPrintOperation--custom-tab-label">custom-tab-label</a>         <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  <a href="gtk-High-level-Printing-API.html#GtkPrintOperation--default-page-setup">default-page-setup</a>       <a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a>          : Read / Write
+  <a href="gtk-High-level-Printing-API.html#GtkPrintOperation--export-filename">export-filename</a>          <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  <a href="gtk-High-level-Printing-API.html#GtkPrintOperation--job-name">job-name</a>                 <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  <a href="gtk-High-level-Printing-API.html#GtkPrintOperation--n-pages">n-pages</a>                  <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="gtk-High-level-Printing-API.html#GtkPrintOperation--print-settings">print-settings</a>           <a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a>      : Read / Write
+  <a href="gtk-High-level-Printing-API.html#GtkPrintOperation--show-progress">show-progress</a>            <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="gtk-High-level-Printing-API.html#GtkPrintOperation--status">status</a>                   <a href="gtk-High-level-Printing-API.html#GtkPrintStatus">GtkPrintStatus</a>        : Read
+  <a href="gtk-High-level-Printing-API.html#GtkPrintOperation--status-string">status-string</a>            <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read
+  <a href="gtk-High-level-Printing-API.html#GtkPrintOperation--track-print-status">track-print-status</a>       <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="gtk-High-level-Printing-API.html#GtkPrintOperation--unit">unit</a>                     <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a>               : Read / Write
+  <a href="gtk-High-level-Printing-API.html#GtkPrintOperation--use-full-page">use-full-page</a>            <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3723808"></a><h2>Signals</h2>
+<pre class="synopsis">
+
+  <a href="gtk-High-level-Printing-API.html#GtkPrintOperation-begin-print">begin-print</a>                                    : Run Last
+  <a href="gtk-High-level-Printing-API.html#GtkPrintOperation-create-custom-widget">create-custom-widget</a>                           : Run Last
+  <a href="gtk-High-level-Printing-API.html#GtkPrintOperation-custom-widget-apply">custom-widget-apply</a>                            : Run Last
+  <a href="gtk-High-level-Printing-API.html#GtkPrintOperation-done">done</a>                                           : Run Last
+  <a href="gtk-High-level-Printing-API.html#GtkPrintOperation-draw-page">draw-page</a>                                      : Run Last
+  <a href="gtk-High-level-Printing-API.html#GtkPrintOperation-end-print">end-print</a>                                      : Run Last
+  <a href="gtk-High-level-Printing-API.html#GtkPrintOperation-paginate">paginate</a>                                       : Run Last
+  <a href="gtk-High-level-Printing-API.html#GtkPrintOperation-preview">preview</a>                                        : Run Last
+  <a href="gtk-High-level-Printing-API.html#GtkPrintOperation-request-page-setup">request-page-setup</a>                             : Run Last
+  <a href="gtk-High-level-Printing-API.html#GtkPrintOperation-status-changed">status-changed</a>                                 : Run Last
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3723923"></a><h2>Description</h2>
+<p>
+GtkPrintOperation is the high-level, portable printing API. It looks 
+a bit different than other GTK+ dialogs such as the <a href="GtkFileChooser.html" title="GtkFileChooser"><span class="type">GtkFileChooser</span></a>, 
+since some platforms don't expose enough infrastructure to implement
+a good print dialog. On such platforms, GtkPrintOperation uses the 
+native print dialog. On platforms which do not provide a native 
+print dialog, GTK+ uses its own, see <a href="GtkPrintUnixDialog.html" title="GtkPrintUnixDialog"><span class="type">GtkPrintUnixDialog</span></a>.
+</p>
+<p>
+The typical way to use the high-level printing API is to create a 
+<a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a> object with <a href="gtk-High-level-Printing-API.html#gtk-print-operation-new"><code class="function">gtk_print_operation_new()</code></a> when the user 
+selects to print. Then you set some properties on it, e.g. the page size, 
+any <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a> from previous print operations, the number of pages, 
+the current page, etc. 
+</p>
+<p>
+Then you start the print operation by calling <a href="gtk-High-level-Printing-API.html#gtk-print-operation-run"><code class="function">gtk_print_operation_run()</code></a>.
+It will then show a dialog, let the user select a printer and options. 
+When the user finished the dialog various signals will be emitted on the 
+<a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a>, the main one being ::draw-page, which you are supposed 
+to catch and render the page on the provided <a href="GtkPrintContext.html" title="GtkPrintContext"><span class="type">GtkPrintContext</span></a> using Cairo.
+</p>
+<div class="example">
+<a name="id3724031"></a><p class="title"><b>Example&#160;30.&#160;The high-level printing API</b></p>
+<div class="example-contents"><pre class="programlisting">
+static GtkPrintSettings *settings = NULL;
+
+static void
+do_print (void)
+{
+  GtkPrintOperation *print;
+  GtkPrintOperationResult res;
+
+  print = gtk_print_operation_new ();
+
+  if (settings != NULL) 
+    gtk_print_operation_set_print_settings (print, settings);
+
+  g_signal_connect (print, "begin_print", G_CALLBACK (begin_print), NULL);
+  g_signal_connect (print, "draw_page", G_CALLBACK (draw_page), NULL);
+
+  res = gtk_print_operation_run (print, GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
+                                 GTK_WINDOW (main_window), NULL);
+
+  if (res == GTK_PRINT_OPERATION_RESULT_APPLY)
+    {
+      if (settings != NULL)
+        g_object_unref (settings);
+      settings = g_object_ref (gtk_print_operation_get_print_settings (print));
+    }
+
+  g_object_unref (print);
+}
+
+</pre></div>
+</div>
+<br class="example-break"><p>
+By default GtkPrintOperation uses an external application to do
+print preview. To implement a custom print preview, an application 
+must connect to the preview signal. The functions 
+<code class="function">gtk_print_operation_print_preview_render_page()</code>, 
+<a href="gtk-High-level-Printing-API.html#gtk-print-operation-preview-end-preview"><code class="function">gtk_print_operation_preview_end_preview()</code></a> and 
+<a href="gtk-High-level-Printing-API.html#gtk-print-operation-preview-is-selected"><code class="function">gtk_print_operation_preview_is_selected()</code></a> are useful 
+when implementing a print preview.
+</p>
+<p>
+Printing support was added in GTK+ 2.10.
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3724108"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3724118"></a><h3>
+<a name="GtkPrintOperation-struct"></a>GtkPrintOperation</h3>
+<a class="indexterm" name="id3724132"></a><pre class="programlisting">typedef struct _GtkPrintOperation GtkPrintOperation;</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3724147"></a><h3>
+<a name="GtkPrintStatus"></a>enum GtkPrintStatus</h3>
+<a class="indexterm" name="id3724159"></a><pre class="programlisting">typedef enum {
+  GTK_PRINT_STATUS_INITIAL,
+  GTK_PRINT_STATUS_PREPARING,
+  GTK_PRINT_STATUS_GENERATING_DATA,
+  GTK_PRINT_STATUS_SENDING_DATA,
+  GTK_PRINT_STATUS_PENDING,
+  GTK_PRINT_STATUS_PENDING_ISSUE,
+  GTK_PRINT_STATUS_PRINTING,
+  GTK_PRINT_STATUS_FINISHED,
+  GTK_PRINT_STATUS_FINISHED_ABORTED
+} GtkPrintStatus;
+</pre>
+<p>
+The status gives a rough indication of the completion
+of a running print operation.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><a name="GTK-PRINT-STATUS-INITIAL:CAPS"></a><code class="literal">GTK_PRINT_STATUS_INITIAL</code></span></td>
+<td>The printing has not started yet; this
+  status is set initially, and while the print dialog is shown.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-PRINT-STATUS-PREPARING:CAPS"></a><code class="literal">GTK_PRINT_STATUS_PREPARING</code></span></td>
+<td>This status is set while the begin-print 
+  signal is emitted and during pagination.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-PRINT-STATUS-GENERATING-DATA:CAPS"></a><code class="literal">GTK_PRINT_STATUS_GENERATING_DATA</code></span></td>
+<td>This status is set while the
+  pages are being rendered.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-PRINT-STATUS-SENDING-DATA:CAPS"></a><code class="literal">GTK_PRINT_STATUS_SENDING_DATA</code></span></td>
+<td>The print job is being sent off to the 
+  printer.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-PRINT-STATUS-PENDING:CAPS"></a><code class="literal">GTK_PRINT_STATUS_PENDING</code></span></td>
+<td>The print job has been sent to the printer,
+  but is not printed for some reason, e.g. the printer may be stopped.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-PRINT-STATUS-PENDING-ISSUE:CAPS"></a><code class="literal">GTK_PRINT_STATUS_PENDING_ISSUE</code></span></td>
+<td>Some problem has occurred during 
+  printing, e.g. a paper jam.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-PRINT-STATUS-PRINTING:CAPS"></a><code class="literal">GTK_PRINT_STATUS_PRINTING</code></span></td>
+<td>The printer is processing the print job.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-PRINT-STATUS-FINISHED:CAPS"></a><code class="literal">GTK_PRINT_STATUS_FINISHED</code></span></td>
+<td>The printing has been completed successfully.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-PRINT-STATUS-FINISHED-ABORTED:CAPS"></a><code class="literal">GTK_PRINT_STATUS_FINISHED_ABORTED</code></span></td>
+<td>The printing has been aborted.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3724402"></a><h3>
+<a name="GtkPrintOperationAction"></a>enum GtkPrintOperationAction</h3>
+<a class="indexterm" name="id3724416"></a><pre class="programlisting">typedef enum {
+  GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
+  GTK_PRINT_OPERATION_ACTION_PRINT,
+  GTK_PRINT_OPERATION_ACTION_PREVIEW,
+  GTK_PRINT_OPERATION_ACTION_EXPORT
+} GtkPrintOperationAction;
+</pre>
+<p>
+The <em class="parameter"><code>action</code></em> parameter to <a href="gtk-High-level-Printing-API.html#gtk-print-operation-run"><code class="function">gtk_print_operation_run()</code></a>
+determines what action the print operation should perform.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><a name="GTK-PRINT-OPERATION-ACTION-PRINT-DIALOG:CAPS"></a><code class="literal">GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG</code></span></td>
+<td>Show the print dialog.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-PRINT-OPERATION-ACTION-PRINT:CAPS"></a><code class="literal">GTK_PRINT_OPERATION_ACTION_PRINT</code></span></td>
+<td>Start to print without showing
+   the print dialog, based on the current print settings.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-PRINT-OPERATION-ACTION-PREVIEW:CAPS"></a><code class="literal">GTK_PRINT_OPERATION_ACTION_PREVIEW</code></span></td>
+<td>Show the print preview.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-PRINT-OPERATION-ACTION-EXPORT:CAPS"></a><code class="literal">GTK_PRINT_OPERATION_ACTION_EXPORT</code></span></td>
+<td>Export to a file. This requires
+  the export-filename property to be set.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3724552"></a><h3>
+<a name="GtkPrintOperationResult"></a>enum GtkPrintOperationResult</h3>
+<a class="indexterm" name="id3724566"></a><pre class="programlisting">typedef enum {
+  GTK_PRINT_OPERATION_RESULT_ERROR,
+  GTK_PRINT_OPERATION_RESULT_APPLY,
+  GTK_PRINT_OPERATION_RESULT_CANCEL,
+  GTK_PRINT_OPERATION_RESULT_IN_PROGRESS
+} GtkPrintOperationResult;
+</pre>
+<p>
+A value of this type is returned by <a href="gtk-High-level-Printing-API.html#gtk-print-operation-run"><code class="function">gtk_print_operation_run()</code></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><a name="GTK-PRINT-OPERATION-RESULT-ERROR:CAPS"></a><code class="literal">GTK_PRINT_OPERATION_RESULT_ERROR</code></span></td>
+<td>An error has occured.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-PRINT-OPERATION-RESULT-APPLY:CAPS"></a><code class="literal">GTK_PRINT_OPERATION_RESULT_APPLY</code></span></td>
+<td>The print settings should be stored.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-PRINT-OPERATION-RESULT-CANCEL:CAPS"></a><code class="literal">GTK_PRINT_OPERATION_RESULT_CANCEL</code></span></td>
+<td>The print operation has been canceled,
+  the print settings should not be stored.
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-PRINT-OPERATION-RESULT-IN-PROGRESS:CAPS"></a><code class="literal">GTK_PRINT_OPERATION_RESULT_IN_PROGRESS</code></span></td>
+<td>The print operation is complete
+  yet. This value will only be returned when running asynchronously.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3724696"></a><h3>
+<a name="GtkPrintError"></a>enum GtkPrintError</h3>
+<a class="indexterm" name="id3724708"></a><pre class="programlisting">typedef enum
+{
+  GTK_PRINT_ERROR_GENERAL,
+  GTK_PRINT_ERROR_INTERNAL_ERROR,
+  GTK_PRINT_ERROR_NOMEM
+} GtkPrintError;
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3724725"></a><h3>
+<a name="GTK-PRINT-ERROR:CAPS"></a>GTK_PRINT_ERROR</h3>
+<a class="indexterm" name="id3724739"></a><pre class="programlisting">#define GTK_PRINT_ERROR gtk_print_error_quark ()
+</pre>
+<p>
+The <a
+href="../glib/glib-Quarks.html#GQuark"
+><span class="type">GQuark</span></a> used for <a href="gtk-High-level-Printing-API.html#GtkPrintError"><span class="type">GtkPrintError</span></a> errors.
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3724771"></a><h3>
+<a name="gtk-print-operation-new"></a>gtk_print_operation_new ()</h3>
+<a class="indexterm" name="id3724786"></a><pre class="programlisting"><a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a>*  gtk_print_operation_new             (void);</pre>
+<p>
+Creates a new <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a new <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a>
+
+</td>
+</tr></tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3724850"></a><h3>
+<a name="gtk-print-operation-set-allow-async"></a>gtk_print_operation_set_allow_async ()</h3>
+<a class="indexterm" name="id3724867"></a><pre class="programlisting">void                gtk_print_operation_set_allow_async (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> allow_async);</pre>
+<p>
+Sets whether the <a href="gtk-High-level-Printing-API.html#gtk-print-operation-run"><code class="function">gtk_print_operation_run()</code></a> may return
+before the print operation is completed. Note that
+some platforms may not allow asynchronous operation.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>op</code></em>&#160;:</span></td>
+<td> a <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>allow_async</code></em>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> to allow asynchronous operation
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3724976"></a><h3>
+<a name="gtk-print-operation-get-error"></a>gtk_print_operation_get_error ()</h3>
+<a class="indexterm" name="id3724992"></a><pre class="programlisting">void                gtk_print_operation_get_error       (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         <a
+href="../glib/glib-Error-Reporting.html#GError"
+>GError</a> **error);</pre>
+<p>
+Call this when the result of a print operation is
+<a href="gtk-High-level-Printing-API.html#GTK-PRINT-OPERATION-RESULT-ERROR:CAPS"><code class="literal">GTK_PRINT_OPERATION_RESULT_ERROR</code></a>, either as returned by 
+<a href="gtk-High-level-Printing-API.html#gtk-print-operation-run"><code class="function">gtk_print_operation_run()</code></a>, or in the ::done signal handler. 
+The returned <a
+href="../glib/glib-Error-Reporting.html#GError"
+><span class="type">GError</span></a> will contain more details on what went wrong.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>op</code></em>&#160;:</span></td>
+<td> a <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>error</code></em>&#160;:</span></td>
+<td> return location for the error
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3725114"></a><h3>
+<a name="gtk-print-operation-set-default-page-setup"></a>gtk_print_operation_set_default_page_setup ()</h3>
+<a class="indexterm" name="id3725131"></a><pre class="programlisting">void                gtk_print_operation_set_default_page_setup
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         <a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *default_page_setup);</pre>
+<p>
+Makes <em class="parameter"><code>default_page_setup</code></em> the default page setup for <em class="parameter"><code>op</code></em>.
+</p>
+<p>
+This page setup will be used by <a href="gtk-High-level-Printing-API.html#gtk-print-operation-run"><code class="function">gtk_print_operation_run()</code></a>,
+but it can be overridden on a per-page basis by connecting
+to the ::request-page-setup signal.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>op</code></em>&#160;:</span></td>
+<td> a <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>default_page_setup</code></em>&#160;:</span></td>
+<td> a <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3725265"></a><h3>
+<a name="gtk-print-operation-get-default-page-setup"></a>gtk_print_operation_get_default_page_setup ()</h3>
+<a class="indexterm" name="id3725283"></a><pre class="programlisting"><a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a>*       gtk_print_operation_get_default_page_setup
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op);</pre>
+<p>
+Returns the default page setup, see 
+<a href="gtk-High-level-Printing-API.html#gtk-print-operation-set-default-page-setup"><code class="function">gtk_print_operation_set_default_page_setup()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>op</code></em>&#160;:</span></td>
+<td> a <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the default page setup 
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3725372"></a><h3>
+<a name="gtk-print-operation-set-print-settings"></a>gtk_print_operation_set_print_settings ()</h3>
+<a class="indexterm" name="id3725388"></a><pre class="programlisting">void                gtk_print_operation_set_print_settings
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         <a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *print_settings);</pre>
+<p>
+Sets the print settings for <em class="parameter"><code>op</code></em>. This is typically used to
+re-establish print settings from a previous print operation,
+see <a href="gtk-High-level-Printing-API.html#gtk-print-operation-run"><code class="function">gtk_print_operation_run()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>op</code></em>&#160;:</span></td>
+<td> a <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>print_settings</code></em>&#160;:</span></td>
+<td> <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3725513"></a><h3>
+<a name="gtk-print-operation-get-print-settings"></a>gtk_print_operation_get_print_settings ()</h3>
+<a class="indexterm" name="id3725529"></a><pre class="programlisting"><a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a>*   gtk_print_operation_get_print_settings
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op);</pre>
+<p>
+Returns the current print settings. 
+</p>
+<p>
+Note that the return value is <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a> until either 
+<a href="gtk-High-level-Printing-API.html#gtk-print-operation-set-print-settings"><code class="function">gtk_print_operation_set_print_settings()</code></a> or 
+<a href="gtk-High-level-Printing-API.html#gtk-print-operation-run"><code class="function">gtk_print_operation_run()</code></a> have been called.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>op</code></em>&#160;:</span></td>
+<td> a <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the current print settings of <em class="parameter"><code>op</code></em>.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3725650"></a><h3>
+<a name="gtk-print-operation-set-job-name"></a>gtk_print_operation_set_job_name ()</h3>
+<a class="indexterm" name="id3725666"></a><pre class="programlisting">void                gtk_print_operation_set_job_name    (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *job_name);</pre>
+<p>
+Sets the name of the print job. The name is used to identify 
+the job (e.g. in monitoring applications like eggcups). 
+</p>
+<p>
+If you don't set a job name, GTK+ picks a default one by 
+numbering successive print jobs.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>op</code></em>&#160;:</span></td>
+<td> a <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>job_name</code></em>&#160;:</span></td>
+<td> a string that identifies the print job
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3725760"></a><h3>
+<a name="gtk-print-operation-set-n-pages"></a>gtk_print_operation_set_n_pages ()</h3>
+<a class="indexterm" name="id3725776"></a><pre class="programlisting">void                gtk_print_operation_set_n_pages     (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> n_pages);</pre>
+<p>
+Sets the number of pages in the document. 
+</p>
+<p>
+This <span class="emphasis"><em>must</em></span> be set to a positive number
+before the rendering starts. It may be set in a ::begin-print 
+signal hander.
+</p>
+<p>
+Note that the page numbers passed to the ::request-page-setup 
+and ::draw-page signals are 0-based, i.e. if the user chooses
+to print all pages, the last ::draw-page signal will be
+for page <em class="parameter"><code>n_pages</code></em> - 1.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>op</code></em>&#160;:</span></td>
+<td> a <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>n_pages</code></em>&#160;:</span></td>
+<td> the number of pages
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3725885"></a><h3>
+<a name="gtk-print-operation-set-current-page"></a>gtk_print_operation_set_current_page ()</h3>
+<a class="indexterm" name="id3725901"></a><pre class="programlisting">void                gtk_print_operation_set_current_page
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> current_page);</pre>
+<p>
+Sets the current page.
+</p>
+<p>
+If this is called before <a href="gtk-High-level-Printing-API.html#gtk-print-operation-run"><code class="function">gtk_print_operation_run()</code></a>, 
+the user will be able to select to print only the current page.
+</p>
+<p>
+Note that this only makes sense for pre-paginated documents.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>op</code></em>&#160;:</span></td>
+<td> a <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>current_page</code></em>&#160;:</span></td>
+<td> the current page, 0-based
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3726010"></a><h3>
+<a name="gtk-print-operation-set-use-full-page"></a>gtk_print_operation_set_use_full_page ()</h3>
+<a class="indexterm" name="id3726026"></a><pre class="programlisting">void                gtk_print_operation_set_use_full_page
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> full_page);</pre>
+<p>
+If <em class="parameter"><code>full_page</code></em> is <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, the transformation for the cairo context 
+obtained from <a href="GtkPrintContext.html" title="GtkPrintContext"><span class="type">GtkPrintContext</span></a> puts the origin at the top left 
+corner of the page (which may not be the top left corner of the 
+sheet, depending on page orientation and the number of pages per 
+sheet). Otherwise, the origin is at the top left corner of the
+imageable area (i.e. inside the margins).</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>op</code></em>&#160;:</span></td>
+<td> a <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>full_page</code></em>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> to set up the <a href="GtkPrintContext.html" title="GtkPrintContext"><span class="type">GtkPrintContext</span></a> for the full page
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10 
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3726163"></a><h3>
+<a name="gtk-print-operation-set-unit"></a>gtk_print_operation_set_unit ()</h3>
+<a class="indexterm" name="id3726179"></a><pre class="programlisting">void                gtk_print_operation_set_unit        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a> unit);</pre>
+<p>
+Sets up the transformation for the cairo context obtained from
+<a href="GtkPrintContext.html" title="GtkPrintContext"><span class="type">GtkPrintContext</span></a> in such a way that distances are measured in 
+units of <em class="parameter"><code>unit</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>op</code></em>&#160;:</span></td>
+<td> a <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>unit</code></em>&#160;:</span></td>
+<td> the unit to use
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3726282"></a><h3>
+<a name="gtk-print-operation-set-export-filename"></a>gtk_print_operation_set_export_filename ()</h3>
+<a class="indexterm" name="id3726298"></a><pre class="programlisting">void                gtk_print_operation_set_export_filename
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *filename);</pre>
+<p>
+Sets up the <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a> to generate a file instead
+of showing the print dialog. The indended use of this function
+is for implementing "Export to PDF" actions. Currently, PDF
+is the only supported format.
+</p>
+<p>
+"Print to PDF" support is independent of this and is done
+by letting the user pick the "Print to PDF" item from the list
+of printers in the print dialog.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>op</code></em>&#160;:</span></td>
+<td> a <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>filename</code></em>&#160;:</span></td>
+<td> the filename for the exported file
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3726404"></a><h3>
+<a name="gtk-print-operation-set-show-progress"></a>gtk_print_operation_set_show_progress ()</h3>
+<a class="indexterm" name="id3726421"></a><pre class="programlisting">void                gtk_print_operation_set_show_progress
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> show_progress);</pre>
+<p>
+If <em class="parameter"><code>show_progress</code></em> is <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, the print operation will show a 
+progress dialog during the print operation.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>op</code></em>&#160;:</span></td>
+<td> a <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>show_progress</code></em>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> to show a progress dialog
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3726537"></a><h3>
+<a name="gtk-print-operation-set-track-print-status"></a>gtk_print_operation_set_track_print_status ()</h3>
+<a class="indexterm" name="id3726554"></a><pre class="programlisting">void                gtk_print_operation_set_track_print_status
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> track_status);</pre>
+<p>
+If track_status is <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, the print operation will try to continue report
+on the status of the print job in the printer queues and printer. This
+can allow your application to show things like "out of paper" issues,
+and when the print job actually reaches the printer.
+</p>
+<p>
+This function is often implemented using some form of polling, so it should
+not be enabled unless needed.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>op</code></em>&#160;:</span></td>
+<td> a <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>track_status</code></em>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> to track status after printing
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3726671"></a><h3>
+<a name="gtk-print-operation-set-custom-tab-label"></a>gtk_print_operation_set_custom_tab_label ()</h3>
+<a class="indexterm" name="id3726688"></a><pre class="programlisting">void                gtk_print_operation_set_custom_tab_label
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *label);</pre>
+<p>
+Sets the label for the tab holding custom widgets.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>op</code></em>&#160;:</span></td>
+<td> a <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>label</code></em>&#160;:</span></td>
+<td> the label to use, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a> to use the default label
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3726787"></a><h3>
+<a name="gtk-print-operation-run"></a>gtk_print_operation_run ()</h3>
+<a class="indexterm" name="id3726803"></a><pre class="programlisting"><a href="gtk-High-level-Printing-API.html#GtkPrintOperationResult">GtkPrintOperationResult</a> gtk_print_operation_run         (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         <a href="gtk-High-level-Printing-API.html#GtkPrintOperationAction">GtkPrintOperationAction</a> action,
+                                                         <a href="GtkWindow.html" title="GtkWindow">GtkWindow</a> *parent,
+                                                         <a
+href="../glib/glib-Error-Reporting.html#GError"
+>GError</a> **error);</pre>
+<p>
+Runs the print operation, by first letting the user modify
+print settings in the print dialog, and then print the document.
+</p>
+<p>
+Normally that this function does not return until the rendering of all 
+pages is complete. You can connect to the ::status-changed signal on
+<em class="parameter"><code>op</code></em> to obtain some information about the progress of the print operation. 
+Furthermore, it may use a recursive mainloop to show the print dialog.
+</p>
+<p>
+If you call <a href="gtk-High-level-Printing-API.html#gtk-print-operation-set-allow-async"><code class="function">gtk_print_operation_set_allow_async()</code></a> or set the allow-async
+property the operation will run asyncronously if this is supported on the
+platform. The ::done signal will be emitted with the operation results when
+the operation is done (i.e. when the dialog is canceled, or when the print
+succeeds or fails).
+</p>
+<p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+if (settings != NULL)
+  gtk_print_operation_set_print_settings (print, settings);
+  
+if (page_setup != NULL)
+  gtk_print_operation_set_default_page_setup (print, page_setup);
+  
+g_signal_connect (print, "begin-print", 
+                  G_CALLBACK (begin_print), &amp;data);
+g_signal_connect (print, "draw-page", 
+                  G_CALLBACK (draw_page), &amp;data);
+ 
+res = gtk_print_operation_run (print, GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG, parent, &amp;error);
+ 
+if (res == GTK_PRINT_OPERATION_RESULT_ERROR)
+ {
+   error_dialog = gtk_message_dialog_new (GTK_WINDOW (parent),
+  			                     GTK_DIALOG_DESTROY_WITH_PARENT,
+					     GTK_MESSAGE_ERROR,
+					     GTK_BUTTONS_CLOSE,
+					     "Error printing file:\n%s",
+					     error-&gt;message);
+   g_signal_connect (error_dialog, "response", 
+                     G_CALLBACK (gtk_widget_destroy), NULL);
+   gtk_widget_show (error_dialog);
+   g_error_free (error);
+ }
+else if (res == GTK_PRINT_OPERATION_RESULT_APPLY)
+ {
+   if (settings != NULL)
+g_object_unref (settings);
+   settings = g_object_ref (gtk_print_operation_get_print_settings (print));
+ }
+</pre></div>
+<p>
+</p>
+<p>
+Note that <a href="gtk-High-level-Printing-API.html#gtk-print-operation-run"><code class="function">gtk_print_operation_run()</code></a> can only be called once on a
+given <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>op</code></em>&#160;:</span></td>
+<td> a <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>action</code></em>&#160;:</span></td>
+<td> the action to start
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>parent</code></em>&#160;:</span></td>
+<td> Transient parent of the dialog, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>error</code></em>&#160;:</span></td>
+<td> Return location for errors, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the result of the print operation. A return value of 
+  <a href="gtk-High-level-Printing-API.html#GTK-PRINT-OPERATION-RESULT-APPLY:CAPS"><code class="literal">GTK_PRINT_OPERATION_RESULT_APPLY</code></a> indicates that the printing was
+  completed successfully. In this case, it is a good idea to obtain 
+  the used print settings with <a href="gtk-High-level-Printing-API.html#gtk-print-operation-get-print-settings"><code class="function">gtk_print_operation_get_print_settings()</code></a> 
+  and store them for reuse with the next print operation. A value of
+  <a href="gtk-High-level-Printing-API.html#GTK-PRINT-OPERATION-RESULT-IN-PROGRESS:CAPS"><code class="literal">GTK_PRINT_OPERATION_RESULT_IN_PROGRESS</code></a> means the operation is running
+  asynchronously, and will emit the ::done signal when done.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3727116"></a><h3>
+<a name="gtk-print-operation-cancel"></a>gtk_print_operation_cancel ()</h3>
+<a class="indexterm" name="id3727132"></a><pre class="programlisting">void                gtk_print_operation_cancel          (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op);</pre>
+<p>
+Cancels a running print operation. This function may
+be called from a begin-print, paginate or draw-page
+signal handler to stop the currently running print 
+operation.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>op</code></em>&#160;:</span></td>
+<td> a <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a>
+</td>
+</tr></tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3727199"></a><h3>
+<a name="gtk-print-operation-get-status"></a>gtk_print_operation_get_status ()</h3>
+<a class="indexterm" name="id3727215"></a><pre class="programlisting"><a href="gtk-High-level-Printing-API.html#GtkPrintStatus">GtkPrintStatus</a>      gtk_print_operation_get_status      (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op);</pre>
+<p>
+Returns the status of the print operation. 
+Also see <a href="gtk-High-level-Printing-API.html#gtk-print-operation-get-status-string"><code class="function">gtk_print_operation_get_status_string()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>op</code></em>&#160;:</span></td>
+<td> a <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the status of the print operation
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3727304"></a><h3>
+<a name="gtk-print-operation-get-status-string"></a>gtk_print_operation_get_status_string ()</h3>
+<a class="indexterm" name="id3727320"></a><pre class="programlisting">const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gtk_print_operation_get_status_string
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op);</pre>
+<p>
+Returns a string representation of the status of the 
+print operation. The string is translated and suitable
+for displaying the print status e.g. in a <a href="GtkStatusbar.html" title="GtkStatusbar"><span class="type">GtkStatusbar</span></a>.
+</p>
+<p>
+Use <a href="gtk-High-level-Printing-API.html#gtk-print-operation-get-status"><code class="function">gtk_print_operation_get_status()</code></a> to obtain a status
+value that is suitable for programmatic use.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>op</code></em>&#160;:</span></td>
+<td> a <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a string representation of the status
+   of the print operation
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3727426"></a><h3>
+<a name="gtk-print-operation-is-finished"></a>gtk_print_operation_is_finished ()</h3>
+<a class="indexterm" name="id3727442"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_print_operation_is_finished     (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op);</pre>
+<p>
+A convenience function to find out if the print operation
+is finished, either successfully (<a href="gtk-High-level-Printing-API.html#GTK-PRINT-STATUS-FINISHED:CAPS"><code class="literal">GTK_PRINT_STATUS_FINISHED</code></a>)
+or unsuccessfully (<a href="gtk-High-level-Printing-API.html#GTK-PRINT-STATUS-FINISHED-ABORTED:CAPS"><code class="literal">GTK_PRINT_STATUS_FINISHED_ABORTED</code></a>).
+</p>
+<p>
+Note: when you enable print status tracking the print operation
+can be in a non-finished state even after done has been called, as
+the operation status then tracks the print job status on the printer.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>op</code></em>&#160;:</span></td>
+<td> a <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, if the print operation is finished.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3727561"></a><h3>
+<a name="gtk-print-operation-get-error"></a>gtk_print_operation_get_error ()</h3>
+<a class="indexterm" name="id3727576"></a><pre class="programlisting">void                gtk_print_operation_get_error       (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *op,
+                                                         <a
+href="../glib/glib-Error-Reporting.html#GError"
+>GError</a> **error);</pre>
+<p>
+Call this when the result of a print operation is
+<a href="gtk-High-level-Printing-API.html#GTK-PRINT-OPERATION-RESULT-ERROR:CAPS"><code class="literal">GTK_PRINT_OPERATION_RESULT_ERROR</code></a>, either as returned by 
+<a href="gtk-High-level-Printing-API.html#gtk-print-operation-run"><code class="function">gtk_print_operation_run()</code></a>, or in the ::done signal handler. 
+The returned <a
+href="../glib/glib-Error-Reporting.html#GError"
+><span class="type">GError</span></a> will contain more details on what went wrong.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>op</code></em>&#160;:</span></td>
+<td> a <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>error</code></em>&#160;:</span></td>
+<td> return location for the error
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3727696"></a><h3>
+<a name="gtk-print-run-page-setup-dialog"></a>gtk_print_run_page_setup_dialog ()</h3>
+<a class="indexterm" name="id3727712"></a><pre class="programlisting"><a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a>*       gtk_print_run_page_setup_dialog     (<a href="GtkWindow.html" title="GtkWindow">GtkWindow</a> *parent,
+                                                         <a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *page_setup,
+                                                         <a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings);</pre>
+<p>
+Runs a page setup dialog, letting the user modify the values from 
+<em class="parameter"><code>page_setup</code></em>. If the user cancels the dialog, the returned <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a> 
+is identical to the passed in <em class="parameter"><code>page_setup</code></em>, otherwise it contains the 
+modifications done in the dialog.
+</p>
+<p>
+Note that this function may use a recursive mainloop to show the page
+setup dialog. See <a href="gtk-High-level-Printing-API.html#gtk-print-run-page-setup-dialog-async"><code class="function">gtk_print_run_page_setup_dialog_async()</code></a> if this is 
+a problem.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>parent</code></em>&#160;:</span></td>
+<td> transient parent, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>page_setup</code></em>&#160;:</span></td>
+<td> an existing <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a new <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3727909"></a><h3>
+<a name="GtkPageSetupDoneFunc"></a>GtkPageSetupDoneFunc ()</h3>
+<a class="indexterm" name="id3727922"></a><pre class="programlisting">void                (*GtkPageSetupDoneFunc)             (<a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *page_setup,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);</pre>
+<p>
+The type of function that is passed to <a href="gtk-High-level-Printing-API.html#gtk-print-run-page-setup-dialog-async"><code class="function">gtk_print_run_page_setup_dialog_async()</code></a>.
+This function will be called when the page setup dialog is dismissed, and
+also serves as destroy notify for <em class="parameter"><code>data</code></em>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>page_setup</code></em>&#160;:</span></td>
+<td>the <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a> that has been
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td>user data that has been passed to 
+       <a href="gtk-High-level-Printing-API.html#gtk-print-run-page-setup-dialog-async"><code class="function">gtk_print_run_page_setup_dialog_async()</code></a>.
+
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3728032"></a><h3>
+<a name="gtk-print-run-page-setup-dialog-async"></a>gtk_print_run_page_setup_dialog_async ()</h3>
+<a class="indexterm" name="id3728048"></a><pre class="programlisting">void                gtk_print_run_page_setup_dialog_async
+                                                        (<a href="GtkWindow.html" title="GtkWindow">GtkWindow</a> *parent,
+                                                         <a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a> *page_setup,
+                                                         <a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a> *settings,
+                                                         <a href="gtk-High-level-Printing-API.html#GtkPageSetupDoneFunc">GtkPageSetupDoneFunc</a> done_cb,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);</pre>
+<p>
+Runs a page setup dialog, letting the user modify the values from <em class="parameter"><code>page_setup</code></em>. 
+</p>
+<p>
+In contrast to <a href="gtk-High-level-Printing-API.html#gtk-print-run-page-setup-dialog"><code class="function">gtk_print_run_page_setup_dialog()</code></a>, this function  returns after 
+showing the page setup dialog on platforms that support this, and calls <em class="parameter"><code>done_cb</code></em> 
+from a signal handler for the ::response signal of the dialog.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>parent</code></em>&#160;:</span></td>
+<td> transient parent, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>page_setup</code></em>&#160;:</span></td>
+<td> an existing <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a>, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>settings</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>done_cb</code></em>&#160;:</span></td>
+<td> a function to call when the user saves the modified page setup
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td> user data to pass to <em class="parameter"><code>done_cb</code></em>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3728269"></a><h3>
+<a name="GtkPrintOperationPreview-struct"></a>GtkPrintOperationPreview</h3>
+<a class="indexterm" name="id3728282"></a><pre class="programlisting">typedef struct _GtkPrintOperationPreview GtkPrintOperationPreview;</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3728298"></a><h3>
+<a name="gtk-print-operation-preview-end-preview"></a>gtk_print_operation_preview_end_preview ()</h3>
+<a class="indexterm" name="id3728315"></a><pre class="programlisting">void                gtk_print_operation_preview_end_preview
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperationPreview">GtkPrintOperationPreview</a> *preview);</pre>
+<p>
+Ends a preview. 
+</p>
+<p>
+This function must be called to finish a custom print preview.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>preview</code></em>&#160;:</span></td>
+<td> a <a href="gtk-High-level-Printing-API.html#GtkPrintOperationPreview"><span class="type">GtkPrintOperationPreview</span></a>
+</td>
+</tr></tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3728387"></a><h3>
+<a name="gtk-print-operation-preview-is-selected"></a>gtk_print_operation_preview_is_selected ()</h3>
+<a class="indexterm" name="id3728403"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_print_operation_preview_is_selected
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperationPreview">GtkPrintOperationPreview</a> *preview,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> page_nr);</pre>
+<p>
+Returns whether the given page is included in the set of pages that
+have been selected for printing.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>preview</code></em>&#160;:</span></td>
+<td> a <a href="gtk-High-level-Printing-API.html#GtkPrintOperationPreview"><span class="type">GtkPrintOperationPreview</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>page_nr</code></em>&#160;:</span></td>
+<td> a page number
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the page has been selected for printing
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3728515"></a><h3>
+<a name="gtk-print-operation-preview-render-page"></a>gtk_print_operation_preview_render_page ()</h3>
+<a class="indexterm" name="id3728531"></a><pre class="programlisting">void                gtk_print_operation_preview_render_page
+                                                        (<a href="gtk-High-level-Printing-API.html#GtkPrintOperationPreview">GtkPrintOperationPreview</a> *preview,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> page_nr);</pre>
+<p>
+Renders a page to the preview, using the print context that
+was passed to the GtkPrintOperation::preview handler together
+with <em class="parameter"><code>preview</code></em>.
+</p>
+<p>
+Note that this function requires a suitable cairo context to 
+be associated with the print context.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>preview</code></em>&#160;:</span></td>
+<td> a <a href="gtk-High-level-Printing-API.html#GtkPrintOperationPreview"><span class="type">GtkPrintOperationPreview</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>page_nr</code></em>&#160;:</span></td>
+<td> the page to render
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10 
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3728634"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3728645"></a><h3>
+<a name="GtkPrintOperation--allow-async"></a>The :<code class="literal">allow-async</code> property</h3>
+<a class="indexterm" name="id3728661"></a><pre class="programlisting">  allow-async              <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>
+Determines whether the print operation may run asynchronously or not.
+</p>
+<p>
+Some systems don't support asynchronous printing, but those that do
+will return <a href="gtk-High-level-Printing-API.html#GTK-PRINT-OPERATION-RESULT-IN-PROGRESS:CAPS"><code class="literal">GTK_PRINT_OPERATION_RESULT_IN_PROGRESS</code></a> as the status, and
+emit the done signal when the operation is actually done.
+</p>
+<p>
+The Windows port does not support asynchronous operation
+at all (this is unlikely to change). On other platforms, all actions
+except for <a href="gtk-High-level-Printing-API.html#GTK-PRINT-OPERATION-ACTION-EXPORT:CAPS"><code class="literal">GTK_PRINT_OPERATION_ACTION_EXPORT</code></a> support asynchronous
+operation.</p>
+<p>
+
+</p>
+<p>Default value: FALSE</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3728735"></a><h3>
+<a name="GtkPrintOperation--current-page"></a>The :<code class="literal">current-page</code> property</h3>
+<a class="indexterm" name="id3728752"></a><pre class="programlisting">  current-page             <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>
+The current page in the document.
+</p>
+<p>
+If this is set before <a href="gtk-High-level-Printing-API.html#gtk-print-operation-run"><code class="function">gtk_print_operation_run()</code></a>, 
+the user will be able to select to print only the current page.
+</p>
+<p>
+Note that this only makes sense for pre-paginated documents.</p>
+<p>
+
+</p>
+<p>Allowed values: &gt;= -1</p>
+<p>Default value: -1</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3728811"></a><h3>
+<a name="GtkPrintOperation--custom-tab-label"></a>The :<code class="literal">custom-tab-label</code> property</h3>
+<a class="indexterm" name="id3728828"></a><pre class="programlisting">  custom-tab-label         <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>
+Used as the label of the tab containing custom widgets.
+Note that this property may be ignored on some platforms.
+</p>
+<p>
+If this is <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>, GTK+ uses a default label.</p>
+<p>
+
+</p>
+<p>Default value: NULL</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3728879"></a><h3>
+<a name="GtkPrintOperation--default-page-setup"></a>The :<code class="literal">default-page-setup</code> property</h3>
+<a class="indexterm" name="id3728895"></a><pre class="programlisting">  default-page-setup       <a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a>          : Read / Write</pre>
+<p>
+The <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a> used by default.
+</p>
+<p>
+This page setup will be used by <a href="gtk-High-level-Printing-API.html#gtk-print-operation-run"><code class="function">gtk_print_operation_run()</code></a>,
+but it can be overridden on a per-page basis by connecting
+to the ::request-page-setup signal.</p>
+<p>
+
+</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3728952"></a><h3>
+<a name="GtkPrintOperation--export-filename"></a>The :<code class="literal">export-filename</code> property</h3>
+<a class="indexterm" name="id3728968"></a><pre class="programlisting">  export-filename          <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>
+The name of a file file to generate instead of showing 
+the print dialog. Currently, PDF is the only supported
+format.
+</p>
+<p>
+The intended use of this property is for implementing 
+"Export to PDF" actions.
+</p>
+<p>
+"Print to PDF" support is independent of this and is done
+by letting the user pick the "Print to PDF" item from the 
+list of printers in the print dialog.</p>
+<p>
+
+</p>
+<p>Default value: NULL</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3729015"></a><h3>
+<a name="GtkPrintOperation--job-name"></a>The :<code class="literal">job-name</code> property</h3>
+<a class="indexterm" name="id3729031"></a><pre class="programlisting">  job-name                 <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>
+A string used to identify the job (e.g. in monitoring 
+applications like eggcups). 
+</p>
+<p>
+If you don't set a job name, GTK+ picks a default one 
+by numbering successive print jobs.</p>
+<p>
+
+</p>
+<p>Default value: ""</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3729072"></a><h3>
+<a name="GtkPrintOperation--n-pages"></a>The :<code class="literal">n-pages</code> property</h3>
+<a class="indexterm" name="id3729088"></a><pre class="programlisting">  n-pages                  <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>
+The number of pages in the document. 
+</p>
+<p>
+This <span class="emphasis"><em>must</em></span> be set to a positive number
+before the rendering starts. It may be set in a ::begin-print 
+signal hander.
+</p>
+<p>
+Note that the page numbers passed to the ::request-page-setup 
+and ::draw-page signals are 0-based, i.e. if the user chooses 
+to print all pages, the last ::draw-page signal will be for 
+page <em class="parameter"><code>n_pages</code></em> - 1.</p>
+<p>
+
+</p>
+<p>Allowed values: &gt;= -1</p>
+<p>Default value: -1</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3729149"></a><h3>
+<a name="GtkPrintOperation--print-settings"></a>The :<code class="literal">print-settings</code> property</h3>
+<a class="indexterm" name="id3729166"></a><pre class="programlisting">  print-settings           <a href="GtkPrintSettings.html" title="GtkPrintSettings">GtkPrintSettings</a>      : Read / Write</pre>
+<p>
+The <a href="GtkPrintSettings.html" title="GtkPrintSettings"><span class="type">GtkPrintSettings</span></a> used for initializing the dialog.
+</p>
+<p>
+Setting this property is typically used to re-establish 
+print settings from a previous print operation, see 
+<a href="gtk-High-level-Printing-API.html#gtk-print-operation-run"><code class="function">gtk_print_operation_run()</code></a>.</p>
+<p>
+
+</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3729223"></a><h3>
+<a name="GtkPrintOperation--show-progress"></a>The :<code class="literal">show-progress</code> property</h3>
+<a class="indexterm" name="id3729239"></a><pre class="programlisting">  show-progress            <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>
+Determines whether to show a progress dialog during the 
+print operation.</p>
+<p>
+
+</p>
+<p>Default value: FALSE</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3729276"></a><h3>
+<a name="GtkPrintOperation--status"></a>The :<code class="literal">status</code> property</h3>
+<a class="indexterm" name="id3729292"></a><pre class="programlisting">  status                   <a href="gtk-High-level-Printing-API.html#GtkPrintStatus">GtkPrintStatus</a>        : Read</pre>
+<p>
+The status of the print operation.</p>
+<p>
+
+</p>
+<p>Default value: GTK_PRINT_STATUS_INITIAL</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3729328"></a><h3>
+<a name="GtkPrintOperation--status-string"></a>The :<code class="literal">status-string</code> property</h3>
+<a class="indexterm" name="id3729345"></a><pre class="programlisting">  status-string            <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read</pre>
+<p>
+A string representation of the status of the print operation. 
+The string is translated and suitable for displaying the print 
+status e.g. in a <a href="GtkStatusbar.html" title="GtkStatusbar"><span class="type">GtkStatusbar</span></a>.
+</p>
+<p>
+See the ::status property for a status value that is suitable 
+for programmatic use.</p>
+<p>
+
+</p>
+<p>Default value: ""</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3729395"></a><h3>
+<a name="GtkPrintOperation--track-print-status"></a>The :<code class="literal">track-print-status</code> property</h3>
+<a class="indexterm" name="id3729412"></a><pre class="programlisting">  track-print-status       <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>
+If <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, the print operation will try to continue report on 
+the status of the print job in the printer queues and printer. 
+This can allow your application to show things like "out of paper" 
+issues, and when the print job actually reaches the printer. 
+However, this is often implemented using polling, and should 
+not be enabled unless needed.</p>
+<p>
+
+</p>
+<p>Default value: FALSE</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3729463"></a><h3>
+<a name="GtkPrintOperation--unit"></a>The :<code class="literal">unit</code> property</h3>
+<a class="indexterm" name="id3729479"></a><pre class="programlisting">  unit                     <a href="gtk-GtkPaperSize.html#GtkUnit">GtkUnit</a>               : Read / Write</pre>
+<p>
+The transformation for the cairo context obtained from
+<a href="GtkPrintContext.html" title="GtkPrintContext"><span class="type">GtkPrintContext</span></a> is set up in such a way that distances 
+are measured in units of <em class="parameter"><code>unit</code></em>.</p>
+<p>
+
+</p>
+<p>Default value: GTK_UNIT_PIXEL</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3729530"></a><h3>
+<a name="GtkPrintOperation--use-full-page"></a>The :<code class="literal">use-full-page</code> property</h3>
+<a class="indexterm" name="id3729546"></a><pre class="programlisting">  use-full-page            <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>
+If <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, the transformation for the cairo context obtained 
+from <a href="GtkPrintContext.html" title="GtkPrintContext"><span class="type">GtkPrintContext</span></a> puts the origin at the top left corner 
+of the page (which may not be the top left corner of the sheet, 
+depending on page orientation and the number of pages per sheet). 
+Otherwise, the origin is at the top left corner of the imageable 
+area (i.e. inside the margins).</p>
+<p>
+
+</p>
+<p>Default value: FALSE</p>
+<p>Since  2.10
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3729607"></a><h2>Signal Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3729617"></a><h3>
+<a name="GtkPrintOperation-begin-print"></a>The <code class="literal">::begin-print</code> signal</h3>
+<a class="indexterm" name="id3729634"></a><pre class="programlisting">void                user_function                      (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *operation,
+                                                        <a href="GtkPrintContext.html" title="GtkPrintContext">GtkPrintContext</a>   *context,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>           user_data)      : Run Last</pre>
+<p>
+Emitted after the user has finished changing print settings
+in the dialog, before the actual rendering starts. 
+</p>
+<p>
+A typical use for this signal is to use the parameters from the
+<a href="GtkPrintContext.html" title="GtkPrintContext"><span class="type">GtkPrintContext</span></a> and paginate the document accordingly, and then
+set the number of pages with <a href="gtk-High-level-Printing-API.html#gtk-print-operation-set-n-pages"><code class="function">gtk_print_operation_set_n_pages()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>operation</code></em>&#160;:</span></td>
+<td> the <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a> on which the signal was emitted
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>context</code></em>&#160;:</span></td>
+<td> the <a href="GtkPrintContext.html" title="GtkPrintContext"><span class="type">GtkPrintContext</span></a> for the current operation
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3729777"></a><h3>
+<a name="GtkPrintOperation-create-custom-widget"></a>The <code class="literal">::create-custom-widget</code> signal</h3>
+<a class="indexterm" name="id3729794"></a><pre class="programlisting"><a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>*            user_function                      (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *operation,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>           user_data)      : Run Last</pre>
+<p>
+Emitted when displaying the print dialog. If you return a
+widget in a handler for this signal it will be added to a custom
+tab in the print dialog. You typically return a container widget
+with multiple widgets in it.
+</p>
+<p>
+The print dialog owns the returned widget, and its lifetime
+isn't controlled by the app. However, the widget is guaranteed
+to stay around until the custom-widget-apply signal is emitted
+on the operation. Then you can read out any information you need
+from the widgets.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>operation</code></em>&#160;:</span></td>
+<td> the <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a> on which the signal was emitted
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> A custom widget that gets embedded in the print dialog,
+         or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3729913"></a><h3>
+<a name="GtkPrintOperation-custom-widget-apply"></a>The <code class="literal">::custom-widget-apply</code> signal</h3>
+<a class="indexterm" name="id3729930"></a><pre class="programlisting">void                user_function                      (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *operation,
+                                                        <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>         *widget,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>           user_data)      : Run Last</pre>
+<p>
+Emitted right before begin-print if you added
+a custom widget in the create-custom-widget handler. When you get
+this signal you should read the information from the custom widgets,
+as the widgets are not guaraneed to be around at a later time.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>operation</code></em>&#160;:</span></td>
+<td> the <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a> on which the signal was emitted
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>widget</code></em>&#160;:</span></td>
+<td> the custom widget added in create-custom-widget
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3730042"></a><h3>
+<a name="GtkPrintOperation-done"></a>The <code class="literal">::done</code> signal</h3>
+<a class="indexterm" name="id3730058"></a><pre class="programlisting">void                user_function                      (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a>      *operation,
+                                                        <a href="gtk-High-level-Printing-API.html#GtkPrintOperationResult">GtkPrintOperationResult</a> result,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>                user_data)      : Run Last</pre>
+<p>
+Emitted when the print operation run has finished doing
+everything required for printing. <em class="parameter"><code>result</code></em> gives you information
+about what happened during the run. If <em class="parameter"><code>result</code></em> is
+<a href="gtk-High-level-Printing-API.html#GTK-PRINT-OPERATION-RESULT-ERROR:CAPS"><code class="literal">GTK_PRINT_OPERATION_RESULT_ERROR</code></a> then you can call
+<a href="gtk-High-level-Printing-API.html#gtk-print-operation-get-error"><code class="function">gtk_print_operation_get_error()</code></a> for more information.
+</p>
+<p>
+If you enabled print status tracking then 
+<a href="gtk-High-level-Printing-API.html#gtk-print-operation-is-finished"><code class="function">gtk_print_operation_is_finished()</code></a> may still return <a
+href="../glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> 
+after this was emitted.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>operation</code></em>&#160;:</span></td>
+<td> the <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a> on which the signal was emitted
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>result</code></em>&#160;:</span></td>
+<td> the result of the print operation
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3730231"></a><h3>
+<a name="GtkPrintOperation-draw-page"></a>The <code class="literal">::draw-page</code> signal</h3>
+<a class="indexterm" name="id3730248"></a><pre class="programlisting">void                user_function                      (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *operation,
+                                                        <a href="GtkPrintContext.html" title="GtkPrintContext">GtkPrintContext</a>   *context,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>               page_nr,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>           user_data)      : Run Last</pre>
+<p>
+Emitted for every page that is printed. The signal handler
+must render the <em class="parameter"><code>page_nr</code></em>'s page onto the cairo context obtained
+from <em class="parameter"><code>context</code></em> using <a href="GtkPrintContext.html#gtk-print-context-get-cairo-context"><code class="function">gtk_print_context_get_cairo_context()</code></a>.
+</p>
+<p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+static void
+draw_page (GtkPrintOperation *operation,
+           GtkPrintContext   *context,
+           gint               page_nr,
+           gpointer           user_data)
+{
+  cairo_t *cr;
+  PangoLayout *layout;
+  gdouble width, text_height;
+  gint layout_height;
+  PangoFontDescription *desc;
+  
+  cr = gtk_print_context_get_cairo_context (context);
+  width = gtk_print_context_get_width (context);
+  
+  cairo_rectangle (cr, 0, 0, width, HEADER_HEIGHT);
+  
+  cairo_set_source_rgb (cr, 0.8, 0.8, 0.8);
+  cairo_fill (cr);
+  
+  layout = gtk_print_context_create_pango_layout (context);
+  
+  desc = pango_font_description_from_string ("sans 14");
+  pango_layout_set_font_description (layout, desc);
+  pango_font_description_free (desc);
+  
+  pango_layout_set_text (layout, "some text", -1);
+  pango_layout_set_width (layout, width);
+  pango_layout_set_alignment (layout, PANGO_ALIGN_CENTER);
+     		      
+  pango_layout_get_size (layout, NULL, &amp;layout_height);
+  text_height = (gdouble)layout_height / PANGO_SCALE;
+  
+  cairo_move_to (cr, width / 2,  (HEADER_HEIGHT - text_height) / 2);
+  pango_cairo_show_layout (cr, layout);
+  
+  g_object_unref (layout);
+}
+</pre></div>
+<p>
+</p>
+<p>
+Use <a href="gtk-High-level-Printing-API.html#gtk-print-operation-set-use-full-page"><code class="function">gtk_print_operation_set_use_full_page()</code></a> and 
+<a href="gtk-High-level-Printing-API.html#gtk-print-operation-set-unit"><code class="function">gtk_print_operation_set_unit()</code></a> before starting the print operation
+to set up the transformation of the cairo context according to your
+needs.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>operation</code></em>&#160;:</span></td>
+<td> the <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a> on which the signal was emitted
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>context</code></em>&#160;:</span></td>
+<td> the <a href="GtkPrintContext.html" title="GtkPrintContext"><span class="type">GtkPrintContext</span></a> for the current operation
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>page_nr</code></em>&#160;:</span></td>
+<td> the number of the currently printed page
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3730482"></a><h3>
+<a name="GtkPrintOperation-end-print"></a>The <code class="literal">::end-print</code> signal</h3>
+<a class="indexterm" name="id3730498"></a><pre class="programlisting">void                user_function                      (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *operation,
+                                                        <a href="GtkPrintContext.html" title="GtkPrintContext">GtkPrintContext</a>   *context,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>           user_data)      : Run Last</pre>
+<p>
+Emitted after all pages have been rendered. 
+A handler for this signal can clean up any resources that have
+been allocated in the ::begin-print handler.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>operation</code></em>&#160;:</span></td>
+<td> the <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a> on which the signal was emitted
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>context</code></em>&#160;:</span></td>
+<td> the <a href="GtkPrintContext.html" title="GtkPrintContext"><span class="type">GtkPrintContext</span></a> for the current operation
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3730617"></a><h3>
+<a name="GtkPrintOperation-paginate"></a>The <code class="literal">::paginate</code> signal</h3>
+<a class="indexterm" name="id3730634"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            user_function                      (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *operation,
+                                                        <a href="GtkPrintContext.html" title="GtkPrintContext">GtkPrintContext</a>   *context,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>           user_data)      : Run Last</pre>
+<p>
+Emitted after the begin-print signal, but before the actual 
+rendering starts. It keeps getting emitted until it returns <a
+href="../glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a>. 
+</p>
+<p>
+This signal is intended to be used for paginating the document
+in small chunks, to avoid blocking the user interface for a long
+time. The signal handler should update the number of pages using
+<a href="gtk-High-level-Printing-API.html#gtk-print-operation-set-n-pages"><code class="function">gtk_print_operation_set_n_pages()</code></a>, and return <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the document
+has been completely paginated.
+</p>
+<p>
+If you don't need to do pagination in chunks, you can simply do
+it all in the begin-print handler, and set the number of pages
+from there.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>operation</code></em>&#160;:</span></td>
+<td> the <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a> on which the signal was emitted
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>context</code></em>&#160;:</span></td>
+<td> the <a href="GtkPrintContext.html" title="GtkPrintContext"><span class="type">GtkPrintContext</span></a> for the current operation
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if pagination is complete
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3730817"></a><h3>
+<a name="GtkPrintOperation-preview"></a>The <code class="literal">::preview</code> signal</h3>
+<a class="indexterm" name="id3730833"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            user_function                      (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a>        *operation,
+                                                        <a href="gtk-High-level-Printing-API.html#GtkPrintOperationPreview">GtkPrintOperationPreview</a> *preview,
+                                                        <a href="GtkPrintContext.html" title="GtkPrintContext">GtkPrintContext</a>          *context,
+                                                        <a href="GtkWindow.html" title="GtkWindow">GtkWindow</a>                *parent,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>                  user_data)      : Run Last</pre>
+<p>
+Gets emitted when a preview is requested from the native dialog.
+</p>
+<p>
+The default handler for this signal uses an external viewer 
+application to preview.
+</p>
+<p>
+To implement a custom print preview, an application must return
+<a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> from its handler for this signal. In order to use the
+provided <em class="parameter"><code>context</code></em> for the preview implementation, it must be
+given a suitable cairo context with <a href="GtkPrintContext.html#gtk-print-context-set-cairo-context"><code class="function">gtk_print_context_set_cairo_context()</code></a>.
+</p>
+<p>
+The custom preview implementation can use 
+<a href="gtk-High-level-Printing-API.html#gtk-print-operation-preview-is-selected"><code class="function">gtk_print_operation_preview_is_selected()</code></a> and 
+<a href="gtk-High-level-Printing-API.html#gtk-print-operation-preview-render-page"><code class="function">gtk_print_operation_preview_render_page()</code></a> to find pages which
+are selected for print and render them. The preview must be
+finished by calling <a href="gtk-High-level-Printing-API.html#gtk-print-operation-preview-end-preview"><code class="function">gtk_print_operation_preview_end_preview()</code></a>
+(typically in response to the user clicking a close button).</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>operation</code></em>&#160;:</span></td>
+<td> the <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a> on which the signal was emitted
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>preview</code></em>&#160;:</span></td>
+<td> the <span class="type">GtkPrintPreviewOperation</span> for the current operation
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>context</code></em>&#160;:</span></td>
+<td> the <a href="GtkPrintContext.html" title="GtkPrintContext"><span class="type">GtkPrintContext</span></a> that will be used
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>parent</code></em>&#160;:</span></td>
+<td> the <a href="GtkWindow.html" title="GtkWindow"><span class="type">GtkWindow</span></a> to use as window parent, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the listener wants to take over control of the preview
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3731128"></a><h3>
+<a name="GtkPrintOperation-request-page-setup"></a>The <code class="literal">::request-page-setup</code> signal</h3>
+<a class="indexterm" name="id3731145"></a><pre class="programlisting">void                user_function                      (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *operation,
+                                                        <a href="GtkPrintContext.html" title="GtkPrintContext">GtkPrintContext</a>   *context,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>               page_nr,
+                                                        <a href="GtkPageSetup.html" title="GtkPageSetup">GtkPageSetup</a>      *setup,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>           user_data)      : Run Last</pre>
+<p>
+Emitted once for every page that is printed, to give
+the application a chance to modify the page setup. Any changes 
+done to <em class="parameter"><code>setup</code></em> will be in force only for printing this page.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>operation</code></em>&#160;:</span></td>
+<td> the <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a> on which the signal was emitted
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>context</code></em>&#160;:</span></td>
+<td> the <a href="GtkPrintContext.html" title="GtkPrintContext"><span class="type">GtkPrintContext</span></a> for the current operation
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>page_nr</code></em>&#160;:</span></td>
+<td> the number of the currently printed page
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>setup</code></em>&#160;:</span></td>
+<td> the <a href="GtkPageSetup.html" title="GtkPageSetup"><span class="type">GtkPageSetup</span></a> 
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3731323"></a><h3>
+<a name="GtkPrintOperation-status-changed"></a>The <code class="literal">::status-changed</code> signal</h3>
+<a class="indexterm" name="id3731340"></a><pre class="programlisting">void                user_function                      (<a href="gtk-High-level-Printing-API.html#GtkPrintOperation">GtkPrintOperation</a> *operation,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>           user_data)      : Run Last</pre>
+<p>
+Emitted at between the various phases of the print operation.
+See <a href="gtk-High-level-Printing-API.html#GtkPrintStatus"><span class="type">GtkPrintStatus</span></a> for the phases that are being discriminated.
+Use <a href="gtk-High-level-Printing-API.html#gtk-print-operation-get-status"><code class="function">gtk_print_operation_get_status()</code></a> to find out the current
+status.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>operation</code></em>&#160;:</span></td>
+<td> the <a href="gtk-High-level-Printing-API.html#GtkPrintOperation"><span class="type">GtkPrintOperation</span></a> on which the signal was emitted
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Since  2.10
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3731449"></a><h2>See Also</h2>
+<p>
+<a href="GtkPrintContext.html" title="GtkPrintContext"><span class="type">GtkPrintContext</span></a>, <a href="GtkPrintUnixDialog.html" title="GtkPrintUnixDialog"><span class="type">GtkPrintUnixDialog</span></a>
+</p>
+</div>
+</div>
+</body>
+</html>

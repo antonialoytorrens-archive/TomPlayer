@@ -1,0 +1,240 @@
+<refentry id="GtkToggleAction">
+<refmeta>
+<refentrytitle role="top_of_page">GtkToggleAction</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GTK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GtkToggleAction</refname>
+<refpurpose>An action which can be toggled between two states</refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
+</refnamediv>
+
+<refsynopsisdiv role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <link linkend="GtkToggleAction-struct">GtkToggleAction</link>;
+<link linkend="GtkToggleAction">GtkToggleAction</link>*    <link linkend="gtk-toggle-action-new">gtk_toggle_action_new</link>               (const <link linkend="gchar">gchar</link> *name,
+                                                         const <link linkend="gchar">gchar</link> *label,
+                                                         const <link linkend="gchar">gchar</link> *tooltip,
+                                                         const <link linkend="gchar">gchar</link> *stock_id);
+<link linkend="void">void</link>                <link linkend="gtk-toggle-action-toggled">gtk_toggle_action_toggled</link>           (<link linkend="GtkToggleAction">GtkToggleAction</link> *action);
+<link linkend="void">void</link>                <link linkend="gtk-toggle-action-set-active">gtk_toggle_action_set_active</link>        (<link linkend="GtkToggleAction">GtkToggleAction</link> *action,
+                                                         <link linkend="gboolean">gboolean</link> is_active);
+<link linkend="gboolean">gboolean</link>            <link linkend="gtk-toggle-action-get-active">gtk_toggle_action_get_active</link>        (<link linkend="GtkToggleAction">GtkToggleAction</link> *action);
+<link linkend="void">void</link>                <link linkend="gtk-toggle-action-set-draw-as-radio">gtk_toggle_action_set_draw_as_radio</link> (<link linkend="GtkToggleAction">GtkToggleAction</link> *action,
+                                                         <link linkend="gboolean">gboolean</link> draw_as_radio);
+<link linkend="gboolean">gboolean</link>            <link linkend="gtk-toggle-action-get-draw-as-radio">gtk_toggle_action_get_draw_as_radio</link> (<link linkend="GtkToggleAction">GtkToggleAction</link> *action);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1 role="object_hierarchy">
+<title role="object_hierarchy.title">Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GtkAction">GtkAction</link>
+         +----GtkToggleAction
+               +----<link linkend="GtkRadioAction">GtkRadioAction</link>
+</synopsis>
+
+</refsect1>
+
+
+
+
+
+<refsect1 role="properties">
+<title role="properties.title">Properties</title>
+<synopsis>
+
+  <link linkend="GtkToggleAction--active">active</link>                   <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkToggleAction--draw-as-radio">draw-as-radio</link>            <link linkend="gboolean">gboolean</link>              : Read / Write
+</synopsis>
+</refsect1>
+
+<refsect1 role="signal_proto">
+<title role="signal_proto.title">Signals</title>
+<synopsis>
+
+  <link linkend="GtkToggleAction-toggled">toggled</link>                                        : Run First
+</synopsis>
+</refsect1>
+
+
+<refsect1 role="desc">
+<title role="desc.title">Description</title>
+<para>
+A <link linkend="GtkToggleAction"><type>GtkToggleAction</type></link> corresponds roughly to a <link linkend="GtkCheckMenuItem"><type>GtkCheckMenuItem</type></link>. It has an
+"active" state specifying whether the action has been checked or not.
+</para>
+</refsect1>
+
+<refsect1 role="details">
+<title role="details.title">Details</title>
+<refsect2>
+<title><anchor id="GtkToggleAction-struct" role="struct"/>GtkToggleAction</title>
+<indexterm><primary>GtkToggleAction</primary></indexterm><programlisting>typedef struct _GtkToggleAction GtkToggleAction;</programlisting>
+<para>
+The <structname>GtkToggleAction</structname> struct contains only 
+private members and should not be accessed directly.
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-toggle-action-new" role="function" condition="since:2.4"/>gtk_toggle_action_new ()</title>
+<indexterm role="2.4"><primary>gtk_toggle_action_new</primary></indexterm><programlisting><link linkend="GtkToggleAction">GtkToggleAction</link>*    gtk_toggle_action_new               (const <link linkend="gchar">gchar</link> *name,
+                                                         const <link linkend="gchar">gchar</link> *label,
+                                                         const <link linkend="gchar">gchar</link> *tooltip,
+                                                         const <link linkend="gchar">gchar</link> *stock_id);</programlisting>
+<para>
+Creates a new <link linkend="GtkToggleAction"><type>GtkToggleAction</type></link> object. To add the action to
+a <link linkend="GtkActionGroup"><type>GtkActionGroup</type></link> and set the accelerator for the action,
+call <link linkend="gtk-action-group-add-action-with-accel"><function>gtk_action_group_add_action_with_accel()</function></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> A unique name for the action
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>label</parameter>&nbsp;:</term>
+<listitem><simpara> The label displayed in menu items and on buttons
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>tooltip</parameter>&nbsp;:</term>
+<listitem><simpara> A tooltip for the action
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>stock_id</parameter>&nbsp;:</term>
+<listitem><simpara> The stock icon to display in widgets representing the action
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a new <link linkend="GtkToggleAction"><type>GtkToggleAction</type></link>
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.4
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-toggle-action-toggled" role="function" condition="since:2.4"/>gtk_toggle_action_toggled ()</title>
+<indexterm role="2.4"><primary>gtk_toggle_action_toggled</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_toggle_action_toggled           (<link linkend="GtkToggleAction">GtkToggleAction</link> *action);</programlisting>
+<para>
+Emits the "toggled" signal on the toggle action.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>action</parameter>&nbsp;:</term>
+<listitem><simpara> the action object
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.4
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-toggle-action-set-active" role="function" condition="since:2.4"/>gtk_toggle_action_set_active ()</title>
+<indexterm role="2.4"><primary>gtk_toggle_action_set_active</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_toggle_action_set_active        (<link linkend="GtkToggleAction">GtkToggleAction</link> *action,
+                                                         <link linkend="gboolean">gboolean</link> is_active);</programlisting>
+<para>
+Sets the checked state on the toggle action.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>action</parameter>&nbsp;:</term>
+<listitem><simpara> the action object
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>is_active</parameter>&nbsp;:</term>
+<listitem><simpara> whether the action should be checked or not
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.4
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-toggle-action-get-active" role="function" condition="since:2.4"/>gtk_toggle_action_get_active ()</title>
+<indexterm role="2.4"><primary>gtk_toggle_action_get_active</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            gtk_toggle_action_get_active        (<link linkend="GtkToggleAction">GtkToggleAction</link> *action);</programlisting>
+<para>
+Returns the checked state of the toggle action.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>action</parameter>&nbsp;:</term>
+<listitem><simpara> the action object
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the checked state of the toggle action
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.4
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-toggle-action-set-draw-as-radio" role="function" condition="since:2.4"/>gtk_toggle_action_set_draw_as_radio ()</title>
+<indexterm role="2.4"><primary>gtk_toggle_action_set_draw_as_radio</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_toggle_action_set_draw_as_radio (<link linkend="GtkToggleAction">GtkToggleAction</link> *action,
+                                                         <link linkend="gboolean">gboolean</link> draw_as_radio);</programlisting>
+<para>
+Sets whether the action should have proxies like a radio action.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>action</parameter>&nbsp;:</term>
+<listitem><simpara> the action object
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>draw_as_radio</parameter>&nbsp;:</term>
+<listitem><simpara> whether the action should have proxies like a radio 
+   action
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.4
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-toggle-action-get-draw-as-radio" role="function" condition="since:2.4"/>gtk_toggle_action_get_draw_as_radio ()</title>
+<indexterm role="2.4"><primary>gtk_toggle_action_get_draw_as_radio</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            gtk_toggle_action_get_draw_as_radio (<link linkend="GtkToggleAction">GtkToggleAction</link> *action);</programlisting>
+<para>
+Returns whether the action should have proxies like a radio action.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>action</parameter>&nbsp;:</term>
+<listitem><simpara> the action object
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> whether the action should have proxies like a radio action.
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.4
+</para></refsect2>
+
+</refsect1>
+<refsect1 role="property_details">
+<title role="property_details.title">Property Details</title>
+<refsect2><title><anchor id="GtkToggleAction--active"/>The :<literal>active</literal> property</title>
+<indexterm role="2.10"><primary>GtkToggleAction:active</primary></indexterm><programlisting>  active                   <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>
+If the toggle action should be active in or not.</para>
+<para>
+
+</para><para>Default value: FALSE</para>
+<para>Since  2.10
+</para>
+</refsect2>
+<refsect2><title><anchor id="GtkToggleAction--draw-as-radio"/>The :<literal>draw-as-radio</literal> property</title>
+<indexterm><primary>GtkToggleAction:draw-as-radio</primary></indexterm><programlisting>  draw-as-radio            <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether the proxies for this action look like radio action proxies.</para><para>Default value: FALSE</para>
+</refsect2>
+
+</refsect1>
+
+<refsect1 role="signals">
+<title role="signals.title">Signal Details</title>
+<refsect2><title><anchor id="GtkToggleAction-toggled"/>The <literal>::toggled</literal> signal</title>
+<indexterm><primary>GtkToggleAction::toggled</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="GtkToggleAction">GtkToggleAction</link> *toggleaction,
+                                                        <link linkend="gpointer">gpointer</link>         user_data)         : Run First</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>toggleaction</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+</refsect1>
+
+
+
+</refentry>

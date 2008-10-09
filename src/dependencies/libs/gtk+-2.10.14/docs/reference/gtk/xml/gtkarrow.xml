@@ -1,0 +1,168 @@
+<refentry id="GtkArrow">
+<refmeta>
+<refentrytitle role="top_of_page">GtkArrow</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GTK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GtkArrow</refname>
+<refpurpose>Displays an arrow</refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
+</refnamediv>
+
+<refsynopsisdiv role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <link linkend="GtkArrow-struct">GtkArrow</link>;
+<link linkend="GtkWidget">GtkWidget</link>*          <link linkend="gtk-arrow-new">gtk_arrow_new</link>                       (<link linkend="GtkArrowType">GtkArrowType</link> arrow_type,
+                                                         <link linkend="GtkShadowType">GtkShadowType</link> shadow_type);
+<link linkend="void">void</link>                <link linkend="gtk-arrow-set">gtk_arrow_set</link>                       (<link linkend="GtkArrow">GtkArrow</link> *arrow,
+                                                         <link linkend="GtkArrowType">GtkArrowType</link> arrow_type,
+                                                         <link linkend="GtkShadowType">GtkShadowType</link> shadow_type);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1 role="object_hierarchy">
+<title role="object_hierarchy.title">Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GInitiallyUnowned">GInitiallyUnowned</link>
+         +----<link linkend="GtkObject">GtkObject</link>
+               +----<link linkend="GtkWidget">GtkWidget</link>
+                     +----<link linkend="GtkMisc">GtkMisc</link>
+                           +----GtkArrow
+</synopsis>
+
+</refsect1>
+
+
+
+<refsect1 role="impl_interfaces">
+<title role="impl_interfaces.title">Implemented Interfaces</title>
+<para>
+GtkArrow implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
+</refsect1>
+
+
+<refsect1 role="properties">
+<title role="properties.title">Properties</title>
+<synopsis>
+
+  <link linkend="GtkArrow--arrow-type">arrow-type</link>               <link linkend="GtkArrowType">GtkArrowType</link>          : Read / Write
+  <link linkend="GtkArrow--shadow-type">shadow-type</link>              <link linkend="GtkShadowType">GtkShadowType</link>         : Read / Write
+</synopsis>
+</refsect1>
+
+
+
+<refsect1 role="desc">
+<title role="desc.title">Description</title>
+<para>
+GtkArrow should be used to draw simple arrows that need to point in
+one of the four cardinal directions (up, down, left, or right).  The
+style of the arrow can be one of shadow in, shadow out, etched in, or
+etched out.  Note that these directions and style types may be
+ammended in versions of Gtk to come.
+</para>
+<para>
+GtkArrow will fill any space alloted to it, but since it is inherited
+from <link linkend="GtkMisc"><type>GtkMisc</type></link>, it can be padded and/or aligned, to fill exactly the
+space the programmer desires.
+</para>
+<para>
+Arrows are created with a call to <link linkend="gtk-arrow-new"><function>gtk_arrow_new()</function></link>.  The direction or
+style of an arrow can be changed after creation by using <link linkend="gtk-arrow-set"><function>gtk_arrow_set()</function></link>.
+</para>
+</refsect1>
+
+<refsect1 role="details">
+<title role="details.title">Details</title>
+<refsect2>
+<title><anchor id="GtkArrow-struct" role="struct"/>GtkArrow</title>
+<indexterm><primary>GtkArrow</primary></indexterm><programlisting>typedef struct _GtkArrow GtkArrow;</programlisting>
+<para>
+The <link linkend="GtkArrow"><type>GtkArrow</type></link> struct containes the following fields.
+(These fields should be considered read-only. They should never be set by
+an application.)
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-arrow-new" role="function"/>gtk_arrow_new ()</title>
+<indexterm><primary>gtk_arrow_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*          gtk_arrow_new                       (<link linkend="GtkArrowType">GtkArrowType</link> arrow_type,
+                                                         <link linkend="GtkShadowType">GtkShadowType</link> shadow_type);</programlisting>
+<para>
+Creates a new arrow widget.
+</para><variablelist role="params">
+<varlistentry><term><parameter>arrow_type</parameter>&nbsp;:</term>
+<listitem><simpara>a valid <link linkend="GtkArrowType"><type>GtkArrowType</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>shadow_type</parameter>&nbsp;:</term>
+<listitem><simpara>a valid <link linkend="GtkShadowType"><type>GtkShadowType</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>the new <link linkend="GtkArrow"><type>GtkArrow</type></link> widget.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-arrow-set" role="function"/>gtk_arrow_set ()</title>
+<indexterm><primary>gtk_arrow_set</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_arrow_set                       (<link linkend="GtkArrow">GtkArrow</link> *arrow,
+                                                         <link linkend="GtkArrowType">GtkArrowType</link> arrow_type,
+                                                         <link linkend="GtkShadowType">GtkShadowType</link> shadow_type);</programlisting>
+<para>
+Sets the direction and style of the <link linkend="GtkArrow"><type>GtkArrow</type></link>, <parameter>arrow</parameter>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>arrow</parameter>&nbsp;:</term>
+<listitem><simpara>a widget of type <link linkend="GtkArrow"><type>GtkArrow</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arrow_type</parameter>&nbsp;:</term>
+<listitem><simpara>a valid <link linkend="GtkArrowType"><type>GtkArrowType</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>shadow_type</parameter>&nbsp;:</term>
+<listitem><simpara>a valid <link linkend="GtkShadowType"><type>GtkShadowType</type></link>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+<refsect1 role="property_details">
+<title role="property_details.title">Property Details</title>
+<refsect2><title><anchor id="GtkArrow--arrow-type"/>The :<literal>arrow-type</literal> property</title>
+<indexterm><primary>GtkArrow:arrow-type</primary></indexterm><programlisting>  arrow-type               <link linkend="GtkArrowType">GtkArrowType</link>          : Read / Write</programlisting>
+<para>The direction the arrow should point.</para><para>Default value: GTK_ARROW_RIGHT</para>
+</refsect2>
+<refsect2><title><anchor id="GtkArrow--shadow-type"/>The :<literal>shadow-type</literal> property</title>
+<indexterm><primary>GtkArrow:shadow-type</primary></indexterm><programlisting>  shadow-type              <link linkend="GtkShadowType">GtkShadowType</link>         : Read / Write</programlisting>
+<para>Appearance of the shadow surrounding the arrow.</para><para>Default value: GTK_SHADOW_OUT</para>
+</refsect2>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>See Also</title>
+<para>
+<variablelist>
+
+<varlistentry>
+<term><link linkend="gtk-paint-arrow"><function>gtk_paint_arrow()</function></link></term>
+<listitem><para>the function used internally to paint the arrow.</para></listitem>
+</varlistentry>
+
+</variablelist>
+</para>
+</refsect1>
+
+</refentry>

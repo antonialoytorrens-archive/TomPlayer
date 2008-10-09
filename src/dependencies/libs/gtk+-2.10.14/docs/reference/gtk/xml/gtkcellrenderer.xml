@@ -1,0 +1,628 @@
+<refentry id="GtkCellRenderer">
+<refmeta>
+<refentrytitle role="top_of_page">GtkCellRenderer</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GTK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GtkCellRenderer</refname>
+<refpurpose>An object for rendering a single cell on a <link linkend="GdkDrawable"><type>GdkDrawable</type></link></refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
+</refnamediv>
+
+<refsynopsisdiv role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+
+#include &lt;gtk/gtk.h&gt;
+
+
+enum                <link linkend="GtkCellRendererState">GtkCellRendererState</link>;
+enum                <link linkend="GtkCellRendererMode">GtkCellRendererMode</link>;
+                    <link linkend="GtkCellRenderer-struct">GtkCellRenderer</link>;
+<link linkend="void">void</link>                <link linkend="gtk-cell-renderer-get-size">gtk_cell_renderer_get_size</link>          (<link linkend="GtkCellRenderer">GtkCellRenderer</link> *cell,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *widget,
+                                                         <link linkend="GdkRectangle">GdkRectangle</link> *cell_area,
+                                                         <link linkend="gint">gint</link> *x_offset,
+                                                         <link linkend="gint">gint</link> *y_offset,
+                                                         <link linkend="gint">gint</link> *width,
+                                                         <link linkend="gint">gint</link> *height);
+<link linkend="void">void</link>                <link linkend="gtk-cell-renderer-render">gtk_cell_renderer_render</link>            (<link linkend="GtkCellRenderer">GtkCellRenderer</link> *cell,
+                                                         <link linkend="GdkWindow">GdkWindow</link> *window,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *widget,
+                                                         <link linkend="GdkRectangle">GdkRectangle</link> *background_area,
+                                                         <link linkend="GdkRectangle">GdkRectangle</link> *cell_area,
+                                                         <link linkend="GdkRectangle">GdkRectangle</link> *expose_area,
+                                                         <link linkend="GtkCellRendererState">GtkCellRendererState</link> flags);
+<link linkend="gboolean">gboolean</link>            <link linkend="gtk-cell-renderer-activate">gtk_cell_renderer_activate</link>          (<link linkend="GtkCellRenderer">GtkCellRenderer</link> *cell,
+                                                         <link linkend="GdkEvent">GdkEvent</link> *event,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *widget,
+                                                         const <link linkend="gchar">gchar</link> *path,
+                                                         <link linkend="GdkRectangle">GdkRectangle</link> *background_area,
+                                                         <link linkend="GdkRectangle">GdkRectangle</link> *cell_area,
+                                                         <link linkend="GtkCellRendererState">GtkCellRendererState</link> flags);
+<link linkend="GtkCellEditable">GtkCellEditable</link>*    <link linkend="gtk-cell-renderer-start-editing">gtk_cell_renderer_start_editing</link>     (<link linkend="GtkCellRenderer">GtkCellRenderer</link> *cell,
+                                                         <link linkend="GdkEvent">GdkEvent</link> *event,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *widget,
+                                                         const <link linkend="gchar">gchar</link> *path,
+                                                         <link linkend="GdkRectangle">GdkRectangle</link> *background_area,
+                                                         <link linkend="GdkRectangle">GdkRectangle</link> *cell_area,
+                                                         <link linkend="GtkCellRendererState">GtkCellRendererState</link> flags);
+<link linkend="void">void</link>                <link linkend="gtk-cell-renderer-editing-canceled">gtk_cell_renderer_editing_canceled</link>  (<link linkend="GtkCellRenderer">GtkCellRenderer</link> *cell);
+<link linkend="void">void</link>                <link linkend="gtk-cell-renderer-stop-editing">gtk_cell_renderer_stop_editing</link>      (<link linkend="GtkCellRenderer">GtkCellRenderer</link> *cell,
+                                                         <link linkend="gboolean">gboolean</link> canceled);
+<link linkend="void">void</link>                <link linkend="gtk-cell-renderer-get-fixed-size">gtk_cell_renderer_get_fixed_size</link>    (<link linkend="GtkCellRenderer">GtkCellRenderer</link> *cell,
+                                                         <link linkend="gint">gint</link> *width,
+                                                         <link linkend="gint">gint</link> *height);
+<link linkend="void">void</link>                <link linkend="gtk-cell-renderer-set-fixed-size">gtk_cell_renderer_set_fixed_size</link>    (<link linkend="GtkCellRenderer">GtkCellRenderer</link> *cell,
+                                                         <link linkend="gint">gint</link> width,
+                                                         <link linkend="gint">gint</link> height);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1 role="object_hierarchy">
+<title role="object_hierarchy.title">Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GInitiallyUnowned">GInitiallyUnowned</link>
+         +----<link linkend="GtkObject">GtkObject</link>
+               +----GtkCellRenderer
+                     +----<link linkend="GtkCellRendererText">GtkCellRendererText</link>
+                     +----<link linkend="GtkCellRendererPixbuf">GtkCellRendererPixbuf</link>
+                     +----<link linkend="GtkCellRendererProgress">GtkCellRendererProgress</link>
+                     +----<link linkend="GtkCellRendererToggle">GtkCellRendererToggle</link>
+</synopsis>
+
+</refsect1>
+
+
+
+
+
+<refsect1 role="properties">
+<title role="properties.title">Properties</title>
+<synopsis>
+
+  <link linkend="GtkCellRenderer--cell-background">cell-background</link>          <link linkend="gchararray">gchararray</link>            : Write
+  <link linkend="GtkCellRenderer--cell-background-gdk">cell-background-gdk</link>      <link linkend="GdkColor">GdkColor</link>              : Read / Write
+  <link linkend="GtkCellRenderer--cell-background-set">cell-background-set</link>      <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkCellRenderer--height">height</link>                   <link linkend="gint">gint</link>                  : Read / Write
+  <link linkend="GtkCellRenderer--is-expanded">is-expanded</link>              <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkCellRenderer--is-expander">is-expander</link>              <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkCellRenderer--mode">mode</link>                     <link linkend="GtkCellRendererMode">GtkCellRendererMode</link>   : Read / Write
+  <link linkend="GtkCellRenderer--sensitive">sensitive</link>                <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkCellRenderer--visible">visible</link>                  <link linkend="gboolean">gboolean</link>              : Read / Write
+  <link linkend="GtkCellRenderer--width">width</link>                    <link linkend="gint">gint</link>                  : Read / Write
+  <link linkend="GtkCellRenderer--xalign">xalign</link>                   <link linkend="gfloat">gfloat</link>                : Read / Write
+  <link linkend="GtkCellRenderer--xpad">xpad</link>                     <link linkend="guint">guint</link>                 : Read / Write
+  <link linkend="GtkCellRenderer--yalign">yalign</link>                   <link linkend="gfloat">gfloat</link>                : Read / Write
+  <link linkend="GtkCellRenderer--ypad">ypad</link>                     <link linkend="guint">guint</link>                 : Read / Write
+</synopsis>
+</refsect1>
+
+<refsect1 role="signal_proto">
+<title role="signal_proto.title">Signals</title>
+<synopsis>
+
+  <link linkend="GtkCellRenderer-editing-canceled">editing-canceled</link>                               : Run First
+  <link linkend="GtkCellRenderer-editing-started">editing-started</link>                                : Run First
+</synopsis>
+</refsect1>
+
+
+<refsect1 role="desc">
+<title role="desc.title">Description</title>
+<para>
+The <link linkend="GtkCellRenderer"><type>GtkCellRenderer</type></link> is a base class of a set of objects used for
+rendering a cell to a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>.  These objects are used primarily by
+the <link linkend="GtkTreeView"><type>GtkTreeView</type></link> widget, though they aren't tied to them in any
+specific way.  It is worth noting that <link linkend="GtkCellRenderer"><type>GtkCellRenderer</type></link> is not a
+<link linkend="GtkWidget"><type>GtkWidget</type></link> and cannot be treated as such.
+</para>
+
+<para>
+The primary use of a <link linkend="GtkCellRenderer"><type>GtkCellRenderer</type></link> is for drawing a certain graphical
+elements on a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>.  Typically, one cell renderer is used to
+draw many cells on the screen.  To this extent, it isn't expected that a
+CellRenderer keep any permanent state around.  Instead, any state is set
+just prior to use using <link linkend="GObject"><type>GObject</type></link><!-- -->s property system.  Then, the
+cell is measured using <link linkend="gtk-cell-renderer-get-size"><function>gtk_cell_renderer_get_size()</function></link>.  Finally, the cell
+is rendered in the correct location using <link linkend="gtk-cell-renderer-render"><function>gtk_cell_renderer_render()</function></link>.
+</para>
+
+<para>
+There are a number of rules that must be followed when writing a new
+<link linkend="GtkCellRenderer"><type>GtkCellRenderer</type></link>.  First and formost, it's important that a certain set
+of properties will always yield a cell renderer of the same size,
+barring a <link linkend="GtkStyle"><type>GtkStyle</type></link> change.  The <link linkend="GtkCellRenderer"><type>GtkCellRenderer</type></link> also has a number of
+generic properties that are expected to be honored by all children.
+</para>
+
+<para>
+Beyond merely rendering a cell, cell renderers can optionally 
+provide active user interface elements. A cell renderer can be 
+<firstterm>activatable</firstterm> like <link linkend="GtkCellRendererToggle"><type>GtkCellRendererToggle</type></link>, 
+which toggles when it gets activated by a mouse click, or it can be 
+<firstterm>editable</firstterm> like <link linkend="GtkCellRendererText"><type>GtkCellRendererText</type></link>, which 
+allows the user to edit the text using a <link linkend="GtkEntry"><type>GtkEntry</type></link>.
+To make a cell renderer activatable or editable, you have to 
+implement the <parameter>activate</parameter> or <parameter>start_editing</parameter> virtual functions, 
+respectively.
+</para>
+</refsect1>
+
+<refsect1 role="details">
+<title role="details.title">Details</title>
+<refsect2>
+<title><anchor id="GtkCellRendererState" role="enum"/>enum GtkCellRendererState</title>
+<indexterm><primary>GtkCellRendererState</primary></indexterm><programlisting>typedef enum
+{
+  GTK_CELL_RENDERER_SELECTED    = 1 &lt;&lt; 0,
+  GTK_CELL_RENDERER_PRELIT      = 1 &lt;&lt; 1,
+  GTK_CELL_RENDERER_INSENSITIVE = 1 &lt;&lt; 2,
+  /* this flag means the cell is in the sort column/row */
+  GTK_CELL_RENDERER_SORTED      = 1 &lt;&lt; 3,
+  GTK_CELL_RENDERER_FOCUSED     = 1 &lt;&lt; 4
+} GtkCellRendererState;
+</programlisting>
+<para>
+Tells how a cell is to be rendererd.
+</para><variablelist role="enum">
+<varlistentry>
+<term><anchor id="GTK-CELL-RENDERER-SELECTED:CAPS" role="constant"/><literal>GTK_CELL_RENDERER_SELECTED</literal></term>
+<listitem><simpara>The cell is currently selected, and
+probably has a selection colored background to render to.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><anchor id="GTK-CELL-RENDERER-PRELIT:CAPS" role="constant"/><literal>GTK_CELL_RENDERER_PRELIT</literal></term>
+<listitem><simpara>The mouse is hovering over the cell.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><anchor id="GTK-CELL-RENDERER-INSENSITIVE:CAPS" role="constant"/><literal>GTK_CELL_RENDERER_INSENSITIVE</literal></term>
+<listitem><simpara>The cell is drawn in an insensitive manner
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><anchor id="GTK-CELL-RENDERER-SORTED:CAPS" role="constant"/><literal>GTK_CELL_RENDERER_SORTED</literal></term>
+<listitem><simpara>The cell is in a sorted row
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><anchor id="GTK-CELL-RENDERER-FOCUSED:CAPS" role="constant"/><literal>GTK_CELL_RENDERER_FOCUSED</literal></term>
+<listitem><simpara>
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GtkCellRendererMode" role="enum"/>enum GtkCellRendererMode</title>
+<indexterm><primary>GtkCellRendererMode</primary></indexterm><programlisting>typedef enum
+{
+  GTK_CELL_RENDERER_MODE_INERT,
+  GTK_CELL_RENDERER_MODE_ACTIVATABLE,
+  GTK_CELL_RENDERER_MODE_EDITABLE
+} GtkCellRendererMode;
+</programlisting>
+<para>
+Identifies how the user can interact with a particular cell.
+</para><variablelist role="enum">
+<varlistentry>
+<term><anchor id="GTK-CELL-RENDERER-MODE-INERT:CAPS" role="constant"/><literal>GTK_CELL_RENDERER_MODE_INERT</literal></term>
+<listitem><simpara>The cell is just for display
+and cannot be interacted with.  Note that this doesn't mean that eg. the
+row being drawn can't be selected -- just that a particular element of
+it cannot be individually modified.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><anchor id="GTK-CELL-RENDERER-MODE-ACTIVATABLE:CAPS" role="constant"/><literal>GTK_CELL_RENDERER_MODE_ACTIVATABLE</literal></term>
+<listitem><simpara>The cell can be clicked.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><anchor id="GTK-CELL-RENDERER-MODE-EDITABLE:CAPS" role="constant"/><literal>GTK_CELL_RENDERER_MODE_EDITABLE</literal></term>
+<listitem><simpara>The cell can be edited or otherwise modified.
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GtkCellRenderer-struct" role="struct"/>GtkCellRenderer</title>
+<indexterm><primary>GtkCellRenderer</primary></indexterm><programlisting>typedef struct _GtkCellRenderer GtkCellRenderer;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-cell-renderer-get-size" role="function"/>gtk_cell_renderer_get_size ()</title>
+<indexterm><primary>gtk_cell_renderer_get_size</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_cell_renderer_get_size          (<link linkend="GtkCellRenderer">GtkCellRenderer</link> *cell,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *widget,
+                                                         <link linkend="GdkRectangle">GdkRectangle</link> *cell_area,
+                                                         <link linkend="gint">gint</link> *x_offset,
+                                                         <link linkend="gint">gint</link> *y_offset,
+                                                         <link linkend="gint">gint</link> *width,
+                                                         <link linkend="gint">gint</link> *height);</programlisting>
+<para>
+Obtains the width and height needed to render the cell. Used by view widgets
+to determine the appropriate size for the cell_area passed to
+<link linkend="gtk-cell-renderer-render"><function>gtk_cell_renderer_render()</function></link>.  If <parameter>cell_area</parameter> is not <link linkend="NULL:CAPS"><literal>NULL</literal></link>, fills in the x and y
+offsets (if set) of the cell relative to this location.  Please note that the
+values set in <parameter>width</parameter> and <parameter>height</parameter>, as well as those in <parameter>x_offset</parameter> and <parameter>y_offset</parameter>
+are inclusive of the xpad and ypad properties.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cell</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkCellRenderer"><type>GtkCellRenderer</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>widget</parameter>&nbsp;:</term>
+<listitem><simpara> the widget the renderer is rendering to
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cell_area</parameter>&nbsp;:</term>
+<listitem><simpara> The area a cell will be allocated, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x_offset</parameter>&nbsp;:</term>
+<listitem><simpara> location to return x offset of cell relative to <parameter>cell_area</parameter>, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y_offset</parameter>&nbsp;:</term>
+<listitem><simpara> location to return y offset of cell relative to <parameter>cell_area</parameter>, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><simpara> location to return width needed to render a cell, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
+<listitem><simpara> location to return height needed to render a cell, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-cell-renderer-render" role="function"/>gtk_cell_renderer_render ()</title>
+<indexterm><primary>gtk_cell_renderer_render</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_cell_renderer_render            (<link linkend="GtkCellRenderer">GtkCellRenderer</link> *cell,
+                                                         <link linkend="GdkWindow">GdkWindow</link> *window,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *widget,
+                                                         <link linkend="GdkRectangle">GdkRectangle</link> *background_area,
+                                                         <link linkend="GdkRectangle">GdkRectangle</link> *cell_area,
+                                                         <link linkend="GdkRectangle">GdkRectangle</link> *expose_area,
+                                                         <link linkend="GtkCellRendererState">GtkCellRendererState</link> flags);</programlisting>
+<para>
+Invokes the virtual render function of the <link linkend="GtkCellRenderer"><type>GtkCellRenderer</type></link>. The three
+passed-in rectangles are areas of <parameter>window</parameter>. Most renderers will draw within
+<parameter>cell_area</parameter>; the xalign, yalign, xpad, and ypad fields of the <link linkend="GtkCellRenderer"><type>GtkCellRenderer</type></link>
+should be honored with respect to <parameter>cell_area</parameter>. <parameter>background_area</parameter> includes the
+blank space around the cell, and also the area containing the tree expander;
+so the <parameter>background_area</parameter> rectangles for all cells tile to cover the entire
+<parameter>window</parameter>.  <parameter>expose_area</parameter> is a clip rectangle.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cell</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkCellRenderer"><type>GtkCellRenderer</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>window</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link> to draw to
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>widget</parameter>&nbsp;:</term>
+<listitem><simpara> the widget owning <parameter>window</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>background_area</parameter>&nbsp;:</term>
+<listitem><simpara> entire cell area (including tree expanders and maybe padding on the sides)
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cell_area</parameter>&nbsp;:</term>
+<listitem><simpara> area normally rendered by a cell renderer
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>expose_area</parameter>&nbsp;:</term>
+<listitem><simpara> area that actually needs updating
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
+<listitem><simpara> flags that affect rendering
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-cell-renderer-activate" role="function"/>gtk_cell_renderer_activate ()</title>
+<indexterm><primary>gtk_cell_renderer_activate</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>            gtk_cell_renderer_activate          (<link linkend="GtkCellRenderer">GtkCellRenderer</link> *cell,
+                                                         <link linkend="GdkEvent">GdkEvent</link> *event,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *widget,
+                                                         const <link linkend="gchar">gchar</link> *path,
+                                                         <link linkend="GdkRectangle">GdkRectangle</link> *background_area,
+                                                         <link linkend="GdkRectangle">GdkRectangle</link> *cell_area,
+                                                         <link linkend="GtkCellRendererState">GtkCellRendererState</link> flags);</programlisting>
+<para>
+Passes an activate event to the cell renderer for possible processing.  Some
+cell renderers may use events; for example, <link linkend="GtkCellRendererToggle"><type>GtkCellRendererToggle</type></link> toggles
+when it gets a mouse click.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cell</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkCellRenderer"><type>GtkCellRenderer</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>event</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GdkEvent"><type>GdkEvent</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>widget</parameter>&nbsp;:</term>
+<listitem><simpara> widget that received the event
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> widget-dependent string representation of the event location; e.g. for <link linkend="GtkTreeView"><type>GtkTreeView</type></link>, a string representation of <link linkend="GtkTreePath"><type>GtkTreePath</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>background_area</parameter>&nbsp;:</term>
+<listitem><simpara> background area as passed to <parameter>gtk_cell_renderer_render</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cell_area</parameter>&nbsp;:</term>
+<listitem><simpara> cell area as passed to <parameter>gtk_cell_renderer_render</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
+<listitem><simpara> render flags
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the event was consumed/handled
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-cell-renderer-start-editing" role="function"/>gtk_cell_renderer_start_editing ()</title>
+<indexterm><primary>gtk_cell_renderer_start_editing</primary></indexterm><programlisting><link linkend="GtkCellEditable">GtkCellEditable</link>*    gtk_cell_renderer_start_editing     (<link linkend="GtkCellRenderer">GtkCellRenderer</link> *cell,
+                                                         <link linkend="GdkEvent">GdkEvent</link> *event,
+                                                         <link linkend="GtkWidget">GtkWidget</link> *widget,
+                                                         const <link linkend="gchar">gchar</link> *path,
+                                                         <link linkend="GdkRectangle">GdkRectangle</link> *background_area,
+                                                         <link linkend="GdkRectangle">GdkRectangle</link> *cell_area,
+                                                         <link linkend="GtkCellRendererState">GtkCellRendererState</link> flags);</programlisting>
+<para>
+Passes an activate event to the cell renderer for possible processing.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cell</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkCellRenderer"><type>GtkCellRenderer</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>event</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GdkEvent"><type>GdkEvent</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>widget</parameter>&nbsp;:</term>
+<listitem><simpara> widget that received the event
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> widget-dependent string representation of the event location; e.g. for <link linkend="GtkTreeView"><type>GtkTreeView</type></link>, a string representation of <link linkend="GtkTreePath"><type>GtkTreePath</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>background_area</parameter>&nbsp;:</term>
+<listitem><simpara> background area as passed to <parameter>gtk_cell_renderer_render</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cell_area</parameter>&nbsp;:</term>
+<listitem><simpara> cell area as passed to <parameter>gtk_cell_renderer_render</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
+<listitem><simpara> render flags
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A new <link linkend="GtkCellEditable"><type>GtkCellEditable</type></link>, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-cell-renderer-editing-canceled" role="function" condition="deprecated:2.6: Use gtk_cell_renderer_stop_editing() instead|since:2.4"/>gtk_cell_renderer_editing_canceled ()</title>
+<indexterm role="deprecated"><primary>gtk_cell_renderer_editing_canceled</primary></indexterm><indexterm role="2.4"><primary>gtk_cell_renderer_editing_canceled</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_cell_renderer_editing_canceled  (<link linkend="GtkCellRenderer">GtkCellRenderer</link> *cell);</programlisting>
+<warning><para><literal>gtk_cell_renderer_editing_canceled</literal> has been deprecated since version 2.6 and should not be used in newly-written code. Use <link linkend="gtk-cell-renderer-stop-editing"><function>gtk_cell_renderer_stop_editing()</function></link> instead</para></warning>
+<para>
+Causes the cell renderer to emit the "editing-canceled" signal.  This
+function is for use only by implementations of cell renderers that need to
+notify the client program that an editing process was canceled and the
+changes were not committed.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cell</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GtkCellRenderer"><type>GtkCellRenderer</type></link>
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.4
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-cell-renderer-stop-editing" role="function" condition="since:2.6"/>gtk_cell_renderer_stop_editing ()</title>
+<indexterm role="2.6"><primary>gtk_cell_renderer_stop_editing</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_cell_renderer_stop_editing      (<link linkend="GtkCellRenderer">GtkCellRenderer</link> *cell,
+                                                         <link linkend="gboolean">gboolean</link> canceled);</programlisting>
+<para>
+Informs the cell renderer that the editing is stopped.
+If <parameter>canceled</parameter> is <link linkend="TRUE:CAPS"><literal>TRUE</literal></link>, the cell renderer will emit the "editing-canceled" 
+signal. This function should be called by cell renderer implementations 
+in response to the "editing-done" signal of <link linkend="GtkCellEditable"><type>GtkCellEditable</type></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cell</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GtkCellRenderer"><type>GtkCellRenderer</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>canceled</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if the editing has been canceled
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.6
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-cell-renderer-get-fixed-size" role="function"/>gtk_cell_renderer_get_fixed_size ()</title>
+<indexterm><primary>gtk_cell_renderer_get_fixed_size</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_cell_renderer_get_fixed_size    (<link linkend="GtkCellRenderer">GtkCellRenderer</link> *cell,
+                                                         <link linkend="gint">gint</link> *width,
+                                                         <link linkend="gint">gint</link> *height);</programlisting>
+<para>
+Fills in <parameter>width</parameter> and <parameter>height</parameter> with the appropriate size of <parameter>cell</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cell</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GtkCellRenderer"><type>GtkCellRenderer</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><simpara> location to fill in with the fixed width of the widget, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
+<listitem><simpara> location to fill in with the fixed height of the widget, or <link linkend="NULL:CAPS"><literal>NULL</literal></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-cell-renderer-set-fixed-size" role="function"/>gtk_cell_renderer_set_fixed_size ()</title>
+<indexterm><primary>gtk_cell_renderer_set_fixed_size</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_cell_renderer_set_fixed_size    (<link linkend="GtkCellRenderer">GtkCellRenderer</link> *cell,
+                                                         <link linkend="gint">gint</link> width,
+                                                         <link linkend="gint">gint</link> height);</programlisting>
+<para>
+Sets the renderer size to be explicit, independent of the properties set.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cell</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GtkCellRenderer"><type>GtkCellRenderer</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><simpara> the width of the cell renderer, or -1
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
+<listitem><simpara> the height of the cell renderer, or -1
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+<refsect1 role="property_details">
+<title role="property_details.title">Property Details</title>
+<refsect2><title><anchor id="GtkCellRenderer--cell-background"/>The :<literal>cell-background</literal> property</title>
+<indexterm><primary>GtkCellRenderer:cell-background</primary></indexterm><programlisting>  cell-background          <link linkend="gchararray">gchararray</link>            : Write</programlisting>
+<para>Cell background color as a string.</para><para>Default value: NULL</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRenderer--cell-background-gdk"/>The :<literal>cell-background-gdk</literal> property</title>
+<indexterm><primary>GtkCellRenderer:cell-background-gdk</primary></indexterm><programlisting>  cell-background-gdk      <link linkend="GdkColor">GdkColor</link>              : Read / Write</programlisting>
+<para>Cell background color as a GdkColor.</para></refsect2>
+<refsect2><title><anchor id="GtkCellRenderer--cell-background-set"/>The :<literal>cell-background-set</literal> property</title>
+<indexterm><primary>GtkCellRenderer:cell-background-set</primary></indexterm><programlisting>  cell-background-set      <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether this tag affects the cell background color.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRenderer--height"/>The :<literal>height</literal> property</title>
+<indexterm><primary>GtkCellRenderer:height</primary></indexterm><programlisting>  height                   <link linkend="gint">gint</link>                  : Read / Write</programlisting>
+<para>The fixed height.</para><para>Allowed values: &gt;= -1</para>
+<para>Default value: -1</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRenderer--is-expanded"/>The :<literal>is-expanded</literal> property</title>
+<indexterm><primary>GtkCellRenderer:is-expanded</primary></indexterm><programlisting>  is-expanded              <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Row is an expander row, and is expanded.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRenderer--is-expander"/>The :<literal>is-expander</literal> property</title>
+<indexterm><primary>GtkCellRenderer:is-expander</primary></indexterm><programlisting>  is-expander              <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Row has children.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRenderer--mode"/>The :<literal>mode</literal> property</title>
+<indexterm><primary>GtkCellRenderer:mode</primary></indexterm><programlisting>  mode                     <link linkend="GtkCellRendererMode">GtkCellRendererMode</link>   : Read / Write</programlisting>
+<para>Editable mode of the CellRenderer.</para><para>Default value: GTK_CELL_RENDERER_MODE_INERT</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRenderer--sensitive"/>The :<literal>sensitive</literal> property</title>
+<indexterm><primary>GtkCellRenderer:sensitive</primary></indexterm><programlisting>  sensitive                <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Display the cell sensitive.</para><para>Default value: TRUE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRenderer--visible"/>The :<literal>visible</literal> property</title>
+<indexterm><primary>GtkCellRenderer:visible</primary></indexterm><programlisting>  visible                  <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Display the cell.</para><para>Default value: TRUE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRenderer--width"/>The :<literal>width</literal> property</title>
+<indexterm><primary>GtkCellRenderer:width</primary></indexterm><programlisting>  width                    <link linkend="gint">gint</link>                  : Read / Write</programlisting>
+<para>The fixed width.</para><para>Allowed values: &gt;= -1</para>
+<para>Default value: -1</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRenderer--xalign"/>The :<literal>xalign</literal> property</title>
+<indexterm><primary>GtkCellRenderer:xalign</primary></indexterm><programlisting>  xalign                   <link linkend="gfloat">gfloat</link>                : Read / Write</programlisting>
+<para>The x-align.</para><para>Allowed values: [0,1]</para>
+<para>Default value: 0.5</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRenderer--xpad"/>The :<literal>xpad</literal> property</title>
+<indexterm><primary>GtkCellRenderer:xpad</primary></indexterm><programlisting>  xpad                     <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>The xpad.</para><para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRenderer--yalign"/>The :<literal>yalign</literal> property</title>
+<indexterm><primary>GtkCellRenderer:yalign</primary></indexterm><programlisting>  yalign                   <link linkend="gfloat">gfloat</link>                : Read / Write</programlisting>
+<para>The y-align.</para><para>Allowed values: [0,1]</para>
+<para>Default value: 0.5</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRenderer--ypad"/>The :<literal>ypad</literal> property</title>
+<indexterm><primary>GtkCellRenderer:ypad</primary></indexterm><programlisting>  ypad                     <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>The ypad.</para><para>Default value: 0</para>
+</refsect2>
+
+</refsect1>
+
+<refsect1 role="signals">
+<title role="signals.title">Signal Details</title>
+<refsect2><title><anchor id="GtkCellRenderer-editing-canceled"/>The <literal>::editing-canceled</literal> signal</title>
+<indexterm role="2.4"><primary>GtkCellRenderer::editing-canceled</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="GtkCellRenderer">GtkCellRenderer</link> *renderer,
+                                                        <link linkend="gpointer">gpointer</link>         user_data)      : Run First</programlisting>
+<para>
+This signal gets emitted when the user cancels the process of editing a
+cell.  For example, an editable cell renderer could be written to cancel
+editing when the user presses Escape. 
+</para>
+<para>
+See also: <link linkend="gtk-cell-renderer-editing-canceled"><function>gtk_cell_renderer_editing_canceled()</function></link></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>renderer</parameter>&nbsp;:</term>
+<listitem><simpara> the object which received the signal
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist><para>Since  2.4
+</para></refsect2><refsect2><title><anchor id="GtkCellRenderer-editing-started"/>The <literal>::editing-started</literal> signal</title>
+<indexterm role="2.6"><primary>GtkCellRenderer::editing-started</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="GtkCellRenderer">GtkCellRenderer</link> *renderer,
+                                                        <link linkend="GtkCellEditable">GtkCellEditable</link> *editable,
+                                                        <link linkend="gchar">gchar</link>           *path,
+                                                        <link linkend="gpointer">gpointer</link>         user_data)      : Run First</programlisting>
+<para>
+This signal gets emitted when a cell starts to be edited.
+The indended use of this signal is to do special setup
+on <parameter>editable</parameter>, e.g. adding a <link linkend="GtkEntryCompletion"><type>GtkEntryCompletion</type></link> or setting
+up additional columns in a <link linkend="GtkComboBox"><type>GtkComboBox</type></link>.
+</para>
+<para>
+Note that GTK+ doesn't guarantee that cell renderers will
+continue to use the same kind of widget for editing in future
+releases, therefore you should check the type of <parameter>editable</parameter>
+before doing any specific setup, as in the following example:
+</para>
+<para>
+<informalexample><programlisting>
+static void
+text_editing_started (GtkCellRenderer *cell,
+                      GtkCellEditable *editable,
+                      const gchar     *path,
+                      gpointer         data)
+{
+  if (GTK_IS_ENTRY (editable)) 
+    {
+      GtkEntry *entry = GTK_ENTRY (editable);
+      <!-- -->
+      /<!-- -->* ... create a GtkEntryCompletion *<!-- -->/
+      <!-- -->
+      gtk_entry_set_completion (entry, completion);
+    }
+}
+</programlisting></informalexample></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>renderer</parameter>&nbsp;:</term>
+<listitem><simpara> the object which received the signal
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>editable</parameter>&nbsp;:</term>
+<listitem><simpara> the <link linkend="GtkCellEditable"><type>GtkCellEditable</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara> the path identifying the edited cell
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist><para>Since  2.6
+</para></refsect2>
+</refsect1>
+
+
+<refsect1>
+<title>See Also</title>
+<para>
+<link linkend="GtkCellRendererText"><type>GtkCellRendererText</type></link>,<link linkend="GtkCellRendererPixbuf"><type>GtkCellRendererPixbuf</type></link>,<link linkend="GtkCellRendererToggle"><type>GtkCellRendererToggle</type></link>
+</para>
+</refsect1>
+
+</refentry>

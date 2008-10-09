@@ -1,0 +1,32 @@
+<!-- ##### SECTION ./tmpl/pango-vertical.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/pango-vertical.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/pango-vertical.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/pango-vertical.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/pango-vertical.sgml:Title ##### -->
+Vertical Text Handling
+
+
+<!-- ##### FUNCTION pango_matrix_to_gravity ##### -->
+<para>
+
+</para>
+
+@matrix: 
+@Returns: 
+

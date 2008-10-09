@@ -1,0 +1,171 @@
+<refentry id="GtkItem">
+<refmeta>
+<refentrytitle role="top_of_page">GtkItem</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GTK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GtkItem</refname>
+<refpurpose>Abstract base class for GtkMenuItem, GtkListItem and GtkTreeItem</refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
+</refnamediv>
+
+<refsynopsisdiv role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <link linkend="GtkItem-struct">GtkItem</link>;
+<link linkend="void">void</link>                <link linkend="gtk-item-select">gtk_item_select</link>                     (<link linkend="GtkItem">GtkItem</link> *item);
+<link linkend="void">void</link>                <link linkend="gtk-item-deselect">gtk_item_deselect</link>                   (<link linkend="GtkItem">GtkItem</link> *item);
+<link linkend="void">void</link>                <link linkend="gtk-item-toggle">gtk_item_toggle</link>                     (<link linkend="GtkItem">GtkItem</link> *item);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1 role="object_hierarchy">
+<title role="object_hierarchy.title">Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GInitiallyUnowned">GInitiallyUnowned</link>
+         +----<link linkend="GtkObject">GtkObject</link>
+               +----<link linkend="GtkWidget">GtkWidget</link>
+                     +----<link linkend="GtkContainer">GtkContainer</link>
+                           +----<link linkend="GtkBin">GtkBin</link>
+                                 +----GtkItem
+                                       +----<link linkend="GtkMenuItem">GtkMenuItem</link>
+                                       +----<link linkend="GtkListItem">GtkListItem</link>
+                                       +----<link linkend="GtkTreeItem">GtkTreeItem</link>
+</synopsis>
+
+</refsect1>
+
+
+
+<refsect1 role="impl_interfaces">
+<title role="impl_interfaces.title">Implemented Interfaces</title>
+<para>
+GtkItem implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
+</refsect1>
+
+
+
+<refsect1 role="signal_proto">
+<title role="signal_proto.title">Signals</title>
+<synopsis>
+
+  <link linkend="GtkItem-deselect">deselect</link>                                       : Run First
+  <link linkend="GtkItem-select">select</link>                                         : Run First
+  <link linkend="GtkItem-toggle">toggle</link>                                         : Run First
+</synopsis>
+</refsect1>
+
+
+<refsect1 role="desc">
+<title role="desc.title">Description</title>
+<para>
+The <link linkend="GtkItem"><type>GtkItem</type></link> widget is an abstract base class for <link linkend="GtkMenuItem"><type>GtkMenuItem</type></link>, <link linkend="GtkListItem"><type>GtkListItem</type></link>
+and <link linkend="GtkTreeItem"><type>GtkTreeItem</type></link>.
+</para>
+</refsect1>
+
+<refsect1 role="details">
+<title role="details.title">Details</title>
+<refsect2>
+<title><anchor id="GtkItem-struct" role="struct"/>GtkItem</title>
+<indexterm><primary>GtkItem</primary></indexterm><programlisting>typedef struct _GtkItem GtkItem;</programlisting>
+<para>
+The <link linkend="GtkItem-struct"><type>GtkItem</type></link> struct contains private data only, and
+should be accessed using the functions below.
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-item-select" role="function"/>gtk_item_select ()</title>
+<indexterm><primary>gtk_item_select</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_item_select                     (<link linkend="GtkItem">GtkItem</link> *item);</programlisting>
+<para>
+Emits the "select" signal on the given item.
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GtkItem"><type>GtkItem</type></link>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-item-deselect" role="function"/>gtk_item_deselect ()</title>
+<indexterm><primary>gtk_item_deselect</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_item_deselect                   (<link linkend="GtkItem">GtkItem</link> *item);</programlisting>
+<para>
+Emits the "deselect" signal on the given item.
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GtkItem"><type>GtkItem</type></link>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-item-toggle" role="function"/>gtk_item_toggle ()</title>
+<indexterm><primary>gtk_item_toggle</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_item_toggle                     (<link linkend="GtkItem">GtkItem</link> *item);</programlisting>
+<para>
+Emits the "toggle" signal on the given item.
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GtkItem"><type>GtkItem</type></link>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+<refsect1 role="signals">
+<title role="signals.title">Signal Details</title>
+<refsect2><title><anchor id="GtkItem-deselect"/>The <literal>::deselect</literal> signal</title>
+<indexterm><primary>GtkItem::deselect</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="GtkItem">GtkItem</link> *item,
+                                                        <link linkend="gpointer">gpointer</link> user_data)      : Run First</programlisting>
+<para>
+Emitted when the item is deselected.
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="GtkItem-select"/>The <literal>::select</literal> signal</title>
+<indexterm><primary>GtkItem::select</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="GtkItem">GtkItem</link> *item,
+                                                        <link linkend="gpointer">gpointer</link> user_data)      : Run First</programlisting>
+<para>
+Emitted when the item is selected.
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="GtkItem-toggle"/>The <literal>::toggle</literal> signal</title>
+<indexterm><primary>GtkItem::toggle</primary></indexterm><programlisting><link linkend="void">void</link>                user_function                      (<link linkend="GtkItem">GtkItem</link> *item,
+                                                        <link linkend="gpointer">gpointer</link> user_data)      : Run First</programlisting>
+<para>
+Emitted when the item is toggled.
+</para><variablelist role="params">
+<varlistentry><term><parameter>item</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+</refsect1>
+
+
+
+</refentry>

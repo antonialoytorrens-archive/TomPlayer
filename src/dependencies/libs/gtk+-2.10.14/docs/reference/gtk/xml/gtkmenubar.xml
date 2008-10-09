@@ -1,0 +1,294 @@
+<refentry id="GtkMenuBar">
+<refmeta>
+<refentrytitle role="top_of_page">GtkMenuBar</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GTK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GtkMenuBar</refname>
+<refpurpose>A subclass widget for <link linkend="GtkMenuShell"><type>GtkMenuShell</type></link> which holds <link linkend="GtkMenuItem"><type>GtkMenuItem</type></link> widgets</refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
+</refnamediv>
+
+<refsynopsisdiv role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <link linkend="GtkMenuBar-struct">GtkMenuBar</link>;
+<link linkend="GtkWidget">GtkWidget</link>*          <link linkend="gtk-menu-bar-new">gtk_menu_bar_new</link>                    (void);
+#define             <link linkend="gtk-menu-bar-append">gtk_menu_bar_append</link>                 (menu,child)
+#define             <link linkend="gtk-menu-bar-prepend">gtk_menu_bar_prepend</link>                (menu,child)
+#define             <link linkend="gtk-menu-bar-insert">gtk_menu_bar_insert</link>                 (menu,child,pos)
+enum                <link linkend="GtkPackDirection">GtkPackDirection</link>;
+<link linkend="void">void</link>                <link linkend="gtk-menu-bar-set-pack-direction">gtk_menu_bar_set_pack_direction</link>     (<link linkend="GtkMenuBar">GtkMenuBar</link> *menubar,
+                                                         <link linkend="GtkPackDirection">GtkPackDirection</link> pack_dir);
+<link linkend="GtkPackDirection">GtkPackDirection</link>    <link linkend="gtk-menu-bar-get-pack-direction">gtk_menu_bar_get_pack_direction</link>     (<link linkend="GtkMenuBar">GtkMenuBar</link> *menubar);
+<link linkend="void">void</link>                <link linkend="gtk-menu-bar-set-child-pack-direction">gtk_menu_bar_set_child_pack_direction</link>
+                                                        (<link linkend="GtkMenuBar">GtkMenuBar</link> *menubar,
+                                                         <link linkend="GtkPackDirection">GtkPackDirection</link> child_pack_dir);
+<link linkend="GtkPackDirection">GtkPackDirection</link>    <link linkend="gtk-menu-bar-get-child-pack-direction">gtk_menu_bar_get_child_pack_direction</link>
+                                                        (<link linkend="GtkMenuBar">GtkMenuBar</link> *menubar);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1 role="object_hierarchy">
+<title role="object_hierarchy.title">Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GInitiallyUnowned">GInitiallyUnowned</link>
+         +----<link linkend="GtkObject">GtkObject</link>
+               +----<link linkend="GtkWidget">GtkWidget</link>
+                     +----<link linkend="GtkContainer">GtkContainer</link>
+                           +----<link linkend="GtkMenuShell">GtkMenuShell</link>
+                                 +----GtkMenuBar
+</synopsis>
+
+</refsect1>
+
+
+
+<refsect1 role="impl_interfaces">
+<title role="impl_interfaces.title">Implemented Interfaces</title>
+<para>
+GtkMenuBar implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
+</refsect1>
+
+
+<refsect1 role="properties">
+<title role="properties.title">Properties</title>
+<synopsis>
+
+  <link linkend="GtkMenuBar--child-pack-direction">child-pack-direction</link>     <link linkend="GtkPackDirection">GtkPackDirection</link>      : Read / Write
+  <link linkend="GtkMenuBar--pack-direction">pack-direction</link>           <link linkend="GtkPackDirection">GtkPackDirection</link>      : Read / Write
+</synopsis>
+</refsect1>
+<refsect1 role="style_properties">
+<title role="style_properties.title">Style Properties</title>
+<synopsis>
+
+  <link linkend="GtkMenuBar--internal-padding">internal-padding</link>         <link linkend="gint">gint</link>                  : Read
+  <link linkend="GtkMenuBar--shadow-type">shadow-type</link>              <link linkend="GtkShadowType">GtkShadowType</link>         : Read
+</synopsis>
+</refsect1>
+
+
+
+<refsect1 role="desc">
+<title role="desc.title">Description</title>
+<para>
+The <link linkend="GtkMenuBar"><type>GtkMenuBar</type></link> is a subclass of <link linkend="GtkMenuShell"><type>GtkMenuShell</type></link> which contains one to many <link linkend="GtkMenuItem"><type>GtkMenuItem</type></link>. The result is a standard menu bar which can hold many menu items. <link linkend="GtkMenuBar"><type>GtkMenuBar</type></link> allows for a shadow type to be set for aesthetic purposes. The shadow types are defined in the <link linkend="gtk-menu-bar-set-shadow-type"><type>gtk_menu_bar_set_shadow_type</type></link> function.
+</para>
+</refsect1>
+
+<refsect1 role="details">
+<title role="details.title">Details</title>
+<refsect2>
+<title><anchor id="GtkMenuBar-struct" role="struct"/>GtkMenuBar</title>
+<indexterm><primary>GtkMenuBar</primary></indexterm><programlisting>typedef struct _GtkMenuBar GtkMenuBar;</programlisting>
+<para>
+The <link linkend="GtkMenuBar"><type>GtkMenuBar</type></link> struct contains the following fields. (These fields should be considered read-only.  They should never be set by an application.)
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-menu-bar-new" role="function"/>gtk_menu_bar_new ()</title>
+<indexterm><primary>gtk_menu_bar_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*          gtk_menu_bar_new                    (void);</programlisting>
+<para>
+Creates the new <link linkend="GtkMenuBar"><type>GtkMenuBar</type></link>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>the <link linkend="GtkMenuBar"><type>GtkMenuBar</type></link>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-menu-bar-append" role="macro" condition="deprecated:Use gtk_menu_shell_append() instead."/>gtk_menu_bar_append()</title>
+<indexterm role="deprecated"><primary>gtk_menu_bar_append</primary></indexterm><programlisting>#define gtk_menu_bar_append(menu,child)	    gtk_menu_shell_append  ((GtkMenuShell *)(menu),(child))
+</programlisting>
+<warning><para><literal>gtk_menu_bar_append</literal> is deprecated and should not be used in newly-written code. Use <link linkend="gtk-menu-shell-append"><function>gtk_menu_shell_append()</function></link> instead.</para></warning>
+<para>
+Adds a new <link linkend="GtkMenuItem"><type>GtkMenuItem</type></link> to the end of the GtkMenuBar
+</para><variablelist role="params">
+<varlistentry><term><parameter>menu</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GtkMenuBar"><type>GtkMenuBar</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>child</parameter>&nbsp;:</term>
+<listitem><simpara>the <link linkend="GtkMenuItem"><type>GtkMenuItem</type></link> to add
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-menu-bar-prepend" role="macro" condition="deprecated:Use gtk_menu_shell_prepend() instead."/>gtk_menu_bar_prepend()</title>
+<indexterm role="deprecated"><primary>gtk_menu_bar_prepend</primary></indexterm><programlisting>#define gtk_menu_bar_prepend(menu,child)    gtk_menu_shell_prepend ((GtkMenuShell *)(menu),(child))
+</programlisting>
+<warning><para><literal>gtk_menu_bar_prepend</literal> is deprecated and should not be used in newly-written code. Use <link linkend="gtk-menu-shell-prepend"><function>gtk_menu_shell_prepend()</function></link> instead.</para></warning>
+<para>
+Adds a new <link linkend="GtkMenuItem"><type>GtkMenuItem</type></link> to the beginning of the GtkMenuBar
+</para><variablelist role="params">
+<varlistentry><term><parameter>menu</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GtkMenuBar"><type>GtkMenuBar</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>child</parameter>&nbsp;:</term>
+<listitem><simpara>the <link linkend="GtkMenuItem"><type>GtkMenuItem</type></link> to add
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-menu-bar-insert" role="macro" condition="deprecated:Use gtk_menu_shell_insert() instead."/>gtk_menu_bar_insert()</title>
+<indexterm role="deprecated"><primary>gtk_menu_bar_insert</primary></indexterm><programlisting>#define gtk_menu_bar_insert(menu,child,pos) gtk_menu_shell_insert ((GtkMenuShell *)(menu),(child),(pos))
+</programlisting>
+<warning><para><literal>gtk_menu_bar_insert</literal> is deprecated and should not be used in newly-written code. Use <link linkend="gtk-menu-shell-insert"><function>gtk_menu_shell_insert()</function></link> instead.</para></warning>
+<para>
+Adds a new <link linkend="GtkMenuItem"><type>GtkMenuItem</type></link> to the GtkMenuBar at the position defined by <parameter>position</parameter>
+</para><variablelist role="params">
+<varlistentry><term><parameter>menu</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GtkMenuBar"><type>GtkMenuBar</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>child</parameter>&nbsp;:</term>
+<listitem><simpara>the <link linkend="GtkMenuItem"><type>GtkMenuItem</type></link> to add
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pos</parameter>&nbsp;:</term>
+<listitem><simpara>the position in the item list where the <parameter>child</parameter> is added.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GtkPackDirection" role="enum"/>enum GtkPackDirection</title>
+<indexterm><primary>GtkPackDirection</primary></indexterm><programlisting>typedef enum
+{
+  GTK_PACK_DIRECTION_LTR,
+  GTK_PACK_DIRECTION_RTL,
+  GTK_PACK_DIRECTION_TTB,
+  GTK_PACK_DIRECTION_BTT
+} GtkPackDirection;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-menu-bar-set-pack-direction" role="function" condition="since:2.8"/>gtk_menu_bar_set_pack_direction ()</title>
+<indexterm role="2.8"><primary>gtk_menu_bar_set_pack_direction</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_menu_bar_set_pack_direction     (<link linkend="GtkMenuBar">GtkMenuBar</link> *menubar,
+                                                         <link linkend="GtkPackDirection">GtkPackDirection</link> pack_dir);</programlisting>
+<para>
+Sets how items should be packed inside a menubar.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>menubar</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkMenuBar"><type>GtkMenuBar</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pack_dir</parameter>&nbsp;:</term>
+<listitem><simpara> a new <link linkend="GtkPackDirection"><type>GtkPackDirection</type></link>.
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.8
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-menu-bar-get-pack-direction" role="function" condition="since:2.8"/>gtk_menu_bar_get_pack_direction ()</title>
+<indexterm role="2.8"><primary>gtk_menu_bar_get_pack_direction</primary></indexterm><programlisting><link linkend="GtkPackDirection">GtkPackDirection</link>    gtk_menu_bar_get_pack_direction     (<link linkend="GtkMenuBar">GtkMenuBar</link> *menubar);</programlisting>
+<para>
+Retrieves the current pack direction of the menubar. See
+<link linkend="gtk-menu-bar-set-pack-direction"><function>gtk_menu_bar_set_pack_direction()</function></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>menubar</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkMenuBar"><type>GtkMenuBar</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the pack direction
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.8
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-menu-bar-set-child-pack-direction" role="function" condition="since:2.8"/>gtk_menu_bar_set_child_pack_direction ()</title>
+<indexterm role="2.8"><primary>gtk_menu_bar_set_child_pack_direction</primary></indexterm><programlisting><link linkend="void">void</link>                gtk_menu_bar_set_child_pack_direction
+                                                        (<link linkend="GtkMenuBar">GtkMenuBar</link> *menubar,
+                                                         <link linkend="GtkPackDirection">GtkPackDirection</link> child_pack_dir);</programlisting>
+<para>
+Sets how widgets should be packed inside the children of a menubar.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>menubar</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkMenuBar"><type>GtkMenuBar</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>child_pack_dir</parameter>&nbsp;:</term>
+<listitem><simpara> a new <link linkend="GtkPackDirection"><type>GtkPackDirection</type></link>.
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.8
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-menu-bar-get-child-pack-direction" role="function" condition="since:2.8"/>gtk_menu_bar_get_child_pack_direction ()</title>
+<indexterm role="2.8"><primary>gtk_menu_bar_get_child_pack_direction</primary></indexterm><programlisting><link linkend="GtkPackDirection">GtkPackDirection</link>    gtk_menu_bar_get_child_pack_direction
+                                                        (<link linkend="GtkMenuBar">GtkMenuBar</link> *menubar);</programlisting>
+<para>
+Retrieves the current child pack direction of the menubar. See
+<link linkend="gtk-menu-bar-set-child-pack-direction"><function>gtk_menu_bar_set_child_pack_direction()</function></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>menubar</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkMenuBar"><type>GtkMenuBar</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the child pack direction
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.8
+</para></refsect2>
+
+</refsect1>
+<refsect1 role="property_details">
+<title role="property_details.title">Property Details</title>
+<refsect2><title><anchor id="GtkMenuBar--child-pack-direction"/>The :<literal>child-pack-direction</literal> property</title>
+<indexterm role="2.8"><primary>GtkMenuBar:child-pack-direction</primary></indexterm><programlisting>  child-pack-direction     <link linkend="GtkPackDirection">GtkPackDirection</link>      : Read / Write</programlisting>
+<para>
+The pack direction of the menubar. It determines how
+the widgets contained in child menuitems are arranged.</para>
+<para>
+
+</para><para>Default value: GTK_PACK_DIRECTION_LTR</para>
+<para>Since  2.8
+</para>
+</refsect2>
+<refsect2><title><anchor id="GtkMenuBar--pack-direction"/>The :<literal>pack-direction</literal> property</title>
+<indexterm role="2.8"><primary>GtkMenuBar:pack-direction</primary></indexterm><programlisting>  pack-direction           <link linkend="GtkPackDirection">GtkPackDirection</link>      : Read / Write</programlisting>
+<para>
+The pack direction of the menubar. It determines how
+menuitems are arranged in the menubar.</para>
+<para>
+
+</para><para>Default value: GTK_PACK_DIRECTION_LTR</para>
+<para>Since  2.8
+</para>
+</refsect2>
+
+</refsect1>
+<refsect1 role="style_properties_details">
+<title role="style_properties_details.title">Style Property Details</title>
+<refsect2><title><anchor id="GtkMenuBar--internal-padding"/>The :<literal>internal-padding</literal> style property</title>
+<indexterm><primary>GtkMenuBar:internal-padding</primary></indexterm><programlisting>  internal-padding         <link linkend="gint">gint</link>                  : Read</programlisting>
+<para>Amount of border space between the menubar shadow and the menu items.</para><para>Allowed values: &gt;= 0</para>
+<para>Default value: 1</para>
+</refsect2>
+<refsect2><title><anchor id="GtkMenuBar--shadow-type"/>The :<literal>shadow-type</literal> style property</title>
+<indexterm><primary>GtkMenuBar:shadow-type</primary></indexterm><programlisting>  shadow-type              <link linkend="GtkShadowType">GtkShadowType</link>         : Read</programlisting>
+<para>Style of bevel around the menubar.</para><para>Default value: GTK_SHADOW_OUT</para>
+</refsect2>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>See Also</title>
+<para>
+<link linkend="GtkMenuShell"><type>GtkMenuShell</type></link>, <link linkend="GtkMenu"><type>GtkMenu</type></link>, <link linkend="GtkMenuItem"><type>GtkMenuItem</type></link>
+</para>
+</refsect1>
+
+</refentry>

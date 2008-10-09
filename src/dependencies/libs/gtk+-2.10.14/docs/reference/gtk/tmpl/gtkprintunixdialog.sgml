@@ -1,0 +1,183 @@
+<!-- ##### SECTION Title ##### -->
+GtkPrintUnixDialog
+
+<!-- ##### SECTION Short_Description ##### -->
+A print dialog
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+GtkPrintUnixDialog implements a print dialog for platforms
+which don't provide a native print dialog, like Unix. It can 
+be used very much like any other GTK+ dialog, at the cost of 
+the portability offered by the <link 
+linkend="gtk-High-level-Printing-API">high-level printing API</link>
+</para>
+<para>
+In order to print something with #GtkPrintUnixDialog, you need
+to use gtk_print_unix_dialog_get_selected_printer() to obtain
+a #GtkPrinter object and use it to construct a #GtkPrintJob using
+gtk_print_job_new().
+</para>
+<para>
+#GtkPrintUnixDialog uses the following response values:
+<variablelist>
+  <varlistentry><term>%GTK_RESPONSE_OK</term>
+    <listitem><para>for the "Print" button</para></listitem>
+  </varlistentry>
+  <varlistentry><term>%GTK_RESPONSE_APPLY</term>
+    <listitem><para>for the "Preview" button</para></listitem>
+  </varlistentry>
+  <varlistentry><term>%GTK_RESPONSE_CANCEL</term>
+    <listitem><para>for the "Cancel" button</para></listitem>
+  </varlistentry>
+</variablelist>
+</para>
+
+<!-- FIXME example here -->
+
+<para>
+Printing support was added in GTK+ 2.10.
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+#GtkPageSetupUnixDialog, #GtkPrinter, #GtkPrintJob
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT GtkPrintUnixDialog ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GtkPrintUnixDialog:current-page ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkPrintUnixDialog:page-setup ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkPrintUnixDialog:print-settings ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkPrintUnixDialog:selected-printer ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION gtk_print_unix_dialog_new ##### -->
+<para>
+
+</para>
+
+@title: 
+@parent: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gtk_print_unix_dialog_set_page_setup ##### -->
+<para>
+
+</para>
+
+@dialog: 
+@page_setup: 
+
+
+<!-- ##### FUNCTION gtk_print_unix_dialog_get_page_setup ##### -->
+<para>
+
+</para>
+
+@dialog: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gtk_print_unix_dialog_set_current_page ##### -->
+<para>
+
+</para>
+
+@dialog: 
+@current_page: 
+
+
+<!-- ##### FUNCTION gtk_print_unix_dialog_get_current_page ##### -->
+<para>
+
+</para>
+
+@dialog: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gtk_print_unix_dialog_set_settings ##### -->
+<para>
+
+</para>
+
+@dialog: 
+@settings: 
+
+
+<!-- ##### FUNCTION gtk_print_unix_dialog_get_settings ##### -->
+<para>
+
+</para>
+
+@dialog: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gtk_print_unix_dialog_get_selected_printer ##### -->
+<para>
+
+</para>
+
+@dialog: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gtk_print_unix_dialog_add_custom_tab ##### -->
+<para>
+
+</para>
+
+@dialog: 
+@child: 
+@tab_label: 
+
+
+<!-- ##### ENUM GtkPrintCapabilities ##### -->
+<para>
+An enum for specifying which features the print dialog should offer.
+I neither %GTK_PRINT_CAPABILITY_GENERATE_PDF nor %GTK_PRINT_CAPABILITY_GENERATE_PS is
+specified, GTK+ assumes that all formats are supported.
+</para>
+
+@GTK_PRINT_CAPABILITY_PAGE_SET: 
+@GTK_PRINT_CAPABILITY_COPIES: 
+@GTK_PRINT_CAPABILITY_COLLATE: 
+@GTK_PRINT_CAPABILITY_REVERSE: 
+@GTK_PRINT_CAPABILITY_SCALE: 
+@GTK_PRINT_CAPABILITY_GENERATE_PDF: The program will send the document to the printer in PDF format
+@GTK_PRINT_CAPABILITY_GENERATE_PS: The program will send the document to the printer in Postscript format
+@GTK_PRINT_CAPABILITY_PREVIEW: 
+
+<!-- ##### FUNCTION gtk_print_unix_dialog_set_manual_capabilities ##### -->
+<para>
+
+</para>
+
+@dialog: 
+@capabilities: 
+
+

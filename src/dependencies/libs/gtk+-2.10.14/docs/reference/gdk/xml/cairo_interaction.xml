@@ -1,0 +1,195 @@
+<refentry id="gdk-Cairo-Interaction">
+<refmeta>
+<refentrytitle role="top_of_page">Cairo Interaction</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GDK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>Cairo Interaction</refname>
+<refpurpose>Functions to support using Cairo</refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
+</refnamediv>
+
+<refsynopsisdiv role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+
+#include &lt;gdk/gdk.h&gt;
+
+
+<link linkend="cairo-t">cairo_t</link>*            <link linkend="gdk-cairo-create">gdk_cairo_create</link>                    (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);
+<link linkend="void">void</link>                <link linkend="gdk-cairo-set-source-color">gdk_cairo_set_source_color</link>          (<link linkend="cairo-t">cairo_t</link> *cr,
+                                                         <link linkend="GdkColor">GdkColor</link> *color);
+<link linkend="void">void</link>                <link linkend="gdk-cairo-set-source-pixbuf">gdk_cairo_set_source_pixbuf</link>         (<link linkend="cairo-t">cairo_t</link> *cr,
+                                                         <link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
+                                                         <link linkend="double">double</link> pixbuf_x,
+                                                         <link linkend="double">double</link> pixbuf_y);
+<link linkend="void">void</link>                <link linkend="gdk-cairo-set-source-pixmap">gdk_cairo_set_source_pixmap</link>         (<link linkend="cairo-t">cairo_t</link> *cr,
+                                                         <link linkend="GdkPixmap">GdkPixmap</link> *pixmap,
+                                                         <link linkend="double">double</link> pixmap_x,
+                                                         <link linkend="double">double</link> pixmap_y);
+<link linkend="void">void</link>                <link linkend="gdk-cairo-rectangle">gdk_cairo_rectangle</link>                 (<link linkend="cairo-t">cairo_t</link> *cr,
+                                                         <link linkend="GdkRectangle">GdkRectangle</link> *rectangle);
+<link linkend="void">void</link>                <link linkend="gdk-cairo-region">gdk_cairo_region</link>                    (<link linkend="cairo-t">cairo_t</link> *cr,
+                                                         <link linkend="GdkRegion">GdkRegion</link> *region);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1 role="desc">
+<title role="desc.title">Description</title>
+<para>
+<link href="http://cairographics.org">Cairo</link> is a graphics 
+library that supports vector graphics and image compositing that
+can be used with GDK. Since 2.8, GTK+ does most of its drawing
+using Cairo. 
+</para>
+
+<para>
+GDK does not wrap the Cairo API, instead it allows to create Cairo 
+contexts which can be used to draw on GDK drawables. Additional
+functions allow to convert GDK's rectangles and regions into
+Cairo paths and to use pixbufs as sources for drawing operations.
+</para>
+</refsect1>
+
+<refsect1 role="details">
+<title role="details.title">Details</title>
+<refsect2>
+<title><anchor id="gdk-cairo-create" role="function" condition="since:2.8"/>gdk_cairo_create ()</title>
+<indexterm role="2.8"><primary>gdk_cairo_create</primary></indexterm><programlisting><link linkend="cairo-t">cairo_t</link>*            gdk_cairo_create                    (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);</programlisting>
+<para>
+Creates a Cairo context for drawing to <parameter>drawable</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A newly created Cairo context. Free with
+ <link linkend="cairo-destroy"><function>cairo_destroy()</function></link> when you are done drawing.
+
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.8
+</para></refsect2>
+<refsect2>
+<title><anchor id="gdk-cairo-set-source-color" role="function" condition="since:2.8"/>gdk_cairo_set_source_color ()</title>
+<indexterm role="2.8"><primary>gdk_cairo_set_source_color</primary></indexterm><programlisting><link linkend="void">void</link>                gdk_cairo_set_source_color          (<link linkend="cairo-t">cairo_t</link> *cr,
+                                                         <link linkend="GdkColor">GdkColor</link> *color);</programlisting>
+<para>
+Sets the specified <link linkend="GdkColor"><type>GdkColor</type></link> as the source color of <parameter>cr</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cr</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="cairo-t"><type>cairo_t</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>color</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GdkColor"><type>GdkColor</type></link>
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.8
+</para></refsect2>
+<refsect2>
+<title><anchor id="gdk-cairo-set-source-pixbuf" role="function" condition="since:2.8"/>gdk_cairo_set_source_pixbuf ()</title>
+<indexterm role="2.8"><primary>gdk_cairo_set_source_pixbuf</primary></indexterm><programlisting><link linkend="void">void</link>                gdk_cairo_set_source_pixbuf         (<link linkend="cairo-t">cairo_t</link> *cr,
+                                                         <link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
+                                                         <link linkend="double">double</link> pixbuf_x,
+                                                         <link linkend="double">double</link> pixbuf_y);</programlisting>
+<para>
+Sets the given pixbuf as the source pattern for the Cairo context.
+The pattern has an extend mode of <link linkend="CAIRO-EXTEND-NONE:CAPS"><literal>CAIRO_EXTEND_NONE</literal></link> and is aligned
+so that the origin of <parameter>pixbuf</parameter> is <parameter>pixbuf_x</parameter>, <parameter>pixbuf_y</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cr</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="Cairo"><type>Cairo</type></link> context
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pixbuf</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GdkPixbuf"><type>GdkPixbuf</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pixbuf_x</parameter>&nbsp;:</term>
+<listitem><simpara> X coordinate of location to place upper left corner of <parameter>pixbuf</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pixbuf_y</parameter>&nbsp;:</term>
+<listitem><simpara> Y coordinate of location to place upper left corner of <parameter>pixbuf</parameter>
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.8
+</para></refsect2>
+<refsect2>
+<title><anchor id="gdk-cairo-set-source-pixmap" role="function" condition="since:2.10"/>gdk_cairo_set_source_pixmap ()</title>
+<indexterm role="2.10"><primary>gdk_cairo_set_source_pixmap</primary></indexterm><programlisting><link linkend="void">void</link>                gdk_cairo_set_source_pixmap         (<link linkend="cairo-t">cairo_t</link> *cr,
+                                                         <link linkend="GdkPixmap">GdkPixmap</link> *pixmap,
+                                                         <link linkend="double">double</link> pixmap_x,
+                                                         <link linkend="double">double</link> pixmap_y);</programlisting>
+<para>
+Sets the given pixmap as the source pattern for the Cairo context.
+The pattern has an extend mode of <link linkend="CAIRO-EXTEND-NONE:CAPS"><literal>CAIRO_EXTEND_NONE</literal></link> and is aligned
+so that the origin of <parameter>pixbuf</parameter> is <parameter>pixbuf_x</parameter>, <parameter>pixbuf_y</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cr</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="Cairo"><type>Cairo</type></link> context
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pixmap</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GdkPixmap"><type>GdkPixmap</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pixmap_x</parameter>&nbsp;:</term>
+<listitem><simpara> X coordinate of location to place upper left corner of <parameter>pixmap</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pixmap_y</parameter>&nbsp;:</term>
+<listitem><simpara> Y coordinate of location to place upper left corner of <parameter>pixmap</parameter>
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.10
+</para></refsect2>
+<refsect2>
+<title><anchor id="gdk-cairo-rectangle" role="function" condition="since:2.8"/>gdk_cairo_rectangle ()</title>
+<indexterm role="2.8"><primary>gdk_cairo_rectangle</primary></indexterm><programlisting><link linkend="void">void</link>                gdk_cairo_rectangle                 (<link linkend="cairo-t">cairo_t</link> *cr,
+                                                         <link linkend="GdkRectangle">GdkRectangle</link> *rectangle);</programlisting>
+<para>
+Adds the given rectangle to the current path of <parameter>cr</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cr</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="cairo-t"><type>cairo_t</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>rectangle</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GdkRectangle"><type>GdkRectangle</type></link>
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.8
+</para></refsect2>
+<refsect2>
+<title><anchor id="gdk-cairo-region" role="function" condition="since:2.8"/>gdk_cairo_region ()</title>
+<indexterm role="2.8"><primary>gdk_cairo_region</primary></indexterm><programlisting><link linkend="void">void</link>                gdk_cairo_region                    (<link linkend="cairo-t">cairo_t</link> *cr,
+                                                         <link linkend="GdkRegion">GdkRegion</link> *region);</programlisting>
+<para>
+Adds the given region to the current path of <parameter>cr</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cr</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="cairo-t"><type>cairo_t</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>region</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GdkRegion"><type>GdkRegion</type></link>
+</simpara></listitem></varlistentry>
+</variablelist><para role="since">Since  2.8
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

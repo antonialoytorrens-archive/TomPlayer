@@ -1,0 +1,2885 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>GtkIconView</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GTK+ Reference Manual">
+<link rel="up" href="TreeWidgetObjects.html" title="Tree, List and Icon Grid Widgets">
+<link rel="prev" href="GtkCellView.html" title="GtkCellView">
+<link rel="next" href="GtkTreeSortable.html" title="GtkTreeSortable">
+<meta name="generator" content="GTK-Doc V1.7 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gtk.html" title="Part&#160;I.&#160;GTK+ Overview">
+<link rel="part" href="gtkbase.html" title="Part&#160;II.&#160;GTK+ Core Reference">
+<link rel="part" href="gtkobjects.html" title="Part&#160;III.&#160;GTK+ Widgets and Objects">
+<link rel="chapter" href="ch01.html" title="Object Hierarchy">
+<link rel="chapter" href="ch02.html" title="Widget Gallery">
+<link rel="chapter" href="WindowWidgets.html" title="Windows">
+<link rel="chapter" href="DisplayWidgets.html" title="Display Widgets">
+<link rel="chapter" href="ButtonWidgets.html" title="Buttons and Toggles">
+<link rel="chapter" href="NumericEntry.html" title="Numeric/Text Data Entry">
+<link rel="chapter" href="TextWidgetObjects.html" title="Multiline Text Editor">
+<link rel="chapter" href="TreeWidgetObjects.html" title="Tree, List and Icon Grid Widgets">
+<link rel="chapter" href="MenusAndCombos.html" title="Menus, Combo Box, Toolbar">
+<link rel="chapter" href="Actions.html" title="Action-based menus and toolbars">
+<link rel="chapter" href="SelectorWidgets.html" title="Selectors (File/Font/Color/Input Devices)">
+<link rel="chapter" href="LayoutContainers.html" title="Layout Containers">
+<link rel="chapter" href="Ornaments.html" title="Ornaments">
+<link rel="chapter" href="ScrollingWidgets.html" title="Scrolling">
+<link rel="chapter" href="Printing.html" title="Printing">
+<link rel="chapter" href="MiscObjects.html" title="Miscellaneous">
+<link rel="chapter" href="AbstractObjects.html" title="Abstract Base Classes">
+<link rel="chapter" href="PlugSocket.html" title="Cross-process Embedding">
+<link rel="chapter" href="SpecialObjects.html" title="Special-purpose features">
+<link rel="chapter" href="RecentDocuments.html" title="Recently Used Documents">
+<link rel="chapter" href="DeprecatedObjects.html" title="Deprecated">
+<link rel="part" href="migrating.html" title="Part&#160;IV.&#160;Migrating from Previous Versions of GTK+">
+<link rel="chapter" href="gtk-migrating-checklist.html" title="Migration Checklist">
+<link rel="chapter" href="gtk-migrating-GtkFileChooser.html" title="Migrating from GtkFileSelection to GtkFileChooser">
+<link rel="chapter" href="gtk-migrating-GtkAction.html" title="Migrating from old menu and toolbar systems to GtkAction">
+<link rel="chapter" href="gtk-migrating-GtkComboBox.html" title="Migrating from GtkOptionMenu and GtkCombo to GtkComboBox and GtkComboBoxEntry">
+<link rel="chapter" href="gtk-migrating-GtkIconView.html" title="Migrating from GnomeIconList to GtkIconView">
+<link rel="chapter" href="gtk-migrating-GtkAboutDialog.html" title="Migrating from GnomeAbout to GtkAboutDialog">
+<link rel="chapter" href="gtk-migrating-GtkColorButton.html" title="Migrating from GnomeColorPicker to GtkColorButton">
+<link rel="chapter" href="gtk-migrating-GtkAssistant.html" title="Migrating from GnomeDruid to GtkAssistant">
+<link rel="chapter" href="gtk-migrating-GtkRecentChooser.html" title="Migrating from EggRecent to GtkRecentChooser">
+<link rel="chapter" href="gtk-migrating-GtkLinkButton.html" title="Migrating from GnomeHRef to GtkLinkButton">
+<link rel="part" href="pt05.html" title="Part&#160;V.&#160;GTK+ Tools">
+<link rel="glossary" href="glossary.html" title="Glossary">
+<link rel="index" href="ix01.html" title="Index">
+<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="ix03.html" title="Index of new symbols in 2.2">
+<link rel="index" href="ix04.html" title="Index of new symbols in 2.4">
+<link rel="index" href="ix05.html" title="Index of new symbols in 2.6">
+<link rel="index" href="ix06.html" title="Index of new symbols in 2.8">
+<link rel="index" href="ix07.html" title="Index of new symbols in 2.10">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="GtkCellView.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="TreeWidgetObjects.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GTK+ Reference Manual</th>
+<td><a accesskey="n" href="GtkTreeSortable.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id3379797" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id3381905" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id3381441" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id3381495" class="shortcut">Implemented Interfaces</a>
+                  &#160;|&#160;
+                  <a href="#id3381525" class="shortcut">Properties</a>
+                  &#160;|&#160;
+                  <a href="#id3381750" class="shortcut">Style Properties</a>
+                  &#160;|&#160;
+                  <a href="#id3381799" class="shortcut">Signals</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="GtkIconView"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id3379797"></a><span class="refentrytitle">GtkIconView</span>
+</h2>
+<p>GtkIconView &#8212; A widget which displays a list of icons in a grid</p>
+</td>
+<td valign="top" align="right"><img src="icon-view.png"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <a href="GtkIconView.html#GtkIconView-struct">GtkIconView</a>;
+void                (<a href="GtkIconView.html#GtkIconViewForeachFunc">*GtkIconViewForeachFunc</a>)           (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> *path,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);
+<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          <a href="GtkIconView.html#gtk-icon-view-new">gtk_icon_view_new</a>                   (void);
+<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          <a href="GtkIconView.html#gtk-icon-view-new-with-model">gtk_icon_view_new_with_model</a>        (<a href="GtkTreeModel.html" title="GtkTreeModel">GtkTreeModel</a> *model);
+void                <a href="GtkIconView.html#gtk-icon-view-set-model">gtk_icon_view_set_model</a>             (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html" title="GtkTreeModel">GtkTreeModel</a> *model);
+<a href="GtkTreeModel.html" title="GtkTreeModel">GtkTreeModel</a>*       <a href="GtkIconView.html#gtk-icon-view-get-model">gtk_icon_view_get_model</a>             (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);
+void                <a href="GtkIconView.html#gtk-icon-view-set-text-column">gtk_icon_view_set_text_column</a>       (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> column);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkIconView.html#gtk-icon-view-get-text-column">gtk_icon_view_get_text_column</a>       (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);
+void                <a href="GtkIconView.html#gtk-icon-view-set-markup-column">gtk_icon_view_set_markup_column</a>     (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> column);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkIconView.html#gtk-icon-view-get-markup-column">gtk_icon_view_get_markup_column</a>     (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);
+void                <a href="GtkIconView.html#gtk-icon-view-set-pixbuf-column">gtk_icon_view_set_pixbuf_column</a>     (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> column);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkIconView.html#gtk-icon-view-get-pixbuf-column">gtk_icon_view_get_pixbuf_column</a>     (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);
+<a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a>*        <a href="GtkIconView.html#gtk-icon-view-get-path-at-pos">gtk_icon_view_get_path_at_pos</a>       (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> x,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> y);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkIconView.html#gtk-icon-view-get-item-at-pos">gtk_icon_view_get_item_at_pos</a>       (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> x,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> y,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> **path,
+                                                         <a href="GtkCellRenderer.html" title="GtkCellRenderer">GtkCellRenderer</a> **cell);
+void                <a href="GtkIconView.html#gtk-icon-view-set-cursor">gtk_icon_view_set_cursor</a>            (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> *path,
+                                                         <a href="GtkCellRenderer.html" title="GtkCellRenderer">GtkCellRenderer</a> *cell,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> start_editing);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkIconView.html#gtk-icon-view-get-cursor">gtk_icon_view_get_cursor</a>            (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> **path,
+                                                         <a href="GtkCellRenderer.html" title="GtkCellRenderer">GtkCellRenderer</a> **cell);
+void                <a href="GtkIconView.html#gtk-icon-view-selected-foreach">gtk_icon_view_selected_foreach</a>      (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkIconView.html#GtkIconViewForeachFunc">GtkIconViewForeachFunc</a> func,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);
+void                <a href="GtkIconView.html#gtk-icon-view-set-selection-mode">gtk_icon_view_set_selection_mode</a>    (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="gtk-Standard-Enumerations.html#GtkSelectionMode">GtkSelectionMode</a> mode);
+<a href="gtk-Standard-Enumerations.html#GtkSelectionMode">GtkSelectionMode</a>    <a href="GtkIconView.html#gtk-icon-view-get-selection-mode">gtk_icon_view_get_selection_mode</a>    (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);
+void                <a href="GtkIconView.html#gtk-icon-view-set-orientation">gtk_icon_view_set_orientation</a>       (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="gtk-Standard-Enumerations.html#GtkOrientation">GtkOrientation</a> orientation);
+<a href="gtk-Standard-Enumerations.html#GtkOrientation">GtkOrientation</a>      <a href="GtkIconView.html#gtk-icon-view-get-orientation">gtk_icon_view_get_orientation</a>       (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);
+void                <a href="GtkIconView.html#gtk-icon-view-set-columns">gtk_icon_view_set_columns</a>           (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> columns);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkIconView.html#gtk-icon-view-get-columns">gtk_icon_view_get_columns</a>           (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);
+void                <a href="GtkIconView.html#gtk-icon-view-set-item-width">gtk_icon_view_set_item_width</a>        (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> item_width);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkIconView.html#gtk-icon-view-get-item-width">gtk_icon_view_get_item_width</a>        (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);
+void                <a href="GtkIconView.html#gtk-icon-view-set-spacing">gtk_icon_view_set_spacing</a>           (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> spacing);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkIconView.html#gtk-icon-view-get-spacing">gtk_icon_view_get_spacing</a>           (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);
+void                <a href="GtkIconView.html#gtk-icon-view-set-row-spacing">gtk_icon_view_set_row_spacing</a>       (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> row_spacing);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkIconView.html#gtk-icon-view-get-row-spacing">gtk_icon_view_get_row_spacing</a>       (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);
+void                <a href="GtkIconView.html#gtk-icon-view-set-column-spacing">gtk_icon_view_set_column_spacing</a>    (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> column_spacing);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkIconView.html#gtk-icon-view-get-column-spacing">gtk_icon_view_get_column_spacing</a>    (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);
+void                <a href="GtkIconView.html#gtk-icon-view-set-margin">gtk_icon_view_set_margin</a>            (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> margin);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkIconView.html#gtk-icon-view-get-margin">gtk_icon_view_get_margin</a>            (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);
+void                <a href="GtkIconView.html#gtk-icon-view-select-path">gtk_icon_view_select_path</a>           (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> *path);
+void                <a href="GtkIconView.html#gtk-icon-view-unselect-path">gtk_icon_view_unselect_path</a>         (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> *path);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkIconView.html#gtk-icon-view-path-is-selected">gtk_icon_view_path_is_selected</a>      (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> *path);
+<a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              <a href="GtkIconView.html#gtk-icon-view-get-selected-items">gtk_icon_view_get_selected_items</a>    (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);
+void                <a href="GtkIconView.html#gtk-icon-view-select-all">gtk_icon_view_select_all</a>            (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);
+void                <a href="GtkIconView.html#gtk-icon-view-unselect-all">gtk_icon_view_unselect_all</a>          (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);
+void                <a href="GtkIconView.html#gtk-icon-view-item-activated">gtk_icon_view_item_activated</a>        (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> *path);
+void                <a href="GtkIconView.html#gtk-icon-view-scroll-to-path">gtk_icon_view_scroll_to_path</a>        (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> *path,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> use_align,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gfloat"
+>gfloat</a> row_align,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gfloat"
+>gfloat</a> col_align);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkIconView.html#gtk-icon-view-get-visible-range">gtk_icon_view_get_visible_range</a>     (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> **start_path,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> **end_path);
+
+enum                <a href="GtkIconView.html#GtkIconViewDropPosition">GtkIconViewDropPosition</a>;
+void                <a href="GtkIconView.html#gtk-icon-view-enable-model-drag-source">gtk_icon_view_enable_model_drag_source</a>
+                                                        (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../gdk/gdk-Windows.html#GdkModifierType"
+>GdkModifierType</a> start_button_mask,
+                                                         const <a href="gtk-Selections.html#GtkTargetEntry">GtkTargetEntry</a> *targets,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> n_targets,
+                                                         <a
+href="../gdk/gdk-Drag-and-Drop.html#GdkDragAction"
+>GdkDragAction</a> actions);
+void                <a href="GtkIconView.html#gtk-icon-view-enable-model-drag-dest">gtk_icon_view_enable_model_drag_dest</a>
+                                                        (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         const <a href="gtk-Selections.html#GtkTargetEntry">GtkTargetEntry</a> *targets,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> n_targets,
+                                                         <a
+href="../gdk/gdk-Drag-and-Drop.html#GdkDragAction"
+>GdkDragAction</a> actions);
+void                <a href="GtkIconView.html#gtk-icon-view-unset-model-drag-source">gtk_icon_view_unset_model_drag_source</a>
+                                                        (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);
+void                <a href="GtkIconView.html#gtk-icon-view-unset-model-drag-dest">gtk_icon_view_unset_model_drag_dest</a> (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);
+void                <a href="GtkIconView.html#gtk-icon-view-set-reorderable">gtk_icon_view_set_reorderable</a>       (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> reorderable);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkIconView.html#gtk-icon-view-get-reorderable">gtk_icon_view_get_reorderable</a>       (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);
+void                <a href="GtkIconView.html#gtk-icon-view-set-drag-dest-item">gtk_icon_view_set_drag_dest_item</a>    (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> *path,
+                                                         <a href="GtkIconView.html#GtkIconViewDropPosition">GtkIconViewDropPosition</a> pos);
+void                <a href="GtkIconView.html#gtk-icon-view-get-drag-dest-item">gtk_icon_view_get_drag_dest_item</a>    (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> **path,
+                                                         <a href="GtkIconView.html#GtkIconViewDropPosition">GtkIconViewDropPosition</a> *pos);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkIconView.html#gtk-icon-view-get-dest-item-at-pos">gtk_icon_view_get_dest_item_at_pos</a>  (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> drag_x,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> drag_y,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> **path,
+                                                         <a href="GtkIconView.html#GtkIconViewDropPosition">GtkIconViewDropPosition</a> *pos);
+<a
+href="../gdk/gdk-Bitmaps-and-Pixmaps.html#GdkPixmap"
+>GdkPixmap</a>*          <a href="GtkIconView.html#gtk-icon-view-create-drag-icon">gtk_icon_view_create_drag_icon</a>      (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> *path);
+
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3381441"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gobject/gobject-The-Base-Object-Type.html#GInitiallyUnowned"
+>GInitiallyUnowned</a>
+         +----<a href="GtkObject.html" title="GtkObject">GtkObject</a>
+               +----<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>
+                     +----<a href="GtkContainer.html" title="GtkContainer">GtkContainer</a>
+                           +----GtkIconView
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3381495"></a><h2>Implemented Interfaces</h2>
+<p>
+GtkIconView implements
+ AtkImplementorIface and  <a href="GtkCellLayout.html" title="GtkCellLayout">GtkCellLayout</a>.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3381525"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  <a href="GtkIconView.html#GtkIconView--column-spacing">column-spacing</a>           <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="GtkIconView.html#GtkIconView--columns">columns</a>                  <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="GtkIconView.html#GtkIconView--item-width">item-width</a>               <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="GtkIconView.html#GtkIconView--margin">margin</a>                   <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="GtkIconView.html#GtkIconView--markup-column">markup-column</a>            <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="GtkIconView.html#GtkIconView--model">model</a>                    <a href="GtkTreeModel.html" title="GtkTreeModel">GtkTreeModel</a>          : Read / Write
+  <a href="GtkIconView.html#GtkIconView--orientation">orientation</a>              <a href="gtk-Standard-Enumerations.html#GtkOrientation">GtkOrientation</a>        : Read / Write
+  <a href="GtkIconView.html#GtkIconView--pixbuf-column">pixbuf-column</a>            <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="GtkIconView.html#GtkIconView--reorderable">reorderable</a>              <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkIconView.html#GtkIconView--row-spacing">row-spacing</a>              <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="GtkIconView.html#GtkIconView--selection-mode">selection-mode</a>           <a href="gtk-Standard-Enumerations.html#GtkSelectionMode">GtkSelectionMode</a>      : Read / Write
+  <a href="GtkIconView.html#GtkIconView--spacing">spacing</a>                  <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  <a href="GtkIconView.html#GtkIconView--text-column">text-column</a>              <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3381750"></a><h2>Style Properties</h2>
+<pre class="synopsis">
+
+  <a href="GtkIconView.html#GtkIconView--selection-box-alpha">selection-box-alpha</a>      <a
+href="../glib/glib-Basic-Types.html#guchar"
+>guchar</a>                : Read
+  <a href="GtkIconView.html#GtkIconView--selection-box-color">selection-box-color</a>      <a
+href="../gdk/gdk-Colormaps-and-Colors.html#GdkColor"
+>GdkColor</a>              : Read
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3381799"></a><h2>Signals</h2>
+<pre class="synopsis">
+
+  <a href="GtkIconView.html#GtkIconView-activate-cursor-item">activate-cursor-item</a>                           : Run Last / Action
+  <a href="GtkIconView.html#GtkIconView-item-activated">item-activated</a>                                 : Run Last
+  <a href="GtkIconView.html#GtkIconView-move-cursor">move-cursor</a>                                    : Run Last / Action
+  <a href="GtkIconView.html#GtkIconView-select-all">select-all</a>                                     : Run Last / Action
+  <a href="GtkIconView.html#GtkIconView-select-cursor-item">select-cursor-item</a>                             : Run Last / Action
+  <a href="GtkIconView.html#GtkIconView-selection-changed">selection-changed</a>                              : Run First
+  <a href="GtkIconView.html#GtkIconView-set-scroll-adjustments">set-scroll-adjustments</a>                         : Run Last
+  <a href="GtkIconView.html#GtkIconView-toggle-cursor-item">toggle-cursor-item</a>                             : Run Last / Action
+  <a href="GtkIconView.html#GtkIconView-unselect-all">unselect-all</a>                                   : Run Last / Action
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3381905"></a><h2>Description</h2>
+<p>
+<a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a> provides an alternative view on a list model. 
+It displays the model as a grid of icons with labels. Like 
+<a href="GtkTreeView.html" title="GtkTreeView"><span class="type">GtkTreeView</span></a>, it allows to select one or multiple items 
+(depending on the selection mode, see <a href="GtkIconView.html#gtk-icon-view-set-selection-mode"><code class="function">gtk_icon_view_set_selection_mode()</code></a>).
+In addition to selection with the arrow keys, <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a> supports
+rubberband selection, which is controlled by dragging the pointer.
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3381959"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3381969"></a><h3>
+<a name="GtkIconView-struct"></a>GtkIconView</h3>
+<a class="indexterm" name="id3381982"></a><pre class="programlisting">typedef struct _GtkIconView GtkIconView;</pre>
+<p>
+The <span class="structname">GtkIconView</span> struct contains only
+private fields and should not be directly accessed.
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3382002"></a><h3>
+<a name="GtkIconViewForeachFunc"></a>GtkIconViewForeachFunc ()</h3>
+<a class="indexterm" name="id3382014"></a><pre class="programlisting">void                (*GtkIconViewForeachFunc)           (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> *path,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);</pre>
+<p>
+A function used by <a href="GtkIconView.html#gtk-icon-view-selected-foreach"><code class="function">gtk_icon_view_selected_foreach()</code></a> to map all
+selected rows.  It will be called on every selected row in the view.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td>a <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>path</code></em>&#160;:</span></td>
+<td>The <a href="GtkTreeModel.html#GtkTreePath"><span class="type">GtkTreePath</span></a> of a selected row
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td>user data
+
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3382133"></a><h3>
+<a name="gtk-icon-view-new"></a>gtk_icon_view_new ()</h3>
+<a class="indexterm" name="id3382149"></a><pre class="programlisting"><a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          gtk_icon_view_new                   (void);</pre>
+<p>
+Creates a new <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a> widget</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> A newly created <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a> widget
+
+</td>
+</tr></tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3382211"></a><h3>
+<a name="gtk-icon-view-new-with-model"></a>gtk_icon_view_new_with_model ()</h3>
+<a class="indexterm" name="id3382226"></a><pre class="programlisting"><a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          gtk_icon_view_new_with_model        (<a href="GtkTreeModel.html" title="GtkTreeModel">GtkTreeModel</a> *model);</pre>
+<p>
+Creates a new <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a> widget with the model <em class="parameter"><code>model</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>model</code></em>&#160;:</span></td>
+<td> The model.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> A newly created <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a> widget.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6 
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3382316"></a><h3>
+<a name="gtk-icon-view-set-model"></a>gtk_icon_view_set_model ()</h3>
+<a class="indexterm" name="id3382332"></a><pre class="programlisting">void                gtk_icon_view_set_model             (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html" title="GtkTreeModel">GtkTreeModel</a> *model);</pre>
+<p>
+Sets the model for a <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>.  
+If the <em class="parameter"><code>icon_view</code></em> already has a model set, it will remove 
+it before setting the new model.  If <em class="parameter"><code>model</code></em> is <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>, then
+it will unset the old model.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> A <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>model</code></em>&#160;:</span></td>
+<td> The model.
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6 
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3382451"></a><h3>
+<a name="gtk-icon-view-get-model"></a>gtk_icon_view_get_model ()</h3>
+<a class="indexterm" name="id3382466"></a><pre class="programlisting"><a href="GtkTreeModel.html" title="GtkTreeModel">GtkTreeModel</a>*       gtk_icon_view_get_model             (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);</pre>
+<p>
+Returns the model the <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a> is based on.  Returns <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a> if the
+model is unset.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> a <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> A <a href="GtkTreeModel.html" title="GtkTreeModel"><span class="type">GtkTreeModel</span></a>, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a> if none is currently being used.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6 
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3382579"></a><h3>
+<a name="gtk-icon-view-set-text-column"></a>gtk_icon_view_set_text_column ()</h3>
+<a class="indexterm" name="id3382595"></a><pre class="programlisting">void                gtk_icon_view_set_text_column       (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> column);</pre>
+<p>
+Sets the column with text for <em class="parameter"><code>icon_view</code></em> to be <em class="parameter"><code>column</code></em>. The text
+column must be of type <a
+href="../gobject/gobject-Type-Information.html#G-TYPE-STRING:CAPS"
+><span class="type">G_TYPE_STRING</span></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> A <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>column</code></em>&#160;:</span></td>
+<td> A column in the currently used model.
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6 
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3382703"></a><h3>
+<a name="gtk-icon-view-get-text-column"></a>gtk_icon_view_get_text_column ()</h3>
+<a class="indexterm" name="id3382719"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_icon_view_get_text_column       (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);</pre>
+<p>
+Returns the column with text for <em class="parameter"><code>icon_view</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> A <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the text column, or -1 if it's unset.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3382800"></a><h3>
+<a name="gtk-icon-view-set-markup-column"></a>gtk_icon_view_set_markup_column ()</h3>
+<a class="indexterm" name="id3382816"></a><pre class="programlisting">void                gtk_icon_view_set_markup_column     (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> column);</pre>
+<p>
+Sets the column with markup information for <em class="parameter"><code>icon_view</code></em> to be
+<em class="parameter"><code>column</code></em>. The markup column must be of type <a
+href="../gobject/gobject-Type-Information.html#G-TYPE-STRING:CAPS"
+><span class="type">G_TYPE_STRING</span></a>.
+If the markup column is set to something, it overrides
+the text column set by <a href="GtkIconView.html#gtk-icon-view-set-text-column"><code class="function">gtk_icon_view_set_text_column()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> A <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>column</code></em>&#160;:</span></td>
+<td> A column in the currently used model.
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3382937"></a><h3>
+<a name="gtk-icon-view-get-markup-column"></a>gtk_icon_view_get_markup_column ()</h3>
+<a class="indexterm" name="id3382953"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_icon_view_get_markup_column     (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);</pre>
+<p>
+Returns the column with markup text for <em class="parameter"><code>icon_view</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> A <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the markup column, or -1 if it's unset.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3383034"></a><h3>
+<a name="gtk-icon-view-set-pixbuf-column"></a>gtk_icon_view_set_pixbuf_column ()</h3>
+<a class="indexterm" name="id3383050"></a><pre class="programlisting">void                gtk_icon_view_set_pixbuf_column     (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> column);</pre>
+<p>
+Sets the column with pixbufs for <em class="parameter"><code>icon_view</code></em> to be <em class="parameter"><code>column</code></em>. The pixbuf
+column must be of type <span class="type">GDK_TYPE_PIXBUF</span></p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> A <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>column</code></em>&#160;:</span></td>
+<td> A column in the currently used model.
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6 
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3383159"></a><h3>
+<a name="gtk-icon-view-get-pixbuf-column"></a>gtk_icon_view_get_pixbuf_column ()</h3>
+<a class="indexterm" name="id3383174"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_icon_view_get_pixbuf_column     (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);</pre>
+<p>
+Returns the column with pixbufs for <em class="parameter"><code>icon_view</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> A <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the pixbuf column, or -1 if it's unset.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3383256"></a><h3>
+<a name="gtk-icon-view-get-path-at-pos"></a>gtk_icon_view_get_path_at_pos ()</h3>
+<a class="indexterm" name="id3383272"></a><pre class="programlisting"><a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a>*        gtk_icon_view_get_path_at_pos       (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> x,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> y);</pre>
+<p>
+Finds the path at the point (<em class="parameter"><code>x</code></em>, <em class="parameter"><code>y</code></em>), relative to widget coordinates.
+See <a href="GtkIconView.html#gtk-icon-view-get-item-at-pos"><code class="function">gtk_icon_view_get_item_at_pos()</code></a>, if you are also interested in
+the cell at the specified position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> A <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>x</code></em>&#160;:</span></td>
+<td> The x position to be identified
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>y</code></em>&#160;:</span></td>
+<td> The y position to be identified
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> The <a href="GtkTreeModel.html#GtkTreePath"><span class="type">GtkTreePath</span></a> corresponding to the icon or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+if no icon exists at that position.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6 
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3383434"></a><h3>
+<a name="gtk-icon-view-get-item-at-pos"></a>gtk_icon_view_get_item_at_pos ()</h3>
+<a class="indexterm" name="id3383449"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_icon_view_get_item_at_pos       (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> x,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> y,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> **path,
+                                                         <a href="GtkCellRenderer.html" title="GtkCellRenderer">GtkCellRenderer</a> **cell);</pre>
+<p>
+Finds the path at the point (<em class="parameter"><code>x</code></em>, <em class="parameter"><code>y</code></em>), relative to widget coordinates.
+In contrast to <a href="GtkIconView.html#gtk-icon-view-get-path-at-pos"><code class="function">gtk_icon_view_get_path_at_pos()</code></a>, this function also 
+obtains the cell at the specified position. The returned path should
+be freed with <a href="GtkTreeModel.html#gtk-tree-path-free"><code class="function">gtk_tree_path_free()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> A <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>x</code></em>&#160;:</span></td>
+<td> The x position to be identified
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>y</code></em>&#160;:</span></td>
+<td> The y position to be identified
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>path</code></em>&#160;:</span></td>
+<td> Return location for the path, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>cell</code></em>&#160;:</span></td>
+<td> Return location for the renderer responsible for the cell
+  at (<em class="parameter"><code>x</code></em>, <em class="parameter"><code>y</code></em>), or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if an item exists at the specified position
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.8
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3383690"></a><h3>
+<a name="gtk-icon-view-set-cursor"></a>gtk_icon_view_set_cursor ()</h3>
+<a class="indexterm" name="id3383706"></a><pre class="programlisting">void                gtk_icon_view_set_cursor            (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> *path,
+                                                         <a href="GtkCellRenderer.html" title="GtkCellRenderer">GtkCellRenderer</a> *cell,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> start_editing);</pre>
+<p>
+Sets the current keyboard focus to be at <em class="parameter"><code>path</code></em>, and selects it.  This is
+useful when you want to focus the user's attention on a particular item.  
+If <em class="parameter"><code>cell</code></em> is not <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>, then focus is given to the cell specified by 
+it. Additionally, if <em class="parameter"><code>start_editing</code></em> is <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, then editing should be 
+started in the specified cell.  
+</p>
+<p>
+This function is often followed by <code class="literal">gtk_widget_grab_focus 
+(icon_view)</code> in order to give keyboard focus to the widget.  
+Please note that editing can only happen when the widget is realized.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> A <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>path</code></em>&#160;:</span></td>
+<td> A <a href="GtkTreeModel.html#GtkTreePath"><span class="type">GtkTreePath</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>cell</code></em>&#160;:</span></td>
+<td> One of the cell renderers of <em class="parameter"><code>icon_view</code></em>, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>start_editing</code></em>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the specified cell should start being edited.
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.8
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3383925"></a><h3>
+<a name="gtk-icon-view-get-cursor"></a>gtk_icon_view_get_cursor ()</h3>
+<a class="indexterm" name="id3383941"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_icon_view_get_cursor            (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> **path,
+                                                         <a href="GtkCellRenderer.html" title="GtkCellRenderer">GtkCellRenderer</a> **cell);</pre>
+<p>
+Fills in <em class="parameter"><code>path</code></em> and <em class="parameter"><code>cell</code></em> with the current cursor path and cell. 
+If the cursor isn't currently set, then *<em class="parameter"><code>path</code></em> will be <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>.  
+If no cell currently has focus, then *<em class="parameter"><code>cell</code></em> will be <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>.
+</p>
+<p>
+The returned <a href="GtkTreeModel.html#GtkTreePath"><span class="type">GtkTreePath</span></a> must be freed with <a href="GtkTreeModel.html#gtk-tree-path-free"><code class="function">gtk_tree_path_free()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> A <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>path</code></em>&#160;:</span></td>
+<td> Return location for the current cursor path, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>cell</code></em>&#160;:</span></td>
+<td> Return location the current focus cell, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the cursor is set.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.8
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3384159"></a><h3>
+<a name="gtk-icon-view-selected-foreach"></a>gtk_icon_view_selected_foreach ()</h3>
+<a class="indexterm" name="id3384175"></a><pre class="programlisting">void                gtk_icon_view_selected_foreach      (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkIconView.html#GtkIconViewForeachFunc">GtkIconViewForeachFunc</a> func,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);</pre>
+<p>
+Calls a function for each selected icon. Note that the model or
+selection cannot be modified from within this function.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> A <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>func</code></em>&#160;:</span></td>
+<td> The funcion to call for each selected icon.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td> User data to pass to the function.
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6 
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3384286"></a><h3>
+<a name="gtk-icon-view-set-selection-mode"></a>gtk_icon_view_set_selection_mode ()</h3>
+<a class="indexterm" name="id3384302"></a><pre class="programlisting">void                gtk_icon_view_set_selection_mode    (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="gtk-Standard-Enumerations.html#GtkSelectionMode">GtkSelectionMode</a> mode);</pre>
+<p>
+Sets the selection mode of the <em class="parameter"><code>icon_view</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> A <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>mode</code></em>&#160;:</span></td>
+<td> The selection mode
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6 
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3384395"></a><h3>
+<a name="gtk-icon-view-get-selection-mode"></a>gtk_icon_view_get_selection_mode ()</h3>
+<a class="indexterm" name="id3384411"></a><pre class="programlisting"><a href="gtk-Standard-Enumerations.html#GtkSelectionMode">GtkSelectionMode</a>    gtk_icon_view_get_selection_mode    (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);</pre>
+<p>
+Gets the selection mode of the <em class="parameter"><code>icon_view</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> A <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the current selection mode
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6 
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3384493"></a><h3>
+<a name="gtk-icon-view-set-orientation"></a>gtk_icon_view_set_orientation ()</h3>
+<a class="indexterm" name="id3384508"></a><pre class="programlisting">void                gtk_icon_view_set_orientation       (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="gtk-Standard-Enumerations.html#GtkOrientation">GtkOrientation</a> orientation);</pre>
+<p>
+Sets the ::orientation property which determines whether the labels 
+are drawn beside the icons instead of below.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> a <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>orientation</code></em>&#160;:</span></td>
+<td> the relative position of texts and icons 
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3384597"></a><h3>
+<a name="gtk-icon-view-get-orientation"></a>gtk_icon_view_get_orientation ()</h3>
+<a class="indexterm" name="id3384613"></a><pre class="programlisting"><a href="gtk-Standard-Enumerations.html#GtkOrientation">GtkOrientation</a>      gtk_icon_view_get_orientation       (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);</pre>
+<p>
+Returns the value of the ::orientation property which determines 
+whether the labels are drawn beside the icons instead of below.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> a <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the relative position of texts and icons 
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3384691"></a><h3>
+<a name="gtk-icon-view-set-columns"></a>gtk_icon_view_set_columns ()</h3>
+<a class="indexterm" name="id3384707"></a><pre class="programlisting">void                gtk_icon_view_set_columns           (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> columns);</pre>
+<p>
+Sets the ::columns property which determines in how
+many columns the icons are arranged. If <em class="parameter"><code>columns</code></em> is
+-1, the number of columns will be chosen automatically 
+to fill the available area.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> a <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>columns</code></em>&#160;:</span></td>
+<td> the number of columns
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3384802"></a><h3>
+<a name="gtk-icon-view-get-columns"></a>gtk_icon_view_get_columns ()</h3>
+<a class="indexterm" name="id3384818"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_icon_view_get_columns           (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);</pre>
+<p>
+Returns the value of the ::columns property.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> a <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the number of columns, or -1
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3384893"></a><h3>
+<a name="gtk-icon-view-set-item-width"></a>gtk_icon_view_set_item_width ()</h3>
+<a class="indexterm" name="id3384908"></a><pre class="programlisting">void                gtk_icon_view_set_item_width        (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> item_width);</pre>
+<p>
+Sets the ::item-width property which specifies the width 
+to use for each item. If it is set to -1, the icon view will 
+automatically determine a suitable item size.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> a <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>item_width</code></em>&#160;:</span></td>
+<td> the width for each item
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3384998"></a><h3>
+<a name="gtk-icon-view-get-item-width"></a>gtk_icon_view_get_item_width ()</h3>
+<a class="indexterm" name="id3385014"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_icon_view_get_item_width        (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);</pre>
+<p>
+Returns the value of the ::item-width property.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> a <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the width of a single item, or -1
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3385090"></a><h3>
+<a name="gtk-icon-view-set-spacing"></a>gtk_icon_view_set_spacing ()</h3>
+<a class="indexterm" name="id3385106"></a><pre class="programlisting">void                gtk_icon_view_set_spacing           (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> spacing);</pre>
+<p>
+Sets the ::spacing property which specifies the space 
+which is inserted between the cells (i.e. the icon and 
+the text) of an item.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> a <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>spacing</code></em>&#160;:</span></td>
+<td> the spacing
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3385193"></a><h3>
+<a name="gtk-icon-view-get-spacing"></a>gtk_icon_view_get_spacing ()</h3>
+<a class="indexterm" name="id3385209"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_icon_view_get_spacing           (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);</pre>
+<p>
+Returns the value of the ::spacing property.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> a <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the space between cells 
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3385284"></a><h3>
+<a name="gtk-icon-view-set-row-spacing"></a>gtk_icon_view_set_row_spacing ()</h3>
+<a class="indexterm" name="id3385300"></a><pre class="programlisting">void                gtk_icon_view_set_row_spacing       (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> row_spacing);</pre>
+<p>
+Sets the ::row-spacing property which specifies the space 
+which is inserted between the rows of the icon view.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> a <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>row_spacing</code></em>&#160;:</span></td>
+<td> the row spacing
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3385388"></a><h3>
+<a name="gtk-icon-view-get-row-spacing"></a>gtk_icon_view_get_row_spacing ()</h3>
+<a class="indexterm" name="id3385404"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_icon_view_get_row_spacing       (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);</pre>
+<p>
+Returns the value of the ::row-spacing property.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> a <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the space between rows
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3385479"></a><h3>
+<a name="gtk-icon-view-set-column-spacing"></a>gtk_icon_view_set_column_spacing ()</h3>
+<a class="indexterm" name="id3385495"></a><pre class="programlisting">void                gtk_icon_view_set_column_spacing    (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> column_spacing);</pre>
+<p>
+Sets the ::column-spacing property which specifies the space 
+which is inserted between the columns of the icon view.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> a <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>column_spacing</code></em>&#160;:</span></td>
+<td> the column spacing
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3385584"></a><h3>
+<a name="gtk-icon-view-get-column-spacing"></a>gtk_icon_view_get_column_spacing ()</h3>
+<a class="indexterm" name="id3385600"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_icon_view_get_column_spacing    (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);</pre>
+<p>
+Returns the value of the ::column-spacing property.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> a <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the space between columns
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3385676"></a><h3>
+<a name="gtk-icon-view-set-margin"></a>gtk_icon_view_set_margin ()</h3>
+<a class="indexterm" name="id3385691"></a><pre class="programlisting">void                gtk_icon_view_set_margin            (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> margin);</pre>
+<p>
+Sets the ::margin property which specifies the space 
+which is inserted at the top, bottom, left and right 
+of the icon view.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> a <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>margin</code></em>&#160;:</span></td>
+<td> the margin
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3385779"></a><h3>
+<a name="gtk-icon-view-get-margin"></a>gtk_icon_view_get_margin ()</h3>
+<a class="indexterm" name="id3385794"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_icon_view_get_margin            (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);</pre>
+<p>
+Returns the value of the ::margin property.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> a <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the space at the borders 
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3385870"></a><h3>
+<a name="gtk-icon-view-select-path"></a>gtk_icon_view_select_path ()</h3>
+<a class="indexterm" name="id3385886"></a><pre class="programlisting">void                gtk_icon_view_select_path           (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> *path);</pre>
+<p>
+Selects the row at <em class="parameter"><code>path</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> A <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>path</code></em>&#160;:</span></td>
+<td> The <a href="GtkTreeModel.html#GtkTreePath"><span class="type">GtkTreePath</span></a> to be selected.
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3385986"></a><h3>
+<a name="gtk-icon-view-unselect-path"></a>gtk_icon_view_unselect_path ()</h3>
+<a class="indexterm" name="id3386002"></a><pre class="programlisting">void                gtk_icon_view_unselect_path         (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> *path);</pre>
+<p>
+Unselects the row at <em class="parameter"><code>path</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> A <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>path</code></em>&#160;:</span></td>
+<td> The <a href="GtkTreeModel.html#GtkTreePath"><span class="type">GtkTreePath</span></a> to be unselected.
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3386102"></a><h3>
+<a name="gtk-icon-view-path-is-selected"></a>gtk_icon_view_path_is_selected ()</h3>
+<a class="indexterm" name="id3386117"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_icon_view_path_is_selected      (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> *path);</pre>
+<p>
+Returns <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the icon pointed to by <em class="parameter"><code>path</code></em> is currently
+selected. If <em class="parameter"><code>icon</code></em> does not point to a valid location, <a
+href="../glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> is returned.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> A <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>path</code></em>&#160;:</span></td>
+<td> A <a href="GtkTreeModel.html#GtkTreePath"><span class="type">GtkTreePath</span></a> to check selection on.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if <em class="parameter"><code>path</code></em> is selected.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3386271"></a><h3>
+<a name="gtk-icon-view-get-selected-items"></a>gtk_icon_view_get_selected_items ()</h3>
+<a class="indexterm" name="id3386287"></a><pre class="programlisting"><a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*              gtk_icon_view_get_selected_items    (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);</pre>
+<p>
+Creates a list of paths of all selected items. Additionally, if you are
+planning on modifying the model after calling this function, you may
+want to convert the returned list into a list of <a href="GtkTreeModel.html#GtkTreeRowReference"><span class="type">GtkTreeRowReference</span></a>s.
+To do this, you can use <a href="GtkTreeModel.html#gtk-tree-row-reference-new"><code class="function">gtk_tree_row_reference_new()</code></a>.
+</p>
+<p>
+To free the return value, use:
+</p>
+<div class="informalexample"><pre class="programlisting">
+g_list_foreach (list, gtk_tree_path_free, NULL);
+g_list_free (list);
+</pre></div>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> A <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> A <a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+><span class="type">GList</span></a> containing a <a href="GtkTreeModel.html#GtkTreePath"><span class="type">GtkTreePath</span></a> for each selected row.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3386412"></a><h3>
+<a name="gtk-icon-view-select-all"></a>gtk_icon_view_select_all ()</h3>
+<a class="indexterm" name="id3386428"></a><pre class="programlisting">void                gtk_icon_view_select_all            (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);</pre>
+<p>
+Selects all the icons. <em class="parameter"><code>icon_view</code></em> must has its selection mode set
+to <a href="gtk-Standard-Enumerations.html#GTK-SELECTION-MULTIPLE:CAPS"><span class="type">GTK_SELECTION_MULTIPLE</span></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> A <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>.
+</td>
+</tr></tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3386508"></a><h3>
+<a name="gtk-icon-view-unselect-all"></a>gtk_icon_view_unselect_all ()</h3>
+<a class="indexterm" name="id3386524"></a><pre class="programlisting">void                gtk_icon_view_unselect_all          (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);</pre>
+<p>
+Unselects all the icons.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> A <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>.
+</td>
+</tr></tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3386588"></a><h3>
+<a name="gtk-icon-view-item-activated"></a>gtk_icon_view_item_activated ()</h3>
+<a class="indexterm" name="id3386604"></a><pre class="programlisting">void                gtk_icon_view_item_activated        (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> *path);</pre>
+<p>
+Activates the item determined by <em class="parameter"><code>path</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> A <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>path</code></em>&#160;:</span></td>
+<td> The <a href="GtkTreeModel.html#GtkTreePath"><span class="type">GtkTreePath</span></a> to be activated
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3386704"></a><h3>
+<a name="gtk-icon-view-scroll-to-path"></a>gtk_icon_view_scroll_to_path ()</h3>
+<a class="indexterm" name="id3386720"></a><pre class="programlisting">void                gtk_icon_view_scroll_to_path        (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> *path,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> use_align,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gfloat"
+>gfloat</a> row_align,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gfloat"
+>gfloat</a> col_align);</pre>
+<p>
+Moves the alignments of <em class="parameter"><code>icon_view</code></em> to the position specified by <em class="parameter"><code>path</code></em>.  
+<em class="parameter"><code>row_align</code></em> determines where the row is placed, and <em class="parameter"><code>col_align</code></em> determines 
+where <em class="parameter"><code>column</code></em> is placed.  Both are expected to be between 0.0 and 1.0. 
+0.0 means left/top alignment, 1.0 means right/bottom alignment, 0.5 means 
+center.
+</p>
+<p>
+If <em class="parameter"><code>use_align</code></em> is <a
+href="../glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a>, then the alignment arguments are ignored, and the
+tree does the minimum amount of work to scroll the item onto the screen.
+This means that the item will be scrolled to the edge closest to its current
+position.  If the item is currently visible on the screen, nothing is done.
+</p>
+<p>
+This function only works if the model is set, and <em class="parameter"><code>path</code></em> is a valid row on 
+the model. If the model changes before the <em class="parameter"><code>icon_view</code></em> is realized, the 
+centered path will be modified to reflect this change.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> A <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>path</code></em>&#160;:</span></td>
+<td> The path of the item to move to.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>use_align</code></em>&#160;:</span></td>
+<td> whether to use alignment arguments, or <a
+href="../glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>row_align</code></em>&#160;:</span></td>
+<td> The vertical alignment of the item specified by <em class="parameter"><code>path</code></em>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>col_align</code></em>&#160;:</span></td>
+<td> The horizontal alignment of the item specified by <em class="parameter"><code>path</code></em>.
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.8
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3386971"></a><h3>
+<a name="gtk-icon-view-get-visible-range"></a>gtk_icon_view_get_visible_range ()</h3>
+<a class="indexterm" name="id3386987"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_icon_view_get_visible_range     (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> **start_path,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> **end_path);</pre>
+<p>
+Sets <em class="parameter"><code>start_path</code></em> and <em class="parameter"><code>end_path</code></em> to be the first and last visible path. 
+Note that there may be invisible paths in between.
+</p>
+<p>
+Both paths should be freed with <a href="GtkTreeModel.html#gtk-tree-path-free"><code class="function">gtk_tree_path_free()</code></a> after use.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> A <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>start_path</code></em>&#160;:</span></td>
+<td> Return location for start of region, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>end_path</code></em>&#160;:</span></td>
+<td> Return location for end of region, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, if valid paths were placed in <em class="parameter"><code>start_path</code></em> and <em class="parameter"><code>end_path</code></em>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.8
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3387177"></a><h3>
+<a name="GtkIconViewDropPosition"></a>enum GtkIconViewDropPosition</h3>
+<a class="indexterm" name="id3387190"></a><pre class="programlisting">typedef enum
+{
+  GTK_ICON_VIEW_NO_DROP,
+  GTK_ICON_VIEW_DROP_INTO,
+  GTK_ICON_VIEW_DROP_LEFT,
+  GTK_ICON_VIEW_DROP_RIGHT,
+  GTK_ICON_VIEW_DROP_ABOVE,
+  GTK_ICON_VIEW_DROP_BELOW
+} GtkIconViewDropPosition;
+</pre>
+<p>
+An enum for determining where a dropped item goes.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><a name="GTK-ICON-VIEW-NO-DROP:CAPS"></a><code class="literal">GTK_ICON_VIEW_NO_DROP</code></span></td>
+<td>no drop possible
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-ICON-VIEW-DROP-INTO:CAPS"></a><code class="literal">GTK_ICON_VIEW_DROP_INTO</code></span></td>
+<td>dropped item replaces the item
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-ICON-VIEW-DROP-LEFT:CAPS"></a><code class="literal">GTK_ICON_VIEW_DROP_LEFT</code></span></td>
+<td>droppped item is inserted to the left
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-ICON-VIEW-DROP-RIGHT:CAPS"></a><code class="literal">GTK_ICON_VIEW_DROP_RIGHT</code></span></td>
+<td>dropped item is inserted to the right
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-ICON-VIEW-DROP-ABOVE:CAPS"></a><code class="literal">GTK_ICON_VIEW_DROP_ABOVE</code></span></td>
+<td>dropped item is inserted above
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-ICON-VIEW-DROP-BELOW:CAPS"></a><code class="literal">GTK_ICON_VIEW_DROP_BELOW</code></span></td>
+<td>dropped item is inserted below
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3387353"></a><h3>
+<a name="gtk-icon-view-enable-model-drag-source"></a>gtk_icon_view_enable_model_drag_source ()</h3>
+<a class="indexterm" name="id3387369"></a><pre class="programlisting">void                gtk_icon_view_enable_model_drag_source
+                                                        (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../gdk/gdk-Windows.html#GdkModifierType"
+>GdkModifierType</a> start_button_mask,
+                                                         const <a href="gtk-Selections.html#GtkTargetEntry">GtkTargetEntry</a> *targets,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> n_targets,
+                                                         <a
+href="../gdk/gdk-Drag-and-Drop.html#GdkDragAction"
+>GdkDragAction</a> actions);</pre>
+<p>
+Turns <em class="parameter"><code>icon_view</code></em> into a drag source for automatic DND.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> a <span class="type">GtkIconTreeView</span>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>start_button_mask</code></em>&#160;:</span></td>
+<td> Mask of allowed buttons to start drag
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>targets</code></em>&#160;:</span></td>
+<td> the table of targets that the drag will support
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>n_targets</code></em>&#160;:</span></td>
+<td> the number of items in <em class="parameter"><code>targets</code></em>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>actions</code></em>&#160;:</span></td>
+<td> the bitmask of possible actions for a drag from this
+   widget
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.8
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3387539"></a><h3>
+<a name="gtk-icon-view-enable-model-drag-dest"></a>gtk_icon_view_enable_model_drag_dest ()</h3>
+<a class="indexterm" name="id3387556"></a><pre class="programlisting">void                gtk_icon_view_enable_model_drag_dest
+                                                        (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         const <a href="gtk-Selections.html#GtkTargetEntry">GtkTargetEntry</a> *targets,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> n_targets,
+                                                         <a
+href="../gdk/gdk-Drag-and-Drop.html#GdkDragAction"
+>GdkDragAction</a> actions);</pre>
+<p>
+Turns <em class="parameter"><code>icon_view</code></em> into a drop destination for automatic DND.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> a <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>targets</code></em>&#160;:</span></td>
+<td> the table of targets that the drag will support
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>n_targets</code></em>&#160;:</span></td>
+<td> the number of items in <em class="parameter"><code>targets</code></em>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>actions</code></em>&#160;:</span></td>
+<td> the bitmask of possible actions for a drag to this
+   widget
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.8
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3387701"></a><h3>
+<a name="gtk-icon-view-unset-model-drag-source"></a>gtk_icon_view_unset_model_drag_source ()</h3>
+<a class="indexterm" name="id3387718"></a><pre class="programlisting">void                gtk_icon_view_unset_model_drag_source
+                                                        (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);</pre>
+<p>
+Undoes the effect of <a href="GtkIconView.html#gtk-icon-view-enable-model-drag-source"><code class="function">gtk_icon_view_enable_model_drag_source()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> a <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr></tbody>
+</table></div>
+<p class="since">Since  2.8
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3387795"></a><h3>
+<a name="gtk-icon-view-unset-model-drag-dest"></a>gtk_icon_view_unset_model_drag_dest ()</h3>
+<a class="indexterm" name="id3387812"></a><pre class="programlisting">void                gtk_icon_view_unset_model_drag_dest (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);</pre>
+<p>
+Undoes the effect of <a href="GtkIconView.html#gtk-icon-view-enable-model-drag-dest"><code class="function">gtk_icon_view_enable_model_drag_dest()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> a <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr></tbody>
+</table></div>
+<p class="since">Since  2.8
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3387887"></a><h3>
+<a name="gtk-icon-view-set-reorderable"></a>gtk_icon_view_set_reorderable ()</h3>
+<a class="indexterm" name="id3387903"></a><pre class="programlisting">void                gtk_icon_view_set_reorderable       (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> reorderable);</pre>
+<p>
+This function is a convenience function to allow you to reorder models that
+support the <a href="gtk-GtkTreeView-drag-and-drop.html#GtkTreeDragSourceIface"><span class="type">GtkTreeDragSourceIface</span></a> and the <a href="gtk-GtkTreeView-drag-and-drop.html#GtkTreeDragDestIface"><span class="type">GtkTreeDragDestIface</span></a>.  Both
+<a href="GtkTreeStore.html" title="GtkTreeStore"><span class="type">GtkTreeStore</span></a> and <a href="GtkListStore.html" title="GtkListStore"><span class="type">GtkListStore</span></a> support these.  If <em class="parameter"><code>reorderable</code></em> is <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, then
+the user can reorder the model by dragging and dropping rows.  The
+developer can listen to these changes by connecting to the model's
+row_inserted and row_deleted signals.
+</p>
+<p>
+This function does not give you any degree of control over the order -- any
+reordering is allowed.  If more control is needed, you should probably
+handle drag and drop manually.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> A <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>reorderable</code></em>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, if the list of items can be reordered.
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.8
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3388061"></a><h3>
+<a name="gtk-icon-view-get-reorderable"></a>gtk_icon_view_get_reorderable ()</h3>
+<a class="indexterm" name="id3388077"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_icon_view_get_reorderable       (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view);</pre>
+<p>
+Retrieves whether the user can reorder the list via drag-and-drop. 
+See <a href="GtkIconView.html#gtk-icon-view-set-reorderable"><code class="function">gtk_icon_view_set_reorderable()</code></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> a <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the list can be reordered.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.8
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3388174"></a><h3>
+<a name="gtk-icon-view-set-drag-dest-item"></a>gtk_icon_view_set_drag_dest_item ()</h3>
+<a class="indexterm" name="id3388190"></a><pre class="programlisting">void                gtk_icon_view_set_drag_dest_item    (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> *path,
+                                                         <a href="GtkIconView.html#GtkIconViewDropPosition">GtkIconViewDropPosition</a> pos);</pre>
+<p>
+Sets the item that is highlighted for feedback.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> a <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>path</code></em>&#160;:</span></td>
+<td> The path of the item to highlight, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>pos</code></em>&#160;:</span></td>
+<td> Specifies where to drop, relative to the item
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.8
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3388310"></a><h3>
+<a name="gtk-icon-view-get-drag-dest-item"></a>gtk_icon_view_get_drag_dest_item ()</h3>
+<a class="indexterm" name="id3388326"></a><pre class="programlisting">void                gtk_icon_view_get_drag_dest_item    (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> **path,
+                                                         <a href="GtkIconView.html#GtkIconViewDropPosition">GtkIconViewDropPosition</a> *pos);</pre>
+<p>
+Gets information about the item that is highlighted for feedback.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> a <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>path</code></em>&#160;:</span></td>
+<td> Return location for the path of the highlighted item, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>pos</code></em>&#160;:</span></td>
+<td> Return location for the drop position, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.8
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3388456"></a><h3>
+<a name="gtk-icon-view-get-dest-item-at-pos"></a>gtk_icon_view_get_dest_item_at_pos ()</h3>
+<a class="indexterm" name="id3388473"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_icon_view_get_dest_item_at_pos  (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> drag_x,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> drag_y,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> **path,
+                                                         <a href="GtkIconView.html#GtkIconViewDropPosition">GtkIconViewDropPosition</a> *pos);</pre>
+<p>
+Determines the destination item for a given position.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> a <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>drag_x</code></em>&#160;:</span></td>
+<td> the position to determine the destination item for
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>drag_y</code></em>&#160;:</span></td>
+<td> the position to determine the destination item for
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>path</code></em>&#160;:</span></td>
+<td> Return location for the path of the item, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>pos</code></em>&#160;:</span></td>
+<td> Return location for the drop position, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> whether there is an item at the given position.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.8
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3388658"></a><h3>
+<a name="gtk-icon-view-create-drag-icon"></a>gtk_icon_view_create_drag_icon ()</h3>
+<a class="indexterm" name="id3388674"></a><pre class="programlisting"><a
+href="../gdk/gdk-Bitmaps-and-Pixmaps.html#GdkPixmap"
+>GdkPixmap</a>*          gtk_icon_view_create_drag_icon      (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *icon_view,
+                                                         <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> *path);</pre>
+<p>
+Creates a <a
+href="../gdk/gdk-Bitmaps-and-Pixmaps.html#GdkPixmap"
+><span class="type">GdkPixmap</span></a> representation of the item at <em class="parameter"><code>path</code></em>.  
+This image is used for a drag icon.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>icon_view</code></em>&#160;:</span></td>
+<td> a <a href="GtkIconView.html" title="GtkIconView"><span class="type">GtkIconView</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>path</code></em>&#160;:</span></td>
+<td> a <a href="GtkTreeModel.html#GtkTreePath"><span class="type">GtkTreePath</span></a> in <em class="parameter"><code>icon_view</code></em>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a newly-allocated pixmap of the drag icon.
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.8
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3388800"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3388811"></a><h3>
+<a name="GtkIconView--column-spacing"></a>The :<code class="literal">column-spacing</code> property</h3>
+<a class="indexterm" name="id3388827"></a><pre class="programlisting">  column-spacing           <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>
+The column-spacing property specifies the space which is inserted between
+the columns of the icon view.</p>
+<p>
+
+</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 6</p>
+<p>Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3388867"></a><h3>
+<a name="GtkIconView--columns"></a>The :<code class="literal">columns</code> property</h3>
+<a class="indexterm" name="id3388884"></a><pre class="programlisting">  columns                  <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>
+The columns property contains the number of the columns in which the
+items should be displayed. If it is -1, the number of columns will
+be chosen automatically to fill the available area.</p>
+<p>
+
+</p>
+<p>Allowed values: &gt;= -1</p>
+<p>Default value: -1</p>
+<p>Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3388925"></a><h3>
+<a name="GtkIconView--item-width"></a>The :<code class="literal">item-width</code> property</h3>
+<a class="indexterm" name="id3388941"></a><pre class="programlisting">  item-width               <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>
+The item-width property specifies the width to use for each item. 
+If it is set to -1, the icon view will automatically determine a 
+suitable item size.</p>
+<p>
+
+</p>
+<p>Allowed values: &gt;= -1</p>
+<p>Default value: -1</p>
+<p>Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3388982"></a><h3>
+<a name="GtkIconView--margin"></a>The :<code class="literal">margin</code> property</h3>
+<a class="indexterm" name="id3388998"></a><pre class="programlisting">  margin                   <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>
+The margin property specifies the space which is inserted 
+at the edges of the icon view.</p>
+<p>
+
+</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 6</p>
+<p>Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3389038"></a><h3>
+<a name="GtkIconView--markup-column"></a>The :<code class="literal">markup-column</code> property</h3>
+<a class="indexterm" name="id3389054"></a><pre class="programlisting">  markup-column            <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>
+The ::markup-column property contains the number of the model column
+containing markup information to be displayed. The markup column must be 
+of type <a
+href="../gobject/gobject-Type-Information.html#G-TYPE-STRING:CAPS"
+><span class="type">G_TYPE_STRING</span></a>. If this property and the :text-column property 
+are both set to column numbers, it overrides the text column.
+If both are set to -1, no texts are displayed.</p>
+<p>
+
+</p>
+<p>Allowed values: &gt;= -1</p>
+<p>Default value: -1</p>
+<p>Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3389106"></a><h3>
+<a name="GtkIconView--model"></a>The :<code class="literal">model</code> property</h3>
+<a class="indexterm" name="id3389122"></a><pre class="programlisting">  model                    <a href="GtkTreeModel.html" title="GtkTreeModel">GtkTreeModel</a>          : Read / Write</pre>
+<p>The model for the icon view.</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3389145"></a><h3>
+<a name="GtkIconView--orientation"></a>The :<code class="literal">orientation</code> property</h3>
+<a class="indexterm" name="id3389161"></a><pre class="programlisting">  orientation              <a href="gtk-Standard-Enumerations.html#GtkOrientation">GtkOrientation</a>        : Read / Write</pre>
+<p>
+The orientation property specifies how the cells (i.e. the icon and 
+the text) of the item are positioned relative to each other.</p>
+<p>
+
+</p>
+<p>Default value: GTK_ORIENTATION_VERTICAL</p>
+<p>Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3389199"></a><h3>
+<a name="GtkIconView--pixbuf-column"></a>The :<code class="literal">pixbuf-column</code> property</h3>
+<a class="indexterm" name="id3389215"></a><pre class="programlisting">  pixbuf-column            <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>
+The ::pixbuf-column property contains the number of the model column
+containing the pixbufs which are displayed. The pixbuf column must be 
+of type <span class="type">GDK_TYPE_PIXBUF</span>. Setting this property to -1 turns off the
+display of pixbufs.</p>
+<p>
+
+</p>
+<p>Allowed values: &gt;= -1</p>
+<p>Default value: -1</p>
+<p>Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3389266"></a><h3>
+<a name="GtkIconView--reorderable"></a>The :<code class="literal">reorderable</code> property</h3>
+<a class="indexterm" name="id3389282"></a><pre class="programlisting">  reorderable              <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>
+The reorderable property specifies if the items can be reordered
+by DND.</p>
+<p>
+
+</p>
+<p>Default value: FALSE</p>
+<p>Since  2.8
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3389318"></a><h3>
+<a name="GtkIconView--row-spacing"></a>The :<code class="literal">row-spacing</code> property</h3>
+<a class="indexterm" name="id3389334"></a><pre class="programlisting">  row-spacing              <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>
+The row-spacing property specifies the space which is inserted between
+the rows of the icon view.</p>
+<p>
+
+</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 6</p>
+<p>Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3389374"></a><h3>
+<a name="GtkIconView--selection-mode"></a>The :<code class="literal">selection-mode</code> property</h3>
+<a class="indexterm" name="id3389390"></a><pre class="programlisting">  selection-mode           <a href="gtk-Standard-Enumerations.html#GtkSelectionMode">GtkSelectionMode</a>      : Read / Write</pre>
+<p>
+The ::selection-mode property specifies the selection mode of
+icon view. If the mode is <a href="gtk-Standard-Enumerations.html#GTK-SELECTION-MULTIPLE:CAPS"><span class="type">GTK_SELECTION_MULTIPLE</span></a>, rubberband selection
+is enabled, for the other modes, only keyboard selection is possible.</p>
+<p>
+
+</p>
+<p>Default value: GTK_SELECTION_SINGLE</p>
+<p>Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3389437"></a><h3>
+<a name="GtkIconView--spacing"></a>The :<code class="literal">spacing</code> property</h3>
+<a class="indexterm" name="id3389453"></a><pre class="programlisting">  spacing                  <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>
+The spacing property specifies the space which is inserted between
+the cells (i.e. the icon and the text) of an item.</p>
+<p>
+
+</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+<p>Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3389493"></a><h3>
+<a name="GtkIconView--text-column"></a>The :<code class="literal">text-column</code> property</h3>
+<a class="indexterm" name="id3389509"></a><pre class="programlisting">  text-column              <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>
+The ::text-column property contains the number of the model column
+containing the texts which are displayed. The text column must be 
+of type <a
+href="../gobject/gobject-Type-Information.html#G-TYPE-STRING:CAPS"
+><span class="type">G_TYPE_STRING</span></a>. If this property and the :markup-column 
+property are both set to -1, no texts are displayed.</p>
+<p>
+
+</p>
+<p>Allowed values: &gt;= -1</p>
+<p>Default value: -1</p>
+<p>Since  2.6
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3389561"></a><h2>Style Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3389572"></a><h3>
+<a name="GtkIconView--selection-box-alpha"></a>The :<code class="literal">selection-box-alpha</code> style property</h3>
+<a class="indexterm" name="id3389588"></a><pre class="programlisting">  selection-box-alpha      <a
+href="../glib/glib-Basic-Types.html#guchar"
+>guchar</a>                : Read</pre>
+<p>Opacity of the selection box.</p>
+<p>Default value: 64</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3389614"></a><h3>
+<a name="GtkIconView--selection-box-color"></a>The :<code class="literal">selection-box-color</code> style property</h3>
+<a class="indexterm" name="id3389631"></a><pre class="programlisting">  selection-box-color      <a
+href="../gdk/gdk-Colormaps-and-Colors.html#GdkColor"
+>GdkColor</a>              : Read</pre>
+<p>Color of the selection box.</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3389655"></a><h2>Signal Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3389665"></a><h3>
+<a name="GtkIconView-activate-cursor-item"></a>The <code class="literal">::activate-cursor-item</code> signal</h3>
+<a class="indexterm" name="id3389682"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            user_function                      (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *iconview,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>     user_data)      : Run Last / Action</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>iconview</code></em>&#160;:</span></td>
+<td>the object which received the signal.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3389761"></a><h3>
+<a name="GtkIconView-item-activated"></a>The <code class="literal">::item-activated</code> signal</h3>
+<a class="indexterm" name="id3389777"></a><pre class="programlisting">void                user_function                      (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *iconview,
+                                                        <a href="GtkTreeModel.html#GtkTreePath">GtkTreePath</a> *arg1,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>     user_data)      : Run Last</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>iconview</code></em>&#160;:</span></td>
+<td>the object which received the signal.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>arg1</code></em>&#160;:</span></td>
+<td>
+
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3389866"></a><h3>
+<a name="GtkIconView-move-cursor"></a>The <code class="literal">::move-cursor</code> signal</h3>
+<a class="indexterm" name="id3389883"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            user_function                      (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a>    *iconview,
+                                                        <a href="gtk-Standard-Enumerations.html#GtkMovementStep">GtkMovementStep</a> arg1,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>            arg2,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>        user_data)      : Run Last / Action</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>iconview</code></em>&#160;:</span></td>
+<td>the object which received the signal.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>arg1</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>arg2</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3390005"></a><h3>
+<a name="GtkIconView-select-all"></a>The <code class="literal">::select-all</code> signal</h3>
+<a class="indexterm" name="id3390020"></a><pre class="programlisting">void                user_function                      (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *iconview,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>     user_data)      : Run Last / Action</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>iconview</code></em>&#160;:</span></td>
+<td>the object which received the signal.
+
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3390089"></a><h3>
+<a name="GtkIconView-select-cursor-item"></a>The <code class="literal">::select-cursor-item</code> signal</h3>
+<a class="indexterm" name="id3390106"></a><pre class="programlisting">void                user_function                      (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *iconview,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>     user_data)      : Run Last / Action</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>iconview</code></em>&#160;:</span></td>
+<td>the object which received the signal.
+
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3390174"></a><h3>
+<a name="GtkIconView-selection-changed"></a>The <code class="literal">::selection-changed</code> signal</h3>
+<a class="indexterm" name="id3390191"></a><pre class="programlisting">void                user_function                      (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *iconview,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>     user_data)      : Run First</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>iconview</code></em>&#160;:</span></td>
+<td>the object which received the signal.
+
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3390260"></a><h3>
+<a name="GtkIconView-set-scroll-adjustments"></a>The <code class="literal">::set-scroll-adjustments</code> signal</h3>
+<a class="indexterm" name="id3390277"></a><pre class="programlisting">void                user_function                      (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a>   *iconview,
+                                                        <a href="GtkAdjustment.html" title="GtkAdjustment">GtkAdjustment</a> *arg1,
+                                                        <a href="GtkAdjustment.html" title="GtkAdjustment">GtkAdjustment</a> *arg2,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>       user_data)      : Run Last</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>iconview</code></em>&#160;:</span></td>
+<td>the object which received the signal.
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>arg1</code></em>&#160;:</span></td>
+<td>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>arg2</code></em>&#160;:</span></td>
+<td>
+
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3390388"></a><h3>
+<a name="GtkIconView-toggle-cursor-item"></a>The <code class="literal">::toggle-cursor-item</code> signal</h3>
+<a class="indexterm" name="id3390405"></a><pre class="programlisting">void                user_function                      (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *iconview,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>     user_data)      : Run Last / Action</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>iconview</code></em>&#160;:</span></td>
+<td>the object which received the signal.
+
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3390474"></a><h3>
+<a name="GtkIconView-unselect-all"></a>The <code class="literal">::unselect-all</code> signal</h3>
+<a class="indexterm" name="id3390490"></a><pre class="programlisting">void                user_function                      (<a href="GtkIconView.html" title="GtkIconView">GtkIconView</a> *iconview,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>     user_data)      : Run Last / Action</pre>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>iconview</code></em>&#160;:</span></td>
+<td>the object which received the signal.
+
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+</body>
+</html>

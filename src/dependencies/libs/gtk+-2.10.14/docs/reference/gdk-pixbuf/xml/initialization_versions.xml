@@ -1,0 +1,146 @@
+<refentry id="gdk-pixbuf-Versioning">
+<refmeta>
+<refentrytitle role="top_of_page">Initialization and Versions</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GDK-PIXBUF Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>Initialization and Versions</refname>
+<refpurpose>
+Library version numbers.</refpurpose>
+<!--[<xref linkend="desc" endterm="desc.title"/>]-->
+</refnamediv>
+
+<refsynopsisdiv role="synopsis">
+<title role="synopsis.title">Synopsis</title>
+
+<synopsis>
+
+#include &lt;gdk-pixbuf/gdk-pixbuf.h&gt;
+
+
+
+extern              const char *<link linkend="gdk-pixbuf-version">gdk_pixbuf_version</link>;
+extern              const guint <link linkend="gdk-pixbuf-major-version">gdk_pixbuf_major_version</link>;
+extern              const guint <link linkend="gdk-pixbuf-minor-version">gdk_pixbuf_minor_version</link>;
+extern              const guint <link linkend="gdk-pixbuf-micro-version">gdk_pixbuf_micro_version</link>;
+#define             <link linkend="GDK-PIXBUF-VERSION:CAPS">GDK_PIXBUF_VERSION</link>
+#define             <link linkend="GDK-PIXBUF-MAJOR:CAPS">GDK_PIXBUF_MAJOR</link>
+#define             <link linkend="GDK-PIXBUF-MINOR:CAPS">GDK_PIXBUF_MINOR</link>
+#define             <link linkend="GDK-PIXBUF-MICRO:CAPS">GDK_PIXBUF_MICRO</link>
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1 role="desc">
+<title role="desc.title">Description</title>
+<para>
+These macros and variables let you check the version of &gdk-pixbuf;
+you're linking against.
+</para>
+</refsect1>
+
+<refsect1 role="details">
+<title role="details.title">Details</title>
+<refsect2>
+<title><anchor id="gdk-pixbuf-version" role="variable"/>gdk_pixbuf_version</title>
+<indexterm><primary>gdk_pixbuf_version</primary></indexterm><programlisting>extern const char *gdk_pixbuf_version;
+</programlisting>
+<para>
+Contains the full version of the &gdk-pixbuf; library as a string.
+This is the version currently in use by a running program.
+</para></refsect2>
+<refsect2>
+<title><anchor id="gdk-pixbuf-major-version" role="variable"/>gdk_pixbuf_major_version</title>
+<indexterm><primary>gdk_pixbuf_major_version</primary></indexterm><programlisting>extern const guint gdk_pixbuf_major_version;
+</programlisting>
+<para>
+The major version number of the &gdk-pixbuf; library.  (e.g. in 
+&gdk-pixbuf; version 1.2.5 this is 1.) 
+</para>
+
+<para>
+This variable is in the library, so represents the
+&gdk-pixbuf; library you have linked against. Contrast with the
+<link linkend="GDK-PIXBUF-MAJOR:CAPS"><type>GDK_PIXBUF_MAJOR</type></link> macro, which represents the major version of the
+&gdk-pixbuf; headers you have included.
+</para></refsect2>
+<refsect2>
+<title><anchor id="gdk-pixbuf-minor-version" role="variable"/>gdk_pixbuf_minor_version</title>
+<indexterm><primary>gdk_pixbuf_minor_version</primary></indexterm><programlisting>extern const guint gdk_pixbuf_minor_version;
+</programlisting>
+<para>
+The minor version number of the &gdk-pixbuf; library.  (e.g. in 
+&gdk-pixbuf; version 1.2.5 this is 2.) 
+</para>
+
+<para>
+This variable is in the library, so represents the
+&gdk-pixbuf; library you have linked against. Contrast with the
+<link linkend="GDK-PIXBUF-MINOR:CAPS"><type>GDK_PIXBUF_MINOR</type></link> macro, which represents the minor version of the
+&gdk-pixbuf; headers you have included.
+</para></refsect2>
+<refsect2>
+<title><anchor id="gdk-pixbuf-micro-version" role="variable"/>gdk_pixbuf_micro_version</title>
+<indexterm><primary>gdk_pixbuf_micro_version</primary></indexterm><programlisting>extern const guint gdk_pixbuf_micro_version;
+</programlisting>
+<para>
+The micro version number of the &gdk-pixbuf; library.  (e.g. in 
+&gdk-pixbuf; version 1.2.5 this is 5.) 
+</para>
+
+<para>
+This variable is in the library, so represents the
+&gdk-pixbuf; library you have linked against. Contrast with the
+<link linkend="GDK-PIXBUF-MICRO:CAPS"><type>GDK_PIXBUF_MICRO</type></link> macro, which represents the micro version of the
+&gdk-pixbuf; headers you have included.
+</para></refsect2>
+<refsect2>
+<title><anchor id="GDK-PIXBUF-VERSION:CAPS" role="macro"/>GDK_PIXBUF_VERSION</title>
+<indexterm><primary>GDK_PIXBUF_VERSION</primary></indexterm><programlisting>#define GDK_PIXBUF_VERSION "2.10.14"
+</programlisting>
+<para>
+Contains the full version of the &gdk-pixbuf; header as a string.
+This is the version being compiled against; contrast with
+<link linkend="gdk-pixbuf-version"><type>gdk_pixbuf_version</type></link>.
+</para></refsect2>
+<refsect2>
+<title><anchor id="GDK-PIXBUF-MAJOR:CAPS" role="macro"/>GDK_PIXBUF_MAJOR</title>
+<indexterm><primary>GDK_PIXBUF_MAJOR</primary></indexterm><programlisting>#define GDK_PIXBUF_MAJOR (2)
+</programlisting>
+<para>
+Major version of &gdk-pixbuf; library, that is the first "0" in
+"0.8.0" for example.
+</para></refsect2>
+<refsect2>
+<title><anchor id="GDK-PIXBUF-MINOR:CAPS" role="macro"/>GDK_PIXBUF_MINOR</title>
+<indexterm><primary>GDK_PIXBUF_MINOR</primary></indexterm><programlisting>#define GDK_PIXBUF_MINOR (10)
+</programlisting>
+<para>
+Minor version of &gdk-pixbuf; library, that is the "8" in
+"0.8.0" for example.
+</para></refsect2>
+<refsect2>
+<title><anchor id="GDK-PIXBUF-MICRO:CAPS" role="macro"/>GDK_PIXBUF_MICRO</title>
+<indexterm><primary>GDK_PIXBUF_MICRO</primary></indexterm><programlisting>#define GDK_PIXBUF_MICRO (14)
+</programlisting>
+<para>
+Micro version of &gdk-pixbuf; library, that is the last "0" in
+"0.8.0" for example.
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

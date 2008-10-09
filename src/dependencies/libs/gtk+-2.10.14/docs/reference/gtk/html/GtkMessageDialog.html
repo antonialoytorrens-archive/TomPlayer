@@ -1,0 +1,841 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>GtkMessageDialog</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GTK+ Reference Manual">
+<link rel="up" href="WindowWidgets.html" title="Windows">
+<link rel="prev" href="GtkInvisible.html" title="GtkInvisible">
+<link rel="next" href="GtkWindow.html" title="GtkWindow">
+<meta name="generator" content="GTK-Doc V1.7 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gtk.html" title="Part&#160;I.&#160;GTK+ Overview">
+<link rel="part" href="gtkbase.html" title="Part&#160;II.&#160;GTK+ Core Reference">
+<link rel="part" href="gtkobjects.html" title="Part&#160;III.&#160;GTK+ Widgets and Objects">
+<link rel="chapter" href="ch01.html" title="Object Hierarchy">
+<link rel="chapter" href="ch02.html" title="Widget Gallery">
+<link rel="chapter" href="WindowWidgets.html" title="Windows">
+<link rel="chapter" href="DisplayWidgets.html" title="Display Widgets">
+<link rel="chapter" href="ButtonWidgets.html" title="Buttons and Toggles">
+<link rel="chapter" href="NumericEntry.html" title="Numeric/Text Data Entry">
+<link rel="chapter" href="TextWidgetObjects.html" title="Multiline Text Editor">
+<link rel="chapter" href="TreeWidgetObjects.html" title="Tree, List and Icon Grid Widgets">
+<link rel="chapter" href="MenusAndCombos.html" title="Menus, Combo Box, Toolbar">
+<link rel="chapter" href="Actions.html" title="Action-based menus and toolbars">
+<link rel="chapter" href="SelectorWidgets.html" title="Selectors (File/Font/Color/Input Devices)">
+<link rel="chapter" href="LayoutContainers.html" title="Layout Containers">
+<link rel="chapter" href="Ornaments.html" title="Ornaments">
+<link rel="chapter" href="ScrollingWidgets.html" title="Scrolling">
+<link rel="chapter" href="Printing.html" title="Printing">
+<link rel="chapter" href="MiscObjects.html" title="Miscellaneous">
+<link rel="chapter" href="AbstractObjects.html" title="Abstract Base Classes">
+<link rel="chapter" href="PlugSocket.html" title="Cross-process Embedding">
+<link rel="chapter" href="SpecialObjects.html" title="Special-purpose features">
+<link rel="chapter" href="RecentDocuments.html" title="Recently Used Documents">
+<link rel="chapter" href="DeprecatedObjects.html" title="Deprecated">
+<link rel="part" href="migrating.html" title="Part&#160;IV.&#160;Migrating from Previous Versions of GTK+">
+<link rel="chapter" href="gtk-migrating-checklist.html" title="Migration Checklist">
+<link rel="chapter" href="gtk-migrating-GtkFileChooser.html" title="Migrating from GtkFileSelection to GtkFileChooser">
+<link rel="chapter" href="gtk-migrating-GtkAction.html" title="Migrating from old menu and toolbar systems to GtkAction">
+<link rel="chapter" href="gtk-migrating-GtkComboBox.html" title="Migrating from GtkOptionMenu and GtkCombo to GtkComboBox and GtkComboBoxEntry">
+<link rel="chapter" href="gtk-migrating-GtkIconView.html" title="Migrating from GnomeIconList to GtkIconView">
+<link rel="chapter" href="gtk-migrating-GtkAboutDialog.html" title="Migrating from GnomeAbout to GtkAboutDialog">
+<link rel="chapter" href="gtk-migrating-GtkColorButton.html" title="Migrating from GnomeColorPicker to GtkColorButton">
+<link rel="chapter" href="gtk-migrating-GtkAssistant.html" title="Migrating from GnomeDruid to GtkAssistant">
+<link rel="chapter" href="gtk-migrating-GtkRecentChooser.html" title="Migrating from EggRecent to GtkRecentChooser">
+<link rel="chapter" href="gtk-migrating-GtkLinkButton.html" title="Migrating from GnomeHRef to GtkLinkButton">
+<link rel="part" href="pt05.html" title="Part&#160;V.&#160;GTK+ Tools">
+<link rel="glossary" href="glossary.html" title="Glossary">
+<link rel="index" href="ix01.html" title="Index">
+<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="ix03.html" title="Index of new symbols in 2.2">
+<link rel="index" href="ix04.html" title="Index of new symbols in 2.4">
+<link rel="index" href="ix05.html" title="Index of new symbols in 2.6">
+<link rel="index" href="ix06.html" title="Index of new symbols in 2.8">
+<link rel="index" href="ix07.html" title="Index of new symbols in 2.10">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="GtkInvisible.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="WindowWidgets.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GTK+ Reference Manual</th>
+<td><a accesskey="n" href="GtkWindow.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id2993213" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id2993777" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id2993495" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id2993572" class="shortcut">Implemented Interfaces</a>
+                  &#160;|&#160;
+                  <a href="#id2993595" class="shortcut">Properties</a>
+                  &#160;|&#160;
+                  <a href="#id2993728" class="shortcut">Style Properties</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="GtkMessageDialog"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id2993213"></a><span class="refentrytitle">GtkMessageDialog</span>
+</h2>
+<p>GtkMessageDialog &#8212; A convenient message window</p>
+</td>
+<td valign="top" align="right"><img src="messagedialog.png"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <a href="GtkMessageDialog.html#GtkMessageDialog-struct">GtkMessageDialog</a>;
+enum                <a href="GtkMessageDialog.html#GtkMessageType">GtkMessageType</a>;
+enum                <a href="GtkMessageDialog.html#GtkButtonsType">GtkButtonsType</a>;
+<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          <a href="GtkMessageDialog.html#gtk-message-dialog-new">gtk_message_dialog_new</a>              (<a href="GtkWindow.html" title="GtkWindow">GtkWindow</a> *parent,
+                                                         <a href="GtkDialog.html#GtkDialogFlags">GtkDialogFlags</a> flags,
+                                                         <a href="GtkMessageDialog.html#GtkMessageType">GtkMessageType</a> type,
+                                                         <a href="GtkMessageDialog.html#GtkButtonsType">GtkButtonsType</a> buttons,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *message_format,
+                                                         ...);
+<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          <a href="GtkMessageDialog.html#gtk-message-dialog-new-with-markup">gtk_message_dialog_new_with_markup</a>  (<a href="GtkWindow.html" title="GtkWindow">GtkWindow</a> *parent,
+                                                         <a href="GtkDialog.html#GtkDialogFlags">GtkDialogFlags</a> flags,
+                                                         <a href="GtkMessageDialog.html#GtkMessageType">GtkMessageType</a> type,
+                                                         <a href="GtkMessageDialog.html#GtkButtonsType">GtkButtonsType</a> buttons,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *message_format,
+                                                         ...);
+void                <a href="GtkMessageDialog.html#gtk-message-dialog-set-markup">gtk_message_dialog_set_markup</a>       (<a href="GtkMessageDialog.html" title="GtkMessageDialog">GtkMessageDialog</a> *message_dialog,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *str);
+void                <a href="GtkMessageDialog.html#gtk-message-dialog-set-image">gtk_message_dialog_set_image</a>        (<a href="GtkMessageDialog.html" title="GtkMessageDialog">GtkMessageDialog</a> *dialog,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *image);
+void                <a href="GtkMessageDialog.html#gtk-message-dialog-format-secondary-text">gtk_message_dialog_format_secondary_text</a>
+                                                        (<a href="GtkMessageDialog.html" title="GtkMessageDialog">GtkMessageDialog</a> *message_dialog,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *message_format,
+                                                         ...);
+void                <a href="GtkMessageDialog.html#gtk-message-dialog-format-secondary-markup">gtk_message_dialog_format_secondary_markup</a>
+                                                        (<a href="GtkMessageDialog.html" title="GtkMessageDialog">GtkMessageDialog</a> *message_dialog,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *message_format,
+                                                         ...);
+
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2993495"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gobject/gobject-The-Base-Object-Type.html#GInitiallyUnowned"
+>GInitiallyUnowned</a>
+         +----<a href="GtkObject.html" title="GtkObject">GtkObject</a>
+               +----<a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>
+                     +----<a href="GtkContainer.html" title="GtkContainer">GtkContainer</a>
+                           +----<a href="GtkBin.html" title="GtkBin">GtkBin</a>
+                                 +----<a href="GtkWindow.html" title="GtkWindow">GtkWindow</a>
+                                       +----<a href="GtkDialog.html" title="GtkDialog">GtkDialog</a>
+                                             +----GtkMessageDialog
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2993572"></a><h2>Implemented Interfaces</h2>
+<p>
+GtkMessageDialog implements
+ AtkImplementorIface.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2993595"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  <a href="GtkMessageDialog.html#GtkMessageDialog--buttons">buttons</a>                  <a href="GtkMessageDialog.html#GtkButtonsType">GtkButtonsType</a>        : Write / Construct Only
+  <a href="GtkMessageDialog.html#GtkMessageDialog--image">image</a>                    <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>             : Read / Write
+  <a href="GtkMessageDialog.html#GtkMessageDialog--message-type">message-type</a>             <a href="GtkMessageDialog.html#GtkMessageType">GtkMessageType</a>        : Read / Write / Construct
+  <a href="GtkMessageDialog.html#GtkMessageDialog--secondary-text">secondary-text</a>           <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  <a href="GtkMessageDialog.html#GtkMessageDialog--secondary-use-markup">secondary-use-markup</a>     <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  <a href="GtkMessageDialog.html#GtkMessageDialog--text">text</a>                     <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  <a href="GtkMessageDialog.html#GtkMessageDialog--use-markup">use-markup</a>               <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2993728"></a><h2>Style Properties</h2>
+<pre class="synopsis">
+
+  <a href="GtkMessageDialog.html#GtkMessageDialog--message-border">message-border</a>           <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read
+  <a href="GtkMessageDialog.html#GtkMessageDialog--use-separator">use-separator</a>            <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2993777"></a><h2>Description</h2>
+<p>
+<a href="GtkMessageDialog.html" title="GtkMessageDialog"><span class="type">GtkMessageDialog</span></a> presents a dialog with an image representing the type of 
+message (Error, Question, etc.) alongside some message text. It's simply a 
+convenience widget; you could construct the equivalent of <a href="GtkMessageDialog.html" title="GtkMessageDialog"><span class="type">GtkMessageDialog</span></a> 
+from <a href="GtkDialog.html" title="GtkDialog"><span class="type">GtkDialog</span></a> without too much effort, but <a href="GtkMessageDialog.html" title="GtkMessageDialog"><span class="type">GtkMessageDialog</span></a> saves typing.
+</p>
+<p>
+The easiest way to do a modal message dialog is to use <a href="GtkDialog.html#gtk-dialog-run"><code class="function">gtk_dialog_run()</code></a>, though
+you can also pass in the <a href="GtkDialog.html#GTK-DIALOG-MODAL:CAPS"><code class="literal">GTK_DIALOG_MODAL</code></a> flag, <a href="GtkDialog.html#gtk-dialog-run"><code class="function">gtk_dialog_run()</code></a> automatically
+makes the dialog modal and waits for the user to respond to it. <a href="GtkDialog.html#gtk-dialog-run"><code class="function">gtk_dialog_run()</code></a>
+returns when any dialog button is clicked.
+</p>
+<div class="example">
+<a name="id2993875"></a><p class="title"><b>Example&#160;5.&#160;A modal dialog.</b></p>
+<div class="example-contents"><pre class="programlisting">
+ dialog = gtk_message_dialog_new (main_application_window,
+                                  GTK_DIALOG_DESTROY_WITH_PARENT,
+                                  GTK_MESSAGE_ERROR,
+                                  GTK_BUTTONS_CLOSE,
+                                  "Error loading file '%s': %s",
+                                  filename, g_strerror (errno));
+ gtk_dialog_run (GTK_DIALOG (dialog));
+ gtk_widget_destroy (dialog);
+</pre></div>
+</div>
+<p><br class="example-break">
+</p>
+<p>
+You might do a non-modal <a href="GtkMessageDialog.html" title="GtkMessageDialog"><span class="type">GtkMessageDialog</span></a> as follows:
+</p>
+<div class="example">
+<a name="id2993907"></a><p class="title"><b>Example&#160;6.&#160;A non-modal dialog.</b></p>
+<div class="example-contents"><pre class="programlisting">
+ dialog = gtk_message_dialog_new (main_application_window,
+                                  GTK_DIALOG_DESTROY_WITH_PARENT,
+                                  GTK_MESSAGE_ERROR,
+                                  GTK_BUTTONS_CLOSE,
+                                  "Error loading file '%s': %s",
+                                  filename, g_strerror (errno));
+
+ /* Destroy the dialog when the user responds to it (e.g. clicks a button) */
+ g_signal_connect_swapped (dialog, "response",
+                           G_CALLBACK (gtk_widget_destroy),
+                           dialog);
+</pre></div>
+</div>
+<p><br class="example-break">
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2993921"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2993942"></a><h3>
+<a name="GtkMessageDialog-struct"></a>GtkMessageDialog</h3>
+<a class="indexterm" name="id2993955"></a><pre class="programlisting">typedef struct _GtkMessageDialog GtkMessageDialog;</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2993971"></a><h3>
+<a name="GtkMessageType"></a>enum GtkMessageType</h3>
+<a class="indexterm" name="id2993983"></a><pre class="programlisting">typedef enum
+{
+  GTK_MESSAGE_INFO,
+  GTK_MESSAGE_WARNING,
+  GTK_MESSAGE_QUESTION,
+  GTK_MESSAGE_ERROR,
+  GTK_MESSAGE_OTHER
+} GtkMessageType;
+</pre>
+<p>
+The type of message being displayed in the dialog.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><a name="GTK-MESSAGE-INFO:CAPS"></a><code class="literal">GTK_MESSAGE_INFO</code></span></td>
+<td>Informational message
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-MESSAGE-WARNING:CAPS"></a><code class="literal">GTK_MESSAGE_WARNING</code></span></td>
+<td>Nonfatal warning message
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-MESSAGE-QUESTION:CAPS"></a><code class="literal">GTK_MESSAGE_QUESTION</code></span></td>
+<td>Question requiring a choice
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-MESSAGE-ERROR:CAPS"></a><code class="literal">GTK_MESSAGE_ERROR</code></span></td>
+<td>Fatal error message
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-MESSAGE-OTHER:CAPS"></a><code class="literal">GTK_MESSAGE_OTHER</code></span></td>
+<td>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2994120"></a><h3>
+<a name="GtkButtonsType"></a>enum GtkButtonsType</h3>
+<a class="indexterm" name="id2994133"></a><pre class="programlisting">typedef enum
+{
+  GTK_BUTTONS_NONE,
+  GTK_BUTTONS_OK,
+  GTK_BUTTONS_CLOSE,
+  GTK_BUTTONS_CANCEL,
+  GTK_BUTTONS_YES_NO,
+  GTK_BUTTONS_OK_CANCEL
+} GtkButtonsType;
+</pre>
+<p>
+Prebuilt sets of buttons for the dialog. If 
+none of these choices are appropriate, simply use <a href="GtkMessageDialog.html#GTK-BUTTONS-NONE:CAPS"><code class="literal">GTK_BUTTONS_NONE</code></a>
+then call <a href="GtkDialog.html#gtk-dialog-add-buttons"><code class="function">gtk_dialog_add_buttons()</code></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><a name="GTK-BUTTONS-NONE:CAPS"></a><code class="literal">GTK_BUTTONS_NONE</code></span></td>
+<td>no buttons at all
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-BUTTONS-OK:CAPS"></a><code class="literal">GTK_BUTTONS_OK</code></span></td>
+<td>an OK button
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-BUTTONS-CLOSE:CAPS"></a><code class="literal">GTK_BUTTONS_CLOSE</code></span></td>
+<td>a Close button
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-BUTTONS-CANCEL:CAPS"></a><code class="literal">GTK_BUTTONS_CANCEL</code></span></td>
+<td>a Cancel button
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-BUTTONS-YES-NO:CAPS"></a><code class="literal">GTK_BUTTONS_YES_NO</code></span></td>
+<td>Yes and No buttons
+</td>
+</tr>
+<tr>
+<td><span class="term"><a name="GTK-BUTTONS-OK-CANCEL:CAPS"></a><code class="literal">GTK_BUTTONS_OK_CANCEL</code></span></td>
+<td>OK and Cancel buttons
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2994315"></a><h3>
+<a name="gtk-message-dialog-new"></a>gtk_message_dialog_new ()</h3>
+<a class="indexterm" name="id2994328"></a><pre class="programlisting"><a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          gtk_message_dialog_new              (<a href="GtkWindow.html" title="GtkWindow">GtkWindow</a> *parent,
+                                                         <a href="GtkDialog.html#GtkDialogFlags">GtkDialogFlags</a> flags,
+                                                         <a href="GtkMessageDialog.html#GtkMessageType">GtkMessageType</a> type,
+                                                         <a href="GtkMessageDialog.html#GtkButtonsType">GtkButtonsType</a> buttons,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *message_format,
+                                                         ...);</pre>
+<p>
+Creates a new message dialog, which is a simple dialog with an icon
+indicating the dialog type (error, warning, etc.) and some text the
+user may want to see. When the user clicks a button a "response"
+signal is emitted with response IDs from <a href="GtkDialog.html#GtkResponseType"><span class="type">GtkResponseType</span></a>. See
+<a href="GtkDialog.html" title="GtkDialog"><span class="type">GtkDialog</span></a> for more details.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>parent</code></em>&#160;:</span></td>
+<td> transient parent, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a> for none 
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>flags</code></em>&#160;:</span></td>
+<td> flags
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>type</code></em>&#160;:</span></td>
+<td> type of message
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>buttons</code></em>&#160;:</span></td>
+<td> set of buttons to use
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>message_format</code></em>&#160;:</span></td>
+<td> <code class="function">printf()</code>-style format string, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>...</code></em>&#160;:</span></td>
+<td> arguments for <em class="parameter"><code>message_format</code></em>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a new <a href="GtkMessageDialog.html" title="GtkMessageDialog"><span class="type">GtkMessageDialog</span></a>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2994558"></a><h3>
+<a name="gtk-message-dialog-new-with-markup"></a>gtk_message_dialog_new_with_markup ()</h3>
+<a class="indexterm" name="id2994574"></a><pre class="programlisting"><a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>*          gtk_message_dialog_new_with_markup  (<a href="GtkWindow.html" title="GtkWindow">GtkWindow</a> *parent,
+                                                         <a href="GtkDialog.html#GtkDialogFlags">GtkDialogFlags</a> flags,
+                                                         <a href="GtkMessageDialog.html#GtkMessageType">GtkMessageType</a> type,
+                                                         <a href="GtkMessageDialog.html#GtkButtonsType">GtkButtonsType</a> buttons,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *message_format,
+                                                         ...);</pre>
+<p>
+Creates a new message dialog, which is a simple dialog with an icon
+indicating the dialog type (error, warning, etc.) and some text which
+is marked up with the Pango text markup language.
+When the user clicks a button a "response" signal is emitted with
+response IDs from <a href="GtkDialog.html#GtkResponseType"><span class="type">GtkResponseType</span></a>. See <a href="GtkDialog.html" title="GtkDialog"><span class="type">GtkDialog</span></a> for more details.
+</p>
+<p>
+Special XML characters in the <code class="function">printf()</code> arguments passed to this
+function will automatically be escaped as necessary.
+(See <a
+href="../glib/glib-Simple-XML-Subset-Parser.html#g-markup-printf-escaped"
+><code class="function">g_markup_printf_escaped()</code></a> for how this is implemented.)
+Usually this is what you want, but if you have an existing
+Pango markup string that you want to use literally as the
+label, then you need to use <a href="GtkMessageDialog.html#gtk-message-dialog-set-markup"><code class="function">gtk_message_dialog_set_markup()</code></a>
+instead, since you can't pass the markup string either
+as the format (it might contain '%' characters) or as a string
+argument.
+</p>
+<p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+ GtkWidget *dialog;
+ dialog = gtk_message_dialog_new (main_application_window,
+                                  GTK_DIALOG_DESTROY_WITH_PARENT,
+                                  GTK_MESSAGE_ERROR,
+                                  GTK_BUTTONS_CLOSE,
+                                  NULL);
+ gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (dialog),
+                                markup);
+</pre></div>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>parent</code></em>&#160;:</span></td>
+<td> transient parent, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a> for none 
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>flags</code></em>&#160;:</span></td>
+<td> flags
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>type</code></em>&#160;:</span></td>
+<td> type of message
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>buttons</code></em>&#160;:</span></td>
+<td> set of buttons to use
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>message_format</code></em>&#160;:</span></td>
+<td> <code class="function">printf()</code>-style format string, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>...</code></em>&#160;:</span></td>
+<td> arguments for <em class="parameter"><code>message_format</code></em>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a new <a href="GtkMessageDialog.html" title="GtkMessageDialog"><span class="type">GtkMessageDialog</span></a>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.4
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2994876"></a><h3>
+<a name="gtk-message-dialog-set-markup"></a>gtk_message_dialog_set_markup ()</h3>
+<a class="indexterm" name="id2994892"></a><pre class="programlisting">void                gtk_message_dialog_set_markup       (<a href="GtkMessageDialog.html" title="GtkMessageDialog">GtkMessageDialog</a> *message_dialog,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *str);</pre>
+<p>
+Sets the text of the message dialog to be <em class="parameter"><code>str</code></em>, which is marked
+up with the Pango text markup
+language.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>message_dialog</code></em>&#160;:</span></td>
+<td> a <a href="GtkMessageDialog.html" title="GtkMessageDialog"><span class="type">GtkMessageDialog</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>str</code></em>&#160;:</span></td>
+<td> markup string (see Pango markup format)
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.4
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2995000"></a><h3>
+<a name="gtk-message-dialog-set-image"></a>gtk_message_dialog_set_image ()</h3>
+<a class="indexterm" name="id2995016"></a><pre class="programlisting">void                gtk_message_dialog_set_image        (<a href="GtkMessageDialog.html" title="GtkMessageDialog">GtkMessageDialog</a> *dialog,
+                                                         <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a> *image);</pre>
+<p>
+Sets the dialog's image to <em class="parameter"><code>image</code></em>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>dialog</code></em>&#160;:</span></td>
+<td> a <a href="GtkMessageDialog.html" title="GtkMessageDialog"><span class="type">GtkMessageDialog</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>image</code></em>&#160;:</span></td>
+<td> the image
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2995109"></a><h3>
+<a name="gtk-message-dialog-format-secondary-text"></a>gtk_message_dialog_format_secondary_text ()</h3>
+<a class="indexterm" name="id2995126"></a><pre class="programlisting">void                gtk_message_dialog_format_secondary_text
+                                                        (<a href="GtkMessageDialog.html" title="GtkMessageDialog">GtkMessageDialog</a> *message_dialog,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *message_format,
+                                                         ...);</pre>
+<p>
+Sets the secondary text of the message dialog to be <em class="parameter"><code>message_format</code></em> 
+(with <code class="function">printf()</code>-style).
+</p>
+<p>
+Note that setting a secondary text makes the primary text become
+bold, unless you have provided explicit markup.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>message_dialog</code></em>&#160;:</span></td>
+<td> a <a href="GtkMessageDialog.html" title="GtkMessageDialog"><span class="type">GtkMessageDialog</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>message_format</code></em>&#160;:</span></td>
+<td> <code class="function">printf()</code>-style format string, or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>...</code></em>&#160;:</span></td>
+<td> arguments for <em class="parameter"><code>message_format</code></em>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2995277"></a><h3>
+<a name="gtk-message-dialog-format-secondary-markup"></a>gtk_message_dialog_format_secondary_markup ()</h3>
+<a class="indexterm" name="id2995295"></a><pre class="programlisting">void                gtk_message_dialog_format_secondary_markup
+                                                        (<a href="GtkMessageDialog.html" title="GtkMessageDialog">GtkMessageDialog</a> *message_dialog,
+                                                         const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *message_format,
+                                                         ...);</pre>
+<p>
+Sets the secondary text of the message dialog to be <em class="parameter"><code>message_format</code></em> (with 
+<code class="function">printf()</code>-style), which is marked up with the 
+Pango text markup language.
+</p>
+<p>
+Note that setting a secondary text makes the primary text become
+bold, unless you have provided explicit markup.
+</p>
+<p>
+Due to an oversight, this function does not escape special XML characters
+like <a href="GtkMessageDialog.html#gtk-message-dialog-new-with-markup"><code class="function">gtk_message_dialog_new_with_markup()</code></a> does. Thus, if the arguments 
+may contain special XML characters, you should use <a
+href="../glib/glib-Simple-XML-Subset-Parser.html#g-markup-printf-escaped"
+><code class="function">g_markup_printf_escaped()</code></a>
+to escape it.
+</p>
+<p>
+</p>
+<div class="informalexample"><pre class="programlisting">
+gchar *msg;
+ 
+msg = g_markup_printf_escaped (message_format, ...);
+gtk_message_dialog_format_secondary_markup (message_dialog, "%s", msg);
+g_free (msg);
+</pre></div>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>message_dialog</code></em>&#160;:</span></td>
+<td> a <a href="GtkMessageDialog.html" title="GtkMessageDialog"><span class="type">GtkMessageDialog</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>message_format</code></em>&#160;:</span></td>
+<td> <code class="function">printf()</code>-style markup string (see 
+     Pango markup format), or <a
+href="../liboil/liboil-liboiljunk.html#NULL:CAPS"
+><code class="literal">NULL</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>...</code></em>&#160;:</span></td>
+<td> arguments for <em class="parameter"><code>message_format</code></em>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.6
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2995502"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2995513"></a><h3>
+<a name="GtkMessageDialog--buttons"></a>The :<code class="literal">buttons</code> property</h3>
+<a class="indexterm" name="id2995529"></a><pre class="programlisting">  buttons                  <a href="GtkMessageDialog.html#GtkButtonsType">GtkButtonsType</a>        : Write / Construct Only</pre>
+<p>The buttons shown in the message dialog.</p>
+<p>Default value: GTK_BUTTONS_NONE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2995556"></a><h3>
+<a name="GtkMessageDialog--image"></a>The :<code class="literal">image</code> property</h3>
+<a class="indexterm" name="id2995573"></a><pre class="programlisting">  image                    <a href="GtkWidget.html" title="GtkWidget">GtkWidget</a>             : Read / Write</pre>
+<p>
+The image for this dialog.</p>
+<p>
+
+</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2995604"></a><h3>
+<a name="GtkMessageDialog--message-type"></a>The :<code class="literal">message-type</code> property</h3>
+<a class="indexterm" name="id2995621"></a><pre class="programlisting">  message-type             <a href="GtkMessageDialog.html#GtkMessageType">GtkMessageType</a>        : Read / Write / Construct</pre>
+<p>
+The type of the message. The type is used to determine
+the image that is shown in the dialog, unless the image is 
+explicitly set by the ::image property.</p>
+<p>
+
+</p>
+<p>Default value: GTK_MESSAGE_INFO</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2995653"></a><h3>
+<a name="GtkMessageDialog--secondary-text"></a>The :<code class="literal">secondary-text</code> property</h3>
+<a class="indexterm" name="id2995670"></a><pre class="programlisting">  secondary-text           <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>
+The secondary text of the message dialog.</p>
+<p>
+
+</p>
+<p>Default value: NULL</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2995706"></a><h3>
+<a name="GtkMessageDialog--secondary-use-markup"></a>The :<code class="literal">secondary-use-markup</code> property</h3>
+<a class="indexterm" name="id2995723"></a><pre class="programlisting">  secondary-use-markup     <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>
+<a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the secondary text of the dialog includes Pango markup. 
+See <code class="function">pango_parse_markup()</code>.</p>
+<p>
+
+</p>
+<p>Default value: FALSE</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2995781"></a><h3>
+<a name="GtkMessageDialog--text"></a>The :<code class="literal">text</code> property</h3>
+<a class="indexterm" name="id2995797"></a><pre class="programlisting">  text                     <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre>
+<p>
+The primary text of the message dialog. If the dialog has 
+a secondary text, this will appear as the title.</p>
+<p>
+
+</p>
+<p>Default value: NULL</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2995834"></a><h3>
+<a name="GtkMessageDialog--use-markup"></a>The :<code class="literal">use-markup</code> property</h3>
+<a class="indexterm" name="id2995851"></a><pre class="programlisting">  use-markup               <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>
+<a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the primary text of the dialog includes Pango markup. 
+See <code class="function">pango_parse_markup()</code>.</p>
+<p>
+
+</p>
+<p>Default value: FALSE</p>
+<p>Since  2.10
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2995908"></a><h2>Style Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id2995919"></a><h3>
+<a name="GtkMessageDialog--message-border"></a>The :<code class="literal">message-border</code> style property</h3>
+<a class="indexterm" name="id2995936"></a><pre class="programlisting">  message-border           <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read</pre>
+<p>Width of border around the label and image in the message dialog.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 12</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2995967"></a><h3>
+<a name="GtkMessageDialog--use-separator"></a>The :<code class="literal">use-separator</code> style property</h3>
+<a class="indexterm" name="id2995984"></a><pre class="programlisting">  use-separator            <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read</pre>
+<p>
+Whether to draw a separator line between the message label and the buttons
+in the dialog.</p>
+<p>
+
+</p>
+<p>Default value: FALSE</p>
+<p>Since  2.4
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id2996021"></a><h2>See Also</h2>
+<p>
+<a href="GtkDialog.html" title="GtkDialog"><span class="type">GtkDialog</span></a>
+</p>
+</div>
+</div>
+</body>
+</html>

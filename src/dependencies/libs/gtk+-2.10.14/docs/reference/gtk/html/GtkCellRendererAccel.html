@@ -1,0 +1,374 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>GtkCellRendererAccel</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GTK+ Reference Manual">
+<link rel="up" href="TreeWidgetObjects.html" title="Tree, List and Icon Grid Widgets">
+<link rel="prev" href="GtkCellEditable.html" title="GtkCellEditable">
+<link rel="next" href="GtkCellRendererCombo.html" title="GtkCellRendererCombo">
+<meta name="generator" content="GTK-Doc V1.7 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gtk.html" title="Part&#160;I.&#160;GTK+ Overview">
+<link rel="part" href="gtkbase.html" title="Part&#160;II.&#160;GTK+ Core Reference">
+<link rel="part" href="gtkobjects.html" title="Part&#160;III.&#160;GTK+ Widgets and Objects">
+<link rel="chapter" href="ch01.html" title="Object Hierarchy">
+<link rel="chapter" href="ch02.html" title="Widget Gallery">
+<link rel="chapter" href="WindowWidgets.html" title="Windows">
+<link rel="chapter" href="DisplayWidgets.html" title="Display Widgets">
+<link rel="chapter" href="ButtonWidgets.html" title="Buttons and Toggles">
+<link rel="chapter" href="NumericEntry.html" title="Numeric/Text Data Entry">
+<link rel="chapter" href="TextWidgetObjects.html" title="Multiline Text Editor">
+<link rel="chapter" href="TreeWidgetObjects.html" title="Tree, List and Icon Grid Widgets">
+<link rel="chapter" href="MenusAndCombos.html" title="Menus, Combo Box, Toolbar">
+<link rel="chapter" href="Actions.html" title="Action-based menus and toolbars">
+<link rel="chapter" href="SelectorWidgets.html" title="Selectors (File/Font/Color/Input Devices)">
+<link rel="chapter" href="LayoutContainers.html" title="Layout Containers">
+<link rel="chapter" href="Ornaments.html" title="Ornaments">
+<link rel="chapter" href="ScrollingWidgets.html" title="Scrolling">
+<link rel="chapter" href="Printing.html" title="Printing">
+<link rel="chapter" href="MiscObjects.html" title="Miscellaneous">
+<link rel="chapter" href="AbstractObjects.html" title="Abstract Base Classes">
+<link rel="chapter" href="PlugSocket.html" title="Cross-process Embedding">
+<link rel="chapter" href="SpecialObjects.html" title="Special-purpose features">
+<link rel="chapter" href="RecentDocuments.html" title="Recently Used Documents">
+<link rel="chapter" href="DeprecatedObjects.html" title="Deprecated">
+<link rel="part" href="migrating.html" title="Part&#160;IV.&#160;Migrating from Previous Versions of GTK+">
+<link rel="chapter" href="gtk-migrating-checklist.html" title="Migration Checklist">
+<link rel="chapter" href="gtk-migrating-GtkFileChooser.html" title="Migrating from GtkFileSelection to GtkFileChooser">
+<link rel="chapter" href="gtk-migrating-GtkAction.html" title="Migrating from old menu and toolbar systems to GtkAction">
+<link rel="chapter" href="gtk-migrating-GtkComboBox.html" title="Migrating from GtkOptionMenu and GtkCombo to GtkComboBox and GtkComboBoxEntry">
+<link rel="chapter" href="gtk-migrating-GtkIconView.html" title="Migrating from GnomeIconList to GtkIconView">
+<link rel="chapter" href="gtk-migrating-GtkAboutDialog.html" title="Migrating from GnomeAbout to GtkAboutDialog">
+<link rel="chapter" href="gtk-migrating-GtkColorButton.html" title="Migrating from GnomeColorPicker to GtkColorButton">
+<link rel="chapter" href="gtk-migrating-GtkAssistant.html" title="Migrating from GnomeDruid to GtkAssistant">
+<link rel="chapter" href="gtk-migrating-GtkRecentChooser.html" title="Migrating from EggRecent to GtkRecentChooser">
+<link rel="chapter" href="gtk-migrating-GtkLinkButton.html" title="Migrating from GnomeHRef to GtkLinkButton">
+<link rel="part" href="pt05.html" title="Part&#160;V.&#160;GTK+ Tools">
+<link rel="glossary" href="glossary.html" title="Glossary">
+<link rel="index" href="ix01.html" title="Index">
+<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="ix03.html" title="Index of new symbols in 2.2">
+<link rel="index" href="ix04.html" title="Index of new symbols in 2.4">
+<link rel="index" href="ix05.html" title="Index of new symbols in 2.6">
+<link rel="index" href="ix06.html" title="Index of new symbols in 2.8">
+<link rel="index" href="ix07.html" title="Index of new symbols in 2.10">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="GtkCellEditable.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="TreeWidgetObjects.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GTK+ Reference Manual</th>
+<td><a accesskey="n" href="GtkCellRendererCombo.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id3428681" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id3428902" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id3428729" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id3428783" class="shortcut">Properties</a>
+                  &#160;|&#160;
+                  <a href="#id3428864" class="shortcut">Signals</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="GtkCellRendererAccel"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id3428681"></a><span class="refentrytitle">GtkCellRendererAccel</span>
+</h2>
+<p>GtkCellRendererAccel &#8212; Renders a keyboard accelerator in a cell</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<pre class="synopsis">
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <a href="GtkCellRendererAccel.html#GtkCellRendererAccel-struct">GtkCellRendererAccel</a>;
+enum                <a href="GtkCellRendererAccel.html#GtkCellRendererAccelMode">GtkCellRendererAccelMode</a>;
+<a href="GtkCellRenderer.html" title="GtkCellRenderer">GtkCellRenderer</a>*    <a href="GtkCellRendererAccel.html#gtk-cell-renderer-accel-new">gtk_cell_renderer_accel_new</a>         (void);
+
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3428729"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gobject/gobject-The-Base-Object-Type.html#GInitiallyUnowned"
+>GInitiallyUnowned</a>
+         +----<a href="GtkObject.html" title="GtkObject">GtkObject</a>
+               +----<a href="GtkCellRenderer.html" title="GtkCellRenderer">GtkCellRenderer</a>
+                     +----<a href="GtkCellRendererText.html" title="GtkCellRendererText">GtkCellRendererText</a>
+                           +----GtkCellRendererAccel
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3428783"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  <a href="GtkCellRendererAccel.html#GtkCellRendererAccel--accel-key">accel-key</a>                <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+  <a href="GtkCellRendererAccel.html#GtkCellRendererAccel--accel-mode">accel-mode</a>               <a href="GtkCellRendererAccel.html#GtkCellRendererAccelMode">GtkCellRendererAccelMode</a>  : Read / Write
+  <a href="GtkCellRendererAccel.html#GtkCellRendererAccel--accel-mods">accel-mods</a>               <a
+href="../gdk/gdk-Windows.html#GdkModifierType"
+>GdkModifierType</a>       : Read / Write
+  <a href="GtkCellRendererAccel.html#GtkCellRendererAccel--keycode">keycode</a>                  <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3428864"></a><h2>Signals</h2>
+<pre class="synopsis">
+
+  <a href="GtkCellRendererAccel.html#GtkCellRendererAccel-accel-cleared">accel-cleared</a>                                  : Run Last
+  <a href="GtkCellRendererAccel.html#GtkCellRendererAccel-accel-edited">accel-edited</a>                                   : Run Last
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3428902"></a><h2>Description</h2>
+<p>
+<a href="GtkCellRendererAccel.html" title="GtkCellRendererAccel"><span class="type">GtkCellRendererAccel</span></a> displays a keyboard accelerator (i.e. a 
+key combination like &lt;Control&gt;-a). If the cell renderer is editable, the 
+accelerator can be changed by simply typing the new combination.
+</p>
+<p>
+The <a href="GtkCellRendererAccel.html" title="GtkCellRendererAccel"><span class="type">GtkCellRendererAccel</span></a> cell renderer was added in GTK+ 2.10.
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3428945"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3428956"></a><h3>
+<a name="GtkCellRendererAccel-struct"></a>GtkCellRendererAccel</h3>
+<a class="indexterm" name="id3428969"></a><pre class="programlisting">typedef struct _GtkCellRendererAccel GtkCellRendererAccel;</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3428985"></a><h3>
+<a name="GtkCellRendererAccelMode"></a>enum GtkCellRendererAccelMode</h3>
+<a class="indexterm" name="id3428998"></a><pre class="programlisting">typedef enum
+{
+  GTK_CELL_RENDERER_ACCEL_MODE_GTK,
+  GTK_CELL_RENDERER_ACCEL_MODE_OTHER
+} GtkCellRendererAccelMode;
+</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3429015"></a><h3>
+<a name="gtk-cell-renderer-accel-new"></a>gtk_cell_renderer_accel_new ()</h3>
+<a class="indexterm" name="id3429031"></a><pre class="programlisting"><a href="GtkCellRenderer.html" title="GtkCellRenderer">GtkCellRenderer</a>*    gtk_cell_renderer_accel_new         (void);</pre>
+<p>
+Creates a new <a href="GtkCellRendererAccel.html" title="GtkCellRendererAccel"><span class="type">GtkCellRendererAccel</span></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the new cell renderer
+
+</td>
+</tr></tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3429087"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3429098"></a><h3>
+<a name="GtkCellRendererAccel--accel-key"></a>The :<code class="literal">accel-key</code> property</h3>
+<a class="indexterm" name="id3429114"></a><pre class="programlisting">  accel-key                <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
+<p>
+The keyval of the accelerator.</p>
+<p>
+
+</p>
+<p>Allowed values: &lt;= G_MAXINT</p>
+<p>Default value: 0</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3429154"></a><h3>
+<a name="GtkCellRendererAccel--accel-mode"></a>The :<code class="literal">accel-mode</code> property</h3>
+<a class="indexterm" name="id3429170"></a><pre class="programlisting">  accel-mode               <a href="GtkCellRendererAccel.html#GtkCellRendererAccelMode">GtkCellRendererAccelMode</a>  : Read / Write</pre>
+<p>
+Determines if the edited accelerators are GTK+ accelerators. If
+they are, consumed modifiers are suppressed, only accelerators
+accepted by GTK+ are allowed, and the accelerators are rendered
+in the same way as they are in menus.</p>
+<p>
+
+</p>
+<p>Default value: GTK_CELL_RENDERER_ACCEL_MODE_GTK</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3429210"></a><h3>
+<a name="GtkCellRendererAccel--accel-mods"></a>The :<code class="literal">accel-mods</code> property</h3>
+<a class="indexterm" name="id3429227"></a><pre class="programlisting">  accel-mods               <a
+href="../gdk/gdk-Windows.html#GdkModifierType"
+>GdkModifierType</a>       : Read / Write</pre>
+<p>
+The modifier mask of the accelerator.</p>
+<p>
+
+</p>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3429259"></a><h3>
+<a name="GtkCellRendererAccel--keycode"></a>The :<code class="literal">keycode</code> property</h3>
+<a class="indexterm" name="id3429275"></a><pre class="programlisting">  keycode                  <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre>
+<p>
+The hardware keycode of the accelerator. Note that the hardware keycode is
+only relevant if the key does not have a keyval. Normally, the keyboard
+configuration should assign keyvals to all keys.</p>
+<p>
+
+</p>
+<p>Allowed values: &lt;= G_MAXINT</p>
+<p>Default value: 0</p>
+<p>Since  2.10
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3429318"></a><h2>Signal Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3429329"></a><h3>
+<a name="GtkCellRendererAccel-accel-cleared"></a>The <code class="literal">::accel-cleared</code> signal</h3>
+<a class="indexterm" name="id3429346"></a><pre class="programlisting">void                user_function                      (<a href="GtkCellRendererAccel.html" title="GtkCellRendererAccel">GtkCellRendererAccel</a> *accel,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>                *path_string,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>              user_data)        : Run Last</pre>
+<p>
+Gets emitted when the user has removed the accelerator.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>accel</code></em>&#160;:</span></td>
+<td> the object reveiving the signal
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>path_string</code></em>&#160;:</span></td>
+<td> the path identifying the row of the edited cell
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3429446"></a><h3>
+<a name="GtkCellRendererAccel-accel-edited"></a>The <code class="literal">::accel-edited</code> signal</h3>
+<a class="indexterm" name="id3429463"></a><pre class="programlisting">void                user_function                      (<a href="GtkCellRendererAccel.html" title="GtkCellRendererAccel">GtkCellRendererAccel</a> *accel,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>                *path_string,
+                                                        <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 accel_key,
+                                                        <a
+href="../gdk/gdk-Windows.html#GdkModifierType"
+>GdkModifierType</a>       accel_mods,
+                                                        <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 hardware_keycode,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>              user_data)             : Run Last</pre>
+<p>
+Gets emitted when the user has selected a new accelerator.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>accel</code></em>&#160;:</span></td>
+<td> the object reveiving the signal
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>path_string</code></em>&#160;:</span></td>
+<td> the path identifying the row of the edited cell
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>accel_key</code></em>&#160;:</span></td>
+<td> the new accelerator keyval
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>accel_mods</code></em>&#160;:</span></td>
+<td> the new acclerator modifier mask
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>hardware_keycode</code></em>&#160;:</span></td>
+<td> the keycode of the new accelerator
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Since  2.10
+</p>
+</div>
+</div>
+</div>
+</body>
+</html>

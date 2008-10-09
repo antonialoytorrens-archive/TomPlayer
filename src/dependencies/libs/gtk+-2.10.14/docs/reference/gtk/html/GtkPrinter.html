@@ -1,0 +1,955 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>GtkPrinter</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+<link rel="start" href="index.html" title="GTK+ Reference Manual">
+<link rel="up" href="Printing.html" title="Printing">
+<link rel="prev" href="gtk-GtkPaperSize.html" title="GtkPaperSize">
+<link rel="next" href="GtkPrintJob.html" title="GtkPrintJob">
+<meta name="generator" content="GTK-Doc V1.7 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="part" href="gtk.html" title="Part&#160;I.&#160;GTK+ Overview">
+<link rel="part" href="gtkbase.html" title="Part&#160;II.&#160;GTK+ Core Reference">
+<link rel="part" href="gtkobjects.html" title="Part&#160;III.&#160;GTK+ Widgets and Objects">
+<link rel="chapter" href="ch01.html" title="Object Hierarchy">
+<link rel="chapter" href="ch02.html" title="Widget Gallery">
+<link rel="chapter" href="WindowWidgets.html" title="Windows">
+<link rel="chapter" href="DisplayWidgets.html" title="Display Widgets">
+<link rel="chapter" href="ButtonWidgets.html" title="Buttons and Toggles">
+<link rel="chapter" href="NumericEntry.html" title="Numeric/Text Data Entry">
+<link rel="chapter" href="TextWidgetObjects.html" title="Multiline Text Editor">
+<link rel="chapter" href="TreeWidgetObjects.html" title="Tree, List and Icon Grid Widgets">
+<link rel="chapter" href="MenusAndCombos.html" title="Menus, Combo Box, Toolbar">
+<link rel="chapter" href="Actions.html" title="Action-based menus and toolbars">
+<link rel="chapter" href="SelectorWidgets.html" title="Selectors (File/Font/Color/Input Devices)">
+<link rel="chapter" href="LayoutContainers.html" title="Layout Containers">
+<link rel="chapter" href="Ornaments.html" title="Ornaments">
+<link rel="chapter" href="ScrollingWidgets.html" title="Scrolling">
+<link rel="chapter" href="Printing.html" title="Printing">
+<link rel="chapter" href="MiscObjects.html" title="Miscellaneous">
+<link rel="chapter" href="AbstractObjects.html" title="Abstract Base Classes">
+<link rel="chapter" href="PlugSocket.html" title="Cross-process Embedding">
+<link rel="chapter" href="SpecialObjects.html" title="Special-purpose features">
+<link rel="chapter" href="RecentDocuments.html" title="Recently Used Documents">
+<link rel="chapter" href="DeprecatedObjects.html" title="Deprecated">
+<link rel="part" href="migrating.html" title="Part&#160;IV.&#160;Migrating from Previous Versions of GTK+">
+<link rel="chapter" href="gtk-migrating-checklist.html" title="Migration Checklist">
+<link rel="chapter" href="gtk-migrating-GtkFileChooser.html" title="Migrating from GtkFileSelection to GtkFileChooser">
+<link rel="chapter" href="gtk-migrating-GtkAction.html" title="Migrating from old menu and toolbar systems to GtkAction">
+<link rel="chapter" href="gtk-migrating-GtkComboBox.html" title="Migrating from GtkOptionMenu and GtkCombo to GtkComboBox and GtkComboBoxEntry">
+<link rel="chapter" href="gtk-migrating-GtkIconView.html" title="Migrating from GnomeIconList to GtkIconView">
+<link rel="chapter" href="gtk-migrating-GtkAboutDialog.html" title="Migrating from GnomeAbout to GtkAboutDialog">
+<link rel="chapter" href="gtk-migrating-GtkColorButton.html" title="Migrating from GnomeColorPicker to GtkColorButton">
+<link rel="chapter" href="gtk-migrating-GtkAssistant.html" title="Migrating from GnomeDruid to GtkAssistant">
+<link rel="chapter" href="gtk-migrating-GtkRecentChooser.html" title="Migrating from EggRecent to GtkRecentChooser">
+<link rel="chapter" href="gtk-migrating-GtkLinkButton.html" title="Migrating from GnomeHRef to GtkLinkButton">
+<link rel="part" href="pt05.html" title="Part&#160;V.&#160;GTK+ Tools">
+<link rel="glossary" href="glossary.html" title="Glossary">
+<link rel="index" href="ix01.html" title="Index">
+<link rel="index" href="ix02.html" title="Index of deprecated symbols">
+<link rel="index" href="ix03.html" title="Index of new symbols in 2.2">
+<link rel="index" href="ix04.html" title="Index of new symbols in 2.4">
+<link rel="index" href="ix05.html" title="Index of new symbols in 2.6">
+<link rel="index" href="ix06.html" title="Index of new symbols in 2.8">
+<link rel="index" href="ix07.html" title="Index of new symbols in 2.10">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gtk-GtkPaperSize.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="Printing.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GTK+ Reference Manual</th>
+<td><a accesskey="n" href="GtkPrintJob.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts"><nobr><a href="#id3777273" class="shortcut">Top</a>
+                  &#160;|&#160;
+                  <a href="#id3777960" class="shortcut">Description</a>
+                  &#160;|&#160;
+                  <a href="#id3777734" class="shortcut">Object Hierarchy</a>
+                  &#160;|&#160;
+                  <a href="#id3777772" class="shortcut">Properties</a>
+                  &#160;|&#160;
+                  <a href="#id3777933" class="shortcut">Signals</a></nobr></td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="GtkPrinter"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2>
+<a name="id3777273"></a><span class="refentrytitle">GtkPrinter</span>
+</h2>
+<p>GtkPrinter &#8212; Represents a printer</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<a name="GtkPrintBackend"></a><pre class="synopsis">
+
+#include &lt;gtk/gtk.h&gt;
+
+
+                    <a href="GtkPrinter.html#GtkPrinter-struct">GtkPrinter</a>;
+                    <a href="GtkPrinter.html#GtkPrintBackend-struct">GtkPrintBackend</a>;
+<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a>*         <a href="GtkPrinter.html#gtk-printer-new">gtk_printer_new</a>                     (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                                         <a href="GtkPrinter.html#GtkPrintBackend">GtkPrintBackend</a> *backend,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> virtual_);
+<a href="GtkPrinter.html#GtkPrintBackend">GtkPrintBackend</a>*    <a href="GtkPrinter.html#gtk-printer-get-backend">gtk_printer_get_backend</a>             (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer);
+const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a href="GtkPrinter.html#gtk-printer-get-name">gtk_printer_get_name</a>                (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer);
+const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a href="GtkPrinter.html#gtk-printer-get-state-message">gtk_printer_get_state_message</a>       (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer);
+const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a href="GtkPrinter.html#gtk-printer-get-description">gtk_printer_get_description</a>         (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer);
+const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a href="GtkPrinter.html#gtk-printer-get-location">gtk_printer_get_location</a>            (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer);
+const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        <a href="GtkPrinter.html#gtk-printer-get-icon-name">gtk_printer_get_icon_name</a>           (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkPrinter.html#gtk-printer-get-job-count">gtk_printer_get_job_count</a>           (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkPrinter.html#gtk-printer-is-active">gtk_printer_is_active</a>               (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkPrinter.html#gtk-printer-is-virtual">gtk_printer_is_virtual</a>              (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkPrinter.html#gtk-printer-is-default">gtk_printer_is_default</a>              (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkPrinter.html#gtk-printer-accepts-ps">gtk_printer_accepts_ps</a>              (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            <a href="GtkPrinter.html#gtk-printer-accepts-pdf">gtk_printer_accepts_pdf</a>             (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                <a href="GtkPrinter.html#gtk-printer-compare">gtk_printer_compare</a>                 (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *a,
+                                                         <a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *b);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (<a href="GtkPrinter.html#GtkPrinterFunc">*GtkPrinterFunc</a>)                   (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);
+void                <a href="GtkPrinter.html#gtk-enumerate-printers">gtk_enumerate_printers</a>              (<a href="GtkPrinter.html#GtkPrinterFunc">GtkPrinterFunc</a> func,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data,
+                                                         <a
+href="../glib/glib-Datasets.html#GDestroyNotify"
+>GDestroyNotify</a> destroy,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> wait);
+
+
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3777734"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----GtkPrinter
+</pre>
+<pre class="synopsis">
+
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----GtkPrintBackend
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3777772"></a><h2>Properties</h2>
+<pre class="synopsis">
+
+  <a href="GtkPrinter.html#GtkPrinter--accepts-pdf">accepts-pdf</a>              <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct Only
+  <a href="GtkPrinter.html#GtkPrinter--accepts-ps">accepts-ps</a>               <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct Only
+  <a href="GtkPrinter.html#GtkPrinter--backend">backend</a>                  <a href="GtkPrinter.html#GtkPrintBackend">GtkPrintBackend</a>       : Read / Write / Construct Only
+  <a href="GtkPrinter.html#GtkPrinter--icon-name">icon-name</a>                <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read
+  <a href="GtkPrinter.html#GtkPrinter--is-virtual">is-virtual</a>               <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct Only
+  <a href="GtkPrinter.html#GtkPrinter--job-count">job-count</a>                <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read
+  <a href="GtkPrinter.html#GtkPrinter--location">location</a>                 <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read
+  <a href="GtkPrinter.html#GtkPrinter--name">name</a>                     <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write / Construct Only
+  <a href="GtkPrinter.html#GtkPrinter--state-message">state-message</a>            <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3777933"></a><h2>Signals</h2>
+<pre class="synopsis">
+
+  <a href="GtkPrinter.html#GtkPrinter-details-acquired">details-acquired</a>                               : Run Last
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3777960"></a><h2>Description</h2>
+<p>
+A <a href="GtkPrinter.html" title="GtkPrinter"><span class="type">GtkPrinter</span></a> object represents a printer. You only need to 
+deal directly with printers if you use the non-portable 
+<a href="GtkPrintUnixDialog.html" title="GtkPrintUnixDialog"><span class="type">GtkPrintUnixDialog</span></a> API. 
+</p>
+<p>
+A <a href="GtkPrinter.html" title="GtkPrinter"><span class="type">GtkPrinter</span></a> allows to get status information about the printer, 
+such as its description, its location, the number of queued jobs, 
+etc. Most importantly, a <a href="GtkPrinter.html" title="GtkPrinter"><span class="type">GtkPrinter</span></a> object can be used to create
+a <a href="GtkPrintJob.html" title="GtkPrintJob"><span class="type">GtkPrintJob</span></a> object, which lets you print to the printer.
+</p>
+<p>
+Printing support was added in GTK+ 2.10.
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3778027"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3778037"></a><h3>
+<a name="GtkPrinter-struct"></a>GtkPrinter</h3>
+<a class="indexterm" name="id3778050"></a><pre class="programlisting">typedef struct _GtkPrinter GtkPrinter;</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3778064"></a><h3>
+<a name="GtkPrintBackend-struct"></a>GtkPrintBackend</h3>
+<a class="indexterm" name="id3778078"></a><pre class="programlisting">typedef struct _GtkPrintBackend GtkPrintBackend;</pre>
+<p>
+
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3778094"></a><h3>
+<a name="gtk-printer-new"></a>gtk_printer_new ()</h3>
+<a class="indexterm" name="id3778108"></a><pre class="programlisting"><a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a>*         gtk_printer_new                     (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                                         <a href="GtkPrinter.html#GtkPrintBackend">GtkPrintBackend</a> *backend,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> virtual_);</pre>
+<p>
+Creates a new <a href="GtkPrinter.html" title="GtkPrinter"><span class="type">GtkPrinter</span></a>.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>name</code></em>&#160;:</span></td>
+<td> the name of the printer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>backend</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrinter.html#GtkPrintBackend"><span class="type">GtkPrintBackend</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>virtual_</code></em>&#160;:</span></td>
+<td> whether the printer is virtual
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> a new <a href="GtkPrinter.html" title="GtkPrinter"><span class="type">GtkPrinter</span></a>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3778244"></a><h3>
+<a name="gtk-printer-get-backend"></a>gtk_printer_get_backend ()</h3>
+<a class="indexterm" name="id3778259"></a><pre class="programlisting"><a href="GtkPrinter.html#GtkPrintBackend">GtkPrintBackend</a>*    gtk_printer_get_backend             (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer);</pre>
+<p>
+Returns the backend of the printer.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>printer</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrinter.html" title="GtkPrinter"><span class="type">GtkPrinter</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the backend of <em class="parameter"><code>printer</code></em>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3778341"></a><h3>
+<a name="gtk-printer-get-name"></a>gtk_printer_get_name ()</h3>
+<a class="indexterm" name="id3778356"></a><pre class="programlisting">const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gtk_printer_get_name                (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer);</pre>
+<p>
+Returns the name of the printer.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>printer</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrinter.html" title="GtkPrinter"><span class="type">GtkPrinter</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the name of <em class="parameter"><code>printer</code></em>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3778439"></a><h3>
+<a name="gtk-printer-get-state-message"></a>gtk_printer_get_state_message ()</h3>
+<a class="indexterm" name="id3778455"></a><pre class="programlisting">const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gtk_printer_get_state_message       (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer);</pre>
+<p>
+Returns the state message describing the current state
+of the printer.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>printer</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrinter.html" title="GtkPrinter"><span class="type">GtkPrinter</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the state message of <em class="parameter"><code>printer</code></em>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3778538"></a><h3>
+<a name="gtk-printer-get-description"></a>gtk_printer_get_description ()</h3>
+<a class="indexterm" name="id3778554"></a><pre class="programlisting">const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gtk_printer_get_description         (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer);</pre>
+<p>
+Gets the description of the printer.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>printer</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrinter.html" title="GtkPrinter"><span class="type">GtkPrinter</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the description of <em class="parameter"><code>printer</code></em>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3778636"></a><h3>
+<a name="gtk-printer-get-location"></a>gtk_printer_get_location ()</h3>
+<a class="indexterm" name="id3778652"></a><pre class="programlisting">const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gtk_printer_get_location            (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer);</pre>
+<p>
+Returns a  description of the location of the printer.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>printer</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrinter.html" title="GtkPrinter"><span class="type">GtkPrinter</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the location of <em class="parameter"><code>printer</code></em>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3778734"></a><h3>
+<a name="gtk-printer-get-icon-name"></a>gtk_printer_get_icon_name ()</h3>
+<a class="indexterm" name="id3778751"></a><pre class="programlisting">const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*        gtk_printer_get_icon_name           (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer);</pre>
+<p>
+Gets the name of the icon to use for the printer.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>printer</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrinter.html" title="GtkPrinter"><span class="type">GtkPrinter</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the icon name for <em class="parameter"><code>printer</code></em>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3778833"></a><h3>
+<a name="gtk-printer-get-job-count"></a>gtk_printer_get_job_count ()</h3>
+<a class="indexterm" name="id3778849"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_printer_get_job_count           (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer);</pre>
+<p>
+Gets the number of jobs currently queued on the printer.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>printer</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrinter.html" title="GtkPrinter"><span class="type">GtkPrinter</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> the number of jobs on <em class="parameter"><code>printer</code></em>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3778930"></a><h3>
+<a name="gtk-printer-is-active"></a>gtk_printer_is_active ()</h3>
+<a class="indexterm" name="id3778946"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_printer_is_active               (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer);</pre>
+<p>
+Returns whether the printer is currently active (i.e. 
+accepts new jobs).</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>printer</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrinter.html" title="GtkPrinter"><span class="type">GtkPrinter</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if <em class="parameter"><code>printer</code></em> is active
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3779038"></a><h3>
+<a name="gtk-printer-is-virtual"></a>gtk_printer_is_virtual ()</h3>
+<a class="indexterm" name="id3779053"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_printer_is_virtual              (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer);</pre>
+<p>
+Returns whether the printer is virtual (i.e. does not
+represent actual printer hardware, but something like 
+a CUPS class).</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>printer</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrinter.html" title="GtkPrinter"><span class="type">GtkPrinter</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if <em class="parameter"><code>printer</code></em> is virtual
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3779146"></a><h3>
+<a name="gtk-printer-is-default"></a>gtk_printer_is_default ()</h3>
+<a class="indexterm" name="id3779161"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_printer_is_default              (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer);</pre>
+<p>
+Returns whether the printer is the default printer.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>printer</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrinter.html" title="GtkPrinter"><span class="type">GtkPrinter</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if <em class="parameter"><code>printer</code></em> is the default
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3779253"></a><h3>
+<a name="gtk-printer-accepts-ps"></a>gtk_printer_accepts_ps ()</h3>
+<a class="indexterm" name="id3779269"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_printer_accepts_ps              (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer);</pre>
+<p>
+Returns whether the printer accepts input in
+PostScript format.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>printer</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrinter.html" title="GtkPrinter"><span class="type">GtkPrinter</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if <em class="parameter"><code>printer</code></em> accepts PostScript
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3779361"></a><h3>
+<a name="gtk-printer-accepts-pdf"></a>gtk_printer_accepts_pdf ()</h3>
+<a class="indexterm" name="id3779376"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            gtk_printer_accepts_pdf             (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer);</pre>
+<p>
+Returns whether the printer accepts input in
+PDF format.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>printer</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrinter.html" title="GtkPrinter"><span class="type">GtkPrinter</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if <em class="parameter"><code>printer</code></em> accepts PDF
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3779468"></a><h3>
+<a name="gtk-printer-compare"></a>gtk_printer_compare ()</h3>
+<a class="indexterm" name="id3779483"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                gtk_printer_compare                 (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *a,
+                                                         <a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *b);</pre>
+<p>
+Compares two printers.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>a</code></em>&#160;:</span></td>
+<td> a <a href="GtkPrinter.html" title="GtkPrinter"><span class="type">GtkPrinter</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>b</code></em>&#160;:</span></td>
+<td> another <a href="GtkPrinter.html" title="GtkPrinter"><span class="type">GtkPrinter</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td> 0 if the printer match, a negative value if <em class="parameter"><code>a</code></em> &lt; <em class="parameter"><code>b</code></em>, 
+  or a positive value if <em class="parameter"><code>a</code></em> &gt; <em class="parameter"><code>b</code></em>
+
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3779610"></a><h3>
+<a name="GtkPrinterFunc"></a>GtkPrinterFunc ()</h3>
+<a class="indexterm" name="id3779623"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>            (*GtkPrinterFunc)                   (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data);</pre>
+<p>
+The type of function passed to <a href="GtkPrinter.html#gtk-enumerate-printers"><code class="function">gtk_enumerate_printers()</code></a>.
+Note that you need to ref <em class="parameter"><code>printer</code></em>, if you want to keep
+a reference to it after the function has returned.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>printer</code></em>&#160;:</span></td>
+<td>a <a href="GtkPrinter.html" title="GtkPrinter"><span class="type">GtkPrinter</span></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td>user data passed to <a href="GtkPrinter.html#gtk-enumerate-printers"><code class="function">gtk_enumerate_printers()</code></a>
+</td>
+</tr>
+<tr>
+<td><span class="term"><span class="emphasis"><em>Returns</em></span>&#160;:</span></td>
+<td>
+<a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> to stop the enumeration, <a
+href="../glib/glib-Standard-Macros.html#FALSE:CAPS"
+><code class="literal">FALSE</code></a> to continue
+
+
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3779759"></a><h3>
+<a name="gtk-enumerate-printers"></a>gtk_enumerate_printers ()</h3>
+<a class="indexterm" name="id3779775"></a><pre class="programlisting">void                gtk_enumerate_printers              (<a href="GtkPrinter.html#GtkPrinterFunc">GtkPrinterFunc</a> func,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> data,
+                                                         <a
+href="../glib/glib-Datasets.html#GDestroyNotify"
+>GDestroyNotify</a> destroy,
+                                                         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> wait);</pre>
+<p>
+Calls a function for all <a href="GtkPrinter.html" title="GtkPrinter"><span class="type">GtkPrinter</span></a>s. 
+If <em class="parameter"><code>func</code></em> returns <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, the enumeration is stopped.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>func</code></em>&#160;:</span></td>
+<td> a function to call for each printer
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>data</code></em>&#160;:</span></td>
+<td> user data to pass to <em class="parameter"><code>func</code></em>
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>destroy</code></em>&#160;:</span></td>
+<td> function to call if <em class="parameter"><code>data</code></em> is no longer needed
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>wait</code></em>&#160;:</span></td>
+<td> if <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a>, wait in a recursive mainloop until
+   all printers are enumerated; otherwise return early
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since  2.10
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3779950"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3779960"></a><h3>
+<a name="GtkPrinter--accepts-pdf"></a>The :<code class="literal">accepts-pdf</code> property</h3>
+<a class="indexterm" name="id3779976"></a><pre class="programlisting">  accepts-pdf              <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct Only</pre>
+<p>TRUE if this printer can accept PDF.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3780003"></a><h3>
+<a name="GtkPrinter--accepts-ps"></a>The :<code class="literal">accepts-ps</code> property</h3>
+<a class="indexterm" name="id3780020"></a><pre class="programlisting">  accepts-ps               <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct Only</pre>
+<p>TRUE if this printer can accept PostScript.</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3780046"></a><h3>
+<a name="GtkPrinter--backend"></a>The :<code class="literal">backend</code> property</h3>
+<a class="indexterm" name="id3780062"></a><pre class="programlisting">  backend                  <a href="GtkPrinter.html#GtkPrintBackend">GtkPrintBackend</a>       : Read / Write / Construct Only</pre>
+<p>Backend for the printer.</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3780085"></a><h3>
+<a name="GtkPrinter--icon-name"></a>The :<code class="literal">icon-name</code> property</h3>
+<a class="indexterm" name="id3780102"></a><pre class="programlisting">  icon-name                <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read</pre>
+<p>The icon name to use for the printer.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3780128"></a><h3>
+<a name="GtkPrinter--is-virtual"></a>The :<code class="literal">is-virtual</code> property</h3>
+<a class="indexterm" name="id3780144"></a><pre class="programlisting">  is-virtual               <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write / Construct Only</pre>
+<p>FALSE if this represents a real hardware printer.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3780171"></a><h3>
+<a name="GtkPrinter--job-count"></a>The :<code class="literal">job-count</code> property</h3>
+<a class="indexterm" name="id3780188"></a><pre class="programlisting">  job-count                <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read</pre>
+<p>Number of jobs queued in the printer.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3780218"></a><h3>
+<a name="GtkPrinter--location"></a>The :<code class="literal">location</code> property</h3>
+<a class="indexterm" name="id3780234"></a><pre class="programlisting">  location                 <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read</pre>
+<p>The location of the printer.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3780260"></a><h3>
+<a name="GtkPrinter--name"></a>The :<code class="literal">name</code> property</h3>
+<a class="indexterm" name="id3780276"></a><pre class="programlisting">  name                     <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write / Construct Only</pre>
+<p>Name of the printer.</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id3780302"></a><h3>
+<a name="GtkPrinter--state-message"></a>The :<code class="literal">state-message</code> property</h3>
+<a class="indexterm" name="id3780319"></a><pre class="programlisting">  state-message            <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read</pre>
+<p>String giving the current state of the printer.</p>
+<p>Default value: NULL</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="id3780346"></a><h2>Signal Details</h2>
+<div class="refsect2" lang="en">
+<a name="id3780357"></a><h3>
+<a name="GtkPrinter-details-acquired"></a>The <code class="literal">::details-acquired</code> signal</h3>
+<a class="indexterm" name="id3780373"></a><pre class="programlisting">void                user_function                      (<a href="GtkPrinter.html" title="GtkPrinter">GtkPrinter</a> *printer,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    success,
+                                                        <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a>    user_data)      : Run Last</pre>
+<p>
+Gets emitted in response to a request for detailed information
+about a printer from the print backend. The <em class="parameter"><code>success</code></em> parameter
+indicates if the information was actually obtained.</p>
+<p>
+
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><span class="term"><em class="parameter"><code>printer</code></em>&#160;:</span></td>
+<td> the <a href="GtkPrinter.html" title="GtkPrinter"><span class="type">GtkPrinter</span></a> on which the signal is emitted
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>success</code></em>&#160;:</span></td>
+<td> <a
+href="../glib/glib-Standard-Macros.html#TRUE:CAPS"
+><code class="literal">TRUE</code></a> if the details were successfully acquired
+</td>
+</tr>
+<tr>
+<td><span class="term"><em class="parameter"><code>user_data</code></em>&#160;:</span></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Since  2.10
+</p>
+</div>
+</div>
+</div>
+</body>
+</html>

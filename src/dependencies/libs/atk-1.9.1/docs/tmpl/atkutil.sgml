@@ -1,0 +1,187 @@
+<!-- ##### SECTION Title ##### -->
+AtkUtil
+
+<!-- ##### SECTION Short_Description ##### -->
+This is a utility class which supports the adding and removal of event listeners.
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+This is a utility class which supports the adding and removal of event 
+listeners. The adding and removing of the listeners must be done in the 
+same thread. The file also contains a number of utility functions.
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT AtkUtil ##### -->
+<para>
+The AtkObject structure should not be accessed directly.
+
+</para>
+
+
+<!-- ##### ENUM AtkCoordType ##### -->
+<para>
+
+</para>
+
+@ATK_XY_SCREEN: 
+@ATK_XY_WINDOW: 
+
+<!-- ##### FUNCTION atk_add_focus_tracker ##### -->
+<para>
+
+</para>
+
+@focus_tracker: 
+@Returns: 
+
+
+<!-- ##### FUNCTION atk_remove_focus_tracker ##### -->
+<para>
+
+</para>
+
+@tracker_id: 
+
+
+<!-- ##### FUNCTION atk_focus_tracker_init ##### -->
+<para>
+
+</para>
+
+@add_function: 
+
+
+<!-- ##### FUNCTION atk_focus_tracker_notify ##### -->
+<para>
+
+</para>
+
+@object: 
+
+
+<!-- ##### USER_FUNCTION AtkEventListener ##### -->
+<para>
+An AtkEventListener is user specified function which is called when an event,
+such as receiving focus, occurs. The parameter of the AtkEventListener is the
+AtkObject on which the event occurred.
+</para>
+
+@Param1: 
+
+
+<!-- ##### USER_FUNCTION AtkEventListenerInit ##### -->
+<para>
+An AtkEventListenerInit is an initialization function in an implementation 
+of the ATK interface used to perform implementation-specific initialization
+when enabling focus tracking.
+
+</para>
+
+
+
+<!-- ##### FUNCTION atk_add_global_event_listener ##### -->
+<para>
+
+</para>
+
+@listener: 
+@event_type: 
+@Returns: 
+
+
+<!-- ##### FUNCTION atk_remove_global_event_listener ##### -->
+<para>
+
+</para>
+
+@listener_id: 
+
+
+<!-- ##### STRUCT AtkKeyEventStruct ##### -->
+<para>
+The AtkKeyEventStruct describes a keyboard event.
+</para>
+
+@type: 
+@state: 
+@keyval: 
+@length: 
+@string: 
+@keycode: 
+@timestamp: 
+
+<!-- ##### ENUM AtkKeyEventType ##### -->
+<para>
+
+</para>
+
+@ATK_KEY_EVENT_PRESS: 
+@ATK_KEY_EVENT_RELEASE: 
+@ATK_KEY_EVENT_LAST_DEFINED: 
+
+<!-- ##### USER_FUNCTION AtkKeySnoopFunc ##### -->
+<para>
+An AtkKeySnoopFunc is a function which is called when a keyboard event occurs.
+</para>
+
+@event: 
+@func_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION atk_add_key_event_listener ##### -->
+<para>
+
+</para>
+
+@listener: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION atk_remove_key_event_listener ##### -->
+<para>
+
+</para>
+
+@listener_id: 
+
+
+<!-- ##### FUNCTION atk_get_root ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION atk_get_focus_object ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION atk_get_toolkit_name ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION atk_get_toolkit_version ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
