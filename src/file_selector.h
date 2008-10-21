@@ -48,7 +48,7 @@ bool fs_select(fs_handle, int);
 const char * fs_get_single_selection(fs_handle);
 fslist   fs_get_selection(fs_handle);
 
-const char * fslist_get_next_file(fslist);
+const char * fslist_get_next_file(fslist fl, bool is_random);
 bool fslist_release(fslist);
 
 #endif /* __FILE_SELECTOR_H__ */
