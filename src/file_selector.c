@@ -46,6 +46,7 @@
 #include <dirent.h>
 #include <directfb.h>
 #include <pthread.h>
+#include <regex.h>
 
 
 #include "file_selector.h"
@@ -86,12 +87,23 @@ struct fs_data {
   int idx_first_displayed;                     /**< Index of the first displayed filename */  
   int nb_lines;                                /**< Number of displayed lines */
   int line_height;                             /**< Height of a single line : font + interline...*/
-  struct file_list list;                              /**< Files list displayed by the object */
+  struct file_list list;                       /**< Files list displayed by the object */
   pthread_t thread;                            /**< Thread that handles input events */
   bool end_asked;                              /**< Flag to ask for thread events termination */
   select_cb *prev_cb;                          /**< Selection callback */
+  regex_t compiled_re_filter;                  /**< Compiled re filter to apply filter */
 } ;
 
+
+
+/** Match string against a RE
+ *
+ * \return true if match 
+ */
+static bool match(const char *string, const regex_t * re)
+{
+    return !regexec(re, string, (size_t) 0, NULL, 0);    
+}
 
 
 static void fl_release(struct file_list *fl){  
@@ -105,7 +117,6 @@ static void fl_release(struct file_list *fl){
   memset(fl, 0, sizeof(*fl));
   return;
 }
-
 
 
 
@@ -182,7 +193,7 @@ static bool fl_add(struct file_list *fl, char* filename, bool is_folder){
   return true;
 }
 
-static bool fl_create(const char * path, const char * filter, struct file_list * fl){
+static bool fl_create(const char * path, regex_t *re, struct file_list * fl){
   struct dirent* dir_ent;
   DIR*   dir;
   struct stat ftype;
@@ -202,7 +213,8 @@ static bool fl_create(const char * path, const char * filter, struct file_list *
           if (strcmp( dir_ent->d_name, ".")) {
             
             if ((S_ISDIR (ftype.st_mode)) ||
-                (true)){ /* FIXME Add filter here */
+                (re == NULL) ||
+                (match(dir_ent->d_name,re))){ 
               fl_add(fl, dir_ent->d_name, S_ISDIR (ftype.st_mode));
             }
           }
@@ -224,15 +236,12 @@ static bool release(fs_handle hdl) {
     return false;  
   }
 
+  /* Wait for events thread to terminate */
   hdl->end_asked = true;
   if (hdl->thread){
     pthread_join(hdl->thread,NULL);
   }
 
-  /* These three ones are allocated outside of the module : It's not up to us to release them */
-  hdl->dfb = NULL;
-  hdl->destination = NULL;
-  hdl->config = NULL;
 
   if (hdl->evt_buffer != NULL){
       hdl->evt_buffer->Release(hdl->evt_buffer);
@@ -253,7 +262,15 @@ static bool release(fs_handle hdl) {
   if (hdl->preview_surf != NULL){
     hdl->preview_surf->Release(hdl->preview_surf);
   }
+  if (hdl->config->folder.filter != NULL){
+    regfree(&hdl->compiled_re_filter);
+  }
   fl_release(&hdl->list);
+
+  /* These three ones are allocated outside of the module : It's not up to us to release them */
+  hdl->dfb = NULL;
+  hdl->destination = NULL;
+  hdl->config = NULL;
   free(hdl);
 
   return true;
@@ -421,7 +438,7 @@ static bool refresh_display(fs_handle hdl){
 static bool new_path(fs_handle hdl, const char * path){
   hdl->idx_first_displayed = 0;
   fl_release(&hdl->list);
-  fl_create(path, hdl->config->folder.filter, &hdl->list);
+  fl_create(path, hdl->config->folder.filter ? &hdl->compiled_re_filter : NULL, &hdl->list);
   return true;
 }
 
@@ -559,7 +576,7 @@ fs_handle fs_create (IDirectFB  * dfb, IDirectFBSurface * destination, const str
   int w1,h1,w2,h2;
   int shift_y;
  
- 
+  srand(time(NULL));
   handle = calloc(1,sizeof(struct fs_data));
   if (handle == NULL)   
       goto error;
@@ -661,9 +678,17 @@ fs_handle fs_create (IDirectFB  * dfb, IDirectFBSurface * destination, const str
       goto error;
     }
   }
+  
+  /* Create RE for filtering */
+  if (handle->config->folder.filter != NULL) {
+    if (regcomp(&handle->compiled_re_filter, handle->config->folder.filter, REG_NOSUB | REG_EXTENDED)) {
+       /* In case of error , compile a "*" RE  */
+      regcomp(&handle->compiled_re_filter, "*", REG_NOSUB | REG_EXTENDED);
+    }
+  }
 
   /* Create file list */
-  fl_create(config->folder.pathname, config->folder.filter, &handle->list);
+  fl_create(config->folder.pathname,  handle->config->folder.filter ? &handle->compiled_re_filter : NULL, &handle->list);
   
   /* initial refresh */
   refresh_display(handle);
@@ -671,7 +696,7 @@ fs_handle fs_create (IDirectFB  * dfb, IDirectFBSurface * destination, const str
   /* thread creation */
   handle->end_asked = false;
   pthread_create(&handle->thread, NULL, thread, handle);
-
+    
   return handle;
 
 error :
@@ -767,14 +792,30 @@ fslist fs_get_selection(fs_handle hdl){
 }
 
 
-const char * fslist_get_next_file(fslist fl){
+const char * fslist_get_next_file(fslist fl, bool is_random){
   int i = fl->current_idx;
+
   if (fl->current_idx >= fl->entries_number){
     return NULL;
   }
+  
+  if (is_random){
+    int rand_offset;
+    char * temp;
+
+    /* Choose random filename */
+    rand_offset = (fl->entries_number - fl->current_idx) *  (((double) rand())  / (((double)(RAND_MAX)) + 1.0));
+    
+    /* Switch random remaining filename and i-th item */
+    temp = fl->filenames[i + rand_offset];  
+    fl->filenames[i + rand_offset] = fl->filenames[i];
+    fl->filenames[i] = temp;
+  }
+
   fl->current_idx++;
   return fl->filenames[i];
 }
+
 
 bool fslist_release(fslist fl){
   int i;
