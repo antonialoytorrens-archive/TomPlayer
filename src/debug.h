@@ -31,6 +31,7 @@
 #include <directfb.h>
 
 #ifdef DEBUG
+#include <stdio.h>
 /**
  * \def PRINTD
  * \brief Debug macro without format
