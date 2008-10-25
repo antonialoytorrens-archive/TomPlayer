@@ -1,4 +1,4 @@
-/**
+  /**
  * \file file_selector.c
  * \author Stephan Rafin
  *
@@ -48,12 +48,9 @@
 #include <pthread.h>
 #include <regex.h>
 
-
 #include "file_selector.h"
 
-#define FILE_LIST_INC 16
-
-
+#define FILE_LIST_INC 32
 struct file_list{
   int entries_number;                          /**< Number of entries in the following arrays...*/  
   char * basename;                             /**< Folder basename */
@@ -65,6 +62,8 @@ struct file_list{
   bool * is_folder;                            /**< Array of entries_number elements indicating whether the corresponding file is a folder or a regular file*/
 };
 
+static char return_filename[PATH_MAX];
+
 struct _fl_handle {
   int entries_number;
   int current_idx;
@@ -73,8 +72,9 @@ struct _fl_handle {
 
 struct fs_data {
   IDirectFB  * dfb;                            /**< Main dfb interface */
-  IDirectFBSurface * destination;              /**< Surface used to display the object */
+  IDirectFBWindow * win;                       /**< Window containing the object */  
   const struct fs_config * config;             /**< Configuration of the object */
+  IDirectFBSurface * destination;              /**< Surface used to display the object */
   IDirectFBEventBuffer * evt_buffer;           /**< Input event used by the object*/
   IDirectFBSurface* icon_surf[FS_MAX_ICON_ID]; /**< surface rendering icons displayed in the object */ 
   DFBRectangle arrow_list[2];                  /**< List of control zone that have to react to a click (scroll arrows) */
@@ -83,7 +83,7 @@ struct fs_data {
   DFBRectangle preview_zone;                   /**< Preview zone */
   IDirectFBSurface * refresh_zone_surf;        /**< Surface in which filenames & associated icons are drawed */    
   IDirectFBSurface * preview_surf;             /**< Surface in which preview is drawed (if any) */
-  IDirectFBFont *font;                         /**< Fotn used to display filenames */
+  IDirectFBFont *font;                         /**< Font used to display filenames */
   int idx_first_displayed;                     /**< Index of the first displayed filename */  
   int nb_lines;                                /**< Number of displayed lines */
   int line_height;                             /**< Height of a single line : font + interline...*/
@@ -104,6 +104,31 @@ static bool match(const char *string, const regex_t * re)
 {
     return !regexec(re, string, (size_t) 0, NULL, 0);    
 }
+
+/**
+ *
+ * no check : dest must be big enough 
+ */
+static inline void get_fullpath(fs_handle hdl, int i, char* dest){
+  sprintf(dest,"%s/%s", hdl->list.basename, hdl->list.filenames[i]);
+/*
+  strcpy(dest, hdl->list.basename);
+  strcat(dest,"/");
+  strcat(dest,hdl->list.filenames[i]);
+*/
+}
+
+
+static inline bool clear_surface(IDirectFBSurface* surf){
+  int width, height;
+  /* Clear zone */
+  surf->GetSize(surf,&width, &height);
+  surf->SetColor(surf, 0x0, 0x0, 0x0, 0xFF);  
+  surf->FillRectangle (surf, 0, 0, width, height);
+  return true;
+  
+}
+
 
 
 static void fl_release(struct file_list *fl){  
@@ -146,11 +171,10 @@ static int fl_find_pos(struct file_list *fl, const char * filename, bool is_fold
     }
   }
   
-  if (is_folder){
-    if ((i == -1) || (!fl->is_folder[i])) {
-      i++;
-    }
+  if (is_folder){  
+      i++;  
   }
+
   if (ret_cmp ==0){
     *find = true;
   }
@@ -243,6 +267,9 @@ static bool release(fs_handle hdl) {
   }
 
 
+  if (hdl->destination != NULL) {
+    hdl->destination->Release(hdl->destination);
+  } 
   if (hdl->evt_buffer != NULL){
       hdl->evt_buffer->Release(hdl->evt_buffer);
   }
@@ -266,10 +293,10 @@ static bool release(fs_handle hdl) {
     regfree(&hdl->compiled_re_filter);
   }
   fl_release(&hdl->list);
-
+  
   /* These three ones are allocated outside of the module : It's not up to us to release them */
   hdl->dfb = NULL;
-  hdl->destination = NULL;
+  hdl->win = NULL;
   hdl->config = NULL;
   free(hdl);
 
@@ -307,8 +334,15 @@ static bool display_obj(fs_handle hdl, enum fs_icon_ids id, DFBPoint * point){
       return false;
     }
 
-    if ((provider->GetSurfaceDescription (provider, &dsc) != DFB_OK) ||
-       (hdl->dfb->CreateSurface (hdl->dfb, &dsc, &hdl->icon_surf[id]) != DFB_OK)) {
+    if (provider->GetSurfaceDescription (provider, &dsc) != DFB_OK){
+      return false;
+    }
+    /*hdl->destination->GetPixelFormat( hdl->destination, &dsc.pixelformat );*/
+   
+    /* odd value give stange results so lets stay on even values...*/
+    dsc.width &=0xFFFFFFFE;
+
+   if (hdl->dfb->CreateSurface (hdl->dfb, &dsc, &hdl->icon_surf[id]) != DFB_OK) {
       provider->Release (provider);
       return false;
     }
@@ -357,7 +391,7 @@ static bool display_obj(fs_handle hdl, enum fs_icon_ids id, DFBPoint * point){
   }
   
   if (dest_surf != NULL){
-    dest_surf->Blit (dest_surf, hdl->icon_surf[id], NULL, lpoint.x, lpoint.y);
+    dest_surf->Blit (dest_surf, hdl->icon_surf[id], NULL, lpoint.x, lpoint.y);    
   }
   return true;
 }
@@ -367,16 +401,6 @@ static inline int  min(int x, int y ) {
     return x; 
   else 
     return y;
-}
-
-static inline bool clear_surface(fs_handle hdl, IDirectFBSurface* surf){
-  int width, height;
-  /* Clear zone */
-  surf->GetSize(surf,&width, &height);
-  surf->SetColor(surf, 0x0, 0x0, 0x0, 0xFF);  
-  surf->FillRectangle (surf, 0, 0, width, height);
-  return true;
-  
 }
 
 
@@ -390,7 +414,7 @@ static bool refresh_display(fs_handle hdl){
   DFBPoint point;
   int max_idx;
 
-  clear_surface(hdl, hdl->refresh_zone_surf);
+  clear_surface( hdl->refresh_zone_surf);
 
   /* Set color */
   hdl->refresh_zone_surf->SetColor( hdl->refresh_zone_surf,
@@ -424,39 +448,107 @@ static bool refresh_display(fs_handle hdl){
   }
   
   hdl->destination->Blit(hdl->destination, hdl->refresh_zone_surf, NULL, hdl->refresh_zone.x, hdl->refresh_zone.y);
-  
+  hdl->destination->Flip(hdl->destination, NULL, 0);
   
   return true;
 
 }
 
 
-/** Change current folder for file selector object 
+
+/** Handle click on the objet
  *
- *  
+ * \param[in] x x absolute coordonate of the click
+ * \param[in] y y absolute coordonate of the click
+ *
  */
-static bool new_path(fs_handle hdl, const char * path){
-  hdl->idx_first_displayed = 0;
-  fl_release(&hdl->list);
-  fl_create(path, hdl->config->folder.filter ? &hdl->compiled_re_filter : NULL, &hdl->list);
-  return true;
-}
+void fs_handle_click(fs_handle hdl,int x, int y){
+  int idx; 
+  int win_x, win_y;
+  bool refresh = false;
 
+  hdl->win->GetPosition(hdl->win, &win_x, &win_y);
+  x-=win_x;
+  y-=win_y;
+  
+  if( (x >= hdl->config->geometry.x) && 
+    (x <= (hdl->config->geometry.x + hdl->config->geometry.width )) && 
+    (y >= hdl->config->geometry.y) && 
+    (y <= (hdl->config->geometry.y + hdl->config->geometry.height ))){
+
+    
+    if ((x >= hdl->arrow_list[FS_ICON_UP].x) &&
+        (x <= (hdl->arrow_list[FS_ICON_UP].x + hdl->arrow_list[FS_ICON_UP].w)) &&
+        (y >= hdl->arrow_list[FS_ICON_UP].y) &&
+        (y <= (hdl->arrow_list[FS_ICON_UP].y + hdl->arrow_list[FS_ICON_UP].h))){
+          /* Test scroll up */             
+          hdl->idx_first_displayed -= hdl->nb_lines ; 
+          if ((hdl->idx_first_displayed <= -1 ) && (hdl->idx_first_displayed > -hdl->nb_lines )) {
+            hdl->idx_first_displayed = 0;                        
+          }                   
+          if (hdl->idx_first_displayed <= -hdl->nb_lines) {
+            hdl->idx_first_displayed = hdl->list.entries_number -  hdl->nb_lines ;
+          }
+          refresh = true;
+    }
+    if ((x >= hdl->arrow_list[FS_ICON_DOWN].x) &&
+        (x <= (hdl->arrow_list[FS_ICON_DOWN].x + hdl->arrow_list[FS_ICON_UP].w)) &&
+        (y >= hdl->arrow_list[FS_ICON_DOWN].y) &&
+        (y <= (hdl->arrow_list[FS_ICON_DOWN].y + hdl->arrow_list[FS_ICON_UP].h))){
+        /* Test scroll down */                   
+          hdl->idx_first_displayed += hdl->nb_lines;
+          if (hdl->idx_first_displayed >= hdl->list.entries_number ){
+              hdl->idx_first_displayed = 0 ;
+          }                   
+          refresh = true;
+    }
+    if ((x >= hdl->refresh_zone.x) &&
+        (x <= (hdl->refresh_zone.x + hdl->refresh_zone.w)) &&
+        (y >= hdl->refresh_zone.y) &&
+        (y <= (hdl->refresh_zone.y + hdl->refresh_zone.h))) {
+        /* Test a file selection */
+        idx = hdl->idx_first_displayed + ((y - hdl->refresh_zone.y) / hdl->line_height);
+        if (idx < hdl->list.entries_number) {
+        if (!hdl->list.is_folder[idx]) {
+          /* Regular file */
+          fs_select(hdl,idx);        
+          refresh = true;   
+        } else {
+            /* Folder */
+          char * full_path = alloca(strlen(hdl->list.basename) + strlen(hdl->list.filenames[idx]) + 2);
+          char * slash_index;
+          strcpy(full_path, hdl->list.basename);
+          if ((strcmp(hdl->list.filenames[idx],"..") == 0) &&
+              ((slash_index = strrchr(full_path,'/')) != NULL) &&
+              (strcmp(slash_index+1,"..")!=0)) {
+              /* We cut the last folder when going up in a tree rather than concatening '..' => It simplifies pathnames */
+              *slash_index = '\0';
+          } else {                      
+            strcat(full_path , "/");
+            strcat(full_path, hdl->list.filenames[idx]);
+          }
+          fs_new_path(hdl,full_path);
+        }
+        }
+    }
+  }
+  if (refresh){
+    refresh_display(hdl);
+  }        
+  return;
+}
 
 /** Thread that handles input events 
 */
 static void * thread(void *param){
   static int x,y;
   fs_handle hdl = param;
-  DFBInputEvent evt;
-  bool refresh;
-  int idx; 
+  DFBInputEvent evt; 
 
 
   while(!hdl->end_asked){
       hdl->evt_buffer->WaitForEventWithTimeout( hdl->evt_buffer, 0, 500 );
       if (hdl->end_asked) break;
-      refresh = false;
       while (hdl->evt_buffer->GetEvent( hdl->evt_buffer, DFB_EVENT(&evt)) == DFB_OK) {
 	if (evt.type == DIET_AXISMOTION) {
 		if (evt.flags & DIEF_AXISABS) {
@@ -473,61 +565,9 @@ static void * thread(void *param){
 		}		
 	}
 	else if (evt.type == DIET_BUTTONPRESS ){
-          
-          if( (x >= hdl->config->geometry.x) && 
-              (x <= (hdl->config->geometry.x + hdl->config->geometry.width )) && 
-              (y >= hdl->config->geometry.y) && 
-              (y <= (hdl->config->geometry.y + hdl->config->geometry.height ))){
-
-              
-              if ((x >= hdl->arrow_list[FS_ICON_UP].x) &&
-                  (x <= (hdl->arrow_list[FS_ICON_UP].x + hdl->arrow_list[FS_ICON_UP].w)) &&
-                  (y >= hdl->arrow_list[FS_ICON_UP].y) &&
-                  (y <= (hdl->arrow_list[FS_ICON_UP].y + hdl->arrow_list[FS_ICON_UP].h))){
-                    /* Test scroll up */             
-                    hdl->idx_first_displayed -= hdl->nb_lines ; 
-                    if ((hdl->idx_first_displayed <= -1 ) && (hdl->idx_first_displayed > -hdl->nb_lines )) {
-                      hdl->idx_first_displayed = 0;                        
-                    }                   
-                    if (hdl->idx_first_displayed <= -hdl->nb_lines) {
-                      hdl->idx_first_displayed = hdl->list.entries_number -  hdl->nb_lines ;
-                    }
-                    refresh = true;
-              }
-              if ((x >= hdl->arrow_list[FS_ICON_DOWN].x) &&
-                  (x <= (hdl->arrow_list[FS_ICON_DOWN].x + hdl->arrow_list[FS_ICON_UP].w)) &&
-                  (y >= hdl->arrow_list[FS_ICON_DOWN].y) &&
-                  (y <= (hdl->arrow_list[FS_ICON_DOWN].y + hdl->arrow_list[FS_ICON_UP].h))){
-                  /* Test scroll down */                   
-                    hdl->idx_first_displayed += hdl->nb_lines;
-                    if (hdl->idx_first_displayed >= hdl->list.entries_number ){
-                        hdl->idx_first_displayed = 0 ;
-                    }                   
-                   refresh = true;
-              }
-              if ((x >= hdl->refresh_zone.x) &&
-                  (x <= (hdl->refresh_zone.x + hdl->refresh_zone.w)) &&
-                  (y >= hdl->refresh_zone.y) &&
-                  (y <= (hdl->refresh_zone.y + hdl->refresh_zone.h))) {
-                  /* Test a file selection */
-                  idx = hdl->idx_first_displayed + ((y - hdl->refresh_zone.y) / hdl->line_height);
-                  if (!hdl->list.is_folder[idx]) {
-                    fs_select(hdl,idx);           
-                  } else {
-                    char * full_path = alloca(strlen(hdl->list.basename) + strlen(hdl->list.filenames[idx]) + 2);
-                    strcpy(full_path, hdl->list.basename);
-                    strcat(full_path , "/");
-                    strcat(full_path, hdl->list.filenames[idx]);
-                    new_path(hdl,full_path);
-                  }                   
-                  refresh = true;
-              }
-          }
+          fs_handle_click(hdl, x,y);
         }
-      }
-      if (refresh){
-        refresh_display(hdl);
-      }
+      }      
   }
   return NULL;
 }
@@ -551,45 +591,71 @@ bool fs_select(fs_handle hdl, int idx) {
   } else {
     hdl->list.is_selected[hdl->list.last_selected] = false;
     hdl->list.is_selected[idx] = true; 
- 
     hdl->list.last_selected = idx;    
   }
   
-  if ((hdl->prev_cb != NULL) &&
-      (hdl->list.is_selected[idx])) {
-      hdl->prev_cb(hdl->preview_surf, hdl->list.filenames[idx]);    
+  if (hdl->prev_cb != NULL) {
+      char * full_path = malloc(strlen(hdl->list.basename) + strlen(hdl->list.filenames[idx]) + 2);
+      get_fullpath (hdl,idx, full_path);
+      clear_surface(hdl->preview_surf);
+      hdl->prev_cb(hdl->preview_surf, full_path, hdl->list.is_selected[idx]);                  
+      free(full_path);     
+      hdl->destination->Blit(hdl->destination, hdl->preview_surf, NULL, hdl->preview_zone.x, hdl->preview_zone.y);
+      hdl->destination->Flip(hdl->destination, NULL, 0);
   }
 
   return true;
 }
 
 
+bool fs_select_all(fs_handle hdl) {
+  int i;
+
+  if (!hdl->config->options.multiple_selection)
+    return false;
+
+  for(i=0; i<hdl->list.entries_number; i++){  
+    if (!hdl->list.is_selected[i])
+       fs_select(hdl, i);      
+  }
+  return true;
+}
 
 /** Create a file selector object
  *   
  * 
  */
-fs_handle fs_create (IDirectFB  * dfb, IDirectFBSurface * destination, const struct fs_config * config){
+fs_handle fs_create (IDirectFB  * dfb, IDirectFBWindow * win, const struct fs_config * config){
   fs_handle  handle ;
   DFBFontDescription font_dsc;
   DFBSurfaceDescription dsc;  
   int w1,h1,w2,h2;
   int shift_y;
- 
-  srand(time(NULL));
+
   handle = calloc(1,sizeof(struct fs_data));
   if (handle == NULL)   
       goto error;
-
   handle->dfb = dfb;
-  handle->destination = destination;
+  handle->win = win;
   handle->config = config;
+  
+  if (win->GetSurface(win,&handle->destination) != DFB_OK){
+    return false;
+  }
 
+  clear_surface(handle->destination);
+  srand(time(NULL));
+  
+
+
+  
+  if (config->options.events_thread){
   if (  dfb->CreateInputEventBuffer ( dfb,
   	                               DICAPS_AXES | DICAPS_BUTTONS ,
   	                               DFB_FALSE, 
                                        &handle->evt_buffer ) != DFB_OK) { 
       goto error;  
+  }
   }
 
 
@@ -694,8 +760,10 @@ fs_handle fs_create (IDirectFB  * dfb, IDirectFBSurface * destination, const str
   refresh_display(handle);
     
   /* thread creation */
-  handle->end_asked = false;
-  pthread_create(&handle->thread, NULL, thread, handle);
+  if (config->options.events_thread){
+    handle->end_asked = false;
+    pthread_create(&handle->thread, NULL, thread, handle);
+  }
     
   return handle;
 
@@ -724,6 +792,28 @@ bool fs_set_select_cb(fs_handle hdl, select_cb * f){
 }
 
 
+
+/** Change current folder for file selector object 
+ *
+ */
+bool fs_new_path(fs_handle hdl, const char * path){
+  struct stat buf;
+  
+  /* Check path exists and is a folder */  
+  if (stat(path, &buf) != 0)
+    return false;
+  if (!S_ISDIR(buf.st_mode))
+    return false;  
+
+  hdl->idx_first_displayed = 0;
+  fl_release(&hdl->list);
+  fl_create(path, hdl->config->folder.filter ? &hdl->compiled_re_filter : NULL, &hdl->list);
+  clear_surface(hdl->preview_surf);
+  refresh_display(hdl);
+  return true;
+}
+
+
 /** Get selected file for a single selector
  *
  * \note This call will fail on an multiple selection enabled object
@@ -731,7 +821,7 @@ bool fs_set_select_cb(fs_handle hdl, select_cb * f){
  *
  */
 const char * fs_get_single_selection(fs_handle hdl){
-  static char return_filename[PATH_MAX];
+ 
   if (hdl->config->options.multiple_selection) {
     return NULL;
   }
@@ -740,9 +830,7 @@ const char * fs_get_single_selection(fs_handle hdl){
       if ((strlen(hdl->list.basename) + strlen(hdl->list.filenames[hdl->list.last_selected]) + 2) > PATH_MAX){
         return NULL;
       }
-      strcpy(return_filename, hdl->list.basename);
-      strcat(return_filename,"/");
-      strcat(return_filename,hdl->list.filenames[hdl->list.last_selected]);     
+      get_fullpath(hdl,hdl->list.last_selected,return_filename);      
       return return_filename;     
   }  
   return NULL;
@@ -763,6 +851,33 @@ int fs_get_selected_number(fs_handle hdl){
   return nb_selected;
 }
 
+/** Select a given filename in file selector and returns its index
+*/
+int fs_select_filename(fs_handle hdl, const char * filename){
+  int i;
+  
+  for (i=0; i < hdl->list.entries_number ; i++){
+    if (strcmp(hdl->list.filenames[i], filename) == 0){
+      fs_select(hdl, i);
+      return i;
+    }
+  }
+  return -1;
+}
+
+
+/** Set first displayed item in list
+*/
+bool fs_set_first_displayed_item(fs_handle hdl, int i){
+  if ((i < 0) || 
+      (i >= hdl->list.entries_number))
+    return false;
+  hdl->idx_first_displayed = i;
+  refresh_display(hdl);  
+  return true;
+}
+
+
 /** Get selected file(s) object
 */
 fslist fs_get_selection(fs_handle hdl){
@@ -782,7 +897,8 @@ fslist fs_get_selection(fs_handle hdl){
       for(i=0;i<fl->entries_number ;i++){
         while ((j<hdl->list.entries_number) && (!hdl->list.is_selected[j])){j++;}
         if (j<hdl->list.entries_number){
-          fl->filenames[i] = strdup(hdl->list.filenames[j]);
+          fl->filenames[i] = malloc(strlen(hdl->list.basename) + strlen(hdl->list.filenames[j]) + 2);
+          get_fullpath(hdl, j, fl->filenames[i]);       
           j++;
         }
       }
@@ -811,8 +927,7 @@ const char * fslist_get_next_file(fslist fl, bool is_random){
     fl->filenames[i + rand_offset] = fl->filenames[i];
     fl->filenames[i] = temp;
   }
-
-  fl->current_idx++;
+  fl->current_idx++;  
   return fl->filenames[i];
 }
 

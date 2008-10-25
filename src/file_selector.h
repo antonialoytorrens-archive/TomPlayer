@@ -27,8 +27,10 @@ struct fs_config{
   } geometry;
 
   struct {
+  /*  int preview_width_ratio;*/
     bool preview_box ;
     bool multiple_selection;
+    bool events_thread;
   } options;
   
   struct {
@@ -38,15 +40,18 @@ struct fs_config{
 } ;
 
 typedef struct fs_data * fs_handle;
-typedef void (select_cb)(IDirectFBSurface *, const char *);
+typedef void (select_cb)(IDirectFBSurface *, const char *, bool);
 typedef struct _fl_handle * fslist;
 
-fs_handle fs_create (IDirectFB  *, IDirectFBSurface *,const struct fs_config *);
+fs_handle fs_create (IDirectFB  *, IDirectFBWindow *,const struct fs_config *);
 bool fs_set_select_cb(fs_handle, select_cb * );
 bool fs_release(fs_handle);
 bool fs_select(fs_handle, int);
+int fs_select_filename(fs_handle, const char * );
+bool fs_set_first_displayed_item(fs_handle, int );
 const char * fs_get_single_selection(fs_handle);
 fslist   fs_get_selection(fs_handle);
+bool fs_new_path(fs_handle hdl, const char * path);
 
 const char * fslist_get_next_file(fslist fl, bool is_random);
 bool fslist_release(fslist);
