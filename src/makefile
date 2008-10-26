@@ -1,22 +1,32 @@
-
-ifndef INC_KERNEL
-	INC_KERNEL=../../../../golinux/include
-endif
-
+ifndef NATIVE
 DEP_BUILD=./dependencies/build/usr/local/
+DEP_LIB=./dependencies/libs/
 
 
+INC_KERNEL=$(DEP_LIB)/golinux-tt2318/include
 CC=arm-linux-gcc
 STRIP=arm-linux-strip
-CFLAGS+= -Wall -I$(INC_KERNEL)  -I$(DEP_BUILD)/include/ -I$(DEP_BUILD)/include/directfb
+CFLAGS+= -std=c99 -D_BSD_SOURCE -Wall -I$(INC_KERNEL)  -I$(DEP_BUILD)/include/ -I$(DEP_BUILD)/include/directfb
 LDFLAGS+=-L$(DEP_BUILD)/lib/ -Wl,-rpath=/usr/local/lib
+else
+DEP_LIB=./dependencies/libs/
+INC_KERNEL=$(DEP_LIB)/golinux-tt2318/include
+CC=gcc
+STRIP=strip
+CFLAGS+= -g -std=c99 -D_BSD_SOURCE -Wall -I$(INC_KERNEL)  -I./dependencies/build_native/include -I./dependencies/build_native/usr/local/include -I./dependencies/build_native/usr/local/include/directfb
+LDFLAGS+=  -L./dependencies/build_native/lib -L./dependencies/build_native/usr/local/lib
+endif
+
+
 INSTALL_DIR=../distrib/tomplayer/
 
 ifdef DEBUG
 CFLAGS+=-DDEBUG -g 
 endif
 
-SRC = window_context.c window.c gui.c gui_control.c callbacks.c list.c file_list.c config.c engine.c gui.c widescreen.c resume.c pwm.c playlist.c sound.c zip_skin.c power.c
+SRC = file_selector.c window.c gui.c list.c file_list.c config.c engine.c gui.c widescreen.c resume.c pwm.c playlist.c sound.c zip_skin.c power.c
+
+# callbacks.c 
 
 OBJ = $(subst .c,.o,$(SRC))
 

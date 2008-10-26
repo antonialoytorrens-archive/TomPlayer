@@ -488,87 +488,7 @@ static bool refresh_display(fs_handle hdl){
 
 
 
-/** Handle click on the object
- *
- * \param[in] x x absolute coordonate of the click
- * \param[in] y y absolute coordonate of the click
- *
- */
-void fs_handle_click(fs_handle hdl,int x, int y){
-  int idx; 
-  int win_x, win_y;
-  bool refresh = false;
 
-  hdl->win->GetPosition(hdl->win, &win_x, &win_y);
-  x-=win_x;
-  y-=win_y;
-  
-  if( (x >= hdl->config->geometry.x) && 
-    (x <= (hdl->config->geometry.x + hdl->config->geometry.width )) && 
-    (y >= hdl->config->geometry.y) && 
-    (y <= (hdl->config->geometry.y + hdl->config->geometry.height ))){
-
-    
-    if ((x >= hdl->arrow_list[FS_ICON_UP].x) &&
-        (x <= (hdl->arrow_list[FS_ICON_UP].x + hdl->arrow_list[FS_ICON_UP].w)) &&
-        (y >= hdl->arrow_list[FS_ICON_UP].y) &&
-        (y <= (hdl->arrow_list[FS_ICON_UP].y + hdl->arrow_list[FS_ICON_UP].h))){
-          /* Test scroll up */             
-          hdl->idx_first_displayed -= hdl->nb_lines ; 
-          if ((hdl->idx_first_displayed <= -1 ) && (hdl->idx_first_displayed > -hdl->nb_lines )) {
-            hdl->idx_first_displayed = 0;                        
-          }                   
-          if (hdl->idx_first_displayed <= -hdl->nb_lines) {
-            hdl->idx_first_displayed = hdl->list.entries_number -  hdl->nb_lines ;
-          }
-          refresh = true;
-    }
-    if ((x >= hdl->arrow_list[FS_ICON_DOWN].x) &&
-        (x <= (hdl->arrow_list[FS_ICON_DOWN].x + hdl->arrow_list[FS_ICON_UP].w)) &&
-        (y >= hdl->arrow_list[FS_ICON_DOWN].y) &&
-        (y <= (hdl->arrow_list[FS_ICON_DOWN].y + hdl->arrow_list[FS_ICON_UP].h))){
-        /* Test scroll down */                   
-          hdl->idx_first_displayed += hdl->nb_lines;
-          if (hdl->idx_first_displayed >= hdl->list.entries_number ){
-              hdl->idx_first_displayed = 0 ;
-          }                   
-          refresh = true;
-    }
-    if ((x >= hdl->refresh_zone.x) &&
-        (x <= (hdl->refresh_zone.x + hdl->refresh_zone.w)) &&
-        (y >= hdl->refresh_zone.y) &&
-        (y <= (hdl->refresh_zone.y + hdl->refresh_zone.h))) {
-        /* Test a file selection */
-        idx = hdl->idx_first_displayed + ((y - hdl->refresh_zone.y) / hdl->line_height);
-        if (idx < hdl->list.entries_number) {
-        if (!hdl->list.is_folder[idx]) {
-          /* Regular file */
-          fs_select(hdl,idx);        
-          refresh = true;   
-        } else {
-            /* Folder */
-          char * full_path = alloca(strlen(hdl->list.basename) + strlen(hdl->list.filenames[idx]) + 2);
-          char * slash_index;
-          strcpy(full_path, hdl->list.basename);
-          if ((strcmp(hdl->list.filenames[idx],"..") == 0) &&
-              ((slash_index = strrchr(full_path,'/')) != NULL) &&
-              (strcmp(slash_index+1,"..")!=0)) {
-              /* We cut the last folder when going up in a tree rather than concatening '..' => It simplifies pathnames */
-              *slash_index = '\0';
-          } else {                      
-            strcat(full_path , "/");
-            strcat(full_path, hdl->list.filenames[idx]);
-          }
-          fs_new_path(hdl,full_path);
-        }
-        }
-    }
-  }
-  if (refresh){
-    refresh_display(hdl);
-  }        
-  return;
-}
 
 /** Thread that handles input events 
 */
@@ -787,7 +707,91 @@ bool fs_set_select_cb(fs_handle hdl, select_cb * f){
   return true;  
 }
 
+/** Handle click on the object
+ *
+ * \param[in] x x absolute coordonate of the click
+ * \param[in] y y absolute coordonate of the click
+ *
+ */
+void fs_handle_click(fs_handle hdl,int x, int y){
+  int idx; 
+  int win_x, win_y;
+  bool refresh = false;
 
+  hdl->win->GetPosition(hdl->win, &win_x, &win_y);
+  x-=win_x;
+  y-=win_y;
+  
+  if( (x >= hdl->config->geometry.x) && 
+    (x <= (hdl->config->geometry.x + hdl->config->geometry.width )) && 
+    (y >= hdl->config->geometry.y) && 
+    (y <= (hdl->config->geometry.y + hdl->config->geometry.height ))){
+
+    
+    if ((x >= hdl->arrow_list[FS_ICON_UP].x) &&
+        (x <= (hdl->arrow_list[FS_ICON_UP].x + hdl->arrow_list[FS_ICON_UP].w)) &&
+        (y >= hdl->arrow_list[FS_ICON_UP].y) &&
+        (y <= (hdl->arrow_list[FS_ICON_UP].y + hdl->arrow_list[FS_ICON_UP].h))){
+          /* Test scroll up */             
+          hdl->idx_first_displayed -= hdl->nb_lines ; 
+          if ((hdl->idx_first_displayed <= -1 ) && (hdl->idx_first_displayed > -hdl->nb_lines )) {
+            hdl->idx_first_displayed = 0;                        
+          }                   
+          if (hdl->idx_first_displayed <= -hdl->nb_lines) {
+            if (hdl->list.entries_number >  hdl->nb_lines){
+              hdl->idx_first_displayed = hdl->list.entries_number -  hdl->nb_lines ;
+            } else {
+              hdl->idx_first_displayed = 0;
+            }
+          }
+          refresh = true;
+    }
+    if ((x >= hdl->arrow_list[FS_ICON_DOWN].x) &&
+        (x <= (hdl->arrow_list[FS_ICON_DOWN].x + hdl->arrow_list[FS_ICON_UP].w)) &&
+        (y >= hdl->arrow_list[FS_ICON_DOWN].y) &&
+        (y <= (hdl->arrow_list[FS_ICON_DOWN].y + hdl->arrow_list[FS_ICON_UP].h))){
+        /* Test scroll down */                   
+          hdl->idx_first_displayed += hdl->nb_lines;
+          if (hdl->idx_first_displayed >= hdl->list.entries_number ){
+              hdl->idx_first_displayed = 0 ;
+          }                   
+          refresh = true;
+    }
+    if ((x >= hdl->refresh_zone.x) &&
+        (x <= (hdl->refresh_zone.x + hdl->refresh_zone.w)) &&
+        (y >= hdl->refresh_zone.y) &&
+        (y <= (hdl->refresh_zone.y + hdl->refresh_zone.h))) {
+        /* Test a file selection */
+        idx = hdl->idx_first_displayed + ((y - hdl->refresh_zone.y) / hdl->line_height);
+        if (idx < hdl->list.entries_number) {
+        if (!hdl->list.is_folder[idx]) {
+          /* Regular file */
+          fs_select(hdl,idx);        
+          refresh = true;   
+        } else {
+            /* Folder */
+          char * full_path = alloca(strlen(hdl->list.basename) + strlen(hdl->list.filenames[idx]) + 2);
+          char * slash_index;
+          strcpy(full_path, hdl->list.basename);
+          if ((strcmp(hdl->list.filenames[idx],"..") == 0) &&
+              ((slash_index = strrchr(full_path,'/')) != NULL) &&
+              (strcmp(slash_index+1,"..")!=0)) {
+              /* We cut the last folder when going up in a tree rather than concatening '..' => It simplifies pathnames */
+              *slash_index = '\0';
+          } else {                      
+            strcat(full_path , "/");
+            strcat(full_path, hdl->list.filenames[idx]);
+          }
+          fs_new_path(hdl,full_path);
+        }
+        }
+    }
+  }
+  if (refresh){
+    refresh_display(hdl);
+  }        
+  return;
+}
 
 /** Change current folder for file selector object 
  *

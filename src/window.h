@@ -1,8 +1,31 @@
-/***************************************************************************
- *  19/06/2008
- *  Copyright  2008  nullpointer
- *  Email nullpointer[at]lavabit[dot]com
- ****************************************************************************/
+/**
+ * \file window.c
+ * \author nullpointer & wolfgar
+ * \brief This module provides window creation and handling facilities
+ *
+ * This is the base object used to create and handle windows in Tomplayer.
+ * The underlying objet is a DirectFB window.
+ * This module enables :
+ *    \li To create the window from a configuration file
+ *    \li To retrieve a control in the window given its name
+ *    \li To handle mouses events for every created windows
+ *    \li To attach callback to any control 
+ *
+ * It keeps track of the created windows in a stack and delivers events only to the last created window
+ *
+ * \todo enable to create this object without regaular file configuration (have a configuration object)
+ * \warning This module is not thread-safe (coz we dont need it at this time) :
+ * \warning Especially :gui_window_load(), :gui_window_release() and :gui_window_handle_click() have to be called from the same thread...
+ *
+ *
+ * $URL: $
+ * $Rev: $
+ * $Author: $
+ * $Date: $
+ *
+ */
+
+
 /*
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,35 +42,53 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/**
- * \file window.h
- * \author nullpointer
- * \brief GUI Window declarations
- */
 
 #ifndef __WINDOW_H__
 #define __WINDOW_H__
 
 #include <stdbool.h>
 #include <directfb.h>
-#include "list.h"
 
 
-/**
- * \struct gui_window
-  */
-struct gui_window{
-	IDirectFBSurface * background_surface; /*!<DirectFB background bitmap */
-	struct list_object * controls; /*!<list of controls */
-	IDirectFBFont *font;	/*!<DirectFB font used by the window */
-	int r,g,b,a; 		/*!<Text color */
-	bool (*callback)(struct gui_window *, char * param, int , int ); /*!<periodic callback of the window */
+/** define the type of control */
+enum gui_type_ctrl{
+	GUI_TYPE_CTRL_TEXT = 1,	      /**< a static text */
+	GUI_TYPE_CTRL_BUTTON,	      /**< an icon button */
+        GUI_TYPE_CTRL_CLICKABLE_ZONE, /**< a clickable zone */ 
+	GUI_TYPE_CTRL_FILESELECTOR,   /**< a file selector */	
+        GUI_TYPE_CTRL_MAX_NB
 };
 
-extern struct gui_window * main_window;
+/** Handle on the window object */
+typedef struct _gui_window * gui_window;
 
-struct gui_window *  load_window( char * filename, bool );
-bool load_window_config( char * filename, struct gui_window * window );
-void unload_window( struct gui_window * window, bool );
+struct gui_control;
+/** Callback on a control click */
+typedef void (*gui_control_cb)(struct gui_control *, int, int);
+
+/** define a single GUI control */
+struct gui_control{
+	enum gui_type_ctrl type;		/**< type of control */
+        const char * name ;                     /**< Name of the control */
+        void * obj;                             /**< pointer to the underlying object (depends ont type) 
+                                                  GUI_TYPE_CTRL_TEXT =>  None
+                                                  GUI_TYPE_CTRL_BUTTON => IDirectFBSurface * 
+                                                  GUI_TYPE_CTRL_CLICKABLE_ZONE => None
+                                                  GUI_TYPE_CTRL_FILESELECTOR => fs_handle
+                                                */                                                
+        DFBRectangle zone ;                     /**< Zone occupied by the control*/
+        gui_window   win;                       /**< Handle to the window that holds the control */
+        gui_control_cb cb;                      /**< Callback */
+};
+
+
+
+
+
+gui_window  gui_window_load(IDirectFB  *,  IDirectFBDisplayLayer *, const char * filename);
+bool   gui_window_release(gui_window );
+const struct gui_control * gui_window_get_control(gui_window, const char *);
+void   gui_window_attach_cb(gui_window, const char *, gui_control_cb);
+void   gui_window_handle_click(int  x, int y);
 
 #endif /* __WINDOW_H__ */

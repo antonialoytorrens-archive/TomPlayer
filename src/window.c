@@ -1,8 +1,16 @@
-/***************************************************************************
- *  19/06/2008
- *  Copyright  2008  nullpointer
- *  Email nullpointer[at]lavabit[dot]com
- ****************************************************************************/
+  /**
+ * \file window.c
+ * \author nullpointer & wolfgar
+ * \brief This module provides window creation and handling facilities 
+ * 
+ * $URL: $
+ * $Rev: $
+ * $Author: $
+ * $Date: $
+ *
+ */
+
+
 /*
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,228 +25,458 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- */
+ */ 
 
-/**
- * \file window.c
- * \author nullpointer
- * \brief window loading and releasing
- */
 
-#include <dictionary.h>
-#include <iniparser.h>
-#include "gui.h"
-#include "window.h"
-#include "gui_control.h"
-#include "callbacks.h"
-#include "window_context.h"
+#include "dictionary.h"
+#include "iniparser.h"
 #include "debug.h"
+#include "file_selector.h"
+#include "list.h"
+#include "window.h"
+
 
 #define DEFAULT_FONT_HEIGHT 15
 
-struct gui_window * main_window = NULL;
+/** Data related to a window object  */
+struct _gui_window{
+        IDirectFB * dfb;                       /**< Dfb interafce */
+        IDirectFBDisplayLayer  *layer;         /**< dfb layer related to the current window object */
+        IDirectFBWindow * win;                 /**< dfb window related to the current window object */      
+	IDirectFBSurface * background_surface; /**< dfb window surface */                
+	struct list_object * controls;         /**< list of controls */        
+        IDirectFBFont * font ;
+        DFBColor color;                        /**< Text color */ 
+};
 
-/**
- * \fn bool load_window( char * filename, struct gui_window * window )
- * \brief loading of a window, and initialization)
+/**/
+static int screen_height, screen_width;
+
+/* Keep track of the difefrent created windows as a stack model */
+#define GUI_WINDOW_MAX_NB 4
+
+static struct {
+  gui_window winlist[GUI_WINDOW_MAX_NB];
+  int current_win;
+} win_stack =  { .current_win = -1 };
+
+
+
+/** Retrieve screen size to use them as default values when window sizes are not set */
+static void probe_screen( IDirectFB *dfb){
+  DFBSurfaceDescription dsc;
+  IDirectFBSurface * primary;
+
+  dsc.flags = DSDESC_CAPS;
+  dsc.caps = DSCAPS_PRIMARY;	
+  if (dfb->CreateSurface( dfb, &dsc, &primary ) != DFB_OK ){
+    return;
+  }
+  primary->GetSize( primary, &screen_width, &screen_height );
+  primary->Release(primary); 
+}
+
+/** Load a font  
  *
- * \param filename window configuration file
- * \param reset_context indicate if the window context has to be resetted or not
+ * \param filename of the font
+ * \param height size of the font
  *
- * \return adress on the loaded window, NULL if error
+ * \return DirectFB font or NULL if error
  */
-struct gui_window *  load_window( char * filename, bool reset_context ){
-	struct gui_window * window;
-	bool return_code;
-	struct list_object * list_controls;
-	struct gui_control * control;
+static IDirectFBFont * load_font(gui_window win, char * filename, int height ){
+	DFBFontDescription desc;
+	IDirectFBFont * font;	
 
-	if( reset_context == true ) init_gui_window_context();
-
-	PRINTDF( "load_window <%s>\n", filename );
-        window = malloc( sizeof( struct gui_window ) );
-        if( window == NULL ){
-            PRINTDF( "Unable to allocate memory for creating window %s\n", filename );
-            return NULL;
+	PRINTDF( "Loading font <%s> <%d>\n", filename, height );
+	desc.flags = DFDESC_HEIGHT;
+	desc.height = height;
+	if (win->dfb->CreateFont( win->dfb, filename, &desc, &font ) != DFB_OK){
+          return NULL;
+        } else {
+      	  return font;
         }
+}
 
-	memset( window, 0, sizeof( struct gui_window ) );
-	return_code = load_window_config( filename, window );
+/** Load an image to a DirectFB surface of a control
+ *
+ * \param filename of the bitmap
+ *
+ * \return DirectFB surface, NULL if error
+ */
+static IDirectFBSurface * load_image_to_surface(struct gui_control * ctrl, char * filename ){	
+	IDirectFBImageProvider *provider;
+	DFBSurfaceDescription dsc;
+	IDirectFBSurface * surface = NULL;
 
-	if( return_code != true ){
-		PRINTDF( "Unable to load  window config\n%s", filename );
-		return NULL;
-	}
+	PRINTDF( "load_image_to_surface <%s>\n", filename );
 
-	if( window->font == NULL ) window->font = default_font;
+	if (ctrl->win->dfb->CreateImageProvider( ctrl->win->dfb, filename, &provider ) != DFB_OK)
+          return NULL;
 
-	// Init each control
-	list_controls = window->controls;
-	while( list_controls != NULL ){
-		control = (struct gui_control *) list_controls->object;
-		switch( control->type ){
-			case GUI_TYPE_CTRL_STATIC_TEXT:
-			case GUI_TYPE_CTRL_BUTTON:
-				break;
-			case GUI_TYPE_CTRL_LISTVIEW:
-				init_gui_ctrl_listview( control, false );
-				break;
-			case GUI_TYPE_CTRL_LISTVIEW_ICON:
-				init_gui_ctrl_listview( control, true );
-				break;
+	if ((provider->GetSurfaceDescription (provider, &dsc) == DFB_OK) &&
+	    ( ctrl->win->dfb->CreateSurface( ctrl->win->dfb, &dsc, &surface ) == DFB_OK) ){
+	 provider->RenderTo( provider, surface, NULL ) ;
+        }
+	provider->Release( provider );
+        ctrl->zone.w = dsc.width;
+        ctrl->zone.h = dsc.height;
+	return surface;
+}
 
-		}
-		list_controls = list_controls->next;
-	}
+static  bool init_window(gui_window win,  dictionary * ini){
+  DFBRectangle zone;
+  char* s;
+  DFBWindowDescription  desc;     
+  IDirectFBImageProvider *provider;
+  int opacity, font_height;
 
-	return window;
+  zone.x = iniparser_getint(ini, "general:x", 0);
+  zone.y = iniparser_getint(ini, "general:y", 0);
+  zone.w = iniparser_getint(ini, "general:w", screen_width-zone.x);
+  zone.h = iniparser_getint(ini, "general:h", screen_height-zone.y);
+  win->color.r = iniparser_getint(ini, "general:r", 0);
+  win->color.g = iniparser_getint(ini, "general:g", 0);
+  win->color.b = iniparser_getint(ini, "general:b", 0);
+  win->color.a = iniparser_getint(ini, "general:a", 0xFF);
+  s = iniparser_getstring(ini, "general:background", NULL);
+  
+
+  desc.flags = ( DWDESC_POSX | DWDESC_POSY |
+                 DWDESC_WIDTH | DWDESC_HEIGHT );
+  desc.posx   = zone.x;
+  desc.posy   = zone.y;
+  desc.width  = zone.w;
+  desc.height = zone.h;
+
+  if (  (win->layer->CreateWindow (win->layer, &desc, &win->win)  != DFB_OK )  ||
+        (win->win->GetSurface(win->win,&win->background_surface) != DFB_OK) ){
+      return false;
+    }
+
+  win->background_surface->SetBlittingFlags(win->background_surface,DSBLIT_BLEND_ALPHACHANNEL);
+  if (s != NULL) {  
+    win->dfb->CreateImageProvider( win->dfb, s, &provider );
+    provider->RenderTo( provider, win->background_surface, NULL ) ;
+    provider->Release(provider);
+  } else {
+    win->background_surface->SetColor(win->background_surface, 0,0,0,0xFF);
+    win->background_surface->FillRectangle(win->background_surface,0,0, desc.width,desc.height);
+  }
+  
+  font_height = iniparser_getint(ini, "general:font_height", DEFAULT_FONT_HEIGHT);
+  s = iniparser_getstring(ini, "general:font", NULL);
+  if( s != NULL ) win->font = load_font (win, s, font_height );
+  if (win->font != NULL){
+    win->background_surface->SetColor(win->background_surface,win->color.r,  win->color.g, win->color.b, win->color.a);
+    win->background_surface->SetFont(win->background_surface, win->font);
+  }
+  opacity = iniparser_getint(ini, "general:opacity", 0xFF);
+  win->win->SetOpacity(win->win, opacity);
+
+ 
+  return true; 
 }
 
 
-/**
- * \fn bool load_window_config( char * filename, struct gui_window * window )
- * \brief loading of a window configuration
+/** Loading of a window configuration
  *
  * \param filename window configuration file
  * \param window structure where to store configuration
  *
  * \return true on success, false on failure
  */
-bool load_window_config( char * filename, struct gui_window * window ){
-	dictionary * ini ;
-	char * s;
-	int i;
-	char * key_fmt = "control_%02d:%s";
-	char key[200];
-	bool return_code = false;
-	struct gui_control * control;
-	int num_control = 0;
-	int font_height;
+static bool load_window_config( const char * filename, gui_window  window ){
+        
+        dictionary * ini ;
+        char * s;
+        int i;
+        char * key_fmt = "control_%02d:%s";
+        char key[200];
+        bool return_code = false;
+        struct gui_control * control;
+        int num_control = 0;
+        DFBColor color;
+        int font_height;
 
-	PRINTDF( "load_window_config <%s>\n", filename );
+        PRINTDF( "load_window_config <%s>\n", filename );
 
-	ini = iniparser_load(filename);
-	if (ini == NULL) {
-		PRINTDF( "Unable to load config file %s\n", filename);
-		return false ;
-	}
+        ini = iniparser_load(filename);
+        if (ini == NULL) {
+                PRINTDF( "Unable to load config file %s\n", filename);
+                return false ;
+        }
 
-	s = iniparser_getstring(ini, "general:callback", NULL);
-	if( s!=NULL) window->callback = get_gui_callback_by_name( s );
+        /* init the window itself */
+        init_window(window,ini);
 
-	s = iniparser_getstring(ini, "general:background", NULL);
-	if( s != NULL ) window->background_surface = load_image_to_surface( s );
+        /* Init each control in the window */
+        while( true ){
+                sprintf( key, key_fmt, num_control, "type" );
+                i = iniparser_getint(ini, key, -1);
+                if( i < 0 ) break;
 
-	window->r = iniparser_getint(ini, "general:r", 0);
-	window->g = iniparser_getint(ini, "general:g", 0);
-	window->b = iniparser_getint(ini, "general:b", 0);
-	window->a = iniparser_getint(ini, "general:a", 0xFF);
+                if ((i < GUI_TYPE_CTRL_TEXT) || (i >= GUI_TYPE_CTRL_MAX_NB )){
+                        PRINTDF( "Control type unknown for control #%d\n", num_control );
+                        goto end;
+                }
 
-	font_height = iniparser_getint(ini, "general:font_height", DEFAULT_FONT_HEIGHT);
-	s = iniparser_getstring(ini, "general:font", NULL);
+                control = ( struct gui_control * ) calloc(1, sizeof( struct gui_control ) );	
+                if (control == NULL){
+                  PRINTDF( " Control Allocation failed %s \n","" );
+                  goto end;
+                }
+                control->type = i;               
+                control->win = window;
+                sprintf( key, key_fmt, num_control, "x" );
+                control->zone.x = iniparser_getint(ini, key, 0);
+                sprintf( key, key_fmt, num_control, "y" );
+                control->zone.y = iniparser_getint(ini, key, 0);
+                sprintf( key, key_fmt, num_control, "w" );
+                control->zone.w = iniparser_getint(ini, key, 0);
+                sprintf( key, key_fmt, num_control, "h" );
+                control->zone.h = iniparser_getint(ini, key, 0);
+                sprintf( key, key_fmt, num_control, "name" );
+                s = iniparser_getstring(ini, key, NULL);
+                if( s != NULL ) control->name = strdup( s );
 
-	if( s != NULL ) window->font = load_font (s, font_height );
+                switch(control->type){
+                  case GUI_TYPE_CTRL_TEXT: {                    
+                    IDirectFBFont * font ;
+                    font = NULL;
+                    sprintf( key, key_fmt, num_control, "font_height" );
+                    font_height = iniparser_getint(ini, key, DEFAULT_FONT_HEIGHT);
+                    sprintf( key, key_fmt, num_control, "font" );
+                    s = iniparser_getstring(ini, key, NULL);
+                    if( s != NULL ) font = load_font (window, s, font_height );		
+                    sprintf( key, key_fmt, num_control, "r" );
+                    color.r = iniparser_getint(ini, key, 0);
+                    sprintf( key, key_fmt, num_control, "g" );
+                    color.g = iniparser_getint(ini, key, 0);
+                    sprintf( key, key_fmt, num_control, "b" );
+                    color.b = iniparser_getint(ini, key, 0);
+                    sprintf( key, key_fmt, num_control, "a" );
+                    color.a = iniparser_getint(ini, key, 0xFF);
+                    sprintf( key, key_fmt, num_control, "msg" );
+                    s = iniparser_getstring(ini, key, NULL);
+                    if (font == NULL){
+                      window->background_surface->GetFont(window->background_surface, &font);
+                    }
+                    if (( s!=NULL) && (font != NULL)){                                             
+                      window->background_surface->SetColor(window->background_surface,color.r,  color.g, color.b, color.a);
+                      window->background_surface->SetFont(window->background_surface, font);                      
+                      window->background_surface->DrawString( window->background_surface , s, -1,control->zone.x, control->zone.y, DSTF_TOPLEFT);
+                      font->GetHeight(font, &control->zone.h);
+                      font->GetStringWidth(font, s, -1, &control->zone.w);  	
+                      font->Release(font);                      
+                      /* Restore default font */                  
+                      if (window->font){
+                        window->background_surface->SetColor(window->background_surface,window->color.r,  window->color.g, window->color.b, window->color.a);
+                        window->background_surface->SetFont(window->background_surface, window->font);       
+                      } 
+                    }
+                    }
+                    break;
+                  case GUI_TYPE_CTRL_BUTTON :
+                    sprintf( key, key_fmt, num_control, "image" );
+                    s = iniparser_getstring(ini, key, NULL);
+                    if( s != NULL ) {
+                      control->obj = load_image_to_surface(control, s);
+                      window->background_surface->Blit( window->background_surface, control->obj, NULL, control->zone.x, control->zone.y );
+                    }
+                    break;
+                  case GUI_TYPE_CTRL_CLICKABLE_ZONE :
+                    /* Nothing else todo */
+                    break;
+	          case GUI_TYPE_CTRL_FILESELECTOR :
+                    /* TODO */
+                    break;
+                  default :
+                    break;
+                }
+                add_to_list( &window->controls, control );
+                num_control++;
+        }
 
-	while( true ){
-		sprintf( key, key_fmt, num_control, "type" );
-		i = iniparser_getint(ini, key, -1);
-		if( i < 0 ) break;
-
-		if( i != GUI_TYPE_CTRL_STATIC_TEXT && i != GUI_TYPE_CTRL_BUTTON && i != GUI_TYPE_CTRL_LISTVIEW && i != GUI_TYPE_CTRL_LISTVIEW_ICON ){
-			PRINTDF( "Control type unknown for control #%d\n", num_control );
-			goto end;
-		}
-
-		control = ( struct gui_control * ) malloc( sizeof( struct gui_control ) );
-		memset( control, 0, sizeof( struct gui_control ) );
-
-		control->type = i;
-
-		sprintf( key, key_fmt, num_control, "image" );
-		s = iniparser_getstring(ini, key, NULL);
-		if( s != NULL ) control->bitmap_surface = load_image_to_surface( s );
-
-		sprintf( key, key_fmt, num_control, "x" );
-		control->x = iniparser_getint(ini, key, -1);
-
-		sprintf( key, key_fmt, num_control, "y" );
-		control->y = iniparser_getint(ini, key, -1);
-
-		sprintf( key, key_fmt, num_control, "w" );
-		control->w = iniparser_getint(ini, key, -1);
-
-		sprintf( key, key_fmt, num_control, "h" );
-		control->h = iniparser_getint(ini, key, -1);
-
-		sprintf( key, key_fmt, num_control, "param" );
-		s = iniparser_getstring(ini, key, NULL);
-		if( s != NULL ) control->param = strdup( s );
-
-		sprintf( key, key_fmt, num_control, "font_height" );
-		font_height = iniparser_getint(ini, key, DEFAULT_FONT_HEIGHT);
-
-		sprintf( key, key_fmt, num_control, "font" );
-		s = iniparser_getstring(ini, key, NULL);
-		if( s != NULL ) control->font = load_font (s, font_height );
-
-
-		sprintf( key, key_fmt, num_control, "callback" );
-		s = iniparser_getstring(ini, key, NULL);
-		if( s!=NULL) control->callback = get_gui_callback_by_name( s );
-
-		sprintf( key, key_fmt, num_control, "r" );
-		control->r = iniparser_getint(ini, key, 0);
-		sprintf( key, key_fmt, num_control, "g" );
-		control->g = iniparser_getint(ini, key, 0);
-		sprintf( key, key_fmt, num_control, "b" );
-		control->b = iniparser_getint(ini, key, 0);
-		sprintf( key, key_fmt, num_control, "a" );
-		control->a = iniparser_getint(ini, key, 0xFF);
-
-		add_to_list( &window->controls, control );
-		num_control++;
-	}
-
-	return_code = true;
-
+        return_code = true;
 end:
-	iniparser_freedict(ini);
-	return return_code;
+        iniparser_freedict(ini);
+        return return_code;
 }
 
-/**
- * \fn void unload_window( struct gui_window * window )
- * \brief release a window
+
+/** 
+ * Loading of a window and initialization
  *
- * \param window window structure
- * \param reset_context indicate if the window context has to be resetted or not
+ * \param[in] filename window configuration file 
+ *
+ * \return Handle to the created object, NULL if error
  */
-void unload_window( struct gui_window * window, bool reset_context ){
+gui_window  gui_window_load(IDirectFB  *dfb, IDirectFBDisplayLayer *layer, const char * filename){
+  gui_window  window;
+  bool return_code;
+
+
+
+  if (screen_height == 0){
+    probe_screen( dfb);
+  }
+
+  if ( (win_stack.current_win + 1)>= GUI_WINDOW_MAX_NB) {
+       PRINTDF( "No more window object can be created while trying to inastance %s\n", filename );
+  }
+
+  PRINTDF( "load_window <%s>\n", filename );
+  window = calloc(1,  sizeof( *window));
+  if( window == NULL ){
+      PRINTDF( "Unable to allocate memory for creating window %s\n", filename );
+      return NULL;
+  }
+  window->dfb = dfb;
+  window->layer = layer;
+  
+  return_code = load_window_config( filename, window );
+  
+  if( return_code != true ){
+          PRINTDF( "Unable to load  window config\n%s", filename );
+          return NULL;
+  }
+  window->background_surface->Flip(window->background_surface,NULL, 0);
+  win_stack.current_win += 1;
+  win_stack.winlist[win_stack.current_win] = window;
+  
+  
+  return window;
+}
+
+
+
+/** 
+ * Release a window 
+ *
+ * \param window window handle  
+ *
+ * \warning Attempting to release a window which is not the last created (and thus the active one) will fail
+ */
+bool gui_window_release(gui_window window){
+
 	struct list_object * list_controls;
 	struct gui_control * control;
+        
+	
+        PRINTD("unload_window\n");
 
-	PRINTD("unload_window\n");
-
-
-	if( reset_context == true ) init_gui_window_context();
         if( window != NULL ){
-            if( window->background_surface != NULL ) window->background_surface->Release( window->background_surface );
-            if( window->font != NULL && window->font != default_font) window->font->Release( window->font );
-    
+            /* Remove the window from the stack */             
+             if (win_stack.winlist[win_stack.current_win] != window) {             
+              return false;
+             }
+             win_stack.winlist[win_stack.current_win] = NULL;
+             win_stack.current_win -= 1;  
+             
+            
+            /* Perform clean*/
+            if (window->background_surface != NULL) {
+              window->background_surface->Release( window->background_surface );
+            }
+            if (window->font != NULL) {
+              window->font->Release( window->font );
+            }
+            if (window->win  != NULL){
+                window->win->Destroy(window->win);
+                window->win->Release( window->win);
+            }
             list_controls = window->controls;
             while( list_controls != NULL ){
                     control = (struct gui_control *) list_controls->object;
-                    if( control->bitmap_surface != NULL )  control->bitmap_surface->Release( control->bitmap_surface );
-                    if( control->font != NULL && control->font != default_font )  control->font->Release( control->font );
+                    free(control->name);
+                    switch(control->type){
+                      case GUI_TYPE_CTRL_TEXT :
+                      case GUI_TYPE_CTRL_CLICKABLE_ZONE :  
+                        /* No specific underlying object to free */
+                        break;
+                      case GUI_TYPE_CTRL_BUTTON :
+                        if (control->obj != NULL)
+                          ((IDirectFBSurface *)control->obj)->Release((IDirectFBSurface *)control->obj);
+                        break;	
+	              case GUI_TYPE_CTRL_FILESELECTOR :
+                          if (control->obj != NULL){
+                            fs_release(control->obj);
+                          }
+                        break;
+                      default :
+                        break;
+                    }
                     list_controls = list_controls->next;
             }
-    
             release_list( window->controls, NULL );
             window->controls = NULL;
-	free( window );
-    }
+	    free( window );  
+        } else {  
+          return false;
+        }
+  return true;
 }
 
 
+const struct gui_control * gui_window_get_control(gui_window win, const char * name){
+  struct list_object * list_controls;
+  struct gui_control * control;
+  struct gui_control * ret = NULL;
+
+  list_controls = win->controls;
+  while( list_controls != NULL ){
+    control = (struct gui_control *) list_controls->object;
+    if (strcmp(control->name, name)){
+      ret = control;
+      break;
+    }
+    list_controls = list_controls->next;
+  }
+  return ret;
+}
+
+void gui_window_attach_cb(gui_window win,const char * name, gui_control_cb cb){
+  struct list_object * list_controls;
+  struct gui_control * control;  
+
+  list_controls = win->controls;
+  while( list_controls != NULL ){
+    control = (struct gui_control *) list_controls->object;
+    if (strcmp(control->name, name)==0){
+      control->cb = cb;
+      break;
+    }
+    list_controls = list_controls->next;
+  }
+  return;
+}
+
+void gui_window_handle_click(int  x, int y){
+  struct list_object * list_controls;
+  struct gui_control * control;  
+  gui_window win;
+
+  if (win_stack.current_win < 0){
+    return;
+  }
+  win = win_stack.winlist[win_stack.current_win];
+  list_controls = win->controls;
+  while( list_controls != NULL ){
+    control = (struct gui_control *) list_controls->object;
+    if ((control->zone.x <= x) &&
+        (control->zone.y <= y) &&
+        ((control->zone.x + control->zone.w) >= x) &&
+        ((control->zone.y + control->zone.h) >= y) 
+        ) {      
+        if( control->cb != NULL){
+          control->cb(control, x, y);
+        }
+        /* No overlap of controls */
+        break;
+    }
+    list_controls = list_controls->next;
+  }
+  return;
+}
 
 

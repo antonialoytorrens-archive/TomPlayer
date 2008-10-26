@@ -54,10 +54,9 @@
 #include "power.h"
 #include "debug.h"
 #include "zip_skin.h"
-#include "gui_control.h"
-#include "window_context.h"
+/*#include "gui_control.h"*/
+/*#include "window_context.h"*/
 #include "file_list.h"
-#include "gui_control.h"
 #include "gui.h"
 
 /* Progress bar update period in us */
@@ -146,6 +145,7 @@ bool file_exist( char * file ){
 
 }
 
+#if 0
 void get_thumbnail_name( char * folder, char * file, char * thumb ){
 	char * s;
 	char * c;
@@ -205,7 +205,7 @@ void generate_thumbnail( void ){
 		list = list->next;
 	}
 }
-
+#endif
 
 void display_current_file( char * filename, struct skin_config *skin_conf, ILuint bitmap )
 {

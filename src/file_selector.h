@@ -37,7 +37,7 @@
 
 
 #ifndef __FILE_SELECTOR_H__
-
+#include <directfb.h>
 #include <stdint.h>
 
 
@@ -88,8 +88,9 @@ typedef struct _fl_handle * fslist;
 typedef void (select_cb)(IDirectFBSurface *, const char *, bool);
 
 fs_handle fs_create (IDirectFB  *, IDirectFBWindow *,const struct fs_config *);
-bool fs_set_select_cb(fs_handle, select_cb * );
 bool fs_release(fs_handle);
+bool fs_set_select_cb(fs_handle, select_cb * );
+void fs_handle_click(fs_handle,int , int );
 bool fs_new_path(fs_handle hdl, const char * path);
 bool fs_select(fs_handle, int);
 bool fs_select_all(fs_handle);

@@ -26,7 +26,7 @@
 
 #ifndef __GUI_H__
 #define __GUI_H__
-
+#if 0
 #include <directfb.h>
 #include "window.h"
 
@@ -57,5 +57,7 @@ IDirectFBFont * load_font( char * filename, int height );
 void draw_window( struct gui_window * window);
 void show_message_box( char * title, char * message );
 void show_information_message( char * msg );
+#endif
+
 
 #endif /* __GUI_H__ */
