@@ -192,9 +192,9 @@ static  fs_handle load_fs_ctrl(struct gui_control * ctrl,  dictionary * ini  ){
                                           .font_color = {.a=0xff , .r=188, .g =133 , .b =215 },
                                         },
 
-                            .geometry = { .preview_width_ratio = 0, },
+                            .geometry = { .preview_width_ratio = 30, },
 
-                            .options ={ .preview_box = false,
+                            .options ={ .preview_box = true,
                                         .multiple_selection = true,
                                         .events_thread = false
                             },
@@ -456,7 +456,7 @@ const struct gui_control * gui_window_get_control(gui_window win, const char * n
   list_controls = win->controls;
   while( list_controls != NULL ){
     control = (struct gui_control *) list_controls->object;
-    if (strcmp(control->name, name)){
+    if (strcmp(control->name, name) == 0){
       ret = control;
       break;
     }

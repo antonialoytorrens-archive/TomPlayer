@@ -89,6 +89,52 @@ inline static const char * get_full_conf(enum gui_screens_type screen_type){
   return buff;    
 }
 
+void video_select_cb(IDirectFBSurface * s, const char * c, bool is_select){
+  static const char * cmd_mplayer_thumbnail = "DIR=`pwd` && cd /tmp && rm -f 00000001.png && mplayer -ao null -vo png:z=0 -ss 10 -frames 1 \"$DIR/%s\"";
+  IDirectFBImageProvider *provider;
+  DFBSurfaceDescription idsc;
+  DFBSurfaceDescription dsc;
+  DFBRectangle rect;
+
+  double iratio;
+  double sratio;
+
+  char * cmd ;
+  int w,h;
+  if (is_select)
+    printf("coucou %s\n",c);   
+   else 
+    printf("bye %s\n",c);   
+    
+  if (s != NULL){
+    if (is_select){
+    cmd = malloc(strlen (cmd_mplayer_thumbnail) + strlen(c) + 64);
+    s->GetSize (s, &w,&h);  
+    sprintf( cmd, cmd_mplayer_thumbnail, c );
+    system(cmd) ;
+    /*unzip_file( c, "skin.bmp", "00000001.bmp" );*/
+    if (dfb->CreateImageProvider (dfb,  "/tmp/00000001.png", &provider) ==DFB_OK ) {
+      provider->GetSurfaceDescription (provider, &idsc);
+      iratio = idsc.width / idsc.height;
+      sratio = w/h;
+      if (iratio > sratio) {
+        rect.w = w;
+        rect.h = rect.w/iratio;
+        rect.x = 0;
+        rect.y = (h - rect.h) / 2;
+      } else {
+        rect.h = h;
+        rect.w = rect.h*iratio;
+        rect.y = 0;
+        rect.x =( w - rect.w) /2;
+      }
+      provider->RenderTo (provider, s, &rect);
+      provider->Release (provider);
+    }
+    free(cmd);
+  } 
+  } 
+}
 
 static void quit_current_window(struct gui_control * ctrl, int x, int y){
    gui_window_release(ctrl->win);
@@ -115,10 +161,18 @@ static void dispatch_fs_event(struct gui_control * ctrl, int x, int y){
 
 static void select_video(struct gui_control * ctrl, int x, int y){
    gui_window  win;
+   fs_handle fs;
+   struct gui_control * fs_ctrl;
+
    win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_VIDEO)); 
    gui_window_attach_cb(win, "file_selector", dispatch_fs_event);
    gui_window_attach_cb(win, "goback_button", quit_current_window);
    gui_window_attach_cb(win, "play_button", display_not_implemented);
+   fs_ctrl =  gui_window_get_control(win, "file_selector");
+   if (fs_ctrl != NULL){
+     fs = fs_ctrl->obj;
+     fs_set_select_cb(fs, video_select_cb);
+   }
 }
 
 static void quit_tomplayer(struct gui_control * ctrl, int x, int y){
@@ -126,7 +180,6 @@ static void quit_tomplayer(struct gui_control * ctrl, int x, int y){
    quit = true;
 }
 
-/* Splash screen related code */
 static void enter_main_screen(struct gui_control * ctrl, int x, int y){
    /* We go there from splash screen */
    gui_window  win;
@@ -278,10 +331,6 @@ int main( int argc, char *argv[] )
 		exit(1);
 	}
         if (load_first_screen()){
-
-  /*	default_font = load_font( gui_config.default_font, gui_config.font_height );
-          show_param_window( main_window, gui_config.first_window, 0, 0 );
-  */
           while( quit == false ){
                   keybuffer->WaitForEventWithTimeout( keybuffer, 0, 100 );
                   while (keybuffer->GetEvent( keybuffer, DFB_EVENT(&evt)) == DFB_OK) {
