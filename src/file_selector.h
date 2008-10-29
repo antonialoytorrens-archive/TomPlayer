@@ -59,10 +59,7 @@ struct fs_config{
   } graphics;
 
   struct {
-    int x;
-    int y;
-    int height;
-    int width;   
+    DFBRectangle pos;                      /**< Postion of the file selector in the window */
     int preview_width_ratio;              /**< preview zone ratio (as a percent of the file selector width)*/ 
   } geometry;
 

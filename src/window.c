@@ -178,6 +178,36 @@ static  bool init_window(gui_window win,  dictionary * ini){
 }
 
 
+
+static  fs_handle load_fs_ctrl(struct gui_control * ctrl,  dictionary * ini  ){	
+  #define RES_FOLDER "./res/icon/"
+  #define FONT_FOLDER "./res/font/"
+
+  struct fs_config conf = {
+                            .graphics = { .filename = {RES_FOLDER "scroll_up_0.png",
+                                                      RES_FOLDER "scroll_down_0.png" ,
+                                                      RES_FOLDER "check_0.png",
+                                                      RES_FOLDER "folder_0.png"},
+                                          .font = FONT_FOLDER "decker.ttf",
+                                          .font_color = {.a=0xff , .r=188, .g =133 , .b =215 },
+                                        },
+
+                            .geometry = { .preview_width_ratio = 0, },
+
+                            .options ={ .preview_box = false,
+                                        .multiple_selection = true,
+                                        .events_thread = false
+                            },
+
+                            .folder = {
+                              .filter= NULL /*"^.*\\.(avi|zip)$"*/,
+                              .pathname=".",
+                            }
+                           };
+    conf.geometry.pos = ctrl->zone;
+    return fs_create (ctrl->win->dfb, ctrl->win->win, &conf);
+}
+
 /** Loading of a window configuration
  *
  * \param filename window configuration file
@@ -261,17 +291,17 @@ static bool load_window_config( const char * filename, gui_window  window ){
                     if (font == NULL){
                       window->background_surface->GetFont(window->background_surface, &font);
                     }
-                    if (( s!=NULL) && (font != NULL)){                                             
+                    if (( s!=NULL) && (font != NULL)){
                       window->background_surface->SetColor(window->background_surface,color.r,  color.g, color.b, color.a);
-                      window->background_surface->SetFont(window->background_surface, font);                      
+                      window->background_surface->SetFont(window->background_surface, font);
                       window->background_surface->DrawString( window->background_surface , s, -1,control->zone.x, control->zone.y, DSTF_TOPLEFT);
                       font->GetHeight(font, &control->zone.h);
                       font->GetStringWidth(font, s, -1, &control->zone.w);  	
-                      font->Release(font);                      
-                      /* Restore default font */                  
+                      font->Release(font);
+                      /* Restore default font */
                       if (window->font){
                         window->background_surface->SetColor(window->background_surface,window->color.r,  window->color.g, window->color.b, window->color.a);
-                        window->background_surface->SetFont(window->background_surface, window->font);       
+                        window->background_surface->SetFont(window->background_surface, window->font);
                       } 
                     }
                     }
@@ -288,7 +318,7 @@ static bool load_window_config( const char * filename, gui_window  window ){
                     /* Nothing else todo */
                     break;
 	          case GUI_TYPE_CTRL_FILESELECTOR :
-                    /* TODO */
+                    control->obj =  load_fs_ctrl(control,ini);                    
                     break;
                   default :
                     break;
@@ -322,7 +352,7 @@ gui_window  gui_window_load(IDirectFB  *dfb, IDirectFBDisplayLayer *layer, const
   }
 
   if ( (win_stack.current_win + 1)>= GUI_WINDOW_MAX_NB) {
-       PRINTDF( "No more window object can be created while trying to inastance %s\n", filename );
+       PRINTDF( "No more window object can be created while trying to instanciate %s\n", filename );
   }
 
   PRINTDF( "load_window <%s>\n", filename );
@@ -442,7 +472,7 @@ void gui_window_attach_cb(gui_window win,const char * name, gui_control_cb cb){
   list_controls = win->controls;
   while( list_controls != NULL ){
     control = (struct gui_control *) list_controls->object;
-    if (strcmp(control->name, name)==0){
+    if ((control->name != NULL) && (strcmp(control->name, name)==0)) {
       control->cb = cb;
       break;
     }
@@ -454,15 +484,19 @@ void gui_window_attach_cb(gui_window win,const char * name, gui_control_cb cb){
 void gui_window_handle_click(int  x, int y){
   struct list_object * list_controls;
   struct gui_control * control;  
+  int win_x, win_y;	
   gui_window win;
 
   if (win_stack.current_win < 0){
     return;
   }
   win = win_stack.winlist[win_stack.current_win];
+  win->win->GetPosition(win->win, &win_x, &win_y);
+  x-=win_x;
+  y-=win_y;
   list_controls = win->controls;
   while( list_controls != NULL ){
-    control = (struct gui_control *) list_controls->object;
+    control = (struct gui_control *) list_controls->object; 
     if ((control->zone.x <= x) &&
         (control->zone.y <= y) &&
         ((control->zone.x + control->zone.w) >= x) &&
@@ -470,10 +504,10 @@ void gui_window_handle_click(int  x, int y){
         ) {      
         if( control->cb != NULL){
           control->cb(control, x, y);
+	  /* exit on first callback : needed as the cb may destroy the control list ! */
+	  break;
         }
-        /* No overlap of controls */
-        break;
-    }
+    }    
     list_controls = list_controls->next;
   }
   return;

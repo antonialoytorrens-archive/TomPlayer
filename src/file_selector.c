@@ -49,6 +49,7 @@
 #include <regex.h>
 
 #include "file_selector.h"
+#include "debug.h"
 
 /** File list used as an enumerator to provide file selection to the outside of the module */
 struct _fl_handle {
@@ -74,7 +75,7 @@ struct file_list{
 struct fs_data {
   IDirectFB  * dfb;                            /**< Main dfb interface */
   IDirectFBWindow * win;                       /**< Window containing the object */  
-  const struct fs_config * config;             /**< Configuration of the object */
+  struct fs_config * config;                   /**< Configuration of the object */
   IDirectFBSurface * destination;              /**< Surface used to display the object */
   IDirectFBEventBuffer * evt_buffer;           /**< Input event used by the object*/
   IDirectFBSurface* icon_surf[FS_MAX_ICON_ID]; /**< surface rendering icons displayed in the object */ 
@@ -328,10 +329,13 @@ static bool release(fs_handle hdl) {
   }
   fl_release(&hdl->list);
   
-  /* These three ones are allocated outside of the module : It's not up to us to release them */
+  if (hdl->config != NULL){
+    free(hdl->config);
+  }
+  /* These two ones are allocated outside of the module : It's not up to us to release them */
   hdl->dfb = NULL;
   hdl->win = NULL;
-  hdl->config = NULL;
+  
   free(hdl);
 
   return true;
@@ -392,16 +396,16 @@ static bool display_obj(fs_handle hdl, enum fs_icon_ids id, DFBPoint * point){
 
     switch (id){
       case FS_ICON_UP:
-        lpoint.x = hdl->config->geometry.x +  hdl->config->geometry.width -  w;
-        lpoint.y = hdl->config->geometry.y ;
+        lpoint.x = hdl->config->geometry.pos.x +  hdl->config->geometry.pos.w -  w;
+        lpoint.y = hdl->config->geometry.pos.y ;
         hdl->arrow_list[id].x = lpoint.x;
         hdl->arrow_list[id].y = lpoint.y;
         hdl->arrow_list[id].w = w;
         hdl->arrow_list[id].h = h;
         break;
       case FS_ICON_DOWN:
-        lpoint.x =  hdl->config->geometry.x +  hdl->config->geometry.width - w;
-        lpoint.y =  hdl->config->geometry.y +  hdl->config->geometry.height - h;
+        lpoint.x =  hdl->config->geometry.pos.x +  hdl->config->geometry.pos.w - w;
+        lpoint.y =  hdl->config->geometry.pos.y +  hdl->config->geometry.pos.h - h;
         hdl->arrow_list[id].x = lpoint.x;
         hdl->arrow_list[id].y = lpoint.y;
         hdl->arrow_list[id].w = w;
@@ -445,6 +449,7 @@ static bool refresh_display(fs_handle hdl){
   int y = 0;
   DFBPoint point;
   int max_idx;
+  DFBRegion region;
 
   clear_surface( hdl->refresh_zone_surf);
 
@@ -480,7 +485,11 @@ static bool refresh_display(fs_handle hdl){
   }
   
   hdl->destination->Blit(hdl->destination, hdl->refresh_zone_surf, NULL, hdl->refresh_zone.x, hdl->refresh_zone.y);
-  hdl->destination->Flip(hdl->destination, NULL, 0);
+  region.x1 = hdl->refresh_zone.x;
+  region.y1 = hdl->refresh_zone.y;
+  region.x2 = region.x1 + hdl->refresh_zone.w;
+  region.y2 = region.y1 + hdl->refresh_zone.h;
+  hdl->destination->Flip(hdl->destination, &region, 0);
   
   return true;
 
@@ -494,6 +503,7 @@ static bool refresh_display(fs_handle hdl){
 */
 static void * thread(void *param){
   static int x,y;
+  int win_x, win_y;
   fs_handle hdl = param;
   DFBInputEvent evt; 
 
@@ -516,8 +526,9 @@ static void * thread(void *param){
 			}
 		}		
 	}
-	else if (evt.type == DIET_BUTTONPRESS ){
-          fs_handle_click(hdl, x,y);
+	else if (evt.type == DIET_BUTTONPRESS ){	
+	  hdl->win->GetPosition(hdl->win, &win_x, &win_y);
+          fs_handle_click(hdl, x - win_x,y -win_y);
         }
       }      
   }
@@ -534,7 +545,7 @@ static void * thread(void *param){
  * \param[in] config File selector configuration
  *
  * \return a file selector handle or NULL in case of error.   
- * \warning  dfb, win and config pointers have to stay valid for the whole life of the object as they are not copied...
+ * \warning  dfb and win pointers have to stay valid for the whole life of the object as they are not copied...
  */
 fs_handle fs_create (IDirectFB  * dfb, IDirectFBWindow * win, const struct fs_config * config){
   fs_handle  handle ;
@@ -548,13 +559,18 @@ fs_handle fs_create (IDirectFB  * dfb, IDirectFBWindow * win, const struct fs_co
       goto error;
   handle->dfb = dfb;
   handle->win = win;
-  handle->config = config;
+  
+  handle->config = malloc (sizeof *config);
+  if (handle->config == NULL){
+    goto error;
+  }
+  *handle->config = *config;
   
   if (win->GetSurface(win,&handle->destination) != DFB_OK){
     return false;
   }
 
-  clear_surface(handle->destination);
+  /*clear_surface(handle->destination);*/
   srand(time(NULL));
   
 
@@ -583,7 +599,7 @@ fs_handle fs_create (IDirectFB  * dfb, IDirectFBWindow * win, const struct fs_co
     goto error;
   }
   /* Update file and refresh zone that do not contain scroll arrows */
-  handle->file_zone.w = config->geometry.width - w1;
+  handle->file_zone.w = config->geometry.pos.w - w1;
   handle->refresh_zone.w =  handle->file_zone.w;
   
   /* Load check and folder icons */
@@ -599,19 +615,19 @@ fs_handle fs_create (IDirectFB  * dfb, IDirectFBWindow * win, const struct fs_co
     goto error;
   }
   /* Update file_zone that does not contain these icons*/
-  handle->file_zone.x = config->geometry.x + w1;
+  handle->file_zone.x = config->geometry.pos.x + w1;
   handle->file_zone.w -= w1;
   /*Font will have same height as these icons */ 
   font_dsc.height =  h1;
   
   
-  handle->refresh_zone.x = config->geometry.x; 
+  handle->refresh_zone.x = config->geometry.pos.x; 
   /* Reserve preview zone if needed */ 
   if (config->options.preview_box){
-    handle->preview_zone.w = (config->geometry.preview_width_ratio *  config->geometry.width) / 100;
-    handle->preview_zone.h = config->geometry.height;
-    handle->preview_zone.x = config->geometry.x;
-    handle->preview_zone.y = config->geometry.y;
+    handle->preview_zone.w = (config->geometry.preview_width_ratio *  config->geometry.pos.w) / 100;
+    handle->preview_zone.h = config->geometry.pos.h;
+    handle->preview_zone.x = config->geometry.pos.x;
+    handle->preview_zone.y = config->geometry.pos.y;
     handle->file_zone.x += handle->preview_zone.w;
     handle->file_zone.w -= handle->preview_zone.w;
     handle->refresh_zone.x += handle->preview_zone.w;
@@ -620,14 +636,14 @@ fs_handle fs_create (IDirectFB  * dfb, IDirectFBWindow * win, const struct fs_co
 
   /* Compute number of viewable lines given font height and interflines... */
   handle->line_height = (font_dsc.height * 110) / 100;
-  handle->nb_lines = config->geometry.height / handle->line_height ;
-  shift_y = (config->geometry.height - (handle->nb_lines * handle->line_height)) / 2;
+  handle->nb_lines = config->geometry.pos.h / handle->line_height ;
+  shift_y = (config->geometry.pos.h - (handle->nb_lines * handle->line_height)) / 2;
  
   /* End up initializing file and refresh zone */
-  handle->file_zone.y = shift_y + config->geometry.y;  
-  handle->file_zone.h = config->geometry.height - shift_y;   
-  handle->refresh_zone.y = config->geometry.y + shift_y ; 
-  handle->refresh_zone.h = config->geometry.height - shift_y ; 
+  handle->file_zone.y = shift_y + config->geometry.pos.y;  
+  handle->file_zone.h = config->geometry.pos.h - shift_y;   
+  handle->refresh_zone.y = config->geometry.pos.y + shift_y ; 
+  handle->refresh_zone.h = config->geometry.pos.h - shift_y ; 
 
   handle->idx_first_displayed = 0;
 
@@ -709,23 +725,18 @@ bool fs_set_select_cb(fs_handle hdl, select_cb * f){
 
 /** Handle click on the object
  *
- * \param[in] x x absolute coordonate of the click
- * \param[in] y y absolute coordonate of the click
+ * \param[in] x x coordonate of the click (relative to the window)
+ * \param[in] y y coordonate of the click (relative to the window)
  *
  */
 void fs_handle_click(fs_handle hdl,int x, int y){
   int idx; 
-  int win_x, win_y;
   bool refresh = false;
 
-  hdl->win->GetPosition(hdl->win, &win_x, &win_y);
-  x-=win_x;
-  y-=win_y;
-  
-  if( (x >= hdl->config->geometry.x) && 
-    (x <= (hdl->config->geometry.x + hdl->config->geometry.width )) && 
-    (y >= hdl->config->geometry.y) && 
-    (y <= (hdl->config->geometry.y + hdl->config->geometry.height ))){
+  if( (x >= hdl->config->geometry.pos.x) && 
+    (x <= (hdl->config->geometry.pos.x + hdl->config->geometry.pos.w )) && 
+    (y >= hdl->config->geometry.pos.y) && 
+    (y <= (hdl->config->geometry.pos.y + hdl->config->geometry.pos.h ))){
 
     
     if ((x >= hdl->arrow_list[FS_ICON_UP].x) &&
@@ -814,7 +825,9 @@ bool fs_new_path(fs_handle hdl, const char * path){
   hdl->idx_first_displayed = 0;
   fl_release(&hdl->list);
   fl_create(path, hdl->config->folder.filter ? &hdl->compiled_re_filter : NULL, &hdl->list);
-  clear_surface(hdl->preview_surf);
+  /* TODO a deplacer ? => provoquer un appel de deselction ?*/
+  if (hdl->preview_surf)
+    clear_surface(hdl->preview_surf);
   refresh_display(hdl);
   return true;
 }

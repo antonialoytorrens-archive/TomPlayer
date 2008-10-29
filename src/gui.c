@@ -46,6 +46,8 @@
 #include "pwm.h"
 #include "power.h"
 
+#include "file_selector.h"
+
 
 #define CFG_FOLDER "./conf"
 
@@ -58,6 +60,7 @@ enum gui_screens_type {
   GUI_SCREEN_VIDEO,
   GUI_SCREEN_ABOUT,
   GUI_SCREEN_SPLASH,
+  GUI_SCREEN_NOT_IMPLEMENTED,
   GUI_SCREEN_MAX
 };
 
@@ -68,7 +71,8 @@ static const char * graphic_conf_files[GUI_SCREEN_MAX] = {"main.cfg",
                                                    "audio.cfg",
                                                    "video.cfg",
                                                    "about.cfg",
-                                                   "splash.cfg"
+                                                   "splash.cfg",
+						   "not_implemented.cfg"
                                                   };
 
 static char  graphic_conf_folder[32];
@@ -77,7 +81,7 @@ static IDirectFB	      *dfb;
 static IDirectFBDisplayLayer  *layer;   
 static IDirectFBEventBuffer   *keybuffer;
 static bool is_rotated = false;
-
+static bool quit = false;
 
 inline static const char * get_full_conf(enum gui_screens_type screen_type){
   static char buff[64];
@@ -85,12 +89,56 @@ inline static const char * get_full_conf(enum gui_screens_type screen_type){
   return buff;    
 }
 
+
+static void quit_current_window(struct gui_control * ctrl, int x, int y){
+   gui_window_release(ctrl->win);
+   return;
+}
+
+static void display_not_implemented(struct gui_control * ctrl, int x, int y){
+   gui_window  win;
+   win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_NOT_IMPLEMENTED)); 
+   gui_window_attach_cb(win, "any_part", quit_current_window);   
+}
+
+static void enter_about(struct gui_control * ctrl, int x, int y){
+   gui_window  win;
+   win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_ABOUT)); 
+   gui_window_attach_cb(win, "about_screen", quit_current_window);   
+   return;
+}
+
+static void dispatch_fs_event(struct gui_control * ctrl, int x, int y){
+  fs_handle fs = ctrl->obj;
+  fs_handle_click(fs, x , y );
+}
+
+static void select_video(struct gui_control * ctrl, int x, int y){
+   gui_window  win;
+   win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_VIDEO)); 
+   gui_window_attach_cb(win, "file_selector", dispatch_fs_event);
+   gui_window_attach_cb(win, "goback_button", quit_current_window);
+   gui_window_attach_cb(win, "play_button", display_not_implemented);
+}
+
+static void quit_tomplayer(struct gui_control * ctrl, int x, int y){
+   gui_window_release(ctrl->win);
+   quit = true;
+}
+
 /* Splash screen related code */
 static void enter_main_screen(struct gui_control * ctrl, int x, int y){
+   /* We go there from splash screen */
+   gui_window  win;
    /* Dont want to keep the splash screen window => release it */
    gui_window_release(ctrl->win);
-   gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_MAIN)); 
-   
+   win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_MAIN)); 
+   gui_window_attach_cb(win, "exit_button", quit_tomplayer);
+   gui_window_attach_cb(win, "video_button", select_video);
+   gui_window_attach_cb(win, "about_button", enter_about);
+   gui_window_attach_cb(win, "audio_button", display_not_implemented);
+   gui_window_attach_cb(win, "resume_button", display_not_implemented);
+   gui_window_attach_cb(win, "settings_button", display_not_implemented);
    return;
 }
 
@@ -182,7 +230,7 @@ static bool dispatch_ts_event(DFBInputEvent *evt )
 {
   static int mouse_x=0, mouse_y=0;
 
-  PRINTD( "dispatch_ts_event\n" );
+  //PRINTD( "dispatch_ts_event\n" );
   if (evt->type == DIET_AXISMOTION) {
           if (evt->flags & DIEF_AXISABS) {
                   switch (evt->axis) {
@@ -218,7 +266,7 @@ static bool dispatch_ts_event(DFBInputEvent *evt )
 
 int main( int argc, char *argv[] )
 {
-	bool quit = false;
+
 	DFBInputEvent evt;
 
 	init_engine();
