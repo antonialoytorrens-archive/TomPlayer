@@ -580,7 +580,7 @@ dictionary * iniparser_load(const char * ininame)
             len-- ;
         }
         /* Detect multi-line */
-        if (line[len]=='\\') {
+        if ((len>=0) && (line[len]=='\\')) {
             /* Multi-line value */
             last=len ;
             continue ;
