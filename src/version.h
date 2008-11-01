@@ -1,8 +1,15 @@
-/***************************************************************************
- *  19/06/2008
- *  Copyright  2008  nullpointer
- *  Email
- ****************************************************************************/
+
+/**
+ * \file version.h
+ * \author nullpointer & Wolgar
+ *
+ * $URL$
+ * $Rev$
+ * $Author$
+ * $Date$
+ *
+ */
+
 /*
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,14 +26,10 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/**
- * \file version.h
- * \author nullpointer
- */
 
 /**
  * \def VERSION
  * \brief Application version number
  */
-#define VERSION "0.131"
+#define VERSION "0.200"
 

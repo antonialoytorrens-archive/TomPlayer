@@ -3,10 +3,10 @@
  * \author nullpointer & wolfgar 
  * \brief This module implements GUI programmatic behavior.
  * 
- * $URL: $
- * $Rev: $
- * $Author: $
- * $Date: $
+ * $URL$
+ * $Rev$
+ * $Author$
+ * $Date$
  *
  */
 
@@ -42,6 +42,8 @@
 #include "file_selector.h"
 #include "zip_skin.h"
 #include "config.h"
+#include "version.h"
+#include "resume.h"
 
 enum gui_screens_type {
   GUI_SCREEN_MAIN,
@@ -55,6 +57,17 @@ enum gui_screens_type {
   GUI_SCREEN_NOT_IMPLEMENTED,
   GUI_SCREEN_MAX
 };
+
+
+/** About Thread parameters structure */
+struct about_params{
+    IDirectFBSurface * surf;
+    IDirectFBFont * font;
+    DFBPoint pos;
+    pthread_t thread;
+    bool about_screen_exit;
+};
+
 
 #define CFG_FOLDER "./conf"
 
@@ -74,16 +87,6 @@ static char  graphic_conf_folder[32];
 static IDirectFB	      *dfb;
 static IDirectFBDisplayLayer  *layer;
 static int screen_width, screen_height;
-
-/** About screen parameters */
-static struct about_params{
-  IDirectFBSurface * surf;
-  IDirectFBFont * font;
-  DFBPoint pos;
-  pthread_t thread;
-  bool about_screen_exit;
-}about_thread_params;
-
 
 inline static const char * get_full_conf(enum gui_screens_type screen_type){
   static char buff[64];
@@ -118,7 +121,7 @@ static gui_window message_box(const char *msg, int height, const DFBColor * colo
 
 const char * text_win_tpl="\
 [general]\n\
-opacity=200\n\
+opacity=160\n\
 x=%i\n\
 y=%i\n\
 w=%i\n\
@@ -126,8 +129,8 @@ h=%i\n\
 [control_00]\n\
 type=1\n\
 msg=%s\n\
-x=5\n\
-y=5\n\
+x=15\n\
+y=3\n\
 font_height=%i\n\
 font=%s\n\
 r=%i\n\
@@ -160,10 +163,10 @@ name=any_part\n\
   
   if (fd >= 0) {
     
-    i = snprintf(buffer, sizeof(buffer) -1, text_win_tpl, (screen_width-w-10)/2, (screen_height - height -10)/2,
-                                                           w+10, height+10,msg,height,font_name,
+    i = snprintf(buffer, sizeof(buffer) -1, text_win_tpl, (screen_width-w-30)/2, (screen_height - height -10)/2,
+                                                           w+30, height+10,msg,height,font_name,
                                                            color->r,color->g,color->b,color->a,
-                                                           w+10, height+10 );
+                                                           w+30, height+10 );
     if (i>= 0){
       buffer[i] = '\0';
       write(fd,buffer, i);
@@ -180,14 +183,18 @@ name=any_part\n\
 /* ABOUT SCREEN */
 
 
-
 /** About screen thread that handles the scroll */
 static void * about_thread(void *param){
-  const char * about_text = "Tomplayer - Main developpers are nullpointer (Patrick Bruyere) and Wolfgar (Stephan Rafin) - Graphisms by Flavien and Daniel Clermont - Many thanks to all users and contributors - Meet us at http://www.tomplayer.net - This software is under GPL";
+  const char * about_text = "Tomplayer a multimedia player for TomTom GPS - Code by nullpointer (Patrick Bruyere) and Wolfgar (Stephan Rafin) - Graphics by Flavien and Daniel Clermont - Many thanks to all users and contributors - Meet us at http://www.tomplayer.net - This is free software under GPL";
 
   struct about_params * conf = param;
   int w, i ;
+  DFBRegion region;
   
+  region.x1 = conf->pos.x ;
+  region.y1 = conf->pos.y ;
+  region.x2 = screen_width ;
+  region.y2 = screen_height;
   conf->surf->SetColor(conf->surf, 200,200,200,0xFF);
   conf->font->GetStringWidth ( conf->font, about_text, -1, &w);   
   i= screen_width;
@@ -196,7 +203,7 @@ static void * about_thread(void *param){
     conf->surf->FillRectangle(conf->surf,conf->pos.x,conf->pos.y,  screen_width , screen_height-conf->pos.y);
     conf->surf->SetColor( conf->surf, 200,200,200,0xFF);
     conf->surf->DrawString( conf->surf,about_text, -1, i, conf->pos.y, DSTF_TOPLEFT);
-    conf->surf->Flip(conf->surf,NULL, 0);
+    conf->surf->Flip(conf->surf,&region, 0);
     i -= 4;
     if (i < -w){
       i = screen_width;
@@ -208,8 +215,8 @@ static void * about_thread(void *param){
 
 /** Exit the about screen */
 static void quit_about_window(struct gui_control * ctrl, int x, int y){
-  about_thread_params.about_screen_exit = true ;
-  pthread_join(about_thread_params.thread,NULL);
+  ((struct about_params *)ctrl->cb_param)->about_screen_exit = true ;
+  pthread_join(((struct about_params *)ctrl->cb_param)->thread,NULL);
   gui_window_release(ctrl->win);
   return;
 }
@@ -217,22 +224,36 @@ static void quit_about_window(struct gui_control * ctrl, int x, int y){
 /** Display the about screen */
 static void enter_about(struct gui_control * ctrl, int x, int y){   
    /* FIXME recup propre de la version */
-   const char * version_text = "V 0.200";
+   char version_text[16]; 
    gui_window  win;  
    struct gui_control * txt_ctrl;
-   int w;
-
+   int i,w;
+   static struct about_params about_thread_params;
 
    win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_ABOUT)); 
-   gui_window_attach_cb(win, "about_screen", quit_about_window);      
+
+   txt_ctrl = gui_window_get_control(win, "about_screen");
+   if (txt_ctrl == NULL)
+    return;
+   txt_ctrl->cb_param = &about_thread_params;
+   gui_window_attach_cb(win, "about_screen", quit_about_window);
 
    txt_ctrl = gui_window_get_control(win, "text");
+   if (txt_ctrl == NULL)
+    return;
    about_thread_params.font = txt_ctrl->obj;
    about_thread_params.surf = gui_window_get_surface(win);
    about_thread_params.surf->SetFont(about_thread_params.surf, about_thread_params.font);
+   i=snprintf(version_text,sizeof(version_text)-1 , "V %s", VERSION);
+   if (i< 0) {
+     i=0;
+   }
+   version_text[i]=0;
    about_thread_params.font->GetStringWidth (about_thread_params.font, version_text, -1, &w);
    about_thread_params.surf->SetColor(about_thread_params.surf, 100,100,100,0xFF);
    about_thread_params.surf->DrawString( about_thread_params.surf,version_text, -1, screen_width - w -10, txt_ctrl->zone.y - 30, DSTF_TOPLEFT);
+   about_thread_params.surf->Flip( about_thread_params.surf, NULL, 0);
+
    about_thread_params.pos.x = txt_ctrl->zone.x;
    about_thread_params.pos.y = txt_ctrl->zone.y;
    about_thread_params.about_screen_exit = false;
@@ -536,6 +557,22 @@ static void select_video(struct gui_control * ctrl, int x, int y){
    }
 }
 
+/** Callback that resumes video  */
+static void resume_video( struct gui_control * ctrl, int x, int y){ 
+    int pos = 0;
+    char filename[PATH_MAX];
+
+    if (resume_get_file_infos(filename, PATH_MAX, &pos) != 0){
+        DFBColor color = {255,255,50,50};
+        message_box("No resume data...", 24, &color, "./res/font/decker.ttf");    	
+    }
+    else{
+    	display_current_file( filename, &config.video_config, config.bitmap_loading );
+       /* FIXME MPLAYER launch_mplayer( "", filename, pos ); */
+    }
+    return;
+}
+
 /* AUDIO SCREEN */
 
 static bool shuffle_state = true;
@@ -641,7 +678,7 @@ static void enter_main_screen(struct gui_control * ctrl, int x, int y){
    gui_window_attach_cb(win, "video_button", select_video);
    gui_window_attach_cb(win, "about_button", enter_about);
    gui_window_attach_cb(win, "audio_button", select_audio);
-   gui_window_attach_cb(win, "resume_button", display_not_implemented);
+   gui_window_attach_cb(win, "resume_button", resume_video);
    gui_window_attach_cb(win, "settings_button", choose_settings);
    return;
 }

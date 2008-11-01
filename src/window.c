@@ -3,10 +3,10 @@
  * \author nullpointer & wolfgar
  * \brief This module provides window creation and handling facilities 
  * 
- * $URL: $
- * $Rev: $
- * $Author: $
- * $Date: $
+ * $URL$
+ * $Rev$
+ * $Author$
+ * $Date$
  *
  */
 

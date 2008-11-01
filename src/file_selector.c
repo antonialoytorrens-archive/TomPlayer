@@ -12,10 +12,10 @@
  *    \li One or multiple file(s) selection (Multiple selection possible only in the same folder)
  *    \li Preview facility 
  *
- * $URL: $
- * $Rev: $
- * $Author: $
- * $Date: $
+ * $URL$
+ * $Rev$
+ * $Author$
+ * $Date$
  *
  */
 

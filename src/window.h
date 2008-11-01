@@ -18,10 +18,10 @@
  * \warning Especially :gui_window_load(), :gui_window_release() and :gui_window_handle_click() have to be called from the same thread...
  *
  *
- * $URL: $
- * $Rev: $
- * $Author: $
- * $Date: $
+ * $URL$
+ * $Rev$
+ * $Author$
+ * $Date$
  *
  */
 

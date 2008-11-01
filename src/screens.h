@@ -3,10 +3,10 @@
  * \author nullpointer & wolfgar
  * \brief This module implements GUI programmatic behavior.
  * 
- * $URL: $
- * $Rev: $
- * $Author: $
- * $Date: $
+ * $URL$
+ * $Rev$
+ * $Author$
+ * $Date$
  *
  */
 
