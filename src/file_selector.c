@@ -59,7 +59,9 @@ struct _fl_handle {
 };
 
 #define FILE_LIST_INC 32
-/** Internal file list representation for the file selector */
+/** Internal file list representation for the file selector 
+  *  \note Do not use linked list to implement file list as there is no modification once the list is created
+  */
 struct file_list{
   int entries_number;                          /**< Number of entries in the following arrays...*/  
   char * basename;                             /**< Folder basename */
@@ -92,7 +94,7 @@ struct fs_data {
   struct file_list list;                       /**< Files list displayed by the object */
   pthread_t thread;                            /**< Thread that handles input events */
   bool end_asked;                              /**< Flag to ask for thread events termination */
-  select_cb *prev_cb;                          /**< Selection callback */
+  select_cb *prev_cb;                          /**< callback funtion */
   regex_t compiled_re_filter;                  /**< Compiled re filter to apply filter */
 } ;
 
@@ -133,6 +135,61 @@ static inline bool clear_surface(IDirectFBSurface* surf){
   
 }
 
+
+/**Helper that releases a config object */
+static void free_config(struct fs_config * conf){
+  int i ;
+
+  if (conf == NULL)
+    return;
+  for (i=0;i<FS_MAX_ICON_ID;i++){
+    free (conf->graphics.filename[i]);
+  }
+  free (conf->graphics.font);
+  if (conf->folder.filter != NULL){
+    free(conf->folder.filter);
+  }
+  free(conf->folder.pathname);
+  free(conf);
+}
+
+/**Helper that performs a deep copy of config object */
+static bool copy_config(const struct fs_config * in, struct fs_config ** out2 ){
+  int i ;
+  struct fs_config * out;
+
+  *out2 = out = calloc(1,sizeof(struct fs_config));
+  if (out == NULL){
+    return false;
+  }
+  *out = *in;
+  for (i=0;i<FS_MAX_ICON_ID;i++){
+    out->graphics.filename[i] = strdup(in->graphics.filename[i]);
+    if (out->graphics.filename[i] == NULL){
+      goto error;
+    }
+  }
+  out->graphics.font = strdup(in->graphics.font);
+  if (out->graphics.font  == NULL){
+    goto error;
+  }
+  if (in->folder.filter != NULL){
+    out->folder.filter = strdup(in->folder.filter);
+    if (out->folder.filter == NULL){
+      goto error;
+    }
+  }
+  out->folder.pathname = strdup(in->folder.pathname);
+  if (out->folder.pathname == NULL) {
+    goto error;
+  }
+  return true;
+
+error:
+  free_config(out);
+  *out2 = NULL;
+  return false;
+}
 
 /** Release file list object */
 static void fl_release(struct file_list *fl){  
@@ -188,7 +245,7 @@ static int fl_find_pos(struct file_list *fl, const char * filename, bool is_fold
 
 /** Insert a slot in file list 
  *
- * \warning  No check on file list size (has to be big enough). Only called by :fl_add() that ensures this...
+ * \warning  No check on file list size (has to be big enough). Only called by :fl_add() that ensures this... 
  */
 static bool fl_shift(struct file_list *fl, int idx){
   int i ;
@@ -282,6 +339,7 @@ static bool fl_create(const char * path, regex_t *re, struct file_list * fl){
   return ret;
 }
 
+
 /** Release a fs object 
  *
  *\param[in] hdl Handle of the fs object
@@ -293,6 +351,11 @@ static bool release(fs_handle hdl) {
 
   if (hdl == NULL){
     return false;  
+  }
+
+  /* Notify the object is released */
+  if (hdl->prev_cb != NULL){
+    hdl->prev_cb(hdl, "", FS_EVT_RELEASE);
   }
 
   /* Wait for events thread to terminate */
@@ -330,7 +393,7 @@ static bool release(fs_handle hdl) {
   fl_release(&hdl->list);
   
   if (hdl->config != NULL){
-    free(hdl->config);
+    free_config(hdl->config);    
   }
   /* These two ones are allocated outside of the module : It's not up to us to release them */
   hdl->dfb = NULL;
@@ -375,8 +438,7 @@ static bool display_obj(fs_handle hdl, enum fs_icon_ids id, DFBPoint * point){
     if (provider->GetSurfaceDescription (provider, &dsc) != DFB_OK){
       return false;
     }
-    /*hdl->destination->GetPixelFormat( hdl->destination, &dsc.pixelformat );*/
-   
+
     /* odd value give stange results so lets stay on even values...*/
     dsc.width &=0xFFFFFFFE;
 
@@ -559,12 +621,10 @@ fs_handle fs_create (IDirectFB  * dfb, IDirectFBWindow * win, const struct fs_co
       goto error;
   handle->dfb = dfb;
   handle->win = win;
-  
-  handle->config = malloc (sizeof *config);
-  if (handle->config == NULL){
+
+  if (!copy_config(config, &handle->config)) {
     goto error;
   }
-  *handle->config = *config;
   
   if (win->GetSurface(win,&handle->destination) != DFB_OK){
     return false;
@@ -572,9 +632,6 @@ fs_handle fs_create (IDirectFB  * dfb, IDirectFBWindow * win, const struct fs_co
 
   /*clear_surface(handle->destination);*/
   srand(time(NULL));
-  
-
-
   
   if (config->options.events_thread){
   if (  dfb->CreateInputEventBuffer ( dfb,
@@ -601,7 +658,7 @@ fs_handle fs_create (IDirectFB  * dfb, IDirectFBWindow * win, const struct fs_co
   /* Update file and refresh zone that do not contain scroll arrows */
   handle->file_zone.w = config->geometry.pos.w - w1;
   handle->refresh_zone.w =  handle->file_zone.w;
-  
+ 
   /* Load check and folder icons */
   if (!display_obj(handle,FS_ICON_CHECK,NULL))
     goto error;
@@ -619,8 +676,8 @@ fs_handle fs_create (IDirectFB  * dfb, IDirectFBWindow * win, const struct fs_co
   handle->file_zone.w -= w1;
   /*Font will have same height as these icons */ 
   font_dsc.height =  h1;
-  
-  
+
+
   handle->refresh_zone.x = config->geometry.pos.x; 
   /* Reserve preview zone if needed */ 
   if (config->options.preview_box){
@@ -638,7 +695,7 @@ fs_handle fs_create (IDirectFB  * dfb, IDirectFBWindow * win, const struct fs_co
   handle->line_height = (font_dsc.height * 110) / 100;
   handle->nb_lines = config->geometry.pos.h / handle->line_height ;
   shift_y = (config->geometry.pos.h - (handle->nb_lines * handle->line_height)) / 2;
- 
+
   /* End up initializing file and refresh zone */
   handle->file_zone.y = shift_y + config->geometry.pos.y;  
   handle->file_zone.h = config->geometry.pos.h - shift_y;   
@@ -661,7 +718,7 @@ fs_handle fs_create (IDirectFB  * dfb, IDirectFBWindow * win, const struct fs_co
     goto error;
   }
   handle->refresh_zone_surf->SetFont (handle->refresh_zone_surf, handle->font);
-  
+ 
   /* Create preview surface if needed */
   if (config->options.preview_box){
     dsc.flags = DSDESC_WIDTH | DSDESC_HEIGHT;
@@ -671,12 +728,13 @@ fs_handle fs_create (IDirectFB  * dfb, IDirectFBWindow * win, const struct fs_co
       goto error;
     }
   }
-  
+ 
   /* Create RE for filtering */
   if (handle->config->folder.filter != NULL) {
     if (regcomp(&handle->compiled_re_filter, handle->config->folder.filter, REG_NOSUB | REG_EXTENDED)) {
-       /* In case of error , compile a "*" RE  */
-      regcomp(&handle->compiled_re_filter, "*", REG_NOSUB | REG_EXTENDED);
+        /* In case of error , no filter ! */
+        free(handle->config->folder.filter);
+        handle->config->folder.filter = NULL;
     }
   }
 
@@ -684,16 +742,16 @@ fs_handle fs_create (IDirectFB  * dfb, IDirectFBWindow * win, const struct fs_co
   if (!fl_create(config->folder.pathname,  handle->config->folder.filter ? &handle->compiled_re_filter : NULL, &handle->list)){
     goto error;
   }
-  
+
   /* initial refresh */
   refresh_display(handle);
-    
+ 
   /* thread creation */
   if (config->options.events_thread){
     handle->end_asked = false;
     pthread_create(&handle->thread, NULL, thread, handle);
   }
-    
+ 
   return handle;
 
 error :
@@ -788,12 +846,17 @@ void fs_handle_click(fs_handle hdl,int x, int y){
               ((slash_index = strrchr(full_path,'/')) != NULL) &&
               (strcmp(slash_index+1,"..")!=0)) {
               /* We cut the last folder when going up in a tree rather than concatening '..' => It simplifies pathnames */
-              *slash_index = '\0';
+              if (slash_index == full_path){  
+                /* Specific case where we are at root */
+                *(slash_index +1)= '\0'; 
+              } else {
+                *slash_index = '\0';
+              }
           } else {                      
             strcat(full_path , "/");
             strcat(full_path, hdl->list.filenames[idx]);
           }
-          fs_new_path(hdl,full_path);
+          fs_new_path(hdl,full_path, NULL);
         }
         }
     }
@@ -808,26 +871,41 @@ void fs_handle_click(fs_handle hdl,int x, int y){
  *
  * \param[in] hdl Handle of the fs object
  * \param[in] path New path 
+ * \param[in] filter Filter to apply. Empty string means no filter. NULL means do not change existing filter
  *
  * \retval true success
  * \retval false Failure
  *
  */
-bool fs_new_path(fs_handle hdl, const char * path){
+bool fs_new_path(fs_handle hdl, const char * path, const char * filter){
   struct stat buf;
-  
-  /* Check path exists and is a folder */  
+
+  /* Check path exists and is a folder */
   if (stat(path, &buf) != 0)
     return false;
   if (!S_ISDIR(buf.st_mode))
     return false;  
 
+  if (filter != NULL){
+    if (hdl->config->folder.filter != NULL){
+      free(hdl->config->folder.filter);
+      regfree(&hdl->compiled_re_filter);
+    }
+
+    if (strlen(filter) > 0){
+      hdl->config->folder.filter = strdup(filter);
+      if (regcomp(&hdl->compiled_re_filter, filter, REG_NOSUB | REG_EXTENDED)) {
+        free(hdl->config->folder.filter);
+        hdl->config->folder.filter = NULL;
+      }
+    } else {
+      hdl->config->folder.filter = NULL;
+    }
+  }
+  fs_unselect_all(hdl);
   hdl->idx_first_displayed = 0;
   fl_release(&hdl->list);
   fl_create(path, hdl->config->folder.filter ? &hdl->compiled_re_filter : NULL, &hdl->list);
-  /* TODO a deplacer ? => provoquer un appel de deselction ?*/
-  if (hdl->preview_surf)
-    clear_surface(hdl->preview_surf);
   refresh_display(hdl);
   return true;
 }
@@ -863,8 +941,8 @@ bool fs_select(fs_handle hdl, int idx) {
       char * full_path = malloc(strlen(hdl->list.basename) + strlen(hdl->list.filenames[idx]) + 2);
       get_fullpath (hdl,idx, full_path);
       clear_surface(hdl->preview_surf);
-      hdl->prev_cb(hdl->preview_surf, full_path, hdl->list.is_selected[idx]);                  
-      free(full_path);     
+      hdl->prev_cb(hdl, full_path, hdl->list.is_selected[idx]?FS_EVT_SELECT:FS_EVT_UNSELECT);                  
+      free(full_path);
       hdl->destination->Blit(hdl->destination, hdl->preview_surf, NULL, hdl->preview_zone.x, hdl->preview_zone.y);
       hdl->destination->Flip(hdl->destination, NULL, 0);
   }
@@ -891,6 +969,30 @@ bool fs_select_all(fs_handle hdl) {
     if (!hdl->list.is_selected[i])
        fs_select(hdl, i);      
   }
+  refresh_display(hdl);
+  return true;
+}
+
+
+/** Unselect any selected files in the file selector
+*
+* \note This funtciton is also called before releasing file list (on folder change for instance)
+*/
+bool  fs_unselect_all(fs_handle hdl){
+  int i;
+  char * full_path;
+
+  for(i=0; i<hdl->list.entries_number; i++){  
+    if (hdl->list.is_selected[i]){
+      if (hdl->prev_cb != NULL){
+        full_path = alloca(strlen(hdl->list.basename) + strlen(hdl->list.filenames[i]) + 2);
+        get_fullpath (hdl,i, full_path);
+        hdl->prev_cb(hdl,full_path,FS_EVT_UNSELECT);
+      }
+      hdl->list.is_selected[i] = false;
+      }
+  }
+  refresh_display(hdl); 
   return true;
 }
 
@@ -1012,6 +1114,38 @@ fslist fs_get_selection(fs_handle hdl){
   return fl;
 }
 
+
+/** Retrieve the preview surface associated with the file selector object
+*/
+IDirectFBSurface * fs_get_preview_surface(fs_handle hdl){
+  if (hdl == NULL){
+    return NULL;
+  } else {
+    return hdl->preview_surf;
+  }
+}
+
+
+/** Retrieve the window that hold the  file selector object
+*/
+IDirectFBWindow * fs_get_window(fs_handle hdl){
+  if (hdl == NULL){
+    return NULL;
+  } else {
+    return hdl->win;
+  }
+}
+
+/** Retrieve the configuration associated to the  file selector object
+*/
+const struct fs_config * fs_get_config(fs_handle hdl){
+  if (hdl == NULL){
+    return NULL;
+  } else {
+    return hdl->config;
+  }
+}
+
 /** Get next file from selected files list
  *
  *\param[in] fl Handle on the selected file list
@@ -1059,3 +1193,5 @@ bool fslist_release(fslist fl){
   free(fl);
   return true;
 }
+
+

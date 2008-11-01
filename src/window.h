@@ -9,9 +9,9 @@
  *    \li To create the window from a configuration file
  *    \li To retrieve a control in the window given its name
  *    \li To handle mouses events for every created windows
- *    \li To attach callback to any control 
+ *    \li To attach callback to any control  
  *
- * It keeps track of the created windows in a stack and delivers events only to the last created window
+ * It keeps track of the created windows in a very basic stack model and delivers events only to the last created window
  *
  * \todo enable to create this object without regaular file configuration (have a configuration object)
  * \warning This module is not thread-safe (coz we dont need it at this time) :
@@ -69,26 +69,26 @@ typedef void (*gui_control_cb)(struct gui_control *, int, int);
 /** define a single GUI control */
 struct gui_control{
 	enum gui_type_ctrl type;		/**< type of control */
-        const char * name ;                     /**< Name of the control */
-        void * obj;                             /**< pointer to the underlying object (depends ont type) 
+        char * name ;                           /**< Name of the control */
+        void * obj;                             /**< pointer to the underlying object (depends on type) 
                                                   GUI_TYPE_CTRL_TEXT =>  None
                                                   GUI_TYPE_CTRL_BUTTON => IDirectFBSurface * 
                                                   GUI_TYPE_CTRL_CLICKABLE_ZONE => None
                                                   GUI_TYPE_CTRL_FILESELECTOR => fs_handle
                                                 */                                                
-        DFBRectangle zone ;                     /**< Zone occupied by the control*/
+        DFBRectangle zone ;                     /**< Zone occupied by the control in the window */
         gui_window   win;                       /**< Handle to the window that holds the control */
-        gui_control_cb cb;                      /**< Callback */
+        gui_control_cb cb;                      /**< Callback attached to the control */
+        int            cb_param;                /**< Additionnal param passed to the callback */
 };
-
-
-
 
 
 gui_window  gui_window_load(IDirectFB  *,  IDirectFBDisplayLayer *, const char * filename);
 bool   gui_window_release(gui_window );
-const struct gui_control * gui_window_get_control(gui_window, const char *);
+struct gui_control * gui_window_get_control(gui_window, const char *);
 void   gui_window_attach_cb(gui_window, const char *, gui_control_cb);
 void   gui_window_handle_click(int  x, int y);
+IDirectFBSurface * gui_window_get_surface(gui_window);
+/*void   gui_window_get_pos(gui_window, int *, int* );*/
 
 #endif /* __WINDOW_H__ */

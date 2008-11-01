@@ -50,11 +50,18 @@ enum fs_icon_ids{
     FS_MAX_ICON_ID 
 };
 
+enum  fs_events_type{
+  FS_EVT_UNSELECT,
+  FS_EVT_SELECT,
+  FS_EVT_RELEASE
+};
+
+
 /** File selector configuration */
 struct fs_config{
   struct {
-    const char * filename[FS_MAX_ICON_ID]; /**< Icons filenames */
-    const char * font;                     /**< True Type Font filename   */
+    char * filename[FS_MAX_ICON_ID]; /**< Icons filenames */
+    char * font;                     /**< True Type Font filename   */
     DFBColor font_color;                   /**< Font color */
   } graphics;
 
@@ -63,8 +70,7 @@ struct fs_config{
     int preview_width_ratio;              /**< preview zone ratio (as a percent of the file selector width)*/ 
   } geometry;
 
-  struct {
-  /*  int preview_width_ratio;*/
+  struct {  
     bool preview_box ;                    /**< Is there a preview zone */
     bool multiple_selection;              /**< Are multiple file selection enabled*/
     bool events_thread;                   /**< Is there an autonomous thread to handle events 
@@ -72,28 +78,33 @@ struct fs_config{
   } options;
   
   struct {
-    const char * filter;                  /**< Extended posix regular expression to apply as a filter on files. Null if no filter needed */
-    const char * pathname;                /**< Directory path to display */
+    char * filter;                  /**< Extended posix regular expression to apply as a filter on files. Null if no filter needed */
+    char * pathname;                /**< Directory path to display */
   } folder;
 } ;
+
 
 /** Handle on a file selector */
 typedef struct fs_data * fs_handle;
 /** Handle on a file selector list */
 typedef struct _fl_handle * fslist;
 /** Callback prototype on select/unselect file */
-typedef void (select_cb)(IDirectFBSurface *, const char *, bool);
+typedef void (select_cb)(fs_handle, const char *,enum  fs_events_type);
 
 fs_handle fs_create (IDirectFB  *, IDirectFBWindow *,const struct fs_config *);
 bool fs_release(fs_handle);
 bool fs_set_select_cb(fs_handle, select_cb * );
 void fs_handle_click(fs_handle,int , int );
-bool fs_new_path(fs_handle hdl, const char * path);
+bool fs_new_path(fs_handle hdl, const char * path, const char * filter);
 bool fs_select(fs_handle, int);
 bool fs_select_all(fs_handle);
+bool fs_unselect_all(fs_handle);
 int  fs_get_selected_number(fs_handle);
 int  fs_select_filename(fs_handle, const char * );
 bool fs_set_first_displayed_item(fs_handle, int );
+IDirectFBSurface * fs_get_preview_surface(fs_handle);
+IDirectFBWindow *  fs_get_window(fs_handle);
+const struct fs_config * fs_get_config(fs_handle);
 const char * fs_get_single_selection(fs_handle);
 fslist   fs_get_selection(fs_handle);
 

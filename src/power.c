@@ -73,7 +73,7 @@ bool power_is_off_button_pushed(void){
 	/* Proc entry has to be open each time it is used ...*/
 	input_fd = open(BUTTON_NAME, O_RDWR );
 	if (input_fd < 0){
-	    perror("Error while trying to open button device : ");
+	    //perror("Error while trying to open button device : ");
 	}
 
 	if (input_fd >= 0){
@@ -86,8 +86,9 @@ bool power_is_off_button_pushed(void){
 				write(input_fd,"0",1);
 			}
 		}
+                close (input_fd);
 	}
-	close (input_fd);
+	
 	return is_power_off_pushed;
 }
 
