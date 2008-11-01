@@ -214,7 +214,8 @@ static void draw_text(struct gui_control * ctrl,  dictionary * ini , int num_con
     window->background_surface->DrawString( window->background_surface , s, -1,ctrl->zone.x, ctrl->zone.y, DSTF_TOPLEFT);
     font->GetHeight(font, &ctrl->zone.h);
     font->GetStringWidth(font, s, -1, &ctrl->zone.w);  	
-    font->Release(font);
+    ctrl->obj = font;
+    /*font->Release(font);*/
     /* Restore default font */
     if (window->font){
       window->background_surface->SetColor(window->background_surface,window->color.r,  window->color.g, window->color.b, window->color.a);
@@ -435,6 +436,8 @@ bool gui_window_release(gui_window window){
                     free(control->name);
                     switch(control->type){
                       case GUI_TYPE_CTRL_TEXT :
+                        ((IDirectFBFont * )control->obj)->Release((IDirectFBFont * )control->obj);
+                        break;
                       case GUI_TYPE_CTRL_CLICKABLE_ZONE :  
                         /* No specific underlying object to free */
                         break;

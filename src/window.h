@@ -71,7 +71,7 @@ struct gui_control{
 	enum gui_type_ctrl type;		/**< type of control */
         char * name ;                           /**< Name of the control */
         void * obj;                             /**< pointer to the underlying object (depends on type) 
-                                                  GUI_TYPE_CTRL_TEXT =>  None
+                                                  GUI_TYPE_CTRL_TEXT =>   IDirectFBFont * 
                                                   GUI_TYPE_CTRL_BUTTON => IDirectFBSurface * 
                                                   GUI_TYPE_CTRL_CLICKABLE_ZONE => None
                                                   GUI_TYPE_CTRL_FILESELECTOR => fs_handle
