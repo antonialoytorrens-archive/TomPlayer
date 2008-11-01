@@ -1,10 +1,15 @@
-/***************************************************************************
- *  Sun Jan  6 14:15:55 2008
- *  Copyright  2008  nullpointer
- *  Email
+/**
+ * \file engine.c
+ * \author nullpointer & wolfgar 
+ * \brief This module implements all interactions with mplayer while audio or video are playing 
+ * 
+ * $URL$
+ * $Rev$
+ * $Author$
+ * $Date$
  *
- *  14.02.08 : wolfgar - Add progress bar handling
- ****************************************************************************/
+ */
+
 /*
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -65,7 +70,7 @@
 
 /*char * cmd_mplayer = "./mplayer -quiet -include ./conf/mplayer.conf -vf expand=%i:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -ss %i -slave -input file=%s %s \"%s/%s\" > %s";*/
 char * cmd_mplayer = "./mplayer -include ./conf/mplayer.conf -vf expand=%i:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -ss %i -slave -input file=%s %s \"%s/%s\" > %s";
-char * cmd_mplayer_thumbnail = "./mplayer -ao null -vo png:z=0 -ss 10 -frames 1 -vf scale=%d:%d \"%s/%s\"";
+
 
 static char * fifo_command_name = "/tmp/mplayer-cmd.fifo";
 static char * fifo_menu_name = "/tmp/mplayer-menu.fifo";
@@ -145,67 +150,6 @@ bool file_exist( char * file ){
 
 }
 
-#if 0
-void get_thumbnail_name( char * folder, char * file, char * thumb ){
-	char * s;
-	char * c;
-	
-	if( is_video_file( file ) || is_skin_file( file ) ){
-		/* remove extension */
-		s = strdup( file );
-		c = strrchr( s, '.');
-		if( c != NULL ) *c=0;
-
-		/* thumbnail fullpath */
-		sprintf( thumb, "%s/thumb_%s.png", folder, s );
-
-		free( s );
-	}
-	else if ( is_audio_file( file ) ) strcpy( thumb, DEFAULT_AUDIO_ICON );
-	else strcpy( thumb, DEFAULT_FILE_ICON );
-}
-
-/**
- * \fn void generate_thumbnail( char * folder, char * ext )
- * \brief generate thumbnail of file in the selected folder
- *
- * \param path base folder
- * \param extension list of extension of usable file
- */
-void generate_thumbnail( void ){
-	struct file_elt * file_elt;
-	struct list_object * list;
-	char cmd[200];
-	char fullpath[PATH_MAX+1];
-
-	list = context.list_files;
-
-	while( list != NULL ){
-		file_elt = (struct file_elt *) list->object;
-
-		if( file_elt->type == TYPE_FILE && is_video_file( file_elt->name ) ){
-
-			get_thumbnail_name( context.current_path, file_elt->name, fullpath );
-
-			if( file_exist( fullpath ) == false ){
-				sprintf( cmd, "Generating thumbnail for\n%s", file_elt->name );
-				show_information_message( cmd );
-				PRINTDF( "Generating thumbnail for %s\n", file_elt->name );
-				sprintf( cmd, cmd_mplayer_thumbnail, ICON_W, ICON_H, context.current_path, file_elt->name );
-				system( cmd );
-				system( "sync" );
-
-				/* Move thumbnail to the right folder */
-				if( file_exist( "00000001.png") ) sprintf( cmd, "mv 00000001.png \"%s\"", fullpath );
-				else  sprintf( cmd, "cp %s \"%s\"", DEFAULT_VIDEO_ICON, fullpath );
-				system( cmd );
-			}
-		}
-
-		list = list->next;
-	}
-}
-#endif
 
 void display_current_file( char * filename, struct skin_config *skin_conf, ILuint bitmap )
 {
