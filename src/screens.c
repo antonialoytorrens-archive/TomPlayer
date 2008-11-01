@@ -32,6 +32,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <pthread.h>
 
 #include "dictionary.h"
 #include "iniparser.h"
@@ -73,6 +74,15 @@ static char  graphic_conf_folder[32];
 static IDirectFB	      *dfb;
 static IDirectFBDisplayLayer  *layer;
 static int screen_width, screen_height;
+
+/** About screen parameters */
+static struct about_params{
+  IDirectFBSurface * surf;
+  IDirectFBFont * font;
+  DFBPoint pos;
+  pthread_t thread;
+  bool about_screen_exit;
+}about_thread_params;
 
 
 inline static const char * get_full_conf(enum gui_screens_type screen_type){
@@ -169,11 +179,65 @@ name=any_part\n\
 
 /* ABOUT SCREEN */
 
+
+
+/** About screen thread that handles the scroll */
+static void * about_thread(void *param){
+  const char * about_text = "Tomplayer - Main developpers are nullpointer (Patrick Bruyere) and Wolfgar (Stephan Rafin) - Graphisms by Flavien and Daniel Clermont - Many thanks to all users and contributors - Meet us at http://www.tomplayer.net - This software is under GPL";
+
+  struct about_params * conf = param;
+  int w, i ;
+  
+  conf->surf->SetColor(conf->surf, 200,200,200,0xFF);
+  conf->font->GetStringWidth ( conf->font, about_text, -1, &w);   
+  i= screen_width;
+  while(!conf->about_screen_exit) {
+    conf->surf->SetColor(conf->surf, 0,0,0,0xFF);
+    conf->surf->FillRectangle(conf->surf,conf->pos.x,conf->pos.y,  screen_width , screen_height-conf->pos.y);
+    conf->surf->SetColor( conf->surf, 200,200,200,0xFF);
+    conf->surf->DrawString( conf->surf,about_text, -1, i, conf->pos.y, DSTF_TOPLEFT);
+    conf->surf->Flip(conf->surf,NULL, 0);
+    i -= 4;
+    if (i < -w){
+      i = screen_width;
+    }
+    usleep(50000);
+  }
+  return NULL;
+}
+
+/** Exit the about screen */
+static void quit_about_window(struct gui_control * ctrl, int x, int y){
+  about_thread_params.about_screen_exit = true ;
+  pthread_join(about_thread_params.thread,NULL);
+  gui_window_release(ctrl->win);
+  return;
+}
+
 /** Display the about screen */
-static void enter_about(struct gui_control * ctrl, int x, int y){
-   gui_window  win;
+static void enter_about(struct gui_control * ctrl, int x, int y){   
+   /* FIXME recup propre de la version */
+   const char * version_text = "V 0.200";
+   gui_window  win;  
+   struct gui_control * txt_ctrl;
+   int w;
+
+
    win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_ABOUT)); 
-   gui_window_attach_cb(win, "about_screen", quit_current_window);      
+   gui_window_attach_cb(win, "about_screen", quit_about_window);      
+
+   txt_ctrl = gui_window_get_control(win, "text");
+   about_thread_params.font = txt_ctrl->obj;
+   about_thread_params.surf = gui_window_get_surface(win);
+   about_thread_params.surf->SetFont(about_thread_params.surf, about_thread_params.font);
+   about_thread_params.font->GetStringWidth (about_thread_params.font, version_text, -1, &w);
+   about_thread_params.surf->SetColor(about_thread_params.surf, 100,100,100,0xFF);
+   about_thread_params.surf->DrawString( about_thread_params.surf,version_text, -1, screen_width - w -10, txt_ctrl->zone.y - 30, DSTF_TOPLEFT);
+   about_thread_params.pos.x = txt_ctrl->zone.x;
+   about_thread_params.pos.y = txt_ctrl->zone.y;
+   about_thread_params.about_screen_exit = false;
+
+   pthread_create(&about_thread_params.thread, NULL, about_thread, &about_thread_params);
    return;
 }
 
@@ -332,11 +396,8 @@ static void choose_settings(struct gui_control * ctrl, int x, int y){
 
 /* VIDEO SELECTION SCREEN */
 
-/** Callback of video file selector 
-  * Handle movie preview
-  */
-static void video_select_cb(fs_handle hdl, const char * c, enum  fs_events_type evt){
-
+/** Display an opaque preview window at pos from an image */
+static gui_window create_preview_window(const char * img_filename, const DFBRectangle * pos){
 const char * img_win_tpl="\
 [general]\n\
 opacity=255\n\
@@ -353,17 +414,60 @@ w=%i\n\
 h=%i\n\
 image=%s\n\
 ";
-  static const char * cmd_mplayer_thumbnail = "cd /tmp && rm -f 00000001.png && mplayer -ao null -vo png:z=0 -ss 10 -frames 1 \"%s\"";
-  static gui_window win_prev;
-  IDirectFBImageProvider *provider;
-  IDirectFBWindow * win;
-  IDirectFBSurface * s;
+  gui_window win;
   DFBSurfaceDescription idsc;
-  const struct fs_config *conf; 
+  IDirectFBImageProvider *provider;
+  win = NULL;
   DFBRectangle rect;
   double iratio, sratio;
-  int w,h,fd,winx,winy,i;
   char buffer[512];
+  int fd, i;
+
+  if (dfb->CreateImageProvider (dfb,  img_filename, &provider) ==DFB_OK ) {
+    provider->GetSurfaceDescription (provider, &idsc);
+    iratio = idsc.width / idsc.height;
+    sratio = pos->w/pos->h;
+    if (iratio > sratio) {
+      rect.w = pos->w;
+      rect.h = rect.w/iratio;
+      rect.x = 0;
+      rect.y = (pos->h - rect.h) / 2;
+    } else {
+      rect.h = pos->h;
+      rect.w = rect.h*iratio;
+      rect.y = 0;
+      rect.x =( pos->w - rect.w) /2;
+    }
+    provider->Release (provider);
+  } else {
+    return NULL;
+  }
+
+  fd = open("/tmp/tmp.cfg", O_CREAT | O_WRONLY | O_TRUNC, S_IRWXU);
+  if (fd >= 0){
+    i = snprintf(buffer, sizeof(buffer) -1, img_win_tpl,rect.x + pos->x, rect.y + pos->y ,rect.w,rect.h,rect.w,rect.h,img_filename);
+    if (i>= 0){
+      buffer[i] = '\0';
+      write(fd,buffer, i);
+      win = gui_window_load(dfb, layer, "/tmp/tmp.cfg");
+    }
+    close(fd);
+  }
+  return win ;
+}
+
+/** Callback of video file selector 
+  * Handle movie preview
+  */
+static void video_select_cb(fs_handle hdl, const char * c, enum  fs_events_type evt){
+  static const char * cmd_mplayer_thumbnail = "cd /tmp && rm -f 00000001.png && mplayer -ao null -vo png:z=0 -ss 10 -frames 1 \"%s\"";
+  static gui_window win_prev;
+  IDirectFBWindow * win;
+  IDirectFBSurface * s;
+  const struct fs_config *conf; 
+  int winx,winy,i;
+  DFBRectangle pos;
+  char buffer[256];
 
   if (win_prev !=NULL){
     gui_window_release(win_prev);
@@ -379,37 +483,14 @@ image=%s\n\
       }
       buffer[i] = '\0';
       system(buffer) ;
-      /*unzip_file( c, "skin.bmp", "00000001.bmp" );*/
-      if (dfb->CreateImageProvider (dfb,  "/tmp/00000001.png", &provider) ==DFB_OK ) {
-        provider->GetSurfaceDescription (provider, &idsc);
-        iratio = idsc.width / idsc.height;
-        s->GetSize (s, &w,&h);
-        sratio = w/h;
-        if (iratio > sratio) {
-          rect.w = w;
-          rect.h = rect.w/iratio;
-          rect.x = 0;
-          rect.y = (h - rect.h) / 2;
-        } else {
-          rect.h = h;
-          rect.w = rect.h*iratio;
-          rect.y = 0;
-          rect.x =( w - rect.w) /2;
-        }
-        provider->Release (provider);
-      }
-      fd = open("/tmp/tmp.cfg", O_CREAT | O_WRONLY | O_TRUNC, S_IRWXU);
+      s->GetSize (s, &pos.w,&pos.h);
       win = fs_get_window(hdl);
-      if ((fd >= 0) && (win != NULL)){
+      if (win != NULL){
         win->GetPosition(win, &winx, &winy);
         conf = fs_get_config(hdl);
-        i = snprintf(buffer, sizeof(buffer) -1, img_win_tpl,rect.x + conf->geometry.pos.x + winx ,rect.y + conf->geometry.pos.y + winy ,rect.w,rect.h,rect.w,rect.h,"/tmp/00000001.png");
-        if (i>= 0){
-          buffer[i] = '\0';
-          write(fd,buffer, i);
-          win_prev = gui_window_load(dfb, layer, "/tmp/tmp.cfg");
-        }
-        close(fd);
+        pos.x =  conf->geometry.pos.x + winx;
+        pos.y =  conf->geometry.pos.y + winy;
+        win_prev = create_preview_window("/tmp/00000001.png", &pos);
       }
     } 
   }
