@@ -63,6 +63,7 @@ static void release_resources( void )
  * \param argv argument values
  */
 static bool init_resources( int argc, char *argv[] ) {
+        DFBDisplayLayerConfig layer_config;
 	PRINTD( "init_resources\n" );
 
         if (
@@ -75,6 +76,10 @@ static bool init_resources( int argc, char *argv[] ) {
         (layer->EnableCursor (layer, 0 )  != DFB_OK )){
           return false;
         }
+
+        layer_config.flags = DLCONF_BUFFERMODE;
+        layer_config.buffermode = DLBM_BACKSYSTEM;
+        layer->SetConfiguration( layer, &layer_config );
 
         return true;
 }

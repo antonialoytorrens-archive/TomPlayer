@@ -74,7 +74,7 @@ static void probe_screen( IDirectFB *dfb){
   IDirectFBSurface * primary;
 
   dsc.flags = DSDESC_CAPS;
-  dsc.caps = DSCAPS_PRIMARY;	
+  dsc.caps = DSCAPS_PRIMARY | DSCAPS_FLIPPING;
   if (dfb->CreateSurface( dfb, &dsc, &primary ) != DFB_OK ){
     return;
   }
@@ -158,12 +158,14 @@ static  bool init_window(gui_window win,  dictionary * ini){
   desc.posy   = zone.y;
   desc.width  = zone.w;
   desc.height = zone.h;
+  
 
   if (  (win->layer->CreateWindow (win->layer, &desc, &win->win)  != DFB_OK )  ||
         (win->win->GetSurface(win->win,&win->background_surface) != DFB_OK) ){
       return false;
     }
-
+  win->win->LowerToBottom(win->win);
+ 
   win->background_surface->SetBlittingFlags(win->background_surface,DSBLIT_BLEND_ALPHACHANNEL);
   if (s != NULL) {  
     win->dfb->CreateImageProvider( win->dfb, s, &provider );
@@ -248,7 +250,7 @@ static  fs_handle load_fs_ctrl(struct gui_control * ctrl,  dictionary * ini , in
 
                             .folder = {
                               .filter= NULL /*"^.*\\.(avi|zip)$"*/,
-                              .pathname=".",
+                              .pathname=NULL,
                             }
                            };
 
@@ -328,6 +330,8 @@ static bool load_window_config( const char * filename, gui_window  window ){
                     if( s != NULL ) {
                       control->obj = load_image_to_surface(control, s);
                       window->background_surface->Blit( window->background_surface, control->obj, NULL, control->zone.x, control->zone.y );
+                      /*window->background_surface->Flip(window->background_surface,NULL,0);                      */
+                      /*window->background_surface->Blit( window->background_surface, control->obj, NULL, control->zone.x, control->zone.y );*/
                     }
                     break;
                   case GUI_TYPE_CTRL_CLICKABLE_ZONE :
@@ -385,7 +389,11 @@ gui_window  gui_window_load(IDirectFB  *dfb, IDirectFBDisplayLayer *layer, const
           PRINTDF( "Unable to load  window config\n%s", filename );
           return NULL;
   }
-  window->background_surface->Flip(window->background_surface,NULL, 0);
+  window->win->RaiseToTop(window->win);
+  window->background_surface->Flip(window->background_surface,NULL,0/*DSFLIP_WAITFORSYNC*/);
+  window->background_surface->Blit(window->background_surface,window->background_surface,NULL,0,0);
+  window->background_surface->Flip(window->background_surface,NULL,0/*DSFLIP_WAITFORSYNC*/);
+
   if (!window->is_detached){
     win_stack.current_win += 1;
     win_stack.winlist[win_stack.current_win] = window;
@@ -467,7 +475,7 @@ bool gui_window_release(gui_window window){
 void gui_window_refresh(void){
   int i;
   for (i=win_stack.current_win; i>=0; i--){
-    win_stack.winlist[i]->background_surface->Flip(win_stack.winlist[i]->background_surface,NULL, 0);
+    win_stack.winlist[i]->background_surface->Flip(win_stack.winlist[i]->background_surface,NULL, DSFLIP_WAITFORSYNC);
   }
 }
 

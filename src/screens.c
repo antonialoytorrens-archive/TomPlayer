@@ -203,12 +203,12 @@ static void * about_thread(void *param){
     conf->surf->FillRectangle(conf->surf,conf->pos.x,conf->pos.y,  screen_width , screen_height-conf->pos.y);
     conf->surf->SetColor( conf->surf, 200,200,200,0xFF);
     conf->surf->DrawString( conf->surf,about_text, -1, i, conf->pos.y, DSTF_TOPLEFT);
-    conf->surf->Flip(conf->surf,&region, 0);
-    i -= 4;
+    conf->surf->Flip(conf->surf,&region, 0/*DSFLIP_WAITFORSYNC*/);
+    i -= 1;
     if (i < -w){
       i = screen_width;
     }
-    usleep(50000);
+    usleep(10000);
   }
   return NULL;
 }
@@ -242,7 +242,7 @@ static void enter_about(struct gui_control * ctrl, int x, int y){
    if (txt_ctrl == NULL)
     return;
    about_thread_params.font = txt_ctrl->obj;
-   about_thread_params.surf = gui_window_get_surface(win);
+   about_thread_params.surf = gui_window_get_surface(win);   
    about_thread_params.surf->SetFont(about_thread_params.surf, about_thread_params.font);
    i=snprintf(version_text,sizeof(version_text)-1 , "V %s", VERSION);
    if (i< 0) {
@@ -252,7 +252,9 @@ static void enter_about(struct gui_control * ctrl, int x, int y){
    about_thread_params.font->GetStringWidth (about_thread_params.font, version_text, -1, &w);
    about_thread_params.surf->SetColor(about_thread_params.surf, 100,100,100,0xFF);
    about_thread_params.surf->DrawString( about_thread_params.surf,version_text, -1, screen_width - w -10, txt_ctrl->zone.y - 30, DSTF_TOPLEFT);
-   about_thread_params.surf->Flip( about_thread_params.surf, NULL, 0);
+   about_thread_params.surf->Flip(about_thread_params.surf,NULL, 0);
+   about_thread_params.surf->DrawString( about_thread_params.surf,version_text, -1, screen_width - w -10, txt_ctrl->zone.y - 30, DSTF_TOPLEFT);
+   about_thread_params.surf->Flip( about_thread_params.surf, NULL, DSFLIP_WAITFORSYNC);
 
    about_thread_params.pos.x = txt_ctrl->zone.x;
    about_thread_params.pos.y = txt_ctrl->zone.y;
@@ -354,7 +356,7 @@ static void skin_selected(struct gui_control * ctrl, int x, int y){
     gui_window_release(win);
     gui_window_release(ctrl->win);
   } else {
-    win = message_box("No Selection !", 24, &color, "./res/font/decker.ttf");
+    win = message_box("No File selected !", 24, &color, "./res/font/decker.ttf");
   }
 }
 
@@ -481,7 +483,7 @@ image=%s\n\
   * Handle movie preview
   */
 static void video_select_cb(fs_handle hdl, const char * c, enum  fs_events_type evt){
-  static const char * cmd_mplayer_thumbnail = "cd /tmp && rm -f 00000001.png && mplayer -ao null -vo png:z=0 -ss 10 -frames 1 \"%s\"";
+  static const char * cmd_mplayer_thumbnail = "DIR=`pwd` && cd /tmp && rm -f 00000001.png && $DIR/mplayer -ao null -vo png:z=0 -ss 10 -frames 1 \"%s\"";
   static gui_window win_prev;
   IDirectFBWindow * win;
   IDirectFBSurface * s;
@@ -526,11 +528,13 @@ static void play_video(struct gui_control * ctrl, int x, int y){
   file = fs_get_single_selection(fs);
   
   if (file != NULL){
-    DFBColor color = {255,255,255,255};
+    /*DFBColor color = {255,255,255,255};
     message_box("Will launch Video...", 24, &color, "./res/font/decker.ttf");
-    printf ("About to play %s \n", file);
-    /* FIXME MPLAYER launch_mplayer("", file, 0 );*/
+    printf ("About to play %s \n", file);*/
+    launch_mplayer("", file, 0 );
   } else {
+    DFBColor color = {255,255,50,50};    
+    message_box("No file selected !", 24, &color, "./res/font/decker.ttf");
     printf("No file selected !\n");
   }
 }
@@ -568,7 +572,7 @@ static void resume_video( struct gui_control * ctrl, int x, int y){
     }
     else{
     	display_current_file( filename, &config.video_config, config.bitmap_loading );
-       /* FIXME MPLAYER launch_mplayer( "", filename, pos ); */
+        launch_mplayer( "", filename, pos ); 
     }
     return;
 }
@@ -582,20 +586,27 @@ static void play_audio(struct gui_control * ctrl, int x, int y){
   fslist list;
   const char * filename;
   const struct gui_control * ctrl_fs =  gui_window_get_control(ctrl->win, "file_selector");
+  int file_nb = 0;
   
 
-  fs_handle fs = ctrl_fs->obj;  
-  DFBColor color = {255,255,255,255};
-  message_box("Will play audio...", 24, &color, "./res/font/decker.ttf");
+  fs_handle fs = ctrl_fs->obj;    
   list =  fs_get_selection(fs);
   fp = fopen( "/tmp/playlist.m3u", "w+" );
   while ( (filename = fslist_get_next_file(list, shuffle_state)) != NULL)  {
+    file_nb++;
     fprintf( fp, filename );
     fprintf( fp, "\n" );
   }
   fslist_release(list);
   fclose(fp);
- /* FIXME MPLAYER launch_mplayer( "","/tmp/playlist.m3u", 0 );*/
+  if (file_nb == 0){
+    DFBColor color = {255,255,50,50};
+    message_box("No file selected !", 24, &color, "./res/font/decker.ttf");
+  } else {
+  /*DFBColor color = {255,255,255,255};
+  message_box("Will play audio...", 24, &color, "./res/font/decker.ttf");*/
+    launch_mplayer( "","/tmp/playlist.m3u", 0 );
+  }
 }
 
 /** Callback on select all button */
@@ -631,7 +642,7 @@ static void toggle_suffle(struct gui_control * ctrl, int x, int y){
   region.y1 = img_ctrl->zone.y;
   region.x2 = img_ctrl->zone.x + img_ctrl->zone.w;
   region.y2 = img_ctrl->zone.y + img_ctrl->zone.h;
-  back_surf->Flip(back_surf,&region,0);
+  back_surf->Flip(back_surf,&region,DSFLIP_WAITFORSYNC);
   return;
 }
 
@@ -711,7 +722,7 @@ bool screen_init(IDirectFB  *v_dfb, IDirectFBDisplayLayer  * v_layer){
   layer = v_layer;
 
   dsc.flags = DSDESC_CAPS;
-  dsc.caps = DSCAPS_PRIMARY;
+  dsc.caps = DSCAPS_PRIMARY | DSCAPS_FLIPPING;
   if (dfb->CreateSurface( dfb, &dsc, &primary ) != DFB_OK ){
     return false;
   }

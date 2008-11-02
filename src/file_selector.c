@@ -179,9 +179,11 @@ static bool copy_config(const struct fs_config * in, struct fs_config ** out2 ){
       goto error;
     }
   }
-  out->folder.pathname = strdup(in->folder.pathname);
-  if (out->folder.pathname == NULL) {
-    goto error;
+  if (in->folder.pathname != NULL){
+    out->folder.pathname = strdup(in->folder.pathname);
+    if (out->folder.pathname == NULL) {
+      goto error;
+    }
   }
   return true;
 
@@ -491,7 +493,8 @@ static bool display_obj(fs_handle hdl, enum fs_icon_ids id, DFBPoint * point){
   }
   
   if (dest_surf != NULL){
-    dest_surf->Blit (dest_surf, hdl->icon_surf[id], NULL, lpoint.x, lpoint.y);    
+    dest_surf->Blit (dest_surf, hdl->icon_surf[id], NULL, lpoint.x, lpoint.y);
+
   }
   return true;
 }
@@ -551,7 +554,7 @@ static bool refresh_display(fs_handle hdl){
   region.y1 = hdl->refresh_zone.y;
   region.x2 = region.x1 + hdl->refresh_zone.w;
   region.y2 = region.y1 + hdl->refresh_zone.h;
-  hdl->destination->Flip(hdl->destination, &region, 0);
+  hdl->destination->Flip(hdl->destination, &region, DSFLIP_WAITFORSYNC);
   
   return true;
 
@@ -647,7 +650,10 @@ fs_handle fs_create (IDirectFB  * dfb, IDirectFBWindow * win, const struct fs_co
   if (!display_obj(handle, FS_ICON_UP,NULL))
       goto error;
   if (!display_obj(handle, FS_ICON_DOWN,NULL))
-      goto error;
+    goto error;
+    
+
+
   /* perform sanity checks : arrows icons must have same sizes... */ 
   handle->icon_surf[FS_ICON_UP]->GetSize(handle->icon_surf[FS_ICON_UP],&w1,&h1);
   handle->icon_surf[FS_ICON_DOWN]->GetSize(handle->icon_surf[FS_ICON_DOWN],&w2,&h2);
@@ -711,9 +717,10 @@ fs_handle fs_create (IDirectFB  * dfb, IDirectFBWindow * win, const struct fs_co
   }
 
 
-  dsc.flags = DSDESC_WIDTH | DSDESC_HEIGHT;
+  dsc.flags = DSDESC_WIDTH | DSDESC_HEIGHT/* | DSDESC_CAPS*/;
   dsc.width = handle->refresh_zone.w;
   dsc.height = handle->refresh_zone.h;
+  /*dsc.caps = DSCAPS_DOUBLE;*/
   if (dfb->CreateSurface(dfb, &dsc, &handle->refresh_zone_surf ) != DFB_OK) {
     goto error;
   }
@@ -739,12 +746,15 @@ fs_handle fs_create (IDirectFB  * dfb, IDirectFBWindow * win, const struct fs_co
   }
 
   /* Create file list */
-  if (!fl_create(config->folder.pathname,  handle->config->folder.filter ? &handle->compiled_re_filter : NULL, &handle->list)){
-    goto error;
+  if (config->folder.pathname != NULL){
+    if (!fl_create(config->folder.pathname,  handle->config->folder.filter ? &handle->compiled_re_filter : NULL, &handle->list)){
+      goto error;
+    }
   }
+ 
 
   /* initial refresh */
-  refresh_display(handle);
+/*  refresh_display(handle);*/
  
   /* thread creation */
   if (config->options.events_thread){
@@ -921,6 +931,7 @@ bool fs_new_path(fs_handle hdl, const char * path, const char * filter){
  * \note In multiple selection mode, selecting an already selected item, removes it from the selection  !
  */
 bool fs_select(fs_handle hdl, int idx) {
+  bool new_state = true;
 
   if ( (idx < 0) || (idx >= hdl->list.entries_number)){
     return false;
@@ -932,19 +943,27 @@ bool fs_select(fs_handle hdl, int idx) {
   if (hdl->config->options.multiple_selection){
     hdl->list.is_selected[idx] = !hdl->list.is_selected[idx];
   } else {
-    hdl->list.is_selected[hdl->list.last_selected] = false;
-    hdl->list.is_selected[idx] = true; 
-    hdl->list.last_selected = idx;    
+    if (hdl->list.is_selected[idx]){
+      new_state = false;
+    } else {
+      hdl->list.is_selected[hdl->list.last_selected] = false;
+      hdl->list.is_selected[idx] = true; 
+      hdl->list.last_selected = idx;    
+    }
   }
   
-  if (hdl->prev_cb != NULL) {
+  
+
+  if ( (hdl->prev_cb != NULL)&& (new_state) ){
       char * full_path = malloc(strlen(hdl->list.basename) + strlen(hdl->list.filenames[idx]) + 2);
+      /* Refresh here coz callback can take some time */
+      refresh_display(hdl);
       get_fullpath (hdl,idx, full_path);
       clear_surface(hdl->preview_surf);
       hdl->prev_cb(hdl, full_path, hdl->list.is_selected[idx]?FS_EVT_SELECT:FS_EVT_UNSELECT);                  
       free(full_path);
       hdl->destination->Blit(hdl->destination, hdl->preview_surf, NULL, hdl->preview_zone.x, hdl->preview_zone.y);
-      hdl->destination->Flip(hdl->destination, NULL, 0);
+      hdl->destination->Flip(hdl->destination, NULL, DSFLIP_WAITFORSYNC);
   }
 
   return true;
