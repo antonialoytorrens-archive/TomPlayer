@@ -1005,11 +1005,8 @@ void * mplayer_thread(void *cmd){
 
     is_mplayer_finished = false;
     pthread_create(&t, NULL, update_thread, NULL);
-    /*pthread_create(&t, NULL, anim_thread, NULL);*/
-    /* FIXME  */
-    /*while (1){
-      sleep(1);
-    }*/
+    pthread_create(&t, NULL, anim_thread, NULL);
+    
     system( (char *) cmd );
     printf("\nmplayer has exited\n");
     /* Save settings to resume file */
