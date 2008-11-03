@@ -1,5 +1,5 @@
 # This script
-#   - Copy dependencies (only folder and regular files as it they will end up on a FAT fs)
+#   - Copy dependencies (only folder and regular files as they will end up on a FAT fs)
 #   - Generate a script to create symlinks on target fs 
 #
 

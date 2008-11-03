@@ -6,14 +6,14 @@ DEP_LIB=./dependencies/libs/
 INC_KERNEL=$(DEP_LIB)/golinux-tt2318/include
 CC=arm-linux-gcc
 STRIP=arm-linux-strip
-CFLAGS+= -std=c99 -D_BSD_SOURCE -Wall -I$(INC_KERNEL)  -I$(DEP_BUILD)/include/ -I$(DEP_BUILD)/include/directfb
+CFLAGS+=   -Wall -I$(INC_KERNEL)  -I$(DEP_BUILD)/include/ -I$(DEP_BUILD)/include/directfb
 LDFLAGS+=-L$(DEP_BUILD)/lib/ -Wl,-rpath=/usr/local/lib
 else
 DEP_LIB=./dependencies/libs/
 INC_KERNEL=$(DEP_LIB)/golinux-tt2318/include
 CC=gcc
 STRIP=strip
-CFLAGS+= -g -std=c99 -D_BSD_SOURCE -Wall -I$(INC_KERNEL)  -I./dependencies/build_native/include -I./dependencies/build_native/usr/local/include -I./dependencies/build_native/usr/local/include/directfb
+CFLAGS+=   -Wall -I$(INC_KERNEL)  -I./dependencies/build_native/include -I./dependencies/build_native/usr/local/include -I./dependencies/build_native/usr/local/include/directfb
 LDFLAGS+=  -L./dependencies/build_native/lib -L./dependencies/build_native/usr/local/lib
 endif
 
@@ -24,19 +24,29 @@ ifdef DEBUG
 CFLAGS+=-DDEBUG -g 
 endif
 
-SRC = file_selector.c window.c  screens.c gui.c list.c config.c zip_skin.c engine.c widescreen.c resume.c pwm.c sound.c  power.c
+TOM_SRC = file_selector.c window.c  screens.c gui.c list.c config.c widescreen.c resume.c pwm.c power.c
+ENG_SRC = start_engine.c  zip_skin.c engine.c config.c widescreen.c resume.c pwm.c sound.c  power.c
 
 # callbacks.c file_list.c playlist.c
 
-OBJ = $(subst .c,.o,$(SRC))
+TOM_OBJ = $(subst .c,.o,$(TOM_SRC))
+ENG_OBJ = $(subst .c,.o,$(ENG_SRC))
 
-all : tomplayer refresh_wdg
 
-tomplayer: $(OBJ)
-	$(CC) $(LDFLAGS) -o tomplayer $^  -liniparser -ldirectfb -lfusion -ldirect -lpthread -lz -lzip  -lm -lpthread -ljpeg -lILU  -lIL -lpng $(ADD_LIBS)
+all : tomplayer refresh_wdg start_engine
+
+tomplayer: $(TOM_OBJ)
+	$(CC) $(LDFLAGS) -o tomplayer $^  -liniparser -ldirectfb -lfusion -ldirect -lpthread -lz -lzip  -lm -lpthread -ljpeg -lpng $(ADD_LIBS)
 	cp tomplayer $(INSTALL_DIR)	
 #	mv tomplayer $(INSTALL_DIR)				
 	$(STRIP) $(INSTALL_DIR)/tomplayer
+
+start_engine : $(ENG_OBJ) 
+	$(CC) $(LDFLAGS) -o start_engine $^  -liniparser -lpthread -lz -lzip  -lm -lpthread -ljpeg -lILU  -lIL -lpng -lts $(ADD_LIBS)
+	cp start_engine $(INSTALL_DIR)	
+#	mv tomplayer $(INSTALL_DIR)				
+	$(STRIP) $(INSTALL_DIR)/start_engine
+	
 
 refresh_wdg : watchdog.o
 	$(CC) $(LDFLAGS) -o refresh_wdg $^
@@ -47,6 +57,9 @@ install_deps :
 	rm -rf $(INSTALL_DIR)/deps
 	make -C dependencies/libs/
 	./create_script.sh
+
+
+file_selector.o : CFLAGS+=-D_BSD_SOURCE
 
 #Explicit non trivial dependencies
 callbacks.o: callbacks.c callbacks.h gui.h window_context.h debug.h list.h file_list.h engine.h resume.h playlist.h zip_skin.h config.h

@@ -1,8 +1,15 @@
-/***************************************************************************
- *  30/03/2008
- *  Copyright  2008  nullpointer
- *  Email nullpointer[at]lavabit[dot]com
- ****************************************************************************/
+
+/**
+ * \file zip_skin.c
+ * \author nullpointer
+ * \brief handling of zipped skin
+ *
+ * $URL$
+ * $Rev$
+ * $Author:$
+ * $Date$
+ */
+
 /*
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,12 +24,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- */
-
-/**
- * \file zip_skin.c
- * \author nullpointer
- * \brief handling of zipped skin
  */
 
 #include <stdio.h>
@@ -43,9 +44,7 @@
 
 
 
-/**
- * \fn bool load_bitmap( ILuint * bitmap_obj, char * filename )
- * \brief Load image in a DevIL bitmap
+/** Load image in a DevIL bitmap
  *
  * \param bitmap_obj DevIL bitmap object
  * \param filename of the image
@@ -68,9 +67,7 @@ bool load_bitmap( ILuint * bitmap_obj, char * filename ){
 }
 
 
-/**
- * \fn static void expand_config( struct skin_config * conf )
- * \brief Expand configuration to fit in a widescreen
+/** Expand configuration to fit in a widescreen
  *
  * \param conf configuration to be expanded
  */
@@ -101,9 +98,7 @@ static void expand_config( struct skin_config * conf ){
 	}
 }
 
-/**
- * \fn static bool unzip_file( struct zip * fp_zip, char * filename_in, char * filename_out )
- * \brief Unzip a file of an archive
+/** Unzip a file of an archive
  *
  * \param fp_zip handle to the opened zip file
  * \param filename_in filename in the archive
@@ -141,9 +136,7 @@ static bool unzip_file( struct zip * fp_zip, char * filename_in, char * filename
 	return true;
 }
 
-/**
- * \fn bool load_skin_from_zip( char * filename, struct skin_config * skin_conf )
- * \brief Load a zipped skin
+/** Load a zipped skin
  *
  * \param filename fullpath to the archive filename
  * \param skin_conf skin configuration structure
@@ -258,9 +251,7 @@ error:
 	return return_code;
 }
 
-/**
- * \fn bool unload_skin(  struct skin_config * skin_conf )
- * \brief release a skin configuration
+/** Release a skin configuration
  *
  * \param skin_conf skin configuration structure
  *

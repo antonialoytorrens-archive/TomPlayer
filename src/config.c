@@ -283,15 +283,12 @@ bool load_config( struct tomplayer_config * conf ){
 	display_config( conf );
     if( ws_probe() ) ws_translate( conf );
 
-#ifdef START_ENGINE
 /* Not used any longer
     load_bitmap( &conf->bitmap_loading, conf->bitmap_loading_filename );
     load_bitmap( &conf->bitmap_exiting, conf->bitmap_exiting_filename );
-
-    if( load_skin_from_zip( conf->video_skin_filename, &conf->video_config ) == false ) return false;
-    if( load_skin_from_zip( conf->audio_skin_filename, &conf->audio_config ) == false ) return false;
 */
-#endif
+  
+
 
     return true;
 }
