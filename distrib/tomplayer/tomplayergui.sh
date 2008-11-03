@@ -39,10 +39,10 @@ export TSLIB_TSDEVICE=/dev/ts
 export TSLIB_CONFFILE=/etc/ts.conf
 export TSLIB_PLUGINDIR=/usr/local/lib/ts
 
-
 export LIB_TOMPLAYER=${TOMPLAYER_DIR}/lib
 export CONF_TOMPLAYER=${TOMPLAYER_DIR}/conf
 
+export LD_LIBRARY_PATH=/usr/local/lib
 
 # Call script that creates symlinks for shared ibrairies
 ./create_symlinks.sh
@@ -53,16 +53,28 @@ ln -sf ${CONF_TOMPLAYER}/ts.conf ts.conf
 
 
 cd $TOMPLAYER_DIR
-./tomplayer --dfb:no-vt
 
-ttn_file=/bin/ttn
-
-ttn_cnt=`ps | grep ttn | wc -l`
-
-if test ${ttn_cnt} -lt 2 ; then 
-
-
-echo "Start TTN"
-/etc/rc.restartgps
-${ttn_file}
+END_ASKED=0
+NO_SPLASH=
+while [  $END_ASKED -eq 0 ]; do 
+rm start_engine.sh
+./tomplayer --dfb:no-vt $NO_SPLASH
+if [ -f ./start_engine.sh ] ; then 
+  /bin/sh ./start_engine.sh
+   NO_SPLASH="--no-splash"
+else 
+  END_ASKED=1
 fi
+done
+
+#ttn_file=/bin/ttn
+
+#ttn_cnt=`ps | grep ttn | wc -l`
+
+#if test ${ttn_cnt} -lt 2 ; then 
+
+
+#echo "Start TTN"
+#/etc/rc.restartgps
+#${ttn_file}
+#fi
