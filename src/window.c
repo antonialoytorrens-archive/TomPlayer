@@ -479,6 +479,12 @@ void gui_window_refresh(void){
   }
 }
 
+void gui_window_release_all(void){
+  int i;
+  for (i=win_stack.current_win; i>=0; i--){
+    gui_window_release(win_stack.winlist[i]);
+  }
+}
 
 struct gui_control * gui_window_get_control(gui_window win, const char * name){
   struct list_object * list_controls;

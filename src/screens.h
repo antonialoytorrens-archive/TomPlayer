@@ -33,7 +33,7 @@
 #include <directfb.h>
 #include <stdbool.h>
 
-bool screen_init(IDirectFB  *, IDirectFBDisplayLayer  * );
+bool screen_init(IDirectFB  *, IDirectFBDisplayLayer  * ,bool);
 bool screen_is_end_asked(void);
 
 #endif

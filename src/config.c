@@ -57,6 +57,7 @@
  */
 #define DEFAULT_FOLDER "/mnt"
 
+struct tomplayer_config config;
 /**
  * \fn static void display_config( struct tomplayer_config * conf )
  * \brief Show configuration parameters
@@ -83,7 +84,7 @@ static void display_config( struct tomplayer_config * conf ){
  */
 void reset_skin_conf (struct skin_config * conf){
 	int i;
-	/* FIXME Rajouter libération dynamique */
+	/* FIXME Rajouter libï¿½ration dynamique */
 	memset(conf, 0, sizeof(*conf));
 	for( i = 0; i < SKIN_CMD_MAX_NB; i++ ){
 	  conf->cmd2idx[i] = -1;
@@ -282,12 +283,15 @@ bool load_config( struct tomplayer_config * conf ){
 	display_config( conf );
     if( ws_probe() ) ws_translate( conf );
 
+#ifdef START_ENGINE
+/* Not used any longer
     load_bitmap( &conf->bitmap_loading, conf->bitmap_loading_filename );
     load_bitmap( &conf->bitmap_exiting, conf->bitmap_exiting_filename );
 
     if( load_skin_from_zip( conf->video_skin_filename, &conf->video_config ) == false ) return false;
     if( load_skin_from_zip( conf->audio_skin_filename, &conf->audio_config ) == false ) return false;
-
+*/
+#endif
 
     return true;
 }

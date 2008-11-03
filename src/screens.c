@@ -88,6 +88,17 @@ static IDirectFB	      *dfb;
 static IDirectFBDisplayLayer  *layer;
 static int screen_width, screen_height;
 
+
+static void launch_engine(const char * path, int pos){
+  FILE * fp;
+  fp = fopen("./start_engine.sh", "w+");
+  if (fp != NULL){
+    fprintf(fp,"./start_engine \"%s\" %i\n", path, pos);
+    fclose(fp);
+  }
+  return;
+}
+
 inline static const char * get_full_conf(enum gui_screens_type screen_type){
   static char buff[64];
   snprintf(buff, sizeof(buff) - 1, "%s%s",graphic_conf_folder , graphic_conf_files[screen_type]);
@@ -303,36 +314,37 @@ static bool update_skin( enum gui_screens_type type , const char * skin_filename
   }
 
   if( conf != NULL ){
-    unload_skin( conf );
+/*   unload_skin( conf );
     if( load_skin_from_zip( skin_filename, conf ) == false ){
       PRINTD("Error unable to load this skin\n");
       load_skin_from_zip( original_skin_filename, conf );
       ret = false;
     }
-    else{
-      ini = iniparser_load(CONFIG_FILE);
-      if( ini == NULL ){
-              PRINTD( "Unable to save main configuration\n" );
-              ret = false;
-              goto error;
-      }
-      fp = fopen( CONFIG_FILE, "w+" );
-      if( fp == NULL ){
-              PRINTD( "Unable to open main config file\n" );
-              ret = false;
-              goto error;
-      }
-      iniparser_setstring( ini, config_skin_filename_key, NULL );
-      iniparser_setstring( ini, config_skin_filename_key, skin_filename );
-      iniparser_dump_ini( ini, fp );
-      fclose( fp );
-
-      sprintf( cmd, "cp -f %s ./conf/tomplayer.ini", CONFIG_FILE );
-      system( cmd );
-      system( "unix2dos ./conf/tomplayer.ini" );
-error:
-      iniparser_freedict(ini);
+    else{*/
+    /* FIXME add a check of skin sanity */
+    ini = iniparser_load(CONFIG_FILE);
+    if( ini == NULL ){
+            PRINTD( "Unable to save main configuration\n" );
+            ret = false;
+            goto error;
     }
+    fp = fopen( CONFIG_FILE, "w+" );
+    if( fp == NULL ){
+            PRINTD( "Unable to open main config file\n" );
+            ret = false;
+            goto error;
+    }
+    iniparser_setstring( ini, config_skin_filename_key, NULL );
+    iniparser_setstring( ini, config_skin_filename_key, skin_filename );
+    iniparser_dump_ini( ini, fp );
+    fclose( fp );
+
+    sprintf( cmd, "cp -f %s ./conf/tomplayer.ini", CONFIG_FILE );
+    system( cmd );
+    system( "unix2dos ./conf/tomplayer.ini" );
+error:
+    iniparser_freedict(ini);
+    /*}*/
   }
 
   return ret;
@@ -483,7 +495,7 @@ image=%s\n\
   * Handle movie preview
   */
 static void video_select_cb(fs_handle hdl, const char * c, enum  fs_events_type evt){
-  static const char * cmd_mplayer_thumbnail = "DIR=`pwd` && cd /tmp && rm -f 00000001.png && $DIR/mplayer -ao null -vo png:z=0 -ss 10 -frames 1 \"%s\"";
+  static const char * cmd_mplayer_thumbnail = "DIR=`pwd` && cd /tmp && rm -f 00000001.png && $DIR/mplayer_png -ao null -vo png:z=0 -ss 10 -frames 1 \"%s\"";
   static gui_window win_prev;
   IDirectFBWindow * win;
   IDirectFBSurface * s;
@@ -531,7 +543,9 @@ static void play_video(struct gui_control * ctrl, int x, int y){
     /*DFBColor color = {255,255,255,255};
     message_box("Will launch Video...", 24, &color, "./res/font/decker.ttf");
     printf ("About to play %s \n", file);*/
-    launch_mplayer("", file, 0 );
+    /*launch_mplayer("", file, 0 );*/
+    launch_engine(file, 0 );
+    quit = true;
   } else {
     DFBColor color = {255,255,50,50};    
     message_box("No file selected !", 24, &color, "./res/font/decker.ttf");
@@ -571,8 +585,10 @@ static void resume_video( struct gui_control * ctrl, int x, int y){
         message_box("No resume data...", 24, &color, "./res/font/decker.ttf");    	
     }
     else{
-    	display_current_file( filename, &config.video_config, config.bitmap_loading );
-        launch_mplayer( "", filename, pos ); 
+    	/*display_current_file( filename, &config.video_config, config.bitmap_loading );*/
+        /*launch_mplayer( "", filename, pos ); */
+        launch_engine( filename, pos );
+        quit = true;
     }
     return;
 }
@@ -605,7 +621,9 @@ static void play_audio(struct gui_control * ctrl, int x, int y){
   } else {
   /*DFBColor color = {255,255,255,255};
   message_box("Will play audio...", 24, &color, "./res/font/decker.ttf");*/
-    launch_mplayer( "","/tmp/playlist.m3u", 0 );
+    /*launch_mplayer( "","/tmp/playlist.m3u", 0 );*/
+    launch_engine("/tmp/playlist.m3u", 0);
+    quit = true;
   }
 }
 
@@ -678,26 +696,36 @@ static void quit_tomplayer(struct gui_control * ctrl, int x, int y){
    quit = true;
 }
 
-/** Callback that displays main screen */
-static void enter_main_screen(struct gui_control * ctrl, int x, int y){
+
+static bool load_main_screen(void){
    /* We go there from splash screen */
    gui_window  win;
-   /* Dont want to keep the splash screen window => release it */
-   gui_window_release(ctrl->win);
    win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_MAIN)); 
+   if (win == NULL){
+    return false;
+   }
    gui_window_attach_cb(win, "exit_button", quit_tomplayer);
    gui_window_attach_cb(win, "video_button", select_video);
    gui_window_attach_cb(win, "about_button", enter_about);
    gui_window_attach_cb(win, "audio_button", select_audio);
    gui_window_attach_cb(win, "resume_button", resume_video);
    gui_window_attach_cb(win, "settings_button", choose_settings);
+  return true;
+}
+
+/** Callback that displays main screen */
+static void enter_main_screen(struct gui_control * ctrl, int x, int y){
+   /* Dont want to keep the splash screen window => release it */
+   gui_window_release(ctrl->win);
+   load_main_screen();
    return;
 }
 
 
+
 /* SPLASH SCREEN */
 /** Display splash screen */
-static bool load_first_screen(void){
+static bool load_splash_screen(void){
   gui_window  win;
   win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_SPLASH));
   if (win == NULL){
@@ -711,7 +739,7 @@ static bool load_first_screen(void){
 /* -- External functions -- */
 
 /** Initialize screens module and displays first screen */
-bool screen_init(IDirectFB  *v_dfb, IDirectFBDisplayLayer  * v_layer){
+bool screen_init(IDirectFB  *v_dfb, IDirectFBDisplayLayer  * v_layer, bool splash_wanted){
   int temp;	
   DFBSurfaceDescription dsc;	
   IDirectFBSurface * primary;
@@ -744,8 +772,11 @@ bool screen_init(IDirectFB  *v_dfb, IDirectFBDisplayLayer  * v_layer){
     PRINTDF("No available folder for your screen : %i x %i \n",screen_width,screen_height );
     return false;
   }
-
-  return load_first_screen();
+  if (splash_wanted){
+    return load_splash_screen();
+  } else {
+    return load_main_screen();    
+  }
 }
 
 /** Returns whether user has clicked on exit or not */

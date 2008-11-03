@@ -26,7 +26,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -50,6 +49,9 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <regex.h>
+
+
 #include "config.h"
 #include "engine.h"
 #include "resume.h"
@@ -59,8 +61,6 @@
 #include "power.h"
 #include "debug.h"
 #include "zip_skin.h"
-/*#include "gui_control.h"*/
-/*#include "window_context.h"*/
 #include "file_list.h"
 #include "gui.h"
 
@@ -70,7 +70,7 @@
 
 /*char * cmd_mplayer = "./mplayer -quiet -include ./conf/mplayer.conf -vf expand=%i:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -ss %i -slave -input file=%s %s \"%s/%s\" > %s";*/
 char * cmd_mplayer = "./mplayer -include ./conf/mplayer.conf -vf expand=%i:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -ss %i -slave -input file=%s %s \"%s/%s\" > %s";
-
+//char * cmd_mplayer = "mplayer -include ./conf/mplayer.conf -vf expand=%i:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -ss %i -slave -input file=%s %s \"%s/%s\" > %s";
 
 static char * fifo_command_name = "/tmp/mplayer-cmd.fifo";
 static char * fifo_menu_name = "/tmp/mplayer-menu.fifo";
@@ -80,7 +80,7 @@ static int fifo_command;
 static int fifo_menu;
 static int fifo_out;
 
-struct tomplayer_config config;
+/*struct tomplayer_config config;*/
 bool is_menu_showed = false;
 bool is_mplayer_finished = false;
 bool is_playing_video = false;
@@ -793,16 +793,29 @@ bool has_extension( char * file, char * extensions ){
 
 }
 
-bool is_skin_file( char * file ){
-    return has_extension( file, ".zip" );
-}
-
 bool is_video_file( char * file ){
-    return has_extension( file, config.filter_video_ext );
+    regex_t re_filter;
+    bool ret = false;
+    
+    if (regcomp(&re_filter, config.filter_video_ext, REG_NOSUB | REG_EXTENDED) == 0){
+      ret = !regexec(&re_filter, file, (size_t) 0, NULL, 0);
+      regfree(&re_filter);
+    }
+    return ret;
 }
 
 bool is_audio_file( char * file ){
-    return has_extension( file, config.filter_audio_ext );}
+  regex_t re_filter;    
+  bool ret = false;
+    
+
+  if (regcomp(&re_filter, config.filter_audio_ext, REG_NOSUB | REG_EXTENDED) == 0){
+    ret = !regexec(&re_filter, file, (size_t) 0, NULL, 0);
+    regfree(&re_filter);
+  }
+  return ret;
+}
+  
 
 
 void send_raw_command( const char * cmd ){
@@ -992,9 +1005,12 @@ void * mplayer_thread(void *cmd){
 
     is_mplayer_finished = false;
     pthread_create(&t, NULL, update_thread, NULL);
-    pthread_create(&t, NULL, anim_thread, NULL);
+    /*pthread_create(&t, NULL, anim_thread, NULL);*/
+    /* FIXME  */
+    /*while (1){
+      sleep(1);
+    }*/
     system( (char *) cmd );
-    is_mplayer_finished = true;
     printf("\nmplayer has exited\n");
     /* Save settings to resume file */
     if ( is_playing_video == true ){
@@ -1002,6 +1018,7 @@ void * mplayer_thread(void *cmd){
     } else {
     	resume_set_audio_settings(&current_audio_settings);
     }
+    is_mplayer_finished = true;
     pthread_exit(NULL);
 }
 
@@ -1058,6 +1075,7 @@ void launch_mplayer( char * folder, char * filename, int pos ){
     no_user_interaction_cycles = 0;
 
     if ( is_video_file( filename ) ) {
+      load_skin_from_zip( config.video_skin_filename, &config.video_config ) ;
       is_playing_video = true;
       resume_file_init(file);
       if (pos > 5){
@@ -1065,10 +1083,13 @@ void launch_mplayer( char * folder, char * filename, int pos ){
       } else {
         resume_pos = 0;
       }
+
     }
     else {
+      load_skin_from_zip( config.audio_skin_filename, &config.audio_config );
       is_playing_audio = true;
       resume_pos = 0;
+      display_current_file( "", &config.audio_config, config.audio_config.bitmap );
     }
 
     init_ctrl_bitmaps();
@@ -1303,11 +1324,21 @@ static void display_RGB_to_fb(unsigned char * buffer, int x, int y, int w, int h
 
 	if (fb_mmap == NULL){
 		fb = open( getenv( "FRAMEBUFFER" ), O_RDWR);
-		fb_mmap = mmap(NULL, buffer_size, PROT_READ|PROT_WRITE,MAP_SHARED, fb, 0);
-	    ioctl (fb, FBIOGET_VSCREENINFO, &screeninfo);
-	    close(fb);
+                if (fb < 0){  
+                  perror("unable to open fb ");
+                  return;
+                }
+                ioctl (fb, FBIOGET_VSCREENINFO, &screeninfo);
+		fb_mmap = mmap(NULL,  screeninfo.xres*screeninfo.yres*2 , PROT_READ|PROT_WRITE,MAP_SHARED, fb, 0);
+                if (fb_mmap == MAP_FAILED){
+                  perror("unable to mmap fb ");
+                  fb_mmap = NULL;
+                  close(fb);
+                  return;
+                }
+	        close(fb);
 	}
-
+        
 	/*if (coor_trans == 0){*/
 		for( i = 0; i < (w * h); i++ ){
 			if (transparency == false ){

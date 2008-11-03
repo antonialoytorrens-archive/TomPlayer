@@ -27,8 +27,9 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-
+#include <unistd.h>
 #include <directfb.h>
+#include <getopt.h>
 
 #include "debug.h"
 #include "engine.h"
@@ -46,14 +47,18 @@ static IDirectFBEventBuffer   *keybuffer;
 /** release DirectFB */
 static void release_resources( void )
 {
-	PRINTD( "deinit_resources\n");
-        /* TODO free all windows or we consider it is already performed ? */
-        if (layer != NULL)
-          layer->Release(layer);
-        if (keybuffer != NULL)
-	 keybuffer->Release( keybuffer );
-        if (dfb != NULL)
-	 dfb->Release( dfb );
+  PRINTD( "deinit_resources\n");
+
+  /* Free all windows */
+  gui_window_release_all();
+  
+  if (layer != NULL)
+    layer->Release(layer);
+  if (keybuffer != NULL)
+    keybuffer->Release( keybuffer );
+  if (dfb != NULL)
+    dfb->Release( dfb );
+
 }
 
 
@@ -66,13 +71,14 @@ static bool init_resources( int argc, char *argv[] ) {
         DFBDisplayLayerConfig layer_config;
 	PRINTD( "init_resources\n" );
 
-        if (
+
+  if (
 	(DirectFBInit( &argc, &argv ) != DFB_OK ) ||
 	(DirectFBCreate( &dfb ) != DFB_OK  ) ||
 	(dfb->CreateInputEventBuffer( dfb, DICAPS_ALL,DFB_FALSE, &keybuffer ) != DFB_OK  ) ||
 	(dfb->SetCooperativeLevel( dfb, DFSCL_FULLSCREEN ) != DFB_OK  ) ||
         (dfb->GetDisplayLayer( dfb, DLID_PRIMARY, &layer ) != DFB_OK )  ||
-        (layer->SetCooperativeLevel( layer, DLSCL_EXCLUSIVE ) !=  DFB_OK )  ||  
+        (layer->SetCooperativeLevel( layer, DLSCL_EXCLUSIVE) !=  DFB_OK )  ||  
         (layer->EnableCursor (layer, 0 )  != DFB_OK )){
           return false;
         }
@@ -115,13 +121,7 @@ static bool dispatch_ts_event(DFBInputEvent *evt )
 */
   }
   else if (evt->type == DIET_BUTTONPRESS ){
-          /* redirect TS event to handle_mouse_event when MPlayer is running */
-          if ( is_playing_video == true || is_playing_audio == true ) {
-            handle_mouse_event( mouse_x, mouse_y );
-          }
-          else{
-            gui_window_handle_click( mouse_x, mouse_y);
-          }
+    gui_window_handle_click( mouse_x, mouse_y);
   }
 
   return true;
@@ -129,38 +129,39 @@ static bool dispatch_ts_event(DFBInputEvent *evt )
 
 /** Everything begins here ;-)  */
 int main( int argc, char *argv[] ){
-	DFBInputEvent evt;
+  bool splash_wanted = true ;
+  struct option long_options[] ={               
+               {"no-splash", no_argument, &splash_wanted, 0},
+               {0, 0, 0, 0}
+               };
+ 
+  int option_index = 0;
+  int c;
+  DFBInputEvent evt;
 
-	init_engine();
-	init_resources( argc, argv );	
-	if( load_config(&config) == false ){
-		fprintf( stderr, "Error while loading config\n" );
-		exit(1);
-	}
-        if (screen_init(dfb, layer)){
-          while( screen_is_end_asked()  == false ){
-                  keybuffer->WaitForEventWithTimeout( keybuffer, 0, 100 );
-                  while (keybuffer->GetEvent( keybuffer, DFB_EVENT(&evt)) == DFB_OK) {
-                          dispatch_ts_event( &evt );
-                  }
-  
-                  if( ( is_playing_video == true || is_playing_audio == true ) && is_mplayer_finished == true ){
-                          is_playing_video = false;
-                          is_playing_audio = false;		
-                          /* Turn ON screen if it is not */
-                          pwm_resume();
-                          /* TODO refresh display draw_window( main_window )*/;
-                  }
-                  /* Test OFF button */
-                  if (power_is_off_button_pushed()){
-                          display_image_to_fb( config.bitmap_exiting );
-                          break;
-                  }
-          }
-        }
 
-	release_engine();
-	release_resources();
-	exit(0);
+  while ((c = getopt_long (argc, argv, "",long_options, &option_index)) != -1);
+
+  init_resources( argc, argv );	
+  if( load_config(&config) == false ){
+          fprintf( stderr, "Error while loading config\n" );
+          exit(1);
+  }
+  /* Turn on screen if it is not */
+  pwm_resume();
+  if (screen_init(dfb, layer, splash_wanted)){
+    while( screen_is_end_asked()  == false ){
+            keybuffer->WaitForEventWithTimeout( keybuffer, 0, 100 );
+            while (keybuffer->GetEvent( keybuffer, DFB_EVENT(&evt)) == DFB_OK) {
+                    dispatch_ts_event( &evt );
+            }
+            /* Test OFF button */
+            if (power_is_off_button_pushed()){
+              break;
+            }
+    }
+  }
+  release_resources();
+  exit(0);
 }
 

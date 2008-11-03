@@ -195,7 +195,8 @@ error:
 
 /** Release file list object */
 static void fl_release(struct file_list *fl){  
-  for (int i=0; i<fl->entries_number; i++){
+  int i ;
+  for (i=0; i<fl->entries_number; i++){
     free(fl->filenames[i]);
   }
   free(fl->filenames);
@@ -511,7 +512,7 @@ static bool display_obj(fs_handle hdl, enum fs_icon_ids id, DFBPoint * point){
  *
  */
 static bool refresh_display(fs_handle hdl){
-  int y = 0;
+  int i,y = 0;
   DFBPoint point;
   int max_idx;
   DFBRegion region;
@@ -530,7 +531,7 @@ static bool refresh_display(fs_handle hdl){
   max_idx = hdl->idx_first_displayed + min(hdl->nb_lines, hdl->list.entries_number - hdl->idx_first_displayed);
 
   /* Display zone content */
-  for (int i=hdl->idx_first_displayed; i< max_idx; i++){  
+  for (i=hdl->idx_first_displayed; i< max_idx; i++){  
 
     
     hdl->refresh_zone_surf->DrawString( hdl->refresh_zone_surf, 
