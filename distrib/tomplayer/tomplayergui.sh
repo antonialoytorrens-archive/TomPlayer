@@ -67,14 +67,14 @@ else
 fi
 done
 
-#ttn_file=/bin/ttn
+ttn_file=/bin/ttn
 
-#ttn_cnt=`ps | grep ttn | wc -l`
+ttn_cnt=`ps | grep ttn | wc -l`
 
-#if test ${ttn_cnt} -lt 2 ; then 
+if test ${ttn_cnt} -lt 2 ; then 
 
 
-#echo "Start TTN"
-#/etc/rc.restartgps
-#${ttn_file}
-#fi
+echo "Start TTN"
+/etc/rc.restartgps
+${ttn_file}
+fi
