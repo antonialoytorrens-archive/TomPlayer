@@ -1,7 +1,15 @@
-/***************************************************************************
+/**
+ * \file widescreen.c
+ * \author Wolfgar 
+ * \brief This module provides functions related to wide screens
+ * 
+ * $URL$
+ * $Rev$
+ * $Author:$
+ * $Date$
  *
- *  14.02.08 : wolfgar - Widescreen Handling
- ****************************************************************************/
+ */
+
 /*
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,11 +26,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/**
- * \file widescreen.c
- * \author wolfgar
- */
-
 #include <linux/fb.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -35,6 +38,10 @@
 #include "widescreen.h"
 #include "config.h"
 
+static int is_ws = -1;
+static bool are_axes_inverted = false;
+static int screen_width  = -1;
+static int screen_height = -1;
 
 /**
  * \fn static void transform_filename(char * filename)
@@ -59,9 +66,7 @@ static void transform_filename(char * filename){
   strncpy(filename, temp_buf, PATH_MAX);
 }
 
-/**
- * \fn int ws_probe(void)
- * \brief Returns wether the device is equiped with a widescreen or not
+/** Returns wether the device is equiped with a widescreen or not
  *
  * \return 0 no widescreen, 1 widescreen present
  */
@@ -69,9 +74,14 @@ int ws_probe(void){
   char * fb_dev;
   int fb_fd;
   struct fb_var_screeninfo screeninfo;
-  int is_ws = 0;
 
 
+  if (is_ws > -1){
+    /* Screen already probed */
+    return is_ws;
+  }
+
+  is_ws = 0;
   fb_dev = getenv("FRAMEBUFFER");
   if (fb_dev == NULL){
     fb_dev = "/dev/fb";
@@ -88,16 +98,19 @@ int ws_probe(void){
     } else {
       if (screeninfo.xres == WS_XMAX){
         is_ws = 1;
+      }      
+      if (screeninfo.xres  < screeninfo.yres) {
+        are_axes_inverted = true;
       }
+      screen_width = screeninfo.xres;
+      screen_height = screeninfo.yres;
     }
   }
 
   return is_ws;
 }
 
-/**
- * \fn void ws_translate(struct tomplayer_config * conf)
- * \brief Modify configuration to be widescreen compliant
+/** Modify configuration to be widescreen compliant
  *
  * \param conf main configuration file
  */
@@ -108,5 +121,19 @@ void ws_translate(struct tomplayer_config * conf){
   transform_filename(conf->bitmap_exiting_filename);
 }
 
+/** Returns whether the XY axes are inverted or not
+*/
+bool ws_are_axes_inverted(void){
+  ws_probe();
+  return are_axes_inverted;
+}
 
-
+/** Retrieve screen dimensions */
+bool ws_get_size(int * w, int * h){
+  if (screen_width < 0){
+     ws_probe();
+  }
+  *w = screen_width;
+  *h = screen_height;
+  return true;
+}

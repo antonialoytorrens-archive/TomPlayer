@@ -107,7 +107,9 @@ static struct video_settings current_video_settings;
 static struct audio_settings current_audio_settings;
 
 extern char *strcasestr (const char *, const char *);
-extern int coor_trans;
+
+/* are the XY axes inverted ? */
+static int coor_trans;
 
 /* Image name of progress bar cursor */
 static ILuint pb_cursor_id;
@@ -131,7 +133,7 @@ int init_engine( void ){
 	/* Will prevent any loaded image from being flipped dependent on its format */
 	ilEnable(IL_ORIGIN_SET);
 	ilOriginFunc(IL_ORIGIN_UPPER_LEFT);
-
+        coor_trans = ws_are_axes_inverted();
     srand( time(NULL) );
 
     return true;
@@ -1006,7 +1008,10 @@ void * mplayer_thread(void *cmd){
     is_mplayer_finished = false;
     pthread_create(&t, NULL, update_thread, NULL);
     pthread_create(&t, NULL, anim_thread, NULL);
-    
+    /* FIXME
+    while (1){
+      sleep (1);
+    }*/
     system( (char *) cmd );
     printf("\nmplayer has exited\n");
     /* Save settings to resume file */
@@ -1029,16 +1034,12 @@ void launch_mplayer( char * folder, char * filename, int pos ){
     struct video_settings v_settings;
     struct audio_settings a_settings;
 
-    // TODO Rotated screen
-#if 0
+
     if( coor_trans != 0 ){
     	strcpy(rotated_param, ",rotate=1" );
     } else {
     	rotated_param[0] = 0;
     }
-#else
-    rotated_param[0] = 0;
-#endif
     if ( has_extension( filename, ".m3u" ) ) {
     	strcpy(playlist_param, "-playlist" );
     } else {
@@ -1308,7 +1309,7 @@ static void display_RGB_to_fb(unsigned char * buffer, int x, int y, int w, int h
 	unsigned short * buffer16;
 	int buffer_size;
 	int fb;
-	int i ;
+	int i,j ;
 
 	/* Alloc buffer for RBG conversion */
 	buffer_size = w * h * 2 ;
@@ -1336,44 +1337,42 @@ static void display_RGB_to_fb(unsigned char * buffer, int x, int y, int w, int h
 	        close(fb);
 	}
         
-	/*if (coor_trans == 0){*/
-		for( i = 0; i < (w * h); i++ ){
-			if (transparency == false ){
-				/* Initial buffer is RGB24 */
-				buffer16[i] =  ( (buffer[3*i] & 0xF8)  <<  8 | /* R 5 bits*/
-					     (buffer[3*i+1] & 0xFC) << 3 | /* G 6 bits */
-						 (buffer[3*i+2]>>3));          /* B 5 bits*/
-			} else {
-				/* Initial buffer is RGBA*/
-				buffer16[i] =  ( (buffer[4*i] & 0xF8) << 8 | /* R 5 bits*/
-								   (buffer[4*i+1] & 0xFC) << 3 | /* G 6 bits */
-								   (buffer[4*i+2]>>3));          /* B 5 bits*/
-				/*TODO gerer transparence*/
-			}
-		}
+	
+        for( i = 0; i < (w * h); i++ ){
+                if (transparency == false ){
+                        /* Initial buffer is RGB24 */
+                        buffer16[i] =  ( (buffer[3*i] & 0xF8)  <<  8 | /* R 5 bits*/
+                                      (buffer[3*i+1] & 0xFC) << 3 | /* G 6 bits */
+                                          (buffer[3*i+2]>>3));          /* B 5 bits*/
+                } else {
+                        /* Initial buffer is RGBA*/
+                        buffer16[i] =  ( (buffer[4*i] & 0xF8) << 8 | /* R 5 bits*/
+                                                            (buffer[4*i+1] & 0xFC) << 3 | /* G 6 bits */
+                                                            (buffer[4*i+2]>>3));          /* B 5 bits*/
+                        /*TODO gerer transparence*/
+                }
+        }
 
-	if (fb_mmap != NULL){
-		int j;
-		// TODO Rotated screen
-#if 0
-		if (coor_trans == 0){
-#endif /* 0 */
-			for (i=y; i<y+h; i++){
-				for(j=x; j<x+w; j++){
-					fb_mmap[j+(i*screeninfo.xres)]=buffer16[((i-y)*w)+(j-x)];
-				}
-			}
-#if 0
-		}else{
-			/* Magic combination for inverted coordinates */
-			for (i=y; i<y+h; i++){
-				for(j=x; j<x+w; j++){
-					fb_mmap[j*screeninfo.xres+i]=buffer16[(-i+y+h-1)*w+(j-x)];
-				}
-			}
-		}
-#endif /* 0 */
-	}
+
+
+        if (coor_trans == 0){
+
+                for (i=y; i<y+h; i++){
+                        for(j=x; j<x+w; j++){
+                                fb_mmap[j+(i*screeninfo.xres)]=buffer16[((i-y)*w)+(j-x)];
+                        }
+                }
+
+        }else{
+                /* Magic combination for inverted coordinates */
+                for (i=y; i<y+h; i++){
+                        for(j=x; j<x+w; j++){
+                                fb_mmap[j*screeninfo.xres+i]=buffer16[(-i+y+h-1)*w+(j-x)];
+                        }
+                }
+        }
+
+	
 	free( buffer16 );
 
 }

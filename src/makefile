@@ -6,14 +6,14 @@ DEP_LIB=./dependencies/libs/
 INC_KERNEL=$(DEP_LIB)/golinux-tt2318/include
 CC=arm-linux-gcc
 STRIP=arm-linux-strip
-CFLAGS+=   -Wall -I$(INC_KERNEL)  -I$(DEP_BUILD)/include/ -I$(DEP_BUILD)/include/directfb
+CFLAGS+=    -Wall -I$(INC_KERNEL)  -I$(DEP_BUILD)/include/ -I$(DEP_BUILD)/include/directfb
 LDFLAGS+=-L$(DEP_BUILD)/lib/ -Wl,-rpath=/usr/local/lib
 else
 DEP_LIB=./dependencies/libs/
 INC_KERNEL=$(DEP_LIB)/golinux-tt2318/include
 CC=gcc
 STRIP=strip
-CFLAGS+=   -Wall -I$(INC_KERNEL)  -I./dependencies/build_native/include -I./dependencies/build_native/usr/local/include -I./dependencies/build_native/usr/local/include/directfb
+CFLAGS+=   -DNATIVE -Wall -I$(INC_KERNEL)  -I./dependencies/build_native/include -I./dependencies/build_native/usr/local/include -I./dependencies/build_native/usr/local/include/directfb
 LDFLAGS+=  -L./dependencies/build_native/lib -L./dependencies/build_native/usr/local/lib
 endif
 
@@ -24,7 +24,7 @@ ifdef DEBUG
 CFLAGS+=-DDEBUG -g 
 endif
 
-TOM_SRC = file_selector.c window.c  screens.c gui.c list.c config.c widescreen.c resume.c pwm.c power.c
+TOM_SRC = file_selector.c window.c  screens.c gui.c list.c config.c widescreen.c  resume.c pwm.c power.c
 ENG_SRC = start_engine.c  zip_skin.c engine.c config.c widescreen.c resume.c pwm.c sound.c  power.c
 
 # callbacks.c file_list.c playlist.c

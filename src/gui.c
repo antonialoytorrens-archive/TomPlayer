@@ -142,26 +142,28 @@ int main( int argc, char *argv[] ){
 
   while ((c = getopt_long (argc, argv, "",long_options, &option_index)) != -1);
 
-  init_resources( argc, argv );	
-  if( load_config(&config) == false ){
+  if (init_resources( argc, argv ) == true){
+    if( load_config(&config) == false ){
           fprintf( stderr, "Error while loading config\n" );
           exit(1);
-  }
-  /* Turn on screen if it is not */
-  pwm_resume();
-  if (screen_init(dfb, layer, splash_wanted)){
-    while( screen_is_end_asked()  == false ){
-            keybuffer->WaitForEventWithTimeout( keybuffer, 0, 100 );
-            while (keybuffer->GetEvent( keybuffer, DFB_EVENT(&evt)) == DFB_OK) {
-                    dispatch_ts_event( &evt );
-            }
-            /* Test OFF button */
-            if (power_is_off_button_pushed()){
-              break;
-            }
     }
+    /* Turn on screen if it is not */
+    pwm_resume();
+    if (screen_init(dfb, layer, splash_wanted)){
+      while( screen_is_end_asked()  == false ){
+              keybuffer->WaitForEventWithTimeout( keybuffer, 0, 100 );
+              while (keybuffer->GetEvent( keybuffer, DFB_EVENT(&evt)) == DFB_OK) {
+                      dispatch_ts_event( &evt );
+              }
+              /* Test OFF button */
+              if (power_is_off_button_pushed()){
+                break;
+              }
+      }
+    }
+    release_resources();  
+    return 0;
   }
-  release_resources();
-  exit(0);
+  return -1;
 }
 

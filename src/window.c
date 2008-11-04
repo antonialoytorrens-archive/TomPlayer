@@ -52,6 +52,7 @@ struct _gui_window{
 
 /**/
 static int screen_height, screen_width;
+static bool is_rotated = false;
 
 /* Keep track of the different created windows as a stack model */
 #define GUI_WINDOW_MAX_NB 4
@@ -79,6 +80,9 @@ static void probe_screen( IDirectFB *dfb){
     return;
   }
   primary->GetSize( primary, &screen_width, &screen_height );
+  if (screen_width<screen_height){
+     is_rotated = true;
+  }
   primary->Release(primary); 
 }
 
@@ -139,12 +143,17 @@ static  bool init_window(gui_window win,  dictionary * ini){
   char* s;
   DFBWindowDescription  desc;     
   IDirectFBImageProvider *provider;
-  int opacity, font_height;
+  int opacity, font_height, tmp;
 
   zone.x = iniparser_getint(ini, "general:x", 0);
-  zone.y = iniparser_getint(ini, "general:y", 0);
+  zone.y = iniparser_getint(ini, "general:y", 0);  
   zone.w = iniparser_getint(ini, "general:w", screen_width-zone.x);
   zone.h = iniparser_getint(ini, "general:h", screen_height-zone.y);
+  if (is_rotated) { 
+    tmp =  zone.y;
+    zone.y = zone.x;
+    zone.x = screen_width-zone.h -tmp;
+  }
   win->color.r = iniparser_getint(ini, "general:r", 0);
   win->color.g = iniparser_getint(ini, "general:g", 0);
   win->color.b = iniparser_getint(ini, "general:b", 0);
@@ -164,9 +173,14 @@ static  bool init_window(gui_window win,  dictionary * ini){
         (win->win->GetSurface(win->win,&win->background_surface) != DFB_OK) ){
       return false;
     }
-  win->win->LowerToBottom(win->win);
+  if (! is_rotated){
+    win->win->LowerToBottom(win->win);
+  }
+  
+  
+    win->background_surface->SetBlittingFlags(win->background_surface,DSBLIT_BLEND_ALPHACHANNEL);
+  
  
-  win->background_surface->SetBlittingFlags(win->background_surface,DSBLIT_BLEND_ALPHACHANNEL);
   if (s != NULL) {  
     win->dfb->CreateImageProvider( win->dfb, s, &provider );
     provider->RenderTo( provider, win->background_surface, NULL ) ;
@@ -183,8 +197,13 @@ static  bool init_window(gui_window win,  dictionary * ini){
     win->background_surface->SetColor(win->background_surface,win->color.r,  win->color.g, win->color.b, win->color.a);
     win->background_surface->SetFont(win->background_surface, win->font);
   }
-  opacity = iniparser_getint(ini, "general:opacity", 0xFF);
-  win->win->SetOpacity(win->win, opacity);
+  opacity = iniparser_getint(ini, "general:opacity", 0xFF);  
+  if (is_rotated){
+    win->win->SetOpacity(win->win, 255 );
+    win->win->SetRotation(win->win, 270);
+  } else {
+    win->win->SetOpacity(win->win, opacity);
+  }
 
   win->is_detached = iniparser_getint(ini, "general:detached", 0);
   return true; 
@@ -389,7 +408,9 @@ gui_window  gui_window_load(IDirectFB  *dfb, IDirectFBDisplayLayer *layer, const
           PRINTDF( "Unable to load  window config\n%s", filename );
           return NULL;
   }
-  window->win->RaiseToTop(window->win);
+  if (! is_rotated)  {
+    window->win->RaiseToTop(window->win);
+  }
   window->background_surface->Flip(window->background_surface,NULL,0/*DSFLIP_WAITFORSYNC*/);
   window->background_surface->Blit(window->background_surface,window->background_surface,NULL,0,0);
   window->background_surface->Flip(window->background_surface,NULL,0/*DSFLIP_WAITFORSYNC*/);
@@ -531,8 +552,24 @@ void gui_window_handle_click(int  x, int y){
   }
   win = win_stack.winlist[win_stack.current_win];
   win->win->GetPosition(win->win, &win_x, &win_y);
-  x-=win_x;
-  y-=win_y;
+
+#ifdef NATIVE
+  if (is_rotated){
+    int w,h;
+    int tmp;
+    win->win->GetSize(win->win, &w, &h);
+    tmp= x;
+    x = y;
+    y = h - tmp;
+    x-=win_y;
+    y+=win_x;
+  } else {
+#endif
+    x-=win_x;
+    y-=win_y;
+#ifdef NATIVE
+  }
+#endif
   list_controls = win->controls;
   while( list_controls != NULL ){
     control = (struct gui_control *) list_controls->object; 

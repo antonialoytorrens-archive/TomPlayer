@@ -1,7 +1,15 @@
-/***************************************************************************
+/**
+ * \file widescreen.h
+ * \author Wolfgar 
+ * \brief This module provides functions related to screens
+ * 
+ * $URL$
+ * $Rev$
+ * $Author:$
+ * $Date$
  *
- *  14.02.08 : wolfgar - Widescreen Handling
- ****************************************************************************/
+ */
+
 /*
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -74,5 +82,6 @@
 
 extern int ws_probe(void);
 extern void ws_translate(struct tomplayer_config *);
-
+extern bool ws_are_axes_inverted(void);
+extern bool ws_get_size(int *, int * );
 #endif

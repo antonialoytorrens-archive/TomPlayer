@@ -5,8 +5,8 @@
  * 
  * $URL$
  * $Rev$
- * $Author:$
- * $Date:$
+ * $Author$
+ * $Date$
  *
  */
 
@@ -34,6 +34,7 @@
 #include "tslib.h"
 #include "debug.h"
 #include "engine.h"
+#include "widescreen.h"
 
 static void alarm_handler(int sig) { 
  return;
@@ -45,6 +46,8 @@ static void get_events(void){
   struct ts_sample samp;
   int ret;
   int last_pressure = 0;
+  int h,w; 
+  bool is_rotated;
 
   if( (tsdevice = getenv("TSLIB_TSDEVICE")) != NULL ) {
           ts = ts_open(tsdevice,0);
@@ -57,7 +60,9 @@ static void get_events(void){
           return;
   }
 
-
+  is_rotated = ws_are_axes_inverted();
+  ws_get_size(&h,&w);
+  
   /* Purge events */
   do {
     if (ts_read(ts, &samp, 1) < 0) {
@@ -80,7 +85,13 @@ static void get_events(void){
     if (samp.pressure > 0){
       if  (last_pressure == 0){
         /*printf("delievring events %i %i %i \n", samp.x, samp.y,samp.pressure);*/
-        handle_mouse_event( samp.x, samp.y);
+#ifdef NATIVE
+        if (is_rotated){
+           handle_mouse_event( samp.y, h- samp.x);
+        } else
+#endif
+          handle_mouse_event( samp.x, samp.y);
+
         last_pressure = samp.pressure ;
       }
     } else {
