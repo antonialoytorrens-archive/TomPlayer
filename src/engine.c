@@ -236,10 +236,10 @@ static void init_ctrl_bitmaps(void){
 
 /** Display a cursor over the skin
  *
- * \par cursor_id[in] Image name (Devil) to display
- * \par frame_id[in] Imagenumber to display in case of animation (0 if not used)
- * \par x[in] x coordinate where the image has to be displayed
- * \par y[in] y coordinate where the image has to be displayed
+ * \param[in] cursor_id Image name (Devil) to display
+ * \param[in] frame_id Imagenumber to display in case of animation (0 if not used)
+ * \param[in] x x coordinate where the image has to be displayed
+ * \param[in] y y coordinate where the image has to be displayed
  *
  */
 static void display_cursor_over_skin (ILuint cursor_id, ILuint frame_id, int x, int y ){
@@ -594,7 +594,7 @@ static int get_string_from_stdout(char *val){
 
 /** retrieve an float value from mplayer stdout
 *
-* \param val[out]
+* \param[out] val
 *\retval 0 : OK
 *\retval -1 : KO
 */
@@ -621,8 +621,8 @@ static int get_float_from_stdout(float *val){
 
 /** Send a command to mplayer and return any line from stdout
 *
-* \param cmd the command to send
-* \param val[out] the string returned by mplayer
+* \param[in]  cmd the command to send
+* \param[out] val the string returned by mplayer
 *
 * \reval 0 : OK
 * \reval -1 : An error occured
@@ -644,8 +644,8 @@ static int send_command_wait_string(const char * cmd, char *val ){
 
 /** Send a command to mplayer and wait for an int answer
 *
-* \param cmd the command to send
-* \param val[out] the int value returned by mplayer
+* \param[in]  cmd the command to send
+* \param[out] val the int value returned by mplayer
 *
 * \reval 0 : OK
 * \reval -1 : An error occured
@@ -668,8 +668,8 @@ static int send_command_wait_int(const char * cmd, int *val ){
 
 /** Send a command to mplayer and wait for a float answer
 *
-* \param cmd the command to send
-* \param val[out] the float value returned by mplayer
+* \param[in]  cmd the command to send
+* \param[out] val the float value returned by mplayer
 *
 * \reval 0 : OK
 * \reval -1 : An error occured
@@ -799,7 +799,7 @@ bool is_video_file( char * file ){
     regex_t re_filter;
     bool ret = false;
     
-    if (regcomp(&re_filter, config.filter_video_ext, REG_NOSUB | REG_EXTENDED) == 0){
+    if (regcomp(&re_filter, config.filter_video_ext, REG_NOSUB | REG_EXTENDED | REG_ICASE ) == 0){
       ret = !regexec(&re_filter, file, (size_t) 0, NULL, 0);
       regfree(&re_filter);
     }
@@ -811,7 +811,7 @@ bool is_audio_file( char * file ){
   bool ret = false;
     
 
-  if (regcomp(&re_filter, config.filter_audio_ext, REG_NOSUB | REG_EXTENDED) == 0){
+  if (regcomp(&re_filter, config.filter_audio_ext, REG_NOSUB | REG_EXTENDED | REG_ICASE ) == 0){
     ret = !regexec(&re_filter, file, (size_t) 0, NULL, 0);
     regfree(&re_filter);
   }

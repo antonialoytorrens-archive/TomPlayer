@@ -739,7 +739,7 @@ fs_handle fs_create (IDirectFB  * dfb, IDirectFBWindow * win, const struct fs_co
  
   /* Create RE for filtering */
   if (handle->config->folder.filter != NULL) {
-    if (regcomp(&handle->compiled_re_filter, handle->config->folder.filter, REG_NOSUB | REG_EXTENDED)) {
+    if (regcomp(&handle->compiled_re_filter, handle->config->folder.filter, REG_NOSUB | REG_EXTENDED | REG_ICASE )) {
         /* In case of error , no filter ! */
         free(handle->config->folder.filter);
         handle->config->folder.filter = NULL;
@@ -905,7 +905,7 @@ bool fs_new_path(fs_handle hdl, const char * path, const char * filter){
 
     if (strlen(filter) > 0){
       hdl->config->folder.filter = strdup(filter);
-      if (regcomp(&hdl->compiled_re_filter, filter, REG_NOSUB | REG_EXTENDED)) {
+      if (regcomp(&hdl->compiled_re_filter, filter, REG_NOSUB | REG_EXTENDED | REG_ICASE )) {
         free(hdl->config->folder.filter);
         hdl->config->folder.filter = NULL;
       }
