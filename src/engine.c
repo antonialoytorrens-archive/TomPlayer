@@ -1049,13 +1049,11 @@ void * mplayer_thread(void *cmd){
     is_mplayer_finished = false;
     pthread_create(&t, NULL, update_thread, NULL);
     pthread_create(&t, NULL, anim_thread, NULL);
-    /* FIXME */
-
-    while (1){
-
-	
+#ifdef NATIVE
+    while (1){	
       sleep (1);
     }
+#endif
     system( (char *) cmd );
     printf("\nmplayer has exited\n");
     /* Save settings to resume file */
@@ -1412,6 +1410,14 @@ static void display_RGB_to_fb(unsigned char * buffer, int x, int y, int w, int h
                 }
 
         }else{
+                int tmp;
+                int screen_width, screen_height;
+
+                ws_get_size(&screen_width, &screen_height);
+                tmp = y ;
+                y = x;
+                x = screen_height - tmp;
+
                 /* Magic combination for inverted coordinates */
                 for (i=y; i<y+h; i++){
                         for(j=x; j<x+w; j++){
