@@ -1,15 +1,19 @@
-/***************************************************************************
+/**
+ * \file power.c
+ * \author wolfgar
+ * \brief power utilities functions 
  *
- *Power related functions to :
- *    - Probe power Off button
- * 	  - Get Battery informations
- *
- * $URL$
- * $Rev$
- * $Author$
+ * Power related functions to :
+ *  \li Probe power Off button
+ *  \li	Get Battery informations 
+ * 
+ * $URL:$
+ * $Rev:$
+ * $Author:$
  * $Date$
  *
- ****************************************************************************/
+ */
+ 
 /*
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,11 +30,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/**
- * \file power.c
- * \author wolfgar
- * \power utilities functions
- */
 
 #include <stdlib.h>
 #include <stdint.h>
@@ -55,15 +54,13 @@ static int bat_fd = DEVICE_NOT_OPENED;
 
 static uint16_t power_step[]= {3900, 3800, 3700};
 
-/**
- * \fn bool power_is_off_button_pushed(void)
- * \brief Check whether the power button has been pushed
+/** Check whether the power button has been pushed
  *
  * \return true if the power button is pushed, else false
  */
 bool power_is_off_button_pushed(void){
 	bool is_power_off_pushed;
-	unsigned char buffer[128];
+	char buffer[128];
 	unsigned int val;
 	int input_fd = DEVICE_NOT_OPENED;
 
@@ -93,9 +90,7 @@ bool power_is_off_button_pushed(void){
 }
 
 
-/**
- * \fn enum E_POWER_LEVEL power_get_bat_state(void)
- * \brief Get current battery state
+/** Get current battery state
  *
  * \return the power level
  */

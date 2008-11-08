@@ -35,6 +35,7 @@
 #include <IL/il.h>
 #include <IL/ilu.h>
 
+
 /* Definition of section in the config file */
 #define SECTION_GENERAL             "general"
 #define SECTION_VIDEO_SKIN          "video_skin"
@@ -176,30 +177,30 @@ union skin_control_type {
  * \brief define the shape, position, bitmap and the command of a skin control
  */
 struct skin_control{
-    enum E_TYPE_SKIN_CONTROL type; /*< Type of skin control */
-    enum SKIN_CMD cmd;						/*!< command associated*/
+    enum E_TYPE_SKIN_CONTROL type;      /*!< Type of skin control */
+    enum SKIN_CMD cmd;			/*!< command associated*/
     union skin_control_type area;	/*!< location of skin control */
-    char bitmap_filename[PATH_MAX]; /*!< Optional bitmap filename associated with the control */
-    ILuint bitmap;					/*!< DevIL bitmap */
+    char bitmap_filename[PATH_MAX];     /*!< Optional bitmap filename associated with the control */
+    ILuint bitmap;			/*!< DevIL bitmap */
 };
 
 
 /**
  * \struct skin_config
  * \brief Skin configuration structure
- */
+ */ /*!< index of Battery object in controls table*/
 struct skin_config{
-    int nb;	/*!< number of controls in the skin */
+    int nb;	                                     /*!< number of controls in the skin */
     struct skin_control controls[MAX_SKIN_CONTROLS]; /*!<array of control within the skin */
-    int text_color; /*!< color of text */
-    int r,g,b; /*!< color of the transparent color (when using bad image format such as bmp that does not hold this info) */
+    int text_color;                      /*!< color of text */
+    int r,g,b;                           /*!< color of the transparent color (when using image format such as bmp that does not hold this info) */
     int text_x1,text_y1,text_x2,text_y2; /*!< area where the a text can be displayed */
     char bitmap_filename[PATH_MAX]; /*!< filename of background bitmap */
-    ILuint bitmap; /*!< DevIL background bitmap */
-    int progress_bar_index; /*!< index of progress bar object in controls table*/
-    int pb_r, pb_g, pb_b;/*!< progress bar color*/
-    int bat_index; /*!< index of Battery object in controls table*/
-    int cmd2idx[SKIN_CMD_MAX_NB];
+    ILuint bitmap;                  /*!< DevIL background bitmap */
+    int progress_bar_index;         /*!< index of progress bar object in controls table*/
+    int pb_r, pb_g, pb_b;           /*!< progress bar color*/
+    int bat_index;                  /*!< index of Battery object in controls table*/
+    int cmd2idx[SKIN_CMD_MAX_NB];   /*!<  command to skin control index table */
 };
 
 
@@ -208,11 +209,13 @@ struct skin_config{
  * \brief Main configuration structure
  */
 struct tomplayer_config{
-    char bitmap_loading_filename[PATH_MAX]; /*!<fullpath to the "loading" bitmap */
-    char bitmap_exiting_filename[PATH_MAX]; /*!<fullpath to the "exiting" bitmap */
-    ILuint bitmap_loading;					/*!<DevIL "loading" bitmap */
-    ILuint bitmap_exiting;					/*!<DevIL "exiting" bitmap */
-
+    char bitmap_loading_filename[PATH_MAX];     /*!<fullpath to the "loading" bitmap */
+    char bitmap_exiting_filename[PATH_MAX];     /*!<fullpath to the "exiting" bitmap */
+#if 0
+/*For now, not used */
+    ILuint bitmap_loading;			/*!<DevIL "loading" bitmap */
+    ILuint bitmap_exiting;			/*!<DevIL "exiting" bitmap */
+#endif
     char filter_video_ext[PATH_MAX];		/*!<List of supported video file extension */
     char filter_audio_ext[PATH_MAX];		/*!<List of supported audio file extension */
     char video_folder[PATH_MAX];			/*!<fullpath to the video folder */
@@ -228,6 +231,6 @@ struct tomplayer_config{
 
 
 bool load_config( struct tomplayer_config * conf );
-bool load_skin_config( char *, struct skin_config * );
+bool load_skin_config( char *, struct skin_config *);
 
 #endif /* __TOMPLAYER_CONFIG_H__ */

@@ -566,7 +566,6 @@ void gui_window_handle_click(int  x, int y){
     y+=win_x;
 #else
     int w,h;
-    int tmp;
     win->win->GetSize(win->win, &w, &h);
     x-=win_y;
     y= y - (screen_width -h -win_x);

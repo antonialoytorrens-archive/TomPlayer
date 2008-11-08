@@ -131,7 +131,7 @@ static bool dispatch_ts_event(DFBInputEvent *evt )
 int main( int argc, char *argv[] ){
   bool splash_wanted = true ;
   struct option long_options[] ={               
-               {"no-splash", no_argument, &splash_wanted, 0},
+               {"no-splash", no_argument,(int *)&splash_wanted, 0},
                {0, 0, 0, 0}
                };
  

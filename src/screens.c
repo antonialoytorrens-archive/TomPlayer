@@ -112,12 +112,14 @@ static void quit_current_window(struct gui_control * ctrl, int x, int y){
    return;
 }
 
+#if 0
 /** Diplay the "not yet implemented error message */
 static void display_not_implemented(struct gui_control * ctrl, int x, int y){
    gui_window  win;
    win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_NOT_IMPLEMENTED)); 
    gui_window_attach_cb(win, "any_part", quit_current_window);   
 }
+#endif
 
 
 /** Dispatch mouse event to a file selector controller (used by all the screens that holds a file selector) */
@@ -246,7 +248,7 @@ static void enter_about(struct gui_control * ctrl, int x, int y){
    txt_ctrl = gui_window_get_control(win, "about_screen");
    if (txt_ctrl == NULL)
     return;
-   txt_ctrl->cb_param = &about_thread_params;
+   txt_ctrl->cb_param = (int)&about_thread_params;
    gui_window_attach_cb(win, "about_screen", quit_about_window);
 
    txt_ctrl = gui_window_get_control(win, "text");
@@ -274,160 +276,6 @@ static void enter_about(struct gui_control * ctrl, int x, int y){
    pthread_create(&about_thread_params.thread, NULL, about_thread, &about_thread_params);
    return;
 }
-
-
-/* SKINS SELECTION SCREENS (AUDIO and VIDEO) */
-
-/** Update skin in tomplayer configuration file
- *
- * \return true on succes, false on failure
- *  \todo Should be moved to config module  TODO 
- */
-static bool update_skin( enum gui_screens_type type , const char * skin_filename){
-  /* Correct iniparser bug in naming function iniparser_setstring/iniparser_set */
-  extern int iniparser_set(dictionary * ini, char * entry, char * val);
-  #define iniparser_setstring iniparser_set
-
-  struct skin_config * conf = NULL;
-  char * original_skin_filename = NULL;
-  char * config_skin_filename_key = NULL;
-  char cmd[200];
-  dictionary * ini ;
-  bool ret = true;
-  FILE * fp;
-  
-  PRINTDF( "select_skin %s\n", skin_filename);
-
-  switch (type){
-    case GUI_SCREEN_VIDEO_SKIN :
-      conf = &config.video_config;
-      original_skin_filename = config.video_skin_filename;
-      config_skin_filename_key = SECTION_VIDEO_SKIN":"KEY_SKIN_FILENAME;
-      break;
-    case GUI_SCREEN_AUDIO_SKIN :
-      conf = &config.audio_config;
-      original_skin_filename = config.audio_skin_filename;
-      config_skin_filename_key = SECTION_AUDIO_SKIN":"KEY_SKIN_FILENAME;
-      break;
-     default :
-      return false;
-  }
-
-  if( conf != NULL ){
-/*   unload_skin( conf );
-    if( load_skin_from_zip( skin_filename, conf ) == false ){
-      PRINTD("Error unable to load this skin\n");
-      load_skin_from_zip( original_skin_filename, conf );
-      ret = false;
-    }
-    else{*/
-    /* FIXME add a check of skin sanity */
-    ini = iniparser_load(CONFIG_FILE);
-    if( ini == NULL ){
-            PRINTD( "Unable to save main configuration\n" );
-            ret = false;
-            goto error;
-    }
-    fp = fopen( CONFIG_FILE, "w+" );
-    if( fp == NULL ){
-            PRINTD( "Unable to open main config file\n" );
-            ret = false;
-            goto error;
-    }
-    iniparser_setstring( ini, config_skin_filename_key, NULL );
-    iniparser_setstring( ini, config_skin_filename_key, skin_filename );
-    iniparser_dump_ini( ini, fp );
-    fclose( fp );
-
-    sprintf( cmd, "cp -f %s ./conf/tomplayer.ini", CONFIG_FILE );
-    system( cmd );
-    system( "unix2dos ./conf/tomplayer.ini" );
-error:
-    iniparser_freedict(ini);
-    /*}*/
-  }
-
-  return ret;
-}
-
-/** Callback on skin selection */
-static void skin_selected(struct gui_control * ctrl, int x, int y){
-  const char * file;
-  DFBColor color = {255,255,255,255};
-  gui_window win;
-  const struct gui_control * ctrl_fs =  gui_window_get_control(ctrl->win, "file_selector");
-  fs_handle fs = ctrl_fs->obj;  
-  file = fs_get_single_selection(fs);
-  if (file != NULL){
-    if (update_skin(ctrl->cb_param, file)){
-      win = message_box("Configuration updated...", 24, &color, "./res/font/decker.ttf");
-    } else {
-      win = message_box("Error : Cannot update !", 24, &color, "./res/font/decker.ttf");
-    }
-    sleep(2);
-    gui_window_release(win);
-    gui_window_release(ctrl->win);
-  } else {
-    win = message_box("No File selected !", 24, &color, "./res/font/decker.ttf");
-  }
-}
-
-
-/** Callback that displays the skin selection screen */
-static void select_skin(struct gui_control * ctrl, int x, int y){
-   gui_window  win;
-   fs_handle fs;
-   struct gui_control * fs_ctrl;
-   struct gui_control * select_button;
-   enum gui_screens_type type = ctrl->cb_param;
-
-   switch (type){
-    case GUI_SCREEN_VIDEO_SKIN :
-    case GUI_SCREEN_AUDIO_SKIN :
-      break;
-     default :
-      return;
-   }
-
-   gui_window_release(ctrl->win);
-   win = gui_window_load(dfb, layer, get_full_conf((type==GUI_SCREEN_AUDIO_SKIN)? GUI_SCREEN_AUDIO_SKIN : GUI_SCREEN_VIDEO_SKIN)); 
-   gui_window_attach_cb(win, "file_selector", dispatch_fs_event);
-   gui_window_attach_cb(win, "goback_button", quit_current_window);   
-   fs_ctrl =  gui_window_get_control(win, "file_selector");
-   if (fs_ctrl != NULL){
-     fs = fs_ctrl->obj;
-     /*fs_set_select_cb(fs, audio_select_cb);*/
-     fs_new_path(fs, (type==GUI_SCREEN_AUDIO_SKIN) ? "./skins/audio/": "./skins/video/" , "^.*\\.zip$");
-   }
-
-   select_button = gui_window_get_control(win, "select_button");
-   if (select_button  != NULL){
-     select_button->cb_param=type;
-     gui_window_attach_cb(win, "select_button", skin_selected);
-   }
-}
-
-/* CHOOSE SETTINGS SCREEN */
-
-/** Callback on choose settings screen */
-static void choose_settings(struct gui_control * ctrl, int x, int y){
-   gui_window  win;
-   win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_SELECT_SETTINGS)); 
-   struct gui_control * choose_button;
-
-   choose_button = gui_window_get_control(win, "skin_video");
-   if (choose_button  != NULL){
-     choose_button->cb_param=GUI_SCREEN_VIDEO_SKIN;
-     gui_window_attach_cb(win, "skin_video", select_skin);
-   }
-   choose_button = gui_window_get_control(win, "skin_audio");
-   if (choose_button  != NULL){
-     choose_button->cb_param=GUI_SCREEN_AUDIO_SKIN;
-     gui_window_attach_cb(win, "skin_audio", select_skin);
-   }
-   return;
-}
-
 
 /* VIDEO SELECTION SCREEN */
 
@@ -463,15 +311,15 @@ image=%s\n\
     iratio = idsc.width / idsc.height;
     sratio = pos->w/pos->h;
     if (iratio > sratio) {
-      rect.w = pos->w;
+      rect.w = pos->w - 2 ;
       rect.h = rect.w/iratio;
-      rect.x = 0;
+      rect.x = 0 + 2  ;
       rect.y = (pos->h - rect.h) / 2;
     } else {
       rect.h = pos->h;
       rect.w = rect.h*iratio;
       rect.y = 0;
-      rect.x =( pos->w - rect.w) /2;
+      rect.x = ( pos->w - rect.w) /2;
     }
     provider->Release (provider);
   } else {
@@ -491,44 +339,53 @@ image=%s\n\
   return win ;
 }
 
-/** Callback of video file selector 
-  * Handle movie preview
-  */
-static void video_select_cb(fs_handle hdl, const char * c, enum  fs_events_type evt){
-  static const char * cmd_mplayer_thumbnail = "DIR=`pwd` && cd /tmp && rm -f 00000001.png && $DIR/mplayer_png -ao null -vo png:z=0 -ss 10 -frames 1 \"%s\"";
+static void create_preview(fs_handle hdl,  enum  fs_events_type evt, const char * img_filename){
   static gui_window win_prev;
   IDirectFBWindow * win;
   IDirectFBSurface * s;
   const struct fs_config *conf; 
-  int winx,winy,i;
-  DFBRectangle pos;
-  char buffer[256];
+  int winx,winy;
+  DFBRectangle pos;  
 
   if (win_prev !=NULL){
     gui_window_release(win_prev);
     win_prev = NULL;
   }
 
-  s = fs_get_preview_surface(hdl);  
-  if (s != NULL){
-    if (evt == FS_EVT_SELECT){
+  if (evt == FS_EVT_SELECT){
+    s = fs_get_preview_surface(hdl);  
+    if (s != NULL){    
+        s->GetSize (s, &pos.w,&pos.h);
+        win = fs_get_window(hdl);
+        if (win != NULL){
+          win->GetPosition(win, &winx, &winy);
+          conf = fs_get_config(hdl);
+          pos.x =  conf->geometry.pos.x + winx;
+          pos.y =  conf->geometry.pos.y + winy;
+          win_prev = create_preview_window(img_filename, &pos);
+        } 
+    }
+  }
+}
+
+/** Callback of video file selector 
+  * Handle movie preview
+  */
+static void video_select_cb(fs_handle hdl, const char * c, enum  fs_events_type evt){
+  static const char * cmd_mplayer_thumbnail = "DIR=`pwd` && cd /tmp && rm -f 00000001.png && $DIR/mplayer_png -ao null -vo png:z=0 -ss 10 -frames 1 \"%s\"";
+  int i ;
+  char buffer[256];
+
+  if (evt == FS_EVT_SELECT){
       i = snprintf( buffer, sizeof(buffer)-1,cmd_mplayer_thumbnail, c );
       if (i < 0){
         return;
       }
       buffer[i] = '\0';
-      system(buffer) ;
-      s->GetSize (s, &pos.w,&pos.h);
-      win = fs_get_window(hdl);
-      if (win != NULL){
-        win->GetPosition(win, &winx, &winy);
-        conf = fs_get_config(hdl);
-        pos.x =  conf->geometry.pos.x + winx;
-        pos.y =  conf->geometry.pos.y + winy;
-        win_prev = create_preview_window("/tmp/00000001.png", &pos);
-      }
-    } 
+      system(buffer) ;    
   }
+  create_preview(hdl, evt, "/tmp/00000001.png");
+
 }
 
 
@@ -592,6 +449,175 @@ static void resume_video( struct gui_control * ctrl, int x, int y){
     }
     return;
 }
+
+
+
+/* SKINS SELECTION SCREENS (AUDIO and VIDEO) */
+
+/** Update skin in tomplayer configuration file
+ *
+ * \return true on succes, false on failure
+ *  \todo Should be moved to config module  TODO 
+ */
+static bool update_skin( enum gui_screens_type type , const char * skin_filename){
+  /* Correct iniparser bug in naming function iniparser_setstring/iniparser_set */
+  extern int iniparser_set(dictionary * ini, char * entry, const char * val);
+  #define iniparser_setstring iniparser_set
+
+  struct skin_config * conf = NULL;
+  char * original_skin_filename = NULL;
+  char * config_skin_filename_key = NULL;
+  char cmd[200];
+  dictionary * ini ;
+  bool ret = true;
+  FILE * fp;
+  
+  PRINTDF( "select_skin %s\n", skin_filename);
+
+  switch (type){
+    case GUI_SCREEN_VIDEO_SKIN :
+      conf = &config.video_config;
+      original_skin_filename = config.video_skin_filename;
+      config_skin_filename_key = SECTION_VIDEO_SKIN":"KEY_SKIN_FILENAME;
+      break;
+    case GUI_SCREEN_AUDIO_SKIN :
+      conf = &config.audio_config;
+      original_skin_filename = config.audio_skin_filename;
+      config_skin_filename_key = SECTION_AUDIO_SKIN":"KEY_SKIN_FILENAME;
+      break;
+     default :
+      return false;
+  }
+
+  if( conf != NULL ){
+/*   unload_skin( conf );
+    if( load_skin_from_zip( skin_filename, conf ) == false ){
+      PRINTD("Error unable to load this skin\n");
+      load_skin_from_zip( original_skin_filename, conf );
+      ret = false;
+    }
+    else{*/
+    /* FIXME add a check of skin sanity */
+    ini = iniparser_load(CONFIG_FILE);
+    if( ini == NULL ){
+            PRINTD( "Unable to save main configuration\n" );
+            ret = false;
+            goto error;
+    }
+    fp = fopen( CONFIG_FILE, "w+" );
+    if( fp == NULL ){
+            PRINTD( "Unable to open main config file\n" );
+            ret = false;
+            goto error;
+    }
+    iniparser_setstring( ini, config_skin_filename_key, NULL );
+    iniparser_setstring( ini, config_skin_filename_key, skin_filename);
+    iniparser_dump_ini( ini, fp );
+    fclose( fp );
+
+    sprintf( cmd, "cp -f %s ./conf/tomplayer.ini", CONFIG_FILE );
+    system( cmd );
+    system( "unix2dos ./conf/tomplayer.ini" );
+error:
+    iniparser_freedict(ini);
+    /*}*/
+  }
+
+  return ret;
+}
+
+
+/** Callback of skin preview */
+static void skin_select_cb(fs_handle hdl, const char * c, enum  fs_events_type evt){
+  struct skin_config  skin_conf;
+
+  if (evt == FS_EVT_SELECT){
+      load_skin_from_zip(c , &skin_conf , false );
+      unload_skin(  &skin_conf);
+  }
+  create_preview(hdl, evt,  ZIP_SKIN_BITMAP_FILENAME);
+}
+
+
+
+/** Callback on skin selection */
+static void skin_selected(struct gui_control * ctrl, int x, int y){
+  const char * file;
+  DFBColor color = {255,255,255,255};
+  gui_window win;
+  const struct gui_control * ctrl_fs =  gui_window_get_control(ctrl->win, "file_selector");
+  fs_handle fs = ctrl_fs->obj;  
+  file = fs_get_single_selection(fs);
+  if (file != NULL){
+    if (update_skin(ctrl->cb_param, file)){
+      win = message_box("Configuration updated...", 24, &color, "./res/font/decker.ttf");
+    } else {
+      win = message_box("Error : Cannot update !", 24, &color, "./res/font/decker.ttf");
+    }
+    sleep(2);
+    gui_window_release(win);
+    gui_window_release(ctrl->win);
+  } else {
+    win = message_box("No File selected !", 24, &color, "./res/font/decker.ttf");
+  }
+}
+
+
+/** Callback that displays the skin selection screen */
+static void select_skin(struct gui_control * ctrl, int x, int y){
+   gui_window  win;
+   fs_handle fs;
+   struct gui_control * fs_ctrl;
+   struct gui_control * select_button;
+   enum gui_screens_type type = ctrl->cb_param;
+
+   switch (type){
+    case GUI_SCREEN_VIDEO_SKIN :
+    case GUI_SCREEN_AUDIO_SKIN :
+      break;
+     default :
+      return;
+   }
+
+   gui_window_release(ctrl->win);
+   win = gui_window_load(dfb, layer, get_full_conf((type==GUI_SCREEN_AUDIO_SKIN)? GUI_SCREEN_AUDIO_SKIN : GUI_SCREEN_VIDEO_SKIN)); 
+   gui_window_attach_cb(win, "file_selector", dispatch_fs_event);
+   gui_window_attach_cb(win, "goback_button", quit_current_window);   
+   fs_ctrl =  gui_window_get_control(win, "file_selector");
+   if (fs_ctrl != NULL){
+     fs = fs_ctrl->obj;
+     fs_set_select_cb(fs, skin_select_cb);     
+     fs_new_path(fs, (type==GUI_SCREEN_AUDIO_SKIN) ? "./skins/audio/": "./skins/video/" , "^.*\\.zip$");
+   }
+
+   select_button = gui_window_get_control(win, "select_button");
+   if (select_button  != NULL){
+     select_button->cb_param=type;
+     gui_window_attach_cb(win, "select_button", skin_selected);
+   }
+}
+
+/* CHOOSE SETTINGS SCREEN */
+
+/** Callback on choose settings screen */
+static void choose_settings(struct gui_control * ctrl, int x, int y){
+   gui_window  win;
+   win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_SELECT_SETTINGS)); 
+   struct gui_control * choose_button;
+
+   choose_button = gui_window_get_control(win, "skin_video");
+   if (choose_button  != NULL){
+     choose_button->cb_param=GUI_SCREEN_VIDEO_SKIN;
+     gui_window_attach_cb(win, "skin_video", select_skin);
+   }
+   choose_button = gui_window_get_control(win, "skin_audio");
+   if (choose_button  != NULL){
+     choose_button->cb_param=GUI_SCREEN_AUDIO_SKIN;
+     gui_window_attach_cb(win, "skin_audio", select_skin);
+   }
+   return;
+}
+
 
 /* AUDIO SCREEN */
 

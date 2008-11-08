@@ -1,14 +1,15 @@
-/***************************************************************************
- *            tomplayer_config.c
+/**
+ * \file config.c
+ * \author nullpointer
+ * \brief This module implements configuration reading
+ * 
+ * $URL:$
+ * $Rev:$
+ * $Author:$
+ * $Date$
  *
- *  Sun Jan  6 14:15:55 2008
- *  Copyright  2008  nullpointer
- *  Email nullpointer[at]lavabit[dot]com
- *
- * 14.02.08 wolfgar : Add progress bar index detection, progress bar colour config and ws adaptation
- *
- *
- ****************************************************************************/
+ */
+
 /*
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,12 +24,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- */
-
-/*!
- * \file config.c
- * \brief main configuration loading
- * \author nullpointer
  */
 
 #include <sys/types.h>
@@ -58,16 +53,15 @@
 #define DEFAULT_FOLDER "/mnt"
 
 struct tomplayer_config config;
-/**
- * \fn static void display_config( struct tomplayer_config * conf )
- * \brief Show configuration parameters
+
+/** Show configuration parameters
  *
  * \param conf main configuration structure
  */
 static void display_config( struct tomplayer_config * conf ){
-	PRINTDF( "   - bitmap_loading_filename : %s\n", conf->bitmap_loading_filename );
+    PRINTDF( "   - bitmap_loading_filename : %s\n", conf->bitmap_loading_filename );
     PRINTDF( "   - bitmap_exiting_filename : %s\n", conf->bitmap_exiting_filename );
-	PRINTDF( "   - filter_video_ext : %s\n", conf->filter_video_ext );
+    PRINTDF( "   - filter_video_ext : %s\n", conf->filter_video_ext );
     PRINTDF( "   - filter_audio_ext : %s\n", conf->filter_audio_ext );
     PRINTDF( "   - video_folder : %s\n", conf->video_folder );
     PRINTDF( "   - audio_folder : %s\n", conf->audio_folder );
@@ -76,9 +70,7 @@ static void display_config( struct tomplayer_config * conf ){
     PRINTDF( "   - screen_saver_to : %d\n", conf->screen_saver_to );
 }
 
-/**
- * \fn void reset_skin_conf (struct skin_config * conf)
- * \brief reset all value of the skin configuration structure
+/** Reset all value of the skin configuration structure
  *
  * \param conf skin configuration
  */
@@ -91,16 +83,14 @@ void reset_skin_conf (struct skin_config * conf){
 	}
 }
 
-/**
- * \fn void reset_skin_conf (struct skin_config * conf)
- * \brief load a skin configuration
+/** Load a skin configuration
  *
  * \param filename fullpath to the skin configuration file
  * \param conf skin configuration structure
  *
  * \return true on succes, false on failure
  */
-bool load_skin_config( char * filename, struct skin_config * skin_conf ){
+bool load_skin_config( char * filename, struct skin_config * skin_conf){
 	dictionary * ini ;
     char section_control[PATH_MAX + 1];
     int i,j;
@@ -148,21 +138,22 @@ bool load_skin_config( char * filename, struct skin_config * skin_conf ){
         if( j < 0  ){
            PRINTDF( "Warning : no section  <%s>\n", section_control );
            break;
+        } else {
+	   skin_conf->controls[i].type = j;
         }
-		else skin_conf->controls[i].type = j;
 
         /* Read filename to load
          *
          * Wolf  : suppress dynamic allocation is not such a good idea : it wastes about 80Ko
          * But now,  with mulitple config during the same session, a conf cleanup is needed (in unload_skin ?  Todo later)...
          */
-		sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CTRL_BITMAP_FILENAME );
-		s = iniparser_getstring(ini, section_control, NULL);
-		if( s != NULL ) strcpy( skin_conf->controls[i].bitmap_filename, s );
+	sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CTRL_BITMAP_FILENAME );
+	s = iniparser_getstring(ini, section_control, NULL);
+	if( s != NULL ) strcpy( skin_conf->controls[i].bitmap_filename, s );
 
 
-		sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CMD_CONTROL );
-		skin_conf->controls[i].cmd = iniparser_getint(ini, section_control, -1);
+	sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CMD_CONTROL );
+	skin_conf->controls[i].cmd = iniparser_getint(ini, section_control, -1);
         if( skin_conf->controls[i].cmd < 0  ){
 			sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CMD_CONTROL2 );
 			skin_conf->controls[i].cmd = iniparser_getint(ini, section_control, -1);
@@ -219,9 +210,7 @@ error:
     return ret;
 }
 
-/**
- * \fn bool load_config( struct tomplayer_config * conf )
- * \brief load the main configuration and skin configuration
+/** Load the main configuration and skin configuration
  *
  * \param conf main configuration structure
  *
@@ -287,8 +276,7 @@ bool load_config( struct tomplayer_config * conf ){
     load_bitmap( &conf->bitmap_loading, conf->bitmap_loading_filename );
     load_bitmap( &conf->bitmap_exiting, conf->bitmap_exiting_filename );
 */
-  
-
+ 
 
     return true;
 }

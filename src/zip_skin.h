@@ -1,8 +1,14 @@
-/***************************************************************************
- *  30/03/2008
- *  Copyright  2008  nullpointer
- *  Email nullpointer[at]lavabit[dot]com
- ****************************************************************************/
+/**
+ * \file zip_skin.h
+ * \author nullpointer
+ * \brief handling of zipped skin
+ *
+ * $URL:$
+ * $Rev:$
+ * $Author:$
+ * $Date$
+ */
+
 /*
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,21 +24,16 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/**
- * \file zip_skin.h
- * \author nullpointer
- * \brief handling of zipped skin
- */
-
 
 #ifndef __ZIP_SKIN_H__
 #define __ZIP_SKIN_H__
 
 #include "config.h"
 
+#define ZIP_SKIN_BITMAP_FILENAME "/tmp/bitmap"
 
 bool load_bitmap( ILuint * , char * );
-bool load_skin_from_zip( char * , struct skin_config *  );
+bool load_skin_from_zip(const char * , struct skin_config * , bool );
 bool unload_skin(  struct skin_config *  );
 
 #endif /* __ZIP_SKIN_H__ */

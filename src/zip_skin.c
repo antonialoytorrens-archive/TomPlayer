@@ -6,7 +6,7 @@
  *
  * $URL$
  * $Rev$
- * $Author:$
+ * $Author$
  * $Date$
  */
 
@@ -38,7 +38,6 @@
 
 
 #define CONF_FILENAME		"/tmp/skin.conf"
-#define BITMAP_FILENAME		"/tmp/bitmap"
 #define SKIN_CONFIG_NAME	"skin.conf"
 #define WS_SKIN_CONFIG_NAME	"ws_skin.conf"
 
@@ -52,6 +51,7 @@
  * \return true on success, false on failure
  */
 bool load_bitmap( ILuint * bitmap_obj, char * filename ){
+#ifdef WITH_DEVIL
     ilGenImages(1, bitmap_obj);
     ilBindImage(*bitmap_obj);
     if (!ilLoadImage(filename)) {
@@ -64,6 +64,45 @@ bool load_bitmap( ILuint * bitmap_obj, char * filename ){
 
     ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
     return true;
+#else
+  return false;
+#endif
+}
+
+
+
+static void expand_bitmaps(const struct skin_config * skin_conf){
+#ifdef WITH_DEVIL
+  int i, frame_id;
+  int new_w, new_h;
+
+  ilBindImage( skin_conf->bitmap );
+  iluScale( WS_XMAX,WS_YMAX,1);
+  
+  for( i = 0; i < skin_conf->nb; i++ ){
+      if( skin_conf->controls[i].bitmap != 0 ){
+          ilBindImage( skin_conf->controls[i].bitmap );
+          frame_id = 0;
+          new_w = ((int)(ilGetInteger(IL_IMAGE_WIDTH) *(1.0 * WS_XMAX ) / WS_NOXL_XMAX));
+          new_h = ((int)(ilGetInteger(IL_IMAGE_HEIGHT)*(1.0 * WS_YMAX ) / WS_NOXL_YMAX));
+          PRINTDF("%i - new w : %i new h : %i - num im :%i - num mipmaps : %i \n ", i, new_w,new_h, ilGetInteger(IL_NUM_IMAGES),ilGetInteger(IL_NUM_MIPMAPS));
+          /*while (1){
+                  ilBindImage( skin_conf->controls[i].bitmap );
+                  if ( !ilActiveImage(frame_id)){
+                          ilBindImage( skin_conf->controls[i].bitmap );
+                          break;
+                  }
+                  PRINTD("frame id : %i\n", frame_id);
+                  iluScale(new_w,new_h,1);
+                  frame_id++;
+        }    */
+          if  (skin_conf->controls[i].cmd != SKIN_CMD_BATTERY_STATUS){
+                  /* Scale animation seems to crash so exclude battery icons */
+                  iluScale(new_w,new_h,1);
+          }
+      }
+  }
+#endif
 }
 
 
@@ -138,24 +177,25 @@ static bool unzip_file( struct zip * fp_zip, char * filename_in, char * filename
 
 /** Load a zipped skin
  *
- * \param filename fullpath to the archive filename
- * \param skin_conf skin configuration structure
+ * \param filename      fullpath to the archive filename
+ * \param skin_conf     skin configuration structure
+ * \param load_bitmaps  Have bitmaps filename to be loaded as devil image 
  *
  * \return true on succes, false on failure
  */
-bool load_skin_from_zip( char * filename, struct skin_config * skin_conf ){
+bool load_skin_from_zip(const char * filename, struct skin_config * skin_conf, bool load_bitmaps ){
 	int ws;
 	int error;
 	int expand_conf = false;
 	struct zip * fp_zip;
 	int return_code = false;
-	int i, frame_id;
-	int new_w, new_h;
+	int i;
 	char cmd[200];
-
+        error = 0;
 	ws = ws_probe();
 
-    error = 0;
+        /* Remove any residual bitmap temp file */
+        unlink( ZIP_SKIN_BITMAP_FILENAME );
 	fp_zip = zip_open( filename, ZIP_CHECKCONS, &error );
 
 	if( error != 0 || fp_zip == NULL ){
@@ -181,8 +221,8 @@ bool load_skin_from_zip( char * filename, struct skin_config * skin_conf ){
 		}
 	}
 
-    sprintf( cmd, "dos2unix %s", CONF_FILENAME );
-    system( cmd );
+        sprintf( cmd, "dos2unix %s", CONF_FILENAME );
+        system( cmd );
 	if( load_skin_config( CONF_FILENAME, skin_conf ) == false ){
 		fprintf( stderr, "Error while loading config file <%s>\n", CONF_FILENAME );
 		goto error;
@@ -190,65 +230,40 @@ bool load_skin_from_zip( char * filename, struct skin_config * skin_conf ){
 
 	if( expand_conf == true ) expand_config( skin_conf );
 
-	/* Loading of bitmap file */
-	if( unzip_file( fp_zip, skin_conf->bitmap_filename, BITMAP_FILENAME ) == false ){
-		fprintf( stderr, "Error while unzipping <%s>\n", skin_conf->bitmap_filename );
-		goto error;
-	}
+        if( unzip_file( fp_zip, skin_conf->bitmap_filename, ZIP_SKIN_BITMAP_FILENAME ) == false ){
+                fprintf( stderr, "Error while unzipping <%s>\n", skin_conf->bitmap_filename );
+                goto error;
+        }
 
-	/* Loading of different bitmap of the skin */
-	load_bitmap( &skin_conf->bitmap, BITMAP_FILENAME );
-	for( i = 0; i < skin_conf->nb; i++ ){
-	    if( strlen( skin_conf->controls[i].bitmap_filename ) ){
-	        if( unzip_file( fp_zip, skin_conf->controls[i].bitmap_filename, BITMAP_FILENAME ) == false ){
-    			fprintf( stderr, "Error while unzipping <%s>\n", skin_conf->controls[i].bitmap_filename );
-    			goto error;
-    		}
-	        load_bitmap( &skin_conf->controls[i].bitmap, BITMAP_FILENAME );
-	        PRINTDF("Loading %s - Image id :%i\n",skin_conf->controls[i].bitmap_filename,skin_conf->controls[i].bitmap);
-	    } else{
-	    	skin_conf->controls[i].bitmap = 0;
-	    }
-	}
-
-	if( expand_conf == true ){
-        ilBindImage( skin_conf->bitmap );
-        iluScale( WS_XMAX,WS_YMAX,1);
-
-    	for( i = 0; i < skin_conf->nb; i++ ){
-    	    if( skin_conf->controls[i].bitmap != 0 ){
-    	        ilBindImage( skin_conf->controls[i].bitmap );
-    	        frame_id = 0;
-    	        new_w = ((int)(ilGetInteger(IL_IMAGE_WIDTH) *(1.0 * WS_XMAX ) / WS_NOXL_XMAX));
-    	        new_h = ((int)(ilGetInteger(IL_IMAGE_HEIGHT)*(1.0 * WS_YMAX ) / WS_NOXL_YMAX));
-    	        PRINTDF("%i - new w : %i new h : %i - num im :%i - num mipmaps : %i \n ", i, new_w,new_h, ilGetInteger(IL_NUM_IMAGES),ilGetInteger(IL_NUM_MIPMAPS));
-    	        
-    	        /*while (1){
-    	        	ilBindImage( skin_conf->controls[i].bitmap );
-    	        	if ( !ilActiveImage(frame_id)){
-    	        		ilBindImage( skin_conf->controls[i].bitmap );
-    	        		break;
-    	        	}
-    	        	PRINTD("frame id : %i\n", frame_id);
-    	        	iluScale(new_w,new_h,1);
-    	        	frame_id++;
-    	       }    */
-    	        if  (skin_conf->controls[i].cmd != SKIN_CMD_BATTERY_STATUS){
-    	        	/* Scale animation seems to crash so exclude battery icons */
-    	        	iluScale(new_w,new_h,1);
-    	        }
-    	    }
-    	}
-	}
+        if (load_bitmaps){  
+          /* Loading of different bitmap of the skin */
+          load_bitmap( &skin_conf->bitmap, ZIP_SKIN_BITMAP_FILENAME );
+          for( i = 0; i < skin_conf->nb; i++ ){
+              if( strlen( skin_conf->controls[i].bitmap_filename ) ){
+                  if( unzip_file( fp_zip, skin_conf->controls[i].bitmap_filename, ZIP_SKIN_BITMAP_FILENAME ) == false ){
+                          fprintf( stderr, "Error while unzipping <%s>\n", skin_conf->controls[i].bitmap_filename );
+                          goto error;
+                  }
+                  load_bitmap( &skin_conf->controls[i].bitmap, ZIP_SKIN_BITMAP_FILENAME );
+                  PRINTDF("Loading %s - Image id :%i\n",skin_conf->controls[i].bitmap_filename,skin_conf->controls[i].bitmap);
+              } else{
+                  skin_conf->controls[i].bitmap = 0;
+              }
+          }
+          if( expand_conf == true ){
+            expand_bitmaps(skin_conf);
+          }
+        }
 
 	return_code = true;
 
 error:
     unlink( CONF_FILENAME );
-    unlink( BITMAP_FILENAME );
-	zip_close( fp_zip );
+    /* let the bitmap file to be able to use it after this call 
+    unlink( ZIP_SKIN_BITMAP_FILENAME );*/
+    zip_close( fp_zip );
 
-	return return_code;
+    return return_code;
 }
 
 /** Release a skin configuration
@@ -258,13 +273,14 @@ error:
  * \return true on succes, false on failure
  */
 bool unload_skin(  struct skin_config * skin_conf ){
+#ifdef WITH_DEVIL    
     int i;
 
-	/* Unload different bitmap of the skin */
-	if( skin_conf->bitmap ) ilDeleteImages(1, &skin_conf->bitmap);
-	for( i = 0; i < skin_conf->nb; i++ )
-	    if( skin_conf->controls[i].bitmap ) ilDeleteImages(1, &skin_conf->controls[i].bitmap);
-
+    /* Unload different bitmap of the skin */
+    if( skin_conf->bitmap ) ilDeleteImages(1, &skin_conf->bitmap);
+    for( i = 0; i < skin_conf->nb; i++ )
+        if( skin_conf->controls[i].bitmap ) ilDeleteImages(1, &skin_conf->controls[i].bitmap);
+#endif
     memset( skin_conf, 0, sizeof( struct skin_config ) );
 
     return true;

@@ -514,7 +514,7 @@ static void display_progress_bar(int current)
 	    ilCopyPixels(erase_x, prev_coords.y, 0,
 	    	         erase_width, height , 1,
 	    	    	 IL_RGBA, IL_UNSIGNED_BYTE, buffer);
-	    PRINTDF("Progress bar - erase x : %i - prev y : %i - w : %i -h : %i - buffer : @%x \n",erase_x,prev_coords.y,erase_width,height,buffer);
+	    /*PRINTDF("Progress bar - erase x : %i - prev y : %i - w : %i -h : %i - buffer : @%x \n",erase_x,prev_coords.y,erase_width,height,buffer);*/
 	    if( is_playing_video == true ) {
 	    	sprintf(str, "RGBA32 %d %d %d %d %d %d\n", erase_width, height, erase_x, prev_coords.y , 0, 0);
 		    write(fifo_menu, str, strlen(str));
@@ -1119,7 +1119,7 @@ void launch_mplayer( char * folder, char * filename, int pos ){
     
 
     if ( is_video_file( filename ) ) {
-      load_skin_from_zip( config.video_skin_filename, &config.video_config ) ;
+      load_skin_from_zip( config.video_skin_filename, &config.video_config, true ) ;
       init_ctrl_bitmaps();
       is_playing_video = true;
       resume_file_init(file);
@@ -1131,7 +1131,7 @@ void launch_mplayer( char * folder, char * filename, int pos ){
 
     }
     else {
-      load_skin_from_zip( config.audio_skin_filename, &config.audio_config );
+      load_skin_from_zip( config.audio_skin_filename, &config.audio_config, true );
       init_ctrl_bitmaps();
       is_playing_audio = true;
       resume_pos = 0;
