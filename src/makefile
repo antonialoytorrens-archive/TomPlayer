@@ -13,8 +13,8 @@ DEP_LIB=./dependencies/libs/
 INC_KERNEL=$(DEP_LIB)/golinux-tt2318/include
 CC=gcc
 STRIP=strip
-CFLAGS+=   -DNATIVE -Wall -I$(INC_KERNEL)  -I./dependencies/build_native/include -I./dependencies/build_native/usr/local/include -I./dependencies/build_native/usr/local/include/directfb
-LDFLAGS+=  -L./dependencies/build_native/lib -L./dependencies/build_native/usr/local/lib
+CFLAGS+=   -DNATIVE -Wall -I$(INC_KERNEL)  -I./dependencies/build_native/include -I./dependencies/build_native/usr/local/include -I/usr/include/freetype2 -I./dependencies/build_native/usr/local/include/directfb
+LDFLAGS+=  -L./dependencies/build_native/lib -L./dependencies/build_native/usr/local/lib 
 endif
 
 
@@ -25,7 +25,7 @@ CFLAGS+=-DDEBUG -g
 endif
 
 TOM_SRC = file_selector.c window.c  screens.c gui.c list.c config.c widescreen.c  resume.c pwm.c power.c
-ENG_SRC = start_engine.c  zip_skin.c engine.c config.c widescreen.c resume.c pwm.c sound.c  power.c
+ENG_SRC = start_engine.c  zip_skin.c engine.c config.c widescreen.c resume.c pwm.c sound.c  power.c font.c
 
 # callbacks.c file_list.c playlist.c
 
@@ -42,7 +42,7 @@ tomplayer: $(TOM_OBJ)
 	$(STRIP) $(INSTALL_DIR)/tomplayer
 
 start_engine : $(ENG_OBJ) 
-	$(CC) $(LDFLAGS) -o start_engine $^  -liniparser -lpthread -lz -lzip  -lm -lpthread -ljpeg -lILU  -lIL -lpng -lts $(ADD_LIBS)
+	$(CC) $(LDFLAGS) -o start_engine $^  -liniparser -lpthread -lz -lzip  -lm -lpthread -ljpeg -lILU  -lIL -lpng -lts -lfreetype $(ADD_LIBS)
 	cp start_engine $(INSTALL_DIR)	
 #	mv tomplayer $(INSTALL_DIR)				
 	$(STRIP) $(INSTALL_DIR)/start_engine

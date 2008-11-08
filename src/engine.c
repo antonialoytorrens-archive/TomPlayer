@@ -63,6 +63,7 @@
 #include "zip_skin.h"
 #include "file_list.h"
 #include "gui.h"
+#include "font.h"
 
 /* Progress bar update period in us */
 #define PB_UPDATE_PERIOD_US 250000
@@ -126,15 +127,19 @@ static struct{
 static void display_RGB_to_fb(unsigned char * buffer, int x, int y, int w, int h, bool transparency);
 
 int init_engine( void ){
-	// Initialize DevIL.
-	ilInit();
-	iluInit();
+    // Initialize DevIL.
+    ilInit();
+    iluInit();
 
-	/* Will prevent any loaded image from being flipped dependent on its format */
-	ilEnable(IL_ORIGIN_SET);
-	ilOriginFunc(IL_ORIGIN_UPPER_LEFT);
-        coor_trans = ws_are_axes_inverted();
-    srand( time(NULL) );
+    /* Will prevent any loaded image from being flipped dependent on its format */
+    ilEnable(IL_ORIGIN_SET);
+    ilOriginFunc(IL_ORIGIN_UPPER_LEFT);
+    
+    /* Are axes inverted */
+    coor_trans = ws_are_axes_inverted();
+    
+    /* Initialize font size */
+    font_init(11); /* FIXME font size hard coded */
 
     return true;
 }
@@ -153,25 +158,61 @@ bool file_exist( char * file ){
 }
 
 
-void display_current_file( char * filename, struct skin_config *skin_conf, ILuint bitmap )
+/** Draw text on a skin 
+*/
+static void draw_text(const char * text, struct skin_config *skin_conf) {
+      static unsigned char * back_text_img;
+      static ILuint  img_id; 
+      int img_width, img_height;
+      struct font_color  color ;
+      unsigned char * text_buffer;
+      ILuint text_image_id;
+      int text_width, text_height;
+
+      img_width = (skin_conf->text_x2 - skin_conf->text_x1) ;
+      img_height = (skin_conf->text_y2 - skin_conf->text_y1);
+      if (back_text_img == NULL){
+        /* Alloc this buffer one shot it will be reused */
+        back_text_img = malloc(3 * img_width * img_height) ;
+        if (back_text_img == NULL){
+          PRINTD("Allocation error for text drawing");
+          return;
+        }
+        ilGenImages(1, &img_id);
+      }
+      /* Bind to banckgound image and copy the appropriate portion */
+      ilBindImage(skin_id);	
+      ilCopyPixels(skin_conf->text_x1, skin_conf->text_y1, 0,
+                   img_width, img_height, 1,
+                   IL_RGB, IL_UNSIGNED_BYTE, back_text_img);
+      ilBindImage(img_id);
+      ilTexImage(img_width, img_height, 1, 
+                 3,IL_RGB, IL_UNSIGNED_BYTE, back_text_img);
+      /* Flip image because an ilTexImage is always LOWER_LEFT */
+      iluFlipImage();
+
+      /* Generate the font rendering in a dedicated image */
+      color.r = skin_conf->text_color>>16;
+      color.g = (skin_conf->text_color&0xFF00)>>8 ;
+      color.b = skin_conf->text_color&0xFF;
+      font_draw(&color, text, &text_buffer, &text_width, &text_height);
+      ilGenImages(1, &text_image_id);
+      ilBindImage(text_image_id);
+      ilTexImage(text_width, text_height, 1, 4,IL_RGBA, IL_UNSIGNED_BYTE, text_buffer);
+
+      /* Combinate font and background */
+      ilBindImage(img_id);	
+      ilOverlayImage(text_image_id,0,0,0);
+      ilCopyPixels(0, 0, 0, img_width, img_height, 1,
+		     IL_RGB, IL_UNSIGNED_BYTE, back_text_img);	
+      display_RGB_to_fb(back_text_img, skin_conf->text_x1,skin_conf->text_y1, img_width, img_height, false);
+      free(text_buffer);
+      ilDeleteImages( 1, &text_image_id);
+}
+
+static void display_current_file( char * filename, struct skin_config *skin_conf )
 {
-	// TODO retablir le comportement original
-	display_image_to_fb( bitmap );
-#if 0
-	RECT rc;
-
-    display_image_to_fb( bitmap );
-
-    rc.left = skin_conf->text_x1;
-    rc.right = skin_conf->text_x2;
-    rc.top = skin_conf->text_y1;
-    rc.bottom = skin_conf->text_y2;
-    SetBkMode(HDC_SCREEN, BM_TRANSPARENT);
-    SetTextColor(HDC_SCREEN, RGB2Pixel(HDC_SCREEN, skin_conf->text_color>>16, (skin_conf->text_color&0xFF00)>>8,skin_conf->text_color&0xFF));
-    PRINTD("Display current file at x1 %i x2 %i y1 %i y2 %i color : %x name :%s\n",  rc.left, rc.right,rc.top,rc.bottom,skin_conf->text_color,filename );
-    TextOut( HDC_SCREEN, rc.left, rc.top, filename );
-    //DrawText (HDC_SCREEN, filename, -1, &rc, DT_CENTER );
-#endif /* 0 */
+        draw_text(filename, skin_conf);
 }
 
 void blit_video_menu( int fifo, struct skin_config * conf )
@@ -964,8 +1005,8 @@ void * update_thread(void *cmd){
                   p[strlen(p)-2] = 0;
                   if( strcmp( p, old_current_filename ) ){
                       strcpy( old_current_filename, p);
-                      // TODO retablir l'affichage du nom du fichier
-                      //display_current_file( p, &config.audio_config, config.audio_config.bitmap );
+                      // Affichage du nom du fichier
+                      display_current_file( p, &config.audio_config);
                       display_bat_state(true);
                   }
               }
@@ -1008,10 +1049,13 @@ void * mplayer_thread(void *cmd){
     is_mplayer_finished = false;
     pthread_create(&t, NULL, update_thread, NULL);
     pthread_create(&t, NULL, anim_thread, NULL);
-    /* FIXME
+    /* FIXME */
+
     while (1){
+
+	
       sleep (1);
-    }*/
+    }
     system( (char *) cmd );
     printf("\nmplayer has exited\n");
     /* Save settings to resume file */
@@ -1072,8 +1116,11 @@ void launch_mplayer( char * folder, char * filename, int pos ){
     is_paused = false;
     no_user_interaction_cycles = 0;
 
+    
+
     if ( is_video_file( filename ) ) {
       load_skin_from_zip( config.video_skin_filename, &config.video_config ) ;
+      init_ctrl_bitmaps();
       is_playing_video = true;
       resume_file_init(file);
       if (pos > 5){
@@ -1085,12 +1132,12 @@ void launch_mplayer( char * folder, char * filename, int pos ){
     }
     else {
       load_skin_from_zip( config.audio_skin_filename, &config.audio_config );
+      init_ctrl_bitmaps();
       is_playing_audio = true;
       resume_pos = 0;
-      display_current_file( "", &config.audio_config, config.audio_config.bitmap );
+      display_image_to_fb(config.audio_config.bitmap );
+      display_current_file( "Loading...", &config.audio_config);
     }
-
-    init_ctrl_bitmaps();
 
     /*sprintf( cmd, cmd_mplayer, (ws_probe()? WS_YMAX : WS_NOXL_YMAX), rotated_param, resume_pos, fifo_command_name, playlist_param, folder , filename, fifo_stdout_name );*/
     sprintf( cmd, cmd_mplayer, (ws_probe()? WS_XMAX : WS_NOXL_XMAX), (ws_probe()? WS_YMAX : WS_NOXL_YMAX), rotated_param, resume_pos, fifo_command_name, playlist_param, folder , filename, fifo_stdout_name );
@@ -1349,6 +1396,7 @@ static void display_RGB_to_fb(unsigned char * buffer, int x, int y, int w, int h
                         buffer16[i] =  ( (buffer[4*i] & 0xF8) << 8 | /* R 5 bits*/
                                                             (buffer[4*i+1] & 0xFC) << 3 | /* G 6 bits */
                                                             (buffer[4*i+2]>>3));          /* B 5 bits*/
+
                         /*TODO gerer transparence*/
                 }
         }
