@@ -191,7 +191,8 @@ struct skin_control{
 struct skin_config{
     int nb;	/*!< number of controls in the skin */
     struct skin_control controls[MAX_SKIN_CONTROLS]; /*!<array of control within the skin */
-    int r,g,b; /*!< color of the text to be displayed */
+    int text_color; /*!< color of text */
+    int r,g,b; /*!< color of the transparent color (when using bad image format such as bmp that does not hold this info) */
     int text_x1,text_y1,text_x2,text_y2; /*!< area where the a text can be displayed */
     char bitmap_filename[PATH_MAX]; /*!< filename of background bitmap */
     ILuint bitmap; /*!< DevIL background bitmap */

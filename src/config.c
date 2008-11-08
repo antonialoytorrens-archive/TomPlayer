@@ -116,14 +116,14 @@ bool load_skin_config( char * filename, struct skin_config * skin_conf ){
 		PRINTDF( "Unable to load config file %s\n", filename);
 		return false ;
 	}
-/*
-	i = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_COLOR, -1);
-    if( i < 0  ){
-    	PRINTD("No text color\n");
-    } else{
-		skin_conf->text_color = i;
-    	PRINTDF("Read txt color : 0x%x  \n",skin_conf->text_color);
-    }*/
+
+	i = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_COLOR, 0xFF0000);
+        if( i < 0  ){
+      	 PRINTD("No text color\n");
+        } else{
+	 skin_conf->text_color = i;
+    	 PRINTDF("Read txt color : 0x%x  \n",skin_conf->text_color);
+        }
 
 	skin_conf->text_x1 = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_X1, 0);
 	skin_conf->text_x2 = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_X2, 0);
