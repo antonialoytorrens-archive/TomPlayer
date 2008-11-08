@@ -553,8 +553,9 @@ void gui_window_handle_click(int  x, int y){
   win = win_stack.winlist[win_stack.current_win];
   win->win->GetPosition(win->win, &win_x, &win_y);
 
-#ifdef NATIVE
+
   if (is_rotated){
+#ifdef NATIVE
     int w,h;
     int tmp;
     win->win->GetSize(win->win, &w, &h);
@@ -563,13 +564,18 @@ void gui_window_handle_click(int  x, int y){
     y = h - tmp;
     x-=win_y;
     y+=win_x;
-  } else {
+#else
+    int w,h;
+    int tmp;
+    win->win->GetSize(win->win, &w, &h);
+    x-=win_y;
+    y= y - (screen_width -h -win_x);
 #endif
+  } else {  
     x-=win_x;
     y-=win_y;
-#ifdef NATIVE
   }
-#endif
+
   list_controls = win->controls;
   while( list_controls != NULL ){
     control = (struct gui_control *) list_controls->object; 

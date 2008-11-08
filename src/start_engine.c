@@ -35,6 +35,7 @@
 #include "debug.h"
 #include "engine.h"
 #include "widescreen.h"
+#include "font.h"
 
 static void alarm_handler(int sig) { 
  return;
@@ -85,13 +86,15 @@ static void get_events(void){
     if (samp.pressure > 0){
       if  (last_pressure == 0){
         /*printf("delievring events %i %i %i \n", samp.x, samp.y,samp.pressure);*/
-#ifdef NATIVE
         if (is_rotated){
+#ifdef NATIVE
            handle_mouse_event( samp.y, h- samp.x);
-        } else
+#else
+           handle_mouse_event( samp.x, samp.y);
 #endif
+        } else {
           handle_mouse_event( samp.x, samp.y);
-
+        }
         last_pressure = samp.pressure ;
       }
     } else {
@@ -105,7 +108,6 @@ static void get_events(void){
 int main( int argc, char *argv[] ){
   struct sigaction new_action;
 
-
   if (argc != 3){
     return -1;
   }
@@ -117,6 +119,8 @@ int main( int argc, char *argv[] ){
   sigaction(SIGALRM, &new_action, NULL);
 
   init_engine();	
+
+
   if( load_config(&config) == false ){
     fprintf( stderr, "Error while loading config\n" );
   } else {
