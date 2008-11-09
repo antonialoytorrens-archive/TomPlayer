@@ -9,7 +9,8 @@ FREETYPE-DIR=freetype-2.3.5
 TSLIB-DIR=tslib-1.0
 LIBZIP-DIR=libzip-0.8
 INIPARSER-DIR=iniparser3.0b
-DIRECTFB-DIR=DirectFB-1.2.0
+#DIRECTFB-DIR=DirectFB-1.2.0
+DIRECTFB-DIR=DirectFB-1.3.0
 
 GLIB-DIR=glib-2.13.7
 ATK-DIR=atk-1.9.1
