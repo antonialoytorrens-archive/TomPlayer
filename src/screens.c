@@ -90,11 +90,16 @@ static int screen_width, screen_height;
 
 
 static void launch_engine(const char * path, int pos){
-  FILE * fp;
-  fp = fopen("./start_engine.sh", "w+");
-  if (fp != NULL){
-    fprintf(fp,"./start_engine \"%s\" %i\n", path, pos);
-    fclose(fp);
+  int fd, i ;
+  char buffer[128];
+
+  fd = open ("/tmp/start_engine.sh", O_CREAT | O_WRONLY | O_TRUNC, S_IRWXU);
+  if (fd >= 0){
+    i = snprintf(buffer, sizeof(buffer) - 1,"./start_engine \"%s\" %i\n", path, pos);
+    buffer[i] = '\0';
+    write(fd,buffer,i);
+    fsync(fd);
+    close(fd);
   }
   return;
 }
@@ -372,7 +377,7 @@ static void create_preview(fs_handle hdl,  enum  fs_events_type evt, const char 
   * Handle movie preview
   */
 static void video_select_cb(fs_handle hdl, const char * c, enum  fs_events_type evt){
-  static const char * cmd_mplayer_thumbnail = "DIR=`pwd` && cd /tmp && rm -f 00000001.png && $DIR/mplayer_png -ao null -vo png:z=0 -ss 10 -frames 1 \"%s\"";
+  static const char * cmd_mplayer_thumbnail = "DIR=`pwd` && cd /tmp && rm -f 00000001.png && $DIR/mplayer_png -ao null -vo png:z=0 -ss 5 -frames 1 \"%s\"";
   int i ;
   char buffer[256];
 
@@ -585,9 +590,13 @@ static void select_skin(struct gui_control * ctrl, int x, int y){
    gui_window_attach_cb(win, "goback_button", quit_current_window);   
    fs_ctrl =  gui_window_get_control(win, "file_selector");
    if (fs_ctrl != NULL){
+     char * basename;
      fs = fs_ctrl->obj;
      fs_set_select_cb(fs, skin_select_cb);     
-     fs_new_path(fs, (type==GUI_SCREEN_AUDIO_SKIN) ? "./skins/audio/": "./skins/video/" , "^.*\\.zip$");
+     fs_new_path(fs, (type==GUI_SCREEN_AUDIO_SKIN) ? "./skins/audio": "./skins/video" , "^.*\\.zip$");
+     basename = strrchr((type==GUI_SCREEN_AUDIO_SKIN) ? config.audio_skin_filename :config.video_skin_filename, '/');
+     if (basename != NULL)
+      fs_select_filename(fs, basename + 1);
    }
 
    select_button = gui_window_get_control(win, "select_button");
