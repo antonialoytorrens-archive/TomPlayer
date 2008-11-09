@@ -31,7 +31,7 @@ TOM_OBJ = $(subst .c,.o,$(TOM_SRC))
 ENG_OBJ = $(subst .c,.o,$(ENG_SRC))
 ENG_OBJ += zip_skin_devil.o
 
-all : tomplayer refresh_wdg start_engine
+all : tomplayer refresh_wdg start_engine splash
 
 
 tomplayer: $(TOM_OBJ)
@@ -51,6 +51,12 @@ refresh_wdg : watchdog.o
 	$(CC) $(LDFLAGS) -o refresh_wdg $^
 	$(STRIP) refresh_wdg
 	mv refresh_wdg $(INSTALL_DIR)
+
+splash : splash.o 
+	$(CC)  -o splash_screen $^
+	$(STRIP) splash_screen
+	mv splash_screen $(INSTALL_DIR)
+
 
 install_deps :
 	rm -rf $(INSTALL_DIR)/deps
@@ -89,7 +95,8 @@ zip_skin.o: zip_skin.c zip_skin.h widescreen.h engine.h debug.h
 	$(CC) $(CFLAGS) -c $< -o $@
 	
 clean:
-	rm -f $(INSTALL_DIR)/tomplayer
+	rm -f $(INSTALL_DIR)/tomplayer  $(INSTALL_DIR)/start_engine  $(INSTALL_DIR)/splash_screen $(INSTALL_DIR)/refresh_wdg
+	rm -f tomplayer refresh_wdg start_engine splash_screen
 	rm -f *.o
 
 
