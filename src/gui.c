@@ -55,7 +55,7 @@ static void release_resources( void )
   if (layer != NULL)
     layer->Release(layer);
   if (keybuffer != NULL)
-    keybuffer->Release( keybuffer );
+    keybuffer->Release( keybuffer );   
   if (dfb != NULL)
     dfb->Release( dfb );
 
@@ -161,7 +161,11 @@ int main( int argc, char *argv[] ){
               }
       }
     }
+    /*FIXME proper release of directfb may hang...
+      Pb seems to appear from time to time when releasing directfb layer : i have not found the root of this pb */
+    exit(0);
     release_resources();  
+    printf("Leaving tomplayer IHM \n");
     return 0;
   }
   return -1;
