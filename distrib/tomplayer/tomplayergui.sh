@@ -7,8 +7,6 @@ cd $TOMPLAYER_DIR
 #To be sure to get absolute path
 TOMPLAYER_DIR=`pwd`
 
-./splash_screen res/background/loading
-
 echo "Killing ttn..."
 
 killall -9 mplayer
@@ -45,7 +43,7 @@ export CONF_TOMPLAYER=${TOMPLAYER_DIR}/conf
 
 export LD_LIBRARY_PATH=/usr/local/lib
 
-# Call script that creates symlinks for shared ibrairies
+# Call script that creates symlinks for shared librairies
 ./create_symlinks.sh
 
 # Copy tslib configuration file
@@ -58,11 +56,12 @@ cd $TOMPLAYER_DIR
 END_ASKED=0
 NO_SPLASH=
 while [  $END_ASKED -eq 0 ]; do 
-rm start_engine.sh
+rm /tmp/start_engine.sh
 ./tomplayer --dfb:no-vt $NO_SPLASH
+sync
 ./splash_screen res/background/loading
-if [ -f ./start_engine.sh ] ; then 
-  /bin/sh ./start_engine.sh
+if [ -f /tmp/start_engine.sh ] ; then 
+  /bin/sh /tmp/start_engine.sh
    NO_SPLASH="--no-splash"
 else 
   END_ASKED=1
