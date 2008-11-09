@@ -1,5 +1,8 @@
 More informations on http://www.tomplayer.net
 
+November, 09 2008 Tomplayer V0.211
+* Correction of a display bug  for inverted axes in start_engine
+
 November, 09 2008 Tomplayer V0.210
 * Add experimental support for tomtom with inverted XY axes such as TTGO300 (Yet without transparency effect...)
 * Transition to directFB v1.3
