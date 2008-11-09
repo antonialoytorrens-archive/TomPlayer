@@ -4,7 +4,7 @@
  * \brief This module enables to generate RGBA bitmap buffer with some text in it
  * 
  * $URL$
- * $Rev:$
+ * $Rev$
  * $Author$
  * $Date$
  *
@@ -79,18 +79,28 @@ static bool draw_bitmap( const struct font_color * color,
           image[(4*((j*width) + i)) + 2] = color->b;
           image[(4*((j*width) + i)) + 3] = 0;
     }
+    for ( j = y_max, q = 0; j < height ; j++, q++ )
+    {
+          image[(4*((j*width) + i)) + 0] = color->r;
+          image[(4*((j*width) + i)) + 1] = color->g;
+          image[(4*((j*width) + i)) + 2] = color->b;
+          image[(4*((j*width) + i)) + 3] = 0;
+    }
   }
+
 
   return true;
 }
 
-static bool  font_get_size(const char * text, int * width, int * height){
+static bool  font_get_size(const char * text, int * width, int * height, int * orig){
   int n;
   int num_chars;
   FT_Vector pen;
   FT_Error  error;
   FT_GlyphSlot  slot;
+  int up, down, max_up, max_down;
 
+  max_up = max_down =  0;
   num_chars = strlen(text);
   pen.x = 0 * 64;
   pen.y = 0 * 64;
@@ -106,8 +116,18 @@ static bool  font_get_size(const char * text, int * width, int * height){
     /* increment pen position */
     pen.x += slot->advance.x;
     pen.y += slot->advance.y;
-    if (*height < (slot->metrics.height/64))
-        *height = slot->metrics.height/64;
+    up = slot->metrics.horiBearingY/64;
+    down = slot->metrics.height/64 - slot->metrics.horiBearingY/64;
+    if (up > max_up)
+      max_up = up;
+    if (down > max_down){ 
+      max_down = down;
+      *orig = down;
+    }
+
+    if (*height < (max_up+max_down)){
+        *height = (max_up+max_down) ;
+    }
   }
 
   *width  = pen.x / 64;
@@ -136,9 +156,10 @@ bool font_draw(const struct font_color * color,  const char * text, unsigned cha
   FT_Error  error;
   FT_GlyphSlot  slot;
   int num_chars;
+  int orig;
   int n;
 
-  if (font_get_size(text, &width, &height) == false){
+  if (font_get_size(text, &width, &height, &orig) == false){
     return false;
   }
 
@@ -171,7 +192,7 @@ bool font_draw(const struct font_color * color,  const char * text, unsigned cha
     draw_bitmap( color,
                  &slot->bitmap,
                  pen.x / 64 /*slot->bitmap_left*/,
-                 height-slot->bitmap.rows);
+                 height-slot->bitmap_top-orig);
 
     /* increment pen position */
     pen.x += slot->advance.x;
