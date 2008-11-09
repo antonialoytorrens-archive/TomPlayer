@@ -1,5 +1,12 @@
 More informations on http://www.tomplayer.net
 
+November, 09 2008 Tomplayer V0.210
+* Add experimental support for tomtom with inverted XY axes such as TTGO300 (Yet without transparency effect...)
+* Transition to directFB v1.3
+* Audio and video filters (set as regex in tomplayer.ini) are now case insensitive
+* In audio names, filenames are now displyed on skin while played 
+* Add skin preview (and convert all skin BMP bitmaps to PNG ones)
+* Add many audio skins by clint that were not packaged in main distrib
 
 November, 03 2008 Tomplayer V0.200
 A totally new GUI !
