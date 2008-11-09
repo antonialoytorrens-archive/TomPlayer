@@ -1114,12 +1114,11 @@ void launch_mplayer( char * folder, char * filename, int pos ){
     is_paused = false;
     no_user_interaction_cycles = 0;
 
-    
 
     if ( is_video_file( filename ) ) {
       load_skin_from_zip( config.video_skin_filename, &config.video_config, true ) ;
-      init_ctrl_bitmaps();
       is_playing_video = true;
+      init_ctrl_bitmaps();
       resume_file_init(file);
       if (pos > 5){
         resume_pos = pos - 5;
@@ -1130,8 +1129,8 @@ void launch_mplayer( char * folder, char * filename, int pos ){
     }
     else {
       load_skin_from_zip( config.audio_skin_filename, &config.audio_config, true );
-      init_ctrl_bitmaps();
       is_playing_audio = true;
+      init_ctrl_bitmaps();
       resume_pos = 0;
       display_image_to_fb(config.audio_config.bitmap );
       display_current_file( "Loading...", &config.audio_config);
