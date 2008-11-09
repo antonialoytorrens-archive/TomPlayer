@@ -7,6 +7,7 @@ cd $TOMPLAYER_DIR
 #To be sure to get absolute path
 TOMPLAYER_DIR=`pwd`
 
+./splash_screen res/background/loading
 
 echo "Killing ttn..."
 
@@ -59,6 +60,7 @@ NO_SPLASH=
 while [  $END_ASKED -eq 0 ]; do 
 rm start_engine.sh
 ./tomplayer --dfb:no-vt $NO_SPLASH
+./splash_screen res/background/loading
 if [ -f ./start_engine.sh ] ; then 
   /bin/sh ./start_engine.sh
    NO_SPLASH="--no-splash"
