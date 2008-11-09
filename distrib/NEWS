@@ -7,6 +7,7 @@ November, 09 2008 Tomplayer V0.210
 * In audio names, filenames are now displyed on skin while played 
 * Add skin preview (and convert all skin BMP bitmaps to PNG ones)
 * Add many audio skins by clint that were not packaged in main distrib
+* Add loading splash screen in transitions
 
 November, 03 2008 Tomplayer V0.200
 A totally new GUI !
