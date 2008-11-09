@@ -163,7 +163,9 @@ int main( int argc, char *argv[] ){
     }
     /*FIXME proper release of directfb may hang...
       Pb seems to appear from time to time when releasing directfb layer : i have not found the root of this pb */
+#ifndef NATIVE
     exit(0);
+#endif
     release_resources();  
     printf("Leaving tomplayer IHM \n");
     return 0;
