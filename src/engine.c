@@ -1354,7 +1354,13 @@ static void display_RGB_to_fb(unsigned char * buffer, int x, int y, int w, int h
 	int buffer_size;
 	int fb;
 	int i,j ;
-
+        
+        if (x < 0) {
+           x = 0;
+        }
+        if (y < 0) {
+           y = 0;
+        }
 	/* Alloc buffer for RBG conversion */
 	buffer_size = w * h * 2 ;
 	buffer16 = malloc( buffer_size );
@@ -1415,12 +1421,12 @@ static void display_RGB_to_fb(unsigned char * buffer, int x, int y, int w, int h
                 ws_get_size(&screen_width, &screen_height);
                 tmp = y ;
                 y = x;
-                x = screen_height - tmp;
+                x = screen_width - tmp;
 
                 /* Magic combination for inverted coordinates */
-                for (i=y; i<y+h; i++){
-                        for(j=x; j<x+w; j++){
-                                fb_mmap[j*screeninfo.xres+i]=buffer16[(-i+y+h-1)*w+(j-x)];
+                for (i=x; i>x-h; i--){
+                        for(j=y; j<y+w; j++){
+                                fb_mmap[j*screeninfo.xres+i]=buffer16[(-i+x)*w+(j-y)];
                         }
                 }
         }
