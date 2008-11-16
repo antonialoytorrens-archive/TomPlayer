@@ -70,7 +70,8 @@
 #define SCREEN_SAVER_ACTIVE (-1)
 
 /*char * cmd_mplayer = "./mplayer -quiet -include ./conf/mplayer.conf -vf expand=%i:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -ss %i -slave -input file=%s %s \"%s/%s\" > %s";*/
-char * cmd_mplayer = "./mplayer -include ./conf/mplayer.conf -vf expand=%i:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -ss %i -slave -input file=%s %s \"%s/%s\" > %s";
+/* quiet option is mandatory to be able  to parse correctly mplayer output */
+char * cmd_mplayer = "./mplayer -quiet -include ./conf/mplayer.conf -vf expand=%i:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -ss %i -slave -input file=%s %s \"%s/%s\" > %s";
 //char * cmd_mplayer = "mplayer -include ./conf/mplayer.conf -vf expand=%i:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -ss %i -slave -input file=%s %s \"%s/%s\" > %s";
 
 static char * fifo_command_name = "/tmp/mplayer-cmd.fifo";
@@ -626,7 +627,7 @@ static int get_string_from_stdout(char *val){
   	//PRINTD("get_string_from_stdout %s\n","");
     if (read_line_from_stdout(buffer, sizeof(buffer)) > 0){
         strcpy( val, buffer );
-       // PRINTD( "Fichier courant <%s>\n",buffer );
+        PRINTDF( "Fichier courant <%s>\n",buffer );
         return 0;
     }
 
