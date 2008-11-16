@@ -1,5 +1,12 @@
 More informations on http://www.tomplayer.net
 
+November, 16th 2008 Tomplayer V0.212
+* Volume level is kept while playing playlist
+* Current audio track is now displayed without latency on skin 
+* Tomplayer can be launched from Tomtom nav v8.3
+* New video skin by karo1915
+* New wait screen (instead of mplayer loading one)
+
 November, 09 2008 Tomplayer V0.211
 * Correction of a display bug  for inverted axes in start_engine
 
