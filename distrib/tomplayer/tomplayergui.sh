@@ -9,10 +9,10 @@ TOMPLAYER_DIR=`pwd`
 export LIB_TOMPLAYER=${TOMPLAYER_DIR}/lib
 export CONF_TOMPLAYER=${TOMPLAYER_DIR}/conf
 
-
 echo "Killing ttn..."
 killall -9 mplayer
 killall -9 ttn
+IS_TTN_NOT_RUNNING=$?
 killall -9 mp3d 
 killall -9 a2dpd
 rm /mnt/sdcard/dirty_fs 
@@ -88,11 +88,17 @@ else
 fi
 done
 
-# Launch navigation software
-ttn_file=/bin/ttn
-ttn_cnt=`ps | grep ttn | wc -l`
-if test ${ttn_cnt} -lt 2 ; then 
+# Launch navigation software if needed
+if [ $IS_TTN_NOT_RUNNING -eq 0 ] ; then
+if [ $NO_TS -eq 0 ] ; then 
+#Directly relaunch nav software
 echo "Start TTN"
 /etc/rc.restartgps
-${ttn_file}
+/bin/ttn
+else 
+#Reboot to relaunch the nav software
+sync
+killall refresh_wdg
+./force_reboot
+fi
 fi
