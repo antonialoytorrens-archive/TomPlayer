@@ -75,6 +75,15 @@ enum fmtrx_state {
  */
 #define IOW_FMTRX_SET_ADRC			_IOW(FMTRANSMITTER_DRIVER_MAGIC,7,sizeof(unsigned int) )
 
+
+/*
+ * Set the FM transmitter's power mode.
+ * @param: power in dBuV
+ * @return: 0 on success, error code otherwise.
+ */ 
+#define IOW_FMTRX_SET_POWER			_IOW(FMTRANSMITTER_DRIVER_MAGIC,8,sizeof(unsigned char))
+
+
 #ifdef __KERNEL__
 #include <barcelona/gopins.h>
 
