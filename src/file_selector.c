@@ -39,6 +39,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <linux/limits.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -725,6 +726,8 @@ fs_handle fs_create (IDirectFB  * dfb, IDirectFBWindow * win, const struct fs_co
   if (dfb->CreateSurface(dfb, &dsc, &handle->refresh_zone_surf ) != DFB_OK) {
     goto error;
   }
+  /* Set encodings to latin 1 ISO 8859-1 instead of UTF-8 */
+  handle->font->SetEncoding(handle->font,DTEID_OTHER);
   handle->refresh_zone_surf->SetFont (handle->refresh_zone_surf, handle->font);
  
   /* Create preview surface if needed */
