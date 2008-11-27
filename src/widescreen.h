@@ -5,7 +5,7 @@
  * 
  * $URL$
  * $Rev$
- * $Author:$
+ * $Author$
  * $Date$
  *
  */
@@ -26,10 +26,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/**
- * \file widescreen.h
- * \author wolfgar
- */
 
 
 #ifndef __TOMPLAYER_WIDESCRREN_H__

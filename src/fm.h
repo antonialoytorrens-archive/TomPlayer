@@ -3,10 +3,10 @@
  * \author Wolfgar 
  * \brief This module provides functions related to FM transmitter
  * 
- * $URL: $
- * $Rev: $
+ * $URL$
+ * $Rev$
  * $Author:$
- * $Date: $
+ * $Date$
  *
  */
 

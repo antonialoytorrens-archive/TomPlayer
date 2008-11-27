@@ -5,10 +5,10 @@
  * This module implements FM transmitter related functions
  *
  *
- * $URL: $
- * $Rev: $
- * $Author: $
- * $Date: $
+ * $URL$
+ * $Rev$
+ * $Author$
+ * $Date$
  *
  */
 
