@@ -130,6 +130,7 @@ static bool dispatch_ts_event(DFBInputEvent *evt )
 /** Everything begins here ;-)  */
 int main( int argc, char *argv[] ){
   bool splash_wanted = true ;
+  bool power_off_asked = false;
   struct option long_options[] ={               
                {"no-splash", no_argument,(int *)&splash_wanted, 0},
                {0, 0, 0, 0}
@@ -157,6 +158,7 @@ int main( int argc, char *argv[] ){
               }
               /* Test OFF button */
               if (power_is_off_button_pushed()){
+                power_off_asked = true;
                 break;
               }
       }
@@ -164,7 +166,11 @@ int main( int argc, char *argv[] ){
     /*FIXME proper release of directfb may hang...
       Pb seems to appear from time to time when releasing directfb layer : i have not found the root of this pb */
 #ifndef NATIVE
-    exit(0);
+    if (power_off_asked){
+      exit(51);
+    } else {
+      exit(0);
+    }
 #endif
     release_resources();  
     printf("Leaving tomplayer IHM \n");
