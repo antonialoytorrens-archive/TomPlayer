@@ -78,6 +78,7 @@ NO_SPLASH=
 while [  $END_ASKED -eq 0 ]; do 
 rm /tmp/start_engine.sh
 ./tomplayer --dfb:no-vt $NO_SPLASH
+RES_TOMPLAYER=$?
 sync
 ./splash_screen res/background/wait
 if [ -f /tmp/start_engine.sh ] ; then 
@@ -87,6 +88,15 @@ else
   END_ASKED=1
 fi
 done
+
+
+#If power button has been pushed then power off TOMTOM
+if [ $RES_TOMPLAYER -eq 51 ] ; then 
+if [ $NO_TS -eq 0 ] ; then 
+#Does not work on nav>8.3
+  ./turn_off
+fi
+fi
 
 # Launch navigation software if needed
 if [ $IS_TTN_NOT_RUNNING -eq 0 ] ; then
