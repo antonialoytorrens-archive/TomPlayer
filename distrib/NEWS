@@ -1,5 +1,22 @@
 More informations on http://www.tomplayer.net
 
+
+Tomplayer V0.213
+
+New features :
+- Resume is now available for audio too
+- Support for subtitles (subtitles have to be in the same folder with the same basename as the video)
+- Display levels when settings volume, contrast ...
+- Support for FM transmitter (set the variable fm_tranmitter in conf/tomplayer.ini to activate it)
+- Support unicode ISO 8859-1 display on initial GUI
+- Automatically select first video on entering the video selector
+- When integrated in navigation >= V8.3, Reboot on exit (to be able to relaunch Tomplayer)
+
+Bugs correction 
+- Lock when playing too much on the skin 
+- Suppress binary mplayer_png (no user visibility except a few mbytes are no longer wasted)
+
+
 November, 16th 2008 Tomplayer V0.212
 * Volume level is kept while playing playlist
 * Current audio track is now displayed without latency on skin 
