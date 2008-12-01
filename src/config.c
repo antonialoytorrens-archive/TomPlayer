@@ -3,9 +3,9 @@
  * \author nullpointer
  * \brief This module implements configuration reading
  * 
- * $URL:$
- * $Rev:$
- * $Author:$
+ * $URL$
+ * $Rev$
+ * $Author$
  * $Date$
  *
  */
@@ -260,6 +260,10 @@ bool load_config( struct tomplayer_config * conf ){
     if (conf->screen_saver_to < 0 ){
     	conf->screen_saver_to = SCREEN_SAVER_TO_S;
     }
+
+    conf->fm_transmitter = iniparser_getint(ini, SECTION_GENERAL":"KEY_FM_TRANSMITTER, 0);
+    
+
 
     s = iniparser_getstring(ini, SECTION_VIDEO_SKIN":"KEY_SKIN_FILENAME, NULL);
 	if( s != NULL ) strcpy( conf->video_skin_filename, s );

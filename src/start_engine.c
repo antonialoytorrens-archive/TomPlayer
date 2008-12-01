@@ -30,12 +30,15 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <signal.h>
+#include <stdlib.h>
 
 #include "tslib.h"
 #include "debug.h"
 #include "engine.h"
 #include "widescreen.h"
 #include "font.h"
+#include "fm.h"
+#include "sound.h"
 
 static void alarm_handler(int sig) { 
  return;
@@ -124,9 +127,24 @@ int main( int argc, char *argv[] ){
   if( load_config(&config) == false ){
     fprintf( stderr, "Error while loading config\n" );
   } else {
+    /* Activate FM transmitter if needed */
+    if (config.fm_transmitter){
+      if (!fm_set_state(1) ||
+          !fm_set_freq(config.fm_transmitter) ||
+          !fm_set_power(115) ||
+          !fm_set_stereo(1)){
+        fprintf(stderr,"Error while activating FM transmitter\n");
+      }
+      snd_mute_internal(true);
+    }
     launch_mplayer("", argv[1], atoi(argv[2]));
   }
   get_events();
+  /* Desactivate FM transmitter if needed */
+  if (config.fm_transmitter){
+    fm_set_state(0);
+    snd_mute_internal(false);
+  }
   release_engine();
   return 0;
 }

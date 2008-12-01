@@ -71,7 +71,7 @@
 #define KEY_B_PROGRESSBAR           "pb_b"
 
 #define KEY_SCREEN_SAVER_TO			"screen_saver_to"
-
+#define KEY_FM_TRANSMITTER          "fm_transmitter"
 #define KEY_TYPE_CONTROL            "type"
 #define KEY_CMD_CONTROL             "ctrl"
 #define KEY_CMD_CONTROL2            "cmd"
@@ -224,7 +224,8 @@ struct tomplayer_config{
     char audio_skin_filename[PATH_MAX];		/*!<fullpath to the audio skin archive */
     struct skin_config video_config;		/*!<video skin config */
     struct skin_config audio_config;		/*!<audio skin config */
-    int screen_saver_to;					/*!<screensaver timeout */
+    int screen_saver_to;			/*!<screensaver timeout */
+    unsigned int fm_transmitter;                /*!<FM transmitter frequency in HZ (0 to disable) */
 };
 
 

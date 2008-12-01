@@ -123,7 +123,10 @@ static ILuint bat_cursor_id;
 static struct{
 		int x,y;
 } prev_coords = {-1,-1};
+/* Current audio filename */
+static char current_filename[200];
 
+static bool quit_asked = false ;
 
 static void display_RGB_to_fb(unsigned char * buffer, int x, int y, int w, int h, bool transparency);
 
@@ -568,7 +571,7 @@ static int read_line_from_stdout(char * buffer, int len){
     FD_SET(fifo_out, &rfds);
     tv.tv_sec = 0;
     tv.tv_usec = 300000;
-    if (select(fifo_out+1, &rfds, NULL, NULL, &tv) == 0){
+    if (select(fifo_out+1, &rfds, NULL, NULL, &tv) <= 0){
       /* Time out */
       return -1;
     }
@@ -905,6 +908,7 @@ static void quit_mplayer(void){
 	  }
 	}
 	send_raw_command( "quit\n" );
+        quit_asked = true ;
 }
 
 
@@ -968,11 +972,10 @@ void *anim_thread(void * param){
 void * update_thread(void *cmd){
   int pos ;
   int screen_saver_to_cycles;
-  char current_filename[200];
-  char old_current_filename[200];
+  char current_buffer_filename[200];
   char *p;
 
-  old_current_filename[0] = 0;
+  current_filename[0] = 0;
 
   /* Timout in cycles before turning OFF screen while playing audio */
   screen_saver_to_cycles = ((config.screen_saver_to * 1000000) / PB_UPDATE_PERIOD_US);
@@ -1000,12 +1003,12 @@ void * update_thread(void *cmd){
 
       /* DO Not send periodic commands to mplayer while in pause because it unlocks the pause for a brief delay */
       if( is_playing_audio == true ){
-          if( get_current_file_name( current_filename ) == true ){
-              if( !strncmp( "ANS_FILENAME='", current_filename, strlen( "ANS_FILENAME='" ) ) ){
-                  p=current_filename + strlen( "ANS_FILENAME='" );
+          if( get_current_file_name( current_buffer_filename ) == true ){
+              if( !strncmp( "ANS_FILENAME='", current_buffer_filename, strlen( "ANS_FILENAME='" ) ) ){
+                  p=current_buffer_filename + strlen( "ANS_FILENAME='" );
                   p[strlen(p)-2] = 0;
-                  if( strcmp( p, old_current_filename ) ){
-                      strcpy( old_current_filename, p);
+                  if( strcmp( p, current_filename ) ){
+                      strcpy( current_filename, p);
                       // Affichage du nom du fichier
                       display_current_file( p, &config.audio_config);
                       display_bat_state(true);
@@ -1028,8 +1031,12 @@ void * update_thread(void *cmd){
 		}
 	}
 
-	/* Check for headphones presence to turn on/off internal speaker */
-	snd_check_headphone();
+	/* Check for headphones presence to turn on/off internal speaker*/
+        if (config.fm_transmitter == 0){
+	 snd_check_headphone();
+        } else {
+           snd_mute_internal(true);
+        }
 
 	/* Handle power button*/
 	if (power_is_off_button_pushed() == true){
@@ -1062,6 +1069,9 @@ void * mplayer_thread(void *cmd){
 	   	resume_set_video_settings(&current_video_settings);
     } else {
     	resume_set_audio_settings(&current_audio_settings);
+        /* Save audio playlist if quit has been required (as opposed to an end of playlist exit)*/
+        if (quit_asked)
+          resume_save_playslist(current_filename);
     }
     is_mplayer_finished = true;
     pthread_exit(NULL);
@@ -1182,7 +1192,7 @@ void handle_mouse_event( int x, int y )
     char buffer[200];
     struct video_settings v_settings;
     struct audio_settings a_settings;
-    bool update_settings = false;
+    static bool update_settings = false;
 
 
     if (no_user_interaction_cycles == SCREEN_SAVER_ACTIVE){
@@ -1267,10 +1277,10 @@ void handle_mouse_event( int x, int y )
             }
             break;
         case SKIN_CMD_PREVIOUS:
-            send_command( "pt_step -1" );
+            send_command( "pt_step -1\n" );
             break;
         case SKIN_CMD_NEXT:
-            send_command( "pt_step 1" );
+            send_command( "pt_step 1\n" );
             break;
         case SKIN_CMD_BATTERY_STATUS:
         	break;
@@ -1279,18 +1289,21 @@ void handle_mouse_event( int x, int y )
             if( is_playing_video == true ) hide_menu();
     }
 
-
     /* Update in-memory settings */
     if (update_settings == true) {
-	    if ( is_playing_video == true ){
-		    if (get_video_settings(&v_settings) == 0){
-		    	current_video_settings = v_settings;
-		    }
-	    } else {
-		  	if (get_audio_settings( &a_settings) == 0){
-		  		current_audio_settings = a_settings;
-		  	}
-	    }
+            if (!is_paused){
+            /* We get no answer from mplayer while paused */
+              if ( is_playing_video == true ){
+                      if (get_video_settings(&v_settings) == 0){
+                          current_video_settings = v_settings;
+                      }
+              } else {
+                          if (get_audio_settings( &a_settings) == 0){
+                                  current_audio_settings = a_settings;
+                          }
+              }
+              update_settings = false ;
+          }
     }
 
 }

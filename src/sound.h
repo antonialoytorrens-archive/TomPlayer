@@ -5,7 +5,7 @@
  *
  * $URL$
  * $Rev$
- * $Author:$
+ * $Author$
  * $Date$
  *
  */
@@ -30,6 +30,9 @@
 
 #ifndef SOUND_H_
 #define SOUND_H_
+#include <stdbool.h>
 
+int snd_mute_internal(bool state);
+int snd_mute_external(bool state);
 int snd_check_headphone(void);
 #endif /*SOUND_H_*/

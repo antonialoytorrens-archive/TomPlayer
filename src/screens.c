@@ -34,6 +34,7 @@
 #include <fcntl.h>
 #include <pthread.h>
 
+
 #include "dictionary.h"
 #include "iniparser.h"
 #include "debug.h"
@@ -55,6 +56,7 @@ enum gui_screens_type {
   GUI_SCREEN_ABOUT,
   GUI_SCREEN_SPLASH,
   GUI_SCREEN_NOT_IMPLEMENTED,
+  GUI_SCREEN_RESUME,
   GUI_SCREEN_MAX
 };
 
@@ -79,7 +81,8 @@ static const char * graphic_conf_files[GUI_SCREEN_MAX] = {"main.cfg",
                                                           "video.cfg",
                                                           "about.cfg",
                                                           "splash.cfg",
-						          "not_implemented.cfg"
+						          "not_implemented.cfg",
+                                                          "resume.cfg"
                                                          };
 
 static bool quit = false;
@@ -221,7 +224,7 @@ static void * about_thread(void *param){
     conf->surf->FillRectangle(conf->surf,conf->pos.x,conf->pos.y,  screen_width , screen_height-conf->pos.y);
     conf->surf->SetColor( conf->surf, 200,200,200,0xFF);
     conf->surf->DrawString( conf->surf,about_text, -1, i, conf->pos.y, DSTF_TOPLEFT);
-    conf->surf->Flip(conf->surf,&region, 0/*DSFLIP_WAITFORSYNC*/);
+    conf->surf->Flip(conf->surf,&region, DSFLIP_WAITFORSYNC);
     i -= 1;
     if (i < -w){
       i = screen_width;
@@ -377,7 +380,7 @@ static void create_preview(fs_handle hdl,  enum  fs_events_type evt, const char 
   * Handle movie preview
   */
 static void video_select_cb(fs_handle hdl, const char * c, enum  fs_events_type evt){
-  static const char * cmd_mplayer_thumbnail = "DIR=`pwd` && cd /tmp && rm -f 00000001.png && $DIR/mplayer_png -ao null -vo png:z=0 -ss 5 -frames 1 \"%s\"";
+  static const char * cmd_mplayer_thumbnail = "DIR=`pwd` && cd /tmp && rm -f 00000001.png && $DIR/mplayer -ao null -vo png:z=0 -ss 5 -frames 1 \"%s\" 2> /dev/null ";
   int i ;
   char buffer[256];
 
@@ -402,10 +405,6 @@ static void play_video(struct gui_control * ctrl, int x, int y){
   file = fs_get_single_selection(fs);
   
   if (file != NULL){
-    /*DFBColor color = {255,255,255,255};
-    message_box("Will launch Video...", 24, &color, "./res/font/decker.ttf");
-    printf ("About to play %s \n", file);*/
-    /*launch_mplayer("", file, 0 );*/
     launch_engine(file, 0 );
     quit = true;
   } else {
@@ -434,6 +433,8 @@ static void select_video(struct gui_control * ctrl, int x, int y){
      fs = fs_ctrl->obj;
      fs_set_select_cb(fs, video_select_cb);
      fs_new_path(fs, config.video_folder, config.filter_video_ext);
+     /* Automatically select the first item */
+     fs_select(fs, 0);
    }
 }
 
@@ -442,9 +443,10 @@ static void resume_video( struct gui_control * ctrl, int x, int y){
     int pos = 0;
     char filename[PATH_MAX];
 
+    gui_window_release(ctrl->win);
     if (resume_get_file_infos(filename, PATH_MAX, &pos) != 0){
         DFBColor color = {255,255,50,50};
-        message_box("No resume data...", 24, &color, "./res/font/decker.ttf");    	
+        message_box("No resume video data...", 24, &color, "./res/font/decker.ttf");    	
     }
     else{
     	/*display_current_file( filename, &config.video_config, config.bitmap_loading );*/
@@ -628,6 +630,8 @@ static void choose_settings(struct gui_control * ctrl, int x, int y){
 }
 
 
+
+
 /* AUDIO SCREEN */
 
 static bool shuffle_state = true;
@@ -654,9 +658,23 @@ static void play_audio(struct gui_control * ctrl, int x, int y){
     DFBColor color = {255,255,50,50};
     message_box("No file selected !", 24, &color, "./res/font/decker.ttf");
   } else {
-  /*DFBColor color = {255,255,255,255};
-  message_box("Will play audio...", 24, &color, "./res/font/decker.ttf");*/
-    /*launch_mplayer( "","/tmp/playlist.m3u", 0 );*/
+    launch_engine("/tmp/playlist.m3u", 0);
+    quit = true;
+  }
+}
+
+/** Callback on resume audio button */
+static void resume_audio(struct gui_control * ctrl, int x, int y){
+  #define RESUME_PLAYLIST_FILENAME "./conf/saved_playlist.m3u"
+  struct stat file_infos;
+
+  gui_window_release(ctrl->win);
+
+  if (stat(RESUME_PLAYLIST_FILENAME, &file_infos) != 0){
+        DFBColor color = {255,255,50,50};
+        message_box("No resume audio data...", 24, &color, "./res/font/decker.ttf");
+  } else {
+    system("mv " RESUME_PLAYLIST_FILENAME " /tmp/playlist.m3u");
     launch_engine("/tmp/playlist.m3u", 0);
     quit = true;
   }
@@ -724,6 +742,20 @@ static void select_audio(struct gui_control * ctrl, int x, int y){
 }
 
 
+/* CHOOSE RESUME SCREEN */
+
+/** Callback on choose resume screen */
+static void resume(struct gui_control * ctrl, int x, int y){
+   gui_window  win;
+   win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_RESUME)); 
+
+   gui_window_attach_cb(win, "resume_video", resume_video);
+   gui_window_attach_cb(win, "resume_audio", resume_audio);
+
+   return;
+}
+
+
 /* MAIN SCREEN */
 /** Callback on exit button */
 static void quit_tomplayer(struct gui_control * ctrl, int x, int y){
@@ -743,7 +775,7 @@ static bool load_main_screen(void){
    gui_window_attach_cb(win, "video_button", select_video);
    gui_window_attach_cb(win, "about_button", enter_about);
    gui_window_attach_cb(win, "audio_button", select_audio);
-   gui_window_attach_cb(win, "resume_button", resume_video);
+   gui_window_attach_cb(win, "resume_button", resume);
    gui_window_attach_cb(win, "settings_button", choose_settings);
   return true;
 }

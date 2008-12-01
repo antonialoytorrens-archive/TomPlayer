@@ -1,10 +1,15 @@
-/***************************************************************************
- * Resume file handling
+/**
+ * \file resume.c
+ * \author wolfgar
+ * \brief Resume file handling
  *
- *  Mon Feb 27 2008
- *  Copyright  2008  St�phan Rafin
- *  Email
- ****************************************************************************/
+ * $URL:$
+ * $Rev:$
+ * $Author:$
+ * $Date:$
+ *
+ */
+
 /*
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,16 +26,14 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/**
- * \file resume.c
- * \author wolfgar
- * \brief Resume file handling
- */
+
 
 #include <stdbool.h>
 #include <stdio.h>
 #include <dictionary.h>
 #include <iniparser.h>
+#include <linux/limits.h>
+
 #include "resume.h"
 #include "debug.h"
 
@@ -90,9 +93,7 @@ error:
 	return ret;
 }
 
-/**
- * \fn int resume_write_pos(int value)
- * \brief Write position entry in resume file
+/** Write position entry in resume file
  *
  * \param value The current position in seconds
  *
@@ -130,9 +131,7 @@ error:
 }
 
 
-/**
- * \fn int resume_get_file_infos(char * filename, int len , int * pos)
- * \brief Get media file and position entry in resume file
+/** Get media file and position entry in resume file
  *
  * \param filename Buffer where the media filename has to be stored
  * \param len Length of the buffer where thefilename has to be copied
@@ -187,9 +186,7 @@ error:
 
 
 
-/**
- * \fn int resume_get_audio_settings(struct audio_settings * settings)
- * \brief Read video settings from resume file
+/** Read video settings from resume file
  *
  * \param settings read settings
  *
@@ -220,9 +217,7 @@ out_audio_settings:
     return res;
 }
 
-/**
- * \fn int resume_get_video_settings(struct video_settings * settings)
- * \brief Get media file and position entry in resume file
+/** Get media file and position entry in resume file
  *
  * \param settings read settings
  *
@@ -325,9 +320,7 @@ int resume_set_audio_settings(const struct audio_settings * settings){
 }
 
 
-/**
- * \fn int resume_set_video_settings(const struct video_settings * settings)
- * \brief Write video settings to resume file
+/** Write video settings to resume file
  *
  * \param settings read settings
  *
@@ -371,4 +364,43 @@ int resume_set_video_settings(const struct video_settings * settings) {
 error:
 	iniparser_freedict(ini);
     return 0;
+}
+
+
+int resume_save_playslist(const char * current_filename){
+  #define VOLATILE_PLAYLIST_FILENAME "/tmp/playlist.m3u"
+  #define RESUME_PLAYLIST_FILENAME "./conf/saved_playlist.m3u"
+  char buffer[PATH_MAX];
+  FILE * in_pl = NULL;
+  FILE * out_pl = NULL;
+  bool found = false;
+
+  in_pl = fopen(VOLATILE_PLAYLIST_FILENAME,"r");
+  if (in_pl == NULL){
+    return -1;
+  }
+
+  while (fgets(buffer, PATH_MAX-1,in_pl) != NULL){
+    if (!found){
+      if (strstr(buffer, current_filename) != NULL){
+        out_pl = fopen(RESUME_PLAYLIST_FILENAME,"w+");
+        if (out_pl == NULL){
+          break;
+        }
+        found = true;
+        fwrite(buffer, strlen(buffer),1, out_pl);
+      }
+    } else {
+      fwrite(buffer, strlen(buffer),1, out_pl);
+    }
+  }
+
+  fclose(in_pl);
+  if (out_pl)
+    fclose(out_pl);
+  if (found){
+    return 0;
+  } else {
+    return -1;
+  }
 }

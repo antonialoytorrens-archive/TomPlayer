@@ -1,12 +1,17 @@
+/**
+ * \file resume.h
+ * \author wolfgar
+ * \brief Resume file handling
+ *
+ *
+ * $URL:$
+ * $Rev:$
+ * $Author:$
+ * $Date:$
+ *
+ */
 
- /***************************************************************************
- * Resume file handling
- *
- *  Mon Feb 27 2008
- *  Copyright  2008  Stéphan Rafin
- *  Email*
- *
- ****************************************************************************/
+
 /*
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,11 +28,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/**
- * \file resume.h
- * \author wolfgar
- * \brief Resume file handling
- */
 
 
 #ifndef __TOMPLAYER_RESUME_H__
@@ -58,5 +58,6 @@ int resume_get_audio_settings(struct audio_settings * settings);
 int resume_get_video_settings(struct video_settings * settings);
 int resume_set_audio_settings(const struct audio_settings * settings);
 int resume_set_video_settings(const struct video_settings * settings);
+int resume_save_playslist(const char * current_filename);
 
 #endif

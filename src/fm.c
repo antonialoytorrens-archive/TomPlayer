@@ -38,15 +38,29 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
-#include <linux/fmtransmitter.h>
 
+#include "linux/fmtransmitter.h"
 #include "fm.h"
 
 #define FM_DEVICE_FILENAME "/dev/fmt"
 #define FM_FD_NOT_OPENED -1
 #define FM_FD_ERROR -2
 
-
+#ifdef NATIVE
+/* Stubs for native compilation */
+bool fm_set_state(unsigned int state){
+  return true;
+}
+bool fm_set_freq(unsigned int freq){
+  return true;
+}
+bool fm_set_stereo(unsigned int stereo){
+  return true;
+}
+bool fm_set_power(unsigned char power){
+  return true;
+}
+#else
 static int test_device(){
   static int fd = FM_FD_NOT_OPENED;
 
@@ -75,7 +89,7 @@ bool fm_set_state(unsigned int state){
   if ( fd < 0 ){
     return false;
   }
-  if (ioctl(fd, IOW_ENABLE , &state) != 0){
+  if (ioctl(fd, IOW_ENABLE , state) != 0){
     perror("Error while trying to change FM transmitter state ");
     return false;
   }
@@ -98,10 +112,8 @@ bool fm_set_freq(unsigned int freq){
   if ( fd < 0 ){
     return false;
   }
-  if (ioctl(fd, IOW_SET_FM_FREQUENCY , &freq) != 0){
-    perror("Error while trying to set FM frequency");
-    return false;
-  }
+  /* Do not test return as return is not 0 when OK ... */
+  ioctl(fd, IOW_SET_FM_FREQUENCY , freq);
   return true;
 }
 
@@ -122,7 +134,7 @@ bool fm_set_stereo(unsigned int stereo){
   if ( fd < 0 ){
     return false;
   }
-  if (ioctl(fd, IOW_FMTRX_SET_MONO_STEREO , &stereo) != 0){
+  if (ioctl(fd, IOW_FMTRX_SET_MONO_STEREO , stereo) != 0){
     perror("Error while trying to set stereo on FM transmitter ");
     return false;
   }
@@ -146,10 +158,10 @@ bool fm_set_power(unsigned char power){
   if ( fd < 0 ){
     return false;
   }
-  if (ioctl(fd, IOW_FMTRX_SET_POWER , &power) != 0){
-    perror("Error while trying to change FM transmitter power");
-    return false;
-  }
+  /* Do not test return as return is not 0 when OK ... */
+  if (ioctl(fd, IOW_FMTRX_SET_POWER , power) != 0);
+    
   return true;
 }
 
+#endif
