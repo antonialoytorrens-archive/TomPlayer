@@ -61,7 +61,6 @@
 #include "power.h"
 #include "debug.h"
 #include "zip_skin.h"
-#include "file_list.h"
 #include "gui.h"
 #include "font.h"
 
