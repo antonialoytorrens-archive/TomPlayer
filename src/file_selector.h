@@ -39,7 +39,7 @@
 #ifndef __FILE_SELECTOR_H__
 #include <directfb.h>
 #include <stdint.h>
-
+#include "file_list.h"
 
 /** Different kind of icons used by the file selector object */
 enum fs_icon_ids{
@@ -106,9 +106,7 @@ IDirectFBSurface * fs_get_preview_surface(fs_handle);
 IDirectFBWindow *  fs_get_window(fs_handle);
 const struct fs_config * fs_get_config(fs_handle);
 const char * fs_get_single_selection(fs_handle);
-fslist   fs_get_selection(fs_handle);
 
-const char * fslist_get_next_file(fslist fl, bool is_random);
-bool fslist_release(fslist);
+flenum  fs_get_selection(fs_handle);
 
 #endif /* __FILE_SELECTOR_H__ */

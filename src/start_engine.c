@@ -39,6 +39,7 @@
 #include "font.h"
 #include "fm.h"
 #include "sound.h"
+#include "diapo.h"
 
 static void alarm_handler(int sig) { 
  return;
@@ -136,6 +137,12 @@ int main( int argc, char *argv[] ){
         fprintf(stderr,"Error while activating FM transmitter\n");
       }
       snd_mute_internal(true);
+    }
+    if (config.diapo_enabled){
+      if (diapo_init(&config.diapo) == false){
+        fprintf(stderr,"Diaporama initialization failed ...\n");
+        config.diapo_enabled = false;
+      }
     }
     launch_mplayer("", argv[1], atoi(argv[2]));
   }

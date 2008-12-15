@@ -22,8 +22,8 @@ ifdef DEBUG
 CFLAGS+=-DDEBUG -g 
 endif
 
-TOM_SRC = file_selector.c window.c  screens.c gui.c list.c zip_skin.c config.c widescreen.c  resume.c pwm.c power.c 
-ENG_SRC = start_engine.c  engine.c config.c widescreen.c resume.c pwm.c sound.c  power.c font.c fm.c
+TOM_SRC = file_selector.c window.c  screens.c gui.c list.c zip_skin.c config.c widescreen.c  resume.c pwm.c power.c file_list.c
+ENG_SRC = start_engine.c  engine.c config.c widescreen.c resume.c pwm.c sound.c  power.c font.c fm.c file_list.c diapo.c 
 
 # callbacks.c file_list.c playlist.c
 

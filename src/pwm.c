@@ -52,71 +52,122 @@
 static  int previous_setting =  PWM_DEFAULT_LIGHT;
 
 
-/**
- * \fn int pwm_off(void)
- * \brief Turn OFF the screen and save the current state to be able to restore
+int pwm_get_brightness(int *val){
+    int fd, fd_pow;
+    int res = 0;
+    bool is_sys_needed = false;
+
+    fd = open("/dev/" PWM_DEVNAME, O_RDWR);
+    if (fd < 0){
+        perror("Error while trying to open PWM module ");
+        /* Try to open the sys entry instead of the pwn driver (for new TT kernel) */
+        fd = open(SYS_PATH_BRIGHTNESS , O_RDWR);
+        if (fd >= 0 ){
+            is_sys_needed = true;
+        } else {
+            return -1;
+        }
+    }
+    if (is_sys_needed == false){
+        *val = ioctl (fd, IOR_BACKLIGHT_CURRENT);
+        if ( *val < 0){            
+            res = -1;
+            goto out_pwm_get;
+        }        
+    } else {
+        char buffer[128];
+        if (read(fd,buffer,sizeof(buffer)) <= 0){
+            perror("Error while reading sys entry");
+            res = -1;
+            goto out_pwm_get;
+        }
+        *val = strtol(buffer,NULL,10);
+        if ((*val <= 0) || (*val > PWM_BACKLIGHT_MAX)){
+            res = -1;
+            goto out_pwm_get;
+        }        
+    }
+
+out_pwm_get:
+    close(fd);
+    return res;
+}
+
+
+int pwm_set_brightness(int val){
+    int fd, fd_pow;
+    int res = 0;
+    bool is_sys_needed = false;
+
+    fd = open("/dev/" PWM_DEVNAME, O_RDWR);
+    if (fd < 0){
+        perror("Error while trying to open PWM module ");
+        /* Try to open the sys entry instead of the pwn driver (for new TT kernel) */
+        fd = open(SYS_PATH_BRIGHTNESS , O_RDWR);
+        if (fd >= 0 ){
+            is_sys_needed = true;
+        } else {
+            return -1;
+        }
+    }
+
+    if (is_sys_needed == false){        
+        if (val ==  0){
+          if (ioctl (fd, IOW_BACKLIGHT_OFF) != 0){
+            perror("Error while  turning off the screen : ");
+            res = -1;
+          }
+        } else {
+           if (ioctl (fd, IOW_BACKLIGHT_UPDATE, val) != 0){
+            perror("Error while setting brightness to the screen : ");
+            res = -1;
+          }
+        }
+    } else {
+        char buffer[128];        
+        fd_pow = open(SYS_PATH_POWER , O_RDWR);
+        if (fd_pow <0){
+            perror("Error while setting brightness  the screen  ");
+            res = -1;
+            goto out_set_pwm;
+        } else{
+            if (val == 0){
+              write(fd_pow,"1",1);              
+            } else {
+              sprintf(buffer,"%i", val);
+              write(fd,buffer,strlen(buffer));
+            }
+            close(fd_pow);
+        }
+    }
+
+out_set_pwm :
+    close(fd);
+    return res;
+}
+
+
+/** Turn OFF the screen and save the current state to be able to restore
  *
  * \return
  */
 int pwm_off(void) {
-	int fd, fd_pow;
-	int res = 0;
-	bool is_sys_needed = false;
+  int prev;
+  int ret ;
 
-	fd = open("/dev/" PWM_DEVNAME, O_RDWR);
-	if (fd < 0){
-	    perror("Error while trying to open PWM module ");
-	    /* Try to open the sys entry instead of the pwn driver (for new TT kernel) */
-	    fd = open(SYS_PATH_BRIGHTNESS , O_RDWR);
-	    if (fd >= 0 ){
-	    	is_sys_needed = true;
-	    } else {
-	    	return -1;
-	    }
-	}
-	if (is_sys_needed == false){
-		previous_setting = ioctl (fd, IOR_BACKLIGHT_CURRENT);
-		if ( previous_setting < 0){
-		    perror("Error while trying to get current backlight value : ");
-		    previous_setting =  PWM_DEFAULT_LIGHT;
-		    res = -1;
-		    goto out_pwm_off;
-		}
-		if (ioctl (fd, IOW_BACKLIGHT_OFF) != 0){
-		    perror("Error while turning OFF the screen : ");
-		    res = -1;
-		}
-	} else {
-		char buffer[128];
-		if (read(fd,buffer,sizeof(buffer)) <= 0){
-			perror("Error while reading sys entry");
-		    res = -1;
-		    goto out_pwm_off;
-		}
-		previous_setting = strtol(buffer,NULL,10);
-		if ((previous_setting <= 0) || (previous_setting > PWM_BACKLIGHT_MAX)){
-			previous_setting = PWM_DEFAULT_LIGHT;
-		}
-		fd_pow = open(SYS_PATH_POWER , O_RDWR);
-		if (fd_pow <0){
-			perror("Error while turning OFF the screen  ");
-			res = -1;
-			goto out_pwm_off;
-		} else{
-			write(fd_pow,"1",1);
-			close(fd_pow);
-		}
-	}
-
-out_pwm_off:
-	close(fd);
-	return res;
+  pwm_get_brightness(&prev);
+  ret = pwm_set_brightness(0);
+  
+  if ((ret != 0) || (prev <= 0) || (prev > PWM_BACKLIGHT_MAX)){
+    previous_setting = PWM_DEFAULT_LIGHT;
+  } else {
+    previous_setting = prev;
+  }
+  return ret;
 }
 
 
-/**
- * \fn int pwm_resume(void)
- * \brief Restore screen to its previous state
+/** Restore screen to its previous state
  *
  * \return
  */

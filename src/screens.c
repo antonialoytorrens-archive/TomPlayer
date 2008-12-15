@@ -451,8 +451,15 @@ static void resume_video( struct gui_control * ctrl, int x, int y){
     else{
     	/*display_current_file( filename, &config.video_config, config.bitmap_loading );*/
         /*launch_mplayer( "", filename, pos ); */
-        launch_engine( filename, pos );
-        quit = true;
+	struct stat ftype;
+
+        if( !stat( filename, &ftype) ){
+	  DFBColor color = {255,255,50,50};
+          message_box("Video does not exist any longer...", 24, &color, "./res/font/decker.ttf");    
+	}  else {
+          launch_engine( filename, pos );
+          quit = true;
+	}
     }
     return;
 }
@@ -638,7 +645,7 @@ static bool shuffle_state = true;
 /**Callback on audio selection*/
 static void play_audio(struct gui_control * ctrl, int x, int y){
   FILE *fp;
-  fslist list;
+  flenum list;
   const char * filename;
   const struct gui_control * ctrl_fs =  gui_window_get_control(ctrl->win, "file_selector");
   int file_nb = 0;
@@ -647,12 +654,12 @@ static void play_audio(struct gui_control * ctrl, int x, int y){
   fs_handle fs = ctrl_fs->obj;    
   list =  fs_get_selection(fs);
   fp = fopen( "/tmp/playlist.m3u", "w+" );
-  while ( (filename = fslist_get_next_file(list, shuffle_state)) != NULL)  {
+  while ( (filename = flenum_get_next_file(list, shuffle_state)) != NULL)  {
     file_nb++;
     fprintf( fp, filename );
     fprintf( fp, "\n" );
   }
-  fslist_release(list);
+  flenum_release(list);
   fclose(fp);
   if (file_nb == 0){
     DFBColor color = {255,255,50,50};

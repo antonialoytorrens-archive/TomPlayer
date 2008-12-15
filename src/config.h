@@ -34,7 +34,7 @@
 #include <linux/limits.h>
 #include <IL/il.h>
 #include <IL/ilu.h>
-
+#include "diapo.h"
 
 /* Definition of section in the config file */
 #define SECTION_GENERAL             "general"
@@ -88,6 +88,11 @@
 #define KEY_TEXT_COLOR "text_color"
 
 #define KEY_CTRL_BITMAP_FILENAME "bitmap"
+
+#define KEY_DIAPO_ENABLED   "diapo_enabled"
+#define KEY_DIAPO_FILTER    "diapo_filter"
+#define KEY_DIAPO_PATH      "diapo_path"
+#define KEY_DIAPO_DELAY     "diapo_delay"
 
 /**
  * \def MAX_SKIN_CONTROLS
@@ -224,8 +229,10 @@ struct tomplayer_config{
     char audio_skin_filename[PATH_MAX];		/*!<fullpath to the audio skin archive */
     struct skin_config video_config;		/*!<video skin config */
     struct skin_config audio_config;		/*!<audio skin config */
-    int screen_saver_to;			/*!<screensaver timeout */
-    unsigned int fm_transmitter;                /*!<FM transmitter frequency in HZ (0 to disable) */
+    int screen_saver_to;			        /*!<screensaver timeout */
+    unsigned int fm_transmitter;            /*!<FM transmitter frequency in HZ (0 to disable) */
+    int diapo_enabled;
+    struct diapo_config diapo;
 };
 
 

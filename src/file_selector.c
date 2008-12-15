@@ -49,30 +49,10 @@
 #include <pthread.h>
 #include <regex.h>
 
+#include "file_list.h"
 #include "file_selector.h"
 #include "debug.h"
 
-/** File list used as an enumerator to provide file selection to the outside of the module */
-struct _fl_handle {
-  int entries_number;                          /**< Number of entries in filenames array */
-  int current_idx;                             /**< Current index */
-  char ** filenames;                           /**< Array holding filenames (full pathname) */
-};
-
-#define FILE_LIST_INC 32
-/** Internal file list representation for the file selector 
-  *  \note Do not use linked list to implement file list as there is no modification once the list is created
-  */
-struct file_list{
-  int entries_number;                          /**< Number of entries in the following arrays...*/  
-  char * basename;                             /**< Folder basename */
-  int last_selected;                           /**< Index of last selected item */
-  int max_entries_number;                      /**< Maximum entries that can be stored in the object */
-
-  char ** filenames;                           /**< Array of entries_number elements containing the filenames (including folders) */
-  bool * is_selected;                          /**< Array of entries_number elements indicating whether the corresponding file is selected or not*/
-  bool * is_folder;                            /**< Array of entries_number elements indicating whether the corresponding file is a folder or a regular file*/
-};
 
 /** Internal data describing the file selector */
 struct fs_data {
@@ -92,12 +72,14 @@ struct fs_data {
   int idx_first_displayed;                     /**< Index of the first displayed filename */  
   int nb_lines;                                /**< Number of displayed lines */
   int line_height;                             /**< Height of a single line : font + interline...*/
-  struct file_list list;                       /**< Files list displayed by the object */
+  file_list list;                      	       /**< Files list displayed by the object */
   pthread_t thread;                            /**< Thread that handles input events */
   bool end_asked;                              /**< Flag to ask for thread events termination */
   select_cb *prev_cb;                          /**< callback funtion */
   regex_t compiled_re_filter;                  /**< Compiled re filter to apply filter */
 } ;
+
+
 
 /** Return min between two int values
 */
@@ -108,20 +90,7 @@ static inline int  min(int x, int y ) {
     return y;
 }
 
-/** Match string against a RE
- * \return true if match 
- */
-static bool match(const char *string, const regex_t * re)
-{
-    return !regexec(re, string, (size_t) 0, NULL, 0);    
-}
 
-/** Concatene basename and filename
- * \warning no check : dest must be big enough 
- */
-static inline void get_fullpath(fs_handle hdl, int i, char* dest){
-  sprintf(dest,"%s/%s", hdl->list.basename, hdl->list.filenames[i]);
-}
 
 /** Clear a surface
  * \param[in] surf DirectFb surface to clear
@@ -194,154 +163,7 @@ error:
   return false;
 }
 
-/** Release file list object */
-static void fl_release(struct file_list *fl){  
-  int i ;
-  for (i=0; i<fl->entries_number; i++){
-    free(fl->filenames[i]);
-  }
-  free(fl->filenames);
-  free(fl->is_selected);
-  free(fl->is_folder);  
-  free(fl->basename);  
-  memset(fl, 0, sizeof(*fl));
-  return;
-}
 
-
-/** Find an entry in file list 
- *
- * \return index of the entry if found or index where it should be added to let the list sorted
- */
-static int fl_find_pos(struct file_list *fl, const char * filename, bool is_folder, bool * find){
-  int i;  
-  int ret_cmp = 1;
-  *find= false;
-
-  if (is_folder){
-    i = fl->entries_number-1;
-    while  ((i>=0) && (fl->is_folder[i])){ 
-      ret_cmp = strcmp(fl->filenames[i],filename);
-      if (ret_cmp<=0)
-        break;
-      i--;
-    }
-  } else{
-    i = 0 ;
-    
-    while  ((i<fl->entries_number) && (!fl->is_folder[i])){ 
-      ret_cmp = strcmp(fl->filenames[i],filename);
-      if ( ret_cmp >= 0)
-        break;
-      i++;
-    }
-  }
-  
-  if (is_folder){  
-      i++;  
-  }
-
-  if (ret_cmp ==0){
-    *find = true;
-  }
-  return i;
-}
-
-/** Insert a slot in file list 
- *
- * \warning  No check on file list size (has to be big enough). Only called by :fl_add() that ensures this... 
- */
-static bool fl_shift(struct file_list *fl, int idx){
-  int i ;
-  for (i=fl->entries_number-1; i>=idx;i--){
-     fl->is_folder[i+1] = fl->is_folder[i];
-     fl->is_selected[i+1] = fl->is_selected[i];
-     fl->filenames[i+1] = fl->filenames[i];
-  }
-  return true;
-}
-
-/** Add a filename to a file list
- *
- * Adds an entry to file lits. Itmay be a regular file or a folder.
- * File list is automatically allocated or reallocated to contain this new entry.
- *
- * \param[in] fl  file list object 
- * \param[in] filename  filename to add
- * \param[in] is_folder Explicit whether it is a folder or not
- *
- * \retval true success
- * \retval false Failure
- *
- * \note the file list is always sorted
-*/
-static bool fl_add(struct file_list *fl, char* filename, bool is_folder){
-  int index;
-  bool find;
-
-  if (fl->max_entries_number <= fl->entries_number){
-    fl->max_entries_number += FILE_LIST_INC;
-    fl->filenames = realloc(fl->filenames, fl->max_entries_number * sizeof(*fl->filenames));
-    fl->is_selected = realloc(fl->is_selected, fl->max_entries_number * sizeof(*fl->is_selected));
-    fl->is_folder = realloc(fl->is_folder, fl->max_entries_number * sizeof(*fl->is_folder));
-    if ((fl->filenames == NULL ) ||
-        (fl->is_selected == NULL) ||
-        ( fl->is_folder == NULL ) ) {
-        return false;
-    }
-  }
-  
-  index = fl_find_pos(fl, filename, is_folder, &find);
-  if (index < fl->entries_number){
-    fl_shift(fl,index);
-  }
-
-  fl->entries_number++;
-  fl->is_folder[index] = is_folder;
-  fl->is_selected[index] = false;
-  fl->filenames[index] = strdup(filename);
-  return true;
-}
-
-/** Create a file list object 
- *
- * \param[in] path path from which the file list has to be built
- * \param[in] re compiled regular expression to use to filter filenames
- * \param[in] fl file list handle
- *
- * \retval true success
- * \retval false Failure
- */
-static bool fl_create(const char * path, regex_t *re, struct file_list * fl){
-  struct dirent* dir_ent;
-  DIR*   dir;
-  struct stat ftype;
-  char   fullpath [PATH_MAX + 1];
-  bool ret = true;
-
-  if ((dir = opendir (path)) == NULL)
-    return false;
-
-  fl->basename = strdup(path);
-  while ( (dir_ent = readdir ( dir )) != NULL ) {
-          snprintf(fullpath,PATH_MAX,"%s/%s",path,  dir_ent->d_name);
-          if (stat (fullpath, &ftype) < 0 ) {
-            continue;
-          }
-          if (strcmp( dir_ent->d_name, ".")) {
-            if ((S_ISDIR (ftype.st_mode)) ||
-                (re == NULL) ||
-                (match(dir_ent->d_name,re))){ 
-              if (!fl_add(fl, dir_ent->d_name, S_ISDIR (ftype.st_mode))){
-                ret = false;
-                break;
-              }
-            }
-          }
-  }
-  closedir (dir);
-  return ret;
-}
 
 
 /** Release a fs object 
@@ -394,7 +216,8 @@ static bool release(fs_handle hdl) {
   if (hdl->config->folder.filter != NULL){
     regfree(&hdl->compiled_re_filter);
   }
-  fl_release(&hdl->list);
+  fl_release(hdl->list);
+  hdl->list = NULL;
   
   if (hdl->config != NULL){
     free_config(hdl->config);    
@@ -529,22 +352,22 @@ static bool refresh_display(fs_handle hdl){
 
   point.x = 0;
   point.y = 0;
-  max_idx = hdl->idx_first_displayed + min(hdl->nb_lines, hdl->list.entries_number - hdl->idx_first_displayed);
+  max_idx = hdl->idx_first_displayed + min(hdl->nb_lines, fl_get_entries_nb(hdl->list)- hdl->idx_first_displayed);
 
   /* Display zone content */
   for (i=hdl->idx_first_displayed; i< max_idx; i++){  
 
     
     hdl->refresh_zone_surf->DrawString( hdl->refresh_zone_surf, 
-                                        hdl->list.filenames[i],
+					fl_get_filename(hdl->list, i),                                        
                                         -1,
                                         hdl->file_zone.x - hdl->refresh_zone.x ,  
                                         y, 
                                         DSTF_TOPLEFT);
-    if (hdl->list.is_selected[i]){
+    if (fl_is_selected(hdl->list,i)) {
       display_obj(hdl,FS_ICON_CHECK,&point);
     }
-    if (hdl->list.is_folder[i]){
+    if (fl_is_folder(hdl->list,i)){
       display_obj(hdl,FS_ICON_FOLDER,&point);
     }
     y += hdl->line_height ;
@@ -751,7 +574,10 @@ fs_handle fs_create (IDirectFB  * dfb, IDirectFBWindow * win, const struct fs_co
 
   /* Create file list */
   if (config->folder.pathname != NULL){
-    if (!fl_create(config->folder.pathname,  handle->config->folder.filter ? &handle->compiled_re_filter : NULL, &handle->list)){
+    handle->list = fl_create(config->folder.pathname,  
+			     handle->config->folder.filter ? &handle->compiled_re_filter : NULL,
+			     handle->config->options.multiple_selection );
+    if ( handle->list == NULL){
       goto error;
     }
   }
@@ -804,6 +630,7 @@ bool fs_set_select_cb(fs_handle hdl, select_cb * f){
 void fs_handle_click(fs_handle hdl,int x, int y){
   int idx; 
   bool refresh = false;
+  int entries_nb = fl_get_entries_nb(hdl->list);
 
   if( (x >= hdl->config->geometry.pos.x) && 
     (x <= (hdl->config->geometry.pos.x + hdl->config->geometry.pos.w )) && 
@@ -820,9 +647,9 @@ void fs_handle_click(fs_handle hdl,int x, int y){
           if ((hdl->idx_first_displayed <= -1 ) && (hdl->idx_first_displayed > -hdl->nb_lines )) {
             hdl->idx_first_displayed = 0;                        
           }                   
-          if (hdl->idx_first_displayed <= -hdl->nb_lines) {
-            if (hdl->list.entries_number >  hdl->nb_lines){
-              hdl->idx_first_displayed = hdl->list.entries_number -  hdl->nb_lines ;
+          if (hdl->idx_first_displayed <= -hdl->nb_lines) {	   
+            if ( entries_nb >  hdl->nb_lines){
+              hdl->idx_first_displayed = entries_nb -  hdl->nb_lines ;
             } else {
               hdl->idx_first_displayed = 0;
             }
@@ -835,7 +662,7 @@ void fs_handle_click(fs_handle hdl,int x, int y){
         (y <= (hdl->arrow_list[FS_ICON_DOWN].y + hdl->arrow_list[FS_ICON_UP].h))){
         /* Test scroll down */                   
           hdl->idx_first_displayed += hdl->nb_lines;
-          if (hdl->idx_first_displayed >= hdl->list.entries_number ){
+          if (hdl->idx_first_displayed >= entries_nb ){
               hdl->idx_first_displayed = 0 ;
           }                   
           refresh = true;
@@ -846,17 +673,17 @@ void fs_handle_click(fs_handle hdl,int x, int y){
         (y <= (hdl->refresh_zone.y + hdl->refresh_zone.h))) {
         /* Test a file selection */
         idx = hdl->idx_first_displayed + ((y - hdl->refresh_zone.y) / hdl->line_height);
-        if (idx < hdl->list.entries_number) {
-        if (!hdl->list.is_folder[idx]) {
+        if (idx < entries_nb) {
+        if (!fl_is_folder(hdl->list,idx)) {
           /* Regular file */
           fs_select(hdl,idx);        
           refresh = true;   
         } else {
             /* Folder */
-          char * full_path = alloca(strlen(hdl->list.basename) + strlen(hdl->list.filenames[idx]) + 2);
+          char * full_path = alloca(strlen(fl_get_basename(hdl->list)) + strlen(fl_get_filename(hdl->list,idx)) + 2);
           char * slash_index;
-          strcpy(full_path, hdl->list.basename);
-          if ((strcmp(hdl->list.filenames[idx],"..") == 0) &&
+          strcpy(full_path, fl_get_basename(hdl->list));
+          if ((strcmp(fl_get_filename(hdl->list,idx),"..") == 0) &&
               ((slash_index = strrchr(full_path,'/')) != NULL) &&
               (strcmp(slash_index+1,"..")!=0)) {
               /* We cut the last folder when going up in a tree rather than concatening '..' => It simplifies pathnames */
@@ -868,7 +695,7 @@ void fs_handle_click(fs_handle hdl,int x, int y){
               }
           } else {                      
             strcat(full_path , "/");
-            strcat(full_path, hdl->list.filenames[idx]);
+            strcat(full_path, fl_get_filename(hdl->list,idx));
           }
           fs_new_path(hdl,full_path, NULL);
         }
@@ -918,8 +745,8 @@ bool fs_new_path(fs_handle hdl, const char * path, const char * filter){
   }
   fs_unselect_all(hdl);
   hdl->idx_first_displayed = 0;
-  fl_release(&hdl->list);
-  fl_create(path, hdl->config->folder.filter ? &hdl->compiled_re_filter : NULL, &hdl->list);
+  fl_release(hdl->list);
+  hdl->list = fl_create(path, hdl->config->folder.filter ? &hdl->compiled_re_filter : NULL,  hdl->config->options.multiple_selection );
   refresh_display(hdl);
   return true;
 }
@@ -937,34 +764,19 @@ bool fs_new_path(fs_handle hdl, const char * path, const char * filter){
 bool fs_select(fs_handle hdl, int idx) {
   bool new_state = true;
 
-  if ( (idx < 0) || (idx >= hdl->list.entries_number)){
+  if (!fl_select_by_pos(hdl->list, idx, &new_state)){
     return false;
   }
-
-  if  (hdl->list.is_folder[idx])
-    return false;
-
-  if (hdl->config->options.multiple_selection){
-    hdl->list.is_selected[idx] = !hdl->list.is_selected[idx];
-  } else {
-    if (hdl->list.is_selected[idx]){
-      new_state = false;
-    } else {
-      hdl->list.is_selected[hdl->list.last_selected] = false;
-      hdl->list.is_selected[idx] = true; 
-      hdl->list.last_selected = idx;    
-    }
-  }
-  
-  
 
   if ( (hdl->prev_cb != NULL)&& (new_state) ){
-      char * full_path = malloc(strlen(hdl->list.basename) + strlen(hdl->list.filenames[idx]) + 2);
+      char * full_path = malloc(strlen(fl_get_basename(hdl->list)) + strlen(fl_get_filename(hdl->list,idx)) + 2);
       /* Refresh here coz callback can take some time */
       refresh_display(hdl);
-      get_fullpath (hdl,idx, full_path);
+      strcpy(full_path, fl_get_basename(hdl->list));
+      strcat(full_path,"/");
+      strcat(full_path, fl_get_filename(hdl->list,idx));      
       clear_surface(hdl->preview_surf);
-      hdl->prev_cb(hdl, full_path, hdl->list.is_selected[idx]?FS_EVT_SELECT:FS_EVT_UNSELECT);                  
+      hdl->prev_cb(hdl, full_path, fl_is_selected(hdl->list,idx)?FS_EVT_SELECT:FS_EVT_UNSELECT);                  
       free(full_path);
       hdl->destination->Blit(hdl->destination, hdl->preview_surf, NULL, hdl->preview_zone.x, hdl->preview_zone.y);
       hdl->destination->Flip(hdl->destination, NULL, DSFLIP_WAITFORSYNC);
@@ -983,15 +795,8 @@ bool fs_select(fs_handle hdl, int idx) {
  * \note Of course, the file selector has to be in multiple selection mode
  */
 bool fs_select_all(fs_handle hdl) {
-  int i;
-
-  if (!hdl->config->options.multiple_selection)
-    return false;
-
-  for(i=0; i<hdl->list.entries_number; i++){  
-    if (!hdl->list.is_selected[i])
-       fs_select(hdl, i);      
-  }
+  
+  fl_select_all(hdl->list);
   refresh_display(hdl);
   return true;
 }
@@ -999,20 +804,22 @@ bool fs_select_all(fs_handle hdl) {
 
 /** Unselect any selected files in the file selector
 *
-* \note This funtciton is also called before releasing file list (on folder change for instance)
+* \note This function is also called before releasing file list (on folder change for instance)
 */
 bool  fs_unselect_all(fs_handle hdl){
   int i;
   char * full_path;
 
-  for(i=0; i<hdl->list.entries_number; i++){  
-    if (hdl->list.is_selected[i]){
+  for(i=0; i<fl_get_entries_nb(hdl->list); i++){  
+    if (fl_is_selected(hdl->list,i)) {
       if (hdl->prev_cb != NULL){
-        full_path = alloca(strlen(hdl->list.basename) + strlen(hdl->list.filenames[i]) + 2);
-        get_fullpath (hdl,i, full_path);
+        full_path = alloca(strlen(fl_get_basename(hdl->list)) + strlen(fl_get_filename(hdl->list,i)) + 2);
+	strcpy(full_path,fl_get_basename(hdl->list));
+	strcat(full_path,"/");
+	strcat(full_path,fl_get_filename(hdl->list,i));        
         hdl->prev_cb(hdl,full_path,FS_EVT_UNSELECT);
       }
-      hdl->list.is_selected[i] = false;
+      fl_unselect_by_pos(hdl->list,i);
       }
   }
   refresh_display(hdl); 
@@ -1031,37 +838,20 @@ bool  fs_unselect_all(fs_handle hdl){
  */
 const char * fs_get_single_selection(fs_handle hdl){
   static char return_filename[PATH_MAX];
-  if (hdl->config->options.multiple_selection) {
+  const char * file;
+
+  file = fl_get_single_selection(hdl->list);
+  if (file == NULL){
     return NULL;
   }
 
-  if (hdl->list.is_selected[hdl->list.last_selected]) {
-      if ((strlen(hdl->list.basename) + strlen(hdl->list.filenames[hdl->list.last_selected]) + 2) > PATH_MAX){
-        return NULL;
-      }
-      get_fullpath(hdl,hdl->list.last_selected,return_filename);      
-      return return_filename;     
+  if ((strlen(fl_get_basename(hdl->list)) + strlen(file) + 2) > PATH_MAX){
+    return NULL;
   }  
-  return NULL;
-}
-
-/** Returns the number of selected items
- *
- * \param[in] hdl Handle of the fs object
- *
- * \return the number of selected files
- *
- * \warning Once again not so thread safe as file list is not protected. But again, dont really care here...
- */
-int fs_get_selected_number(fs_handle hdl){
-  int i, nb_selected;
-  nb_selected = 0;
-  
-  for (i=0; i< hdl->list.entries_number; i++){
-    if (hdl->list.is_selected[i]) nb_selected++;                 
-  }
-
-  return nb_selected;
+  strcpy(return_filename, fl_get_basename(hdl->list));
+  strcat(return_filename,"/");
+  strcat(return_filename, file);
+  return return_filename;       
 }
 
 
@@ -1076,8 +866,8 @@ int fs_get_selected_number(fs_handle hdl){
 int fs_select_filename(fs_handle hdl, const char * filename){
   int i;
   
-  for (i=0; i < hdl->list.entries_number ; i++){
-    if (strcmp(hdl->list.filenames[i], filename) == 0){
+  for (i=0; i <fl_get_entries_nb(hdl->list) ; i++){
+    if (strcmp(fl_get_filename(hdl->list,i), filename) == 0){
       fs_select(hdl, i);
       return i;
     }
@@ -1096,7 +886,7 @@ int fs_select_filename(fs_handle hdl, const char * filename){
  */
 bool fs_set_first_displayed_item(fs_handle hdl, int i){
   if ((i < 0) || 
-      (i >= hdl->list.entries_number))
+      (i >= fl_get_entries_nb(hdl->list)))
     return false;
   hdl->idx_first_displayed = i;
   refresh_display(hdl);  
@@ -1108,35 +898,11 @@ bool fs_set_first_displayed_item(fs_handle hdl, int i){
  *
  * \param[in] hdl Handle of the fs object
  *
- * \return the selected files list object containing the selected files or NULL if error
+ * \return the selected files list enumerator containing the selected files or NULL if error
  */
-fslist fs_get_selection(fs_handle hdl){
-  struct _fl_handle *fl;
-  int i,j;
-
-  fl = malloc(sizeof(struct _fl_handle));  
-  if (fl != NULL){
-    fl->entries_number = fs_get_selected_number(hdl);
-    fl->current_idx = 0;
-    fl->filenames=malloc( fl->entries_number * sizeof(*fl->filenames) );
-    if (fl->filenames == NULL){
-      free(fl);
-      fl=NULL;
-    } else {
-      j=0;
-      for(i=0;i<fl->entries_number ;i++){
-        while ((j<hdl->list.entries_number) && (!hdl->list.is_selected[j])){j++;}
-        if (j<hdl->list.entries_number){
-          fl->filenames[i] = malloc(strlen(hdl->list.basename) + strlen(hdl->list.filenames[j]) + 2);
-          get_fullpath(hdl, j, fl->filenames[i]);       
-          j++;
-        }
-      }
-    }
-  }
-  return fl;
+flenum   fs_get_selection(fs_handle hdl){
+  return fl_get_selection(hdl->list);
 }
-
 
 /** Retrieve the preview surface associated with the file selector object
 */
@@ -1168,53 +934,4 @@ const struct fs_config * fs_get_config(fs_handle hdl){
     return hdl->config;
   }
 }
-
-/** Get next file from selected files list
- *
- *\param[in] fl Handle on the selected file list
- *\param[in] is_random Explicit whether we want to retrieve filenames in a random order or not
- *
- *\return the next filename or NULL if no more filename 
- */
-const char * fslist_get_next_file(fslist fl, bool is_random){
-  int i = fl->current_idx;
-
-  if (fl->current_idx >= fl->entries_number){
-    return NULL;
-  }
-  
-  if (is_random){
-    int rand_offset;
-    char * temp;
-
-    /* Choose random filename */
-    rand_offset = (fl->entries_number - fl->current_idx) *  (((double) rand())  / (((double)(RAND_MAX)) + 1.0));
-    
-    /* Switch random remaining filename and i-th item */
-    temp = fl->filenames[i + rand_offset];  
-    fl->filenames[i + rand_offset] = fl->filenames[i];
-    fl->filenames[i] = temp;
-  }
-  fl->current_idx++;  
-  return fl->filenames[i];
-}
-
-/** Release a selected files list object
- *
- * \param[in] fl Handle on the selected file list
- *
- * \retval true success
- * \retval false Failure
- */
-bool fslist_release(fslist fl){
-  int i;
-  for (i=0; i<fl->entries_number; i++){
-    free(fl->filenames[i]);
-  }
-  free(fl->filenames);
-  
-  free(fl);
-  return true;
-}
-
 

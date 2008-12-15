@@ -263,7 +263,22 @@ bool load_config( struct tomplayer_config * conf ){
 
     conf->fm_transmitter = iniparser_getint(ini, SECTION_GENERAL":"KEY_FM_TRANSMITTER, 0);
     
-
+    conf->diapo_enabled = iniparser_getint(ini, SECTION_GENERAL":"KEY_DIAPO_ENABLED, 0);
+    if (conf->diapo_enabled){
+      s = iniparser_getstring(ini, SECTION_GENERAL":"KEY_DIAPO_FILTER, NULL);
+      if( s != NULL ) {
+        conf->diapo.filter = strdup(s);
+      } else {
+        conf->diapo.filter = strdup("^.*\\.(jpeg|png|gif)$");
+      }
+      s = iniparser_getstring(ini, SECTION_GENERAL":"KEY_DIAPO_PATH, NULL);
+      if( s != NULL ) {
+        conf->diapo.file_path = strdup(s);
+      } else {
+        conf->diapo.file_path = strdup("/mnt/sdcard/photos");
+      }
+      conf->diapo.delay = iniparser_getint(ini, SECTION_GENERAL":"KEY_DIAPO_DELAY, 5);
+    }
 
     s = iniparser_getstring(ini, SECTION_VIDEO_SKIN":"KEY_SKIN_FILENAME, NULL);
 	if( s != NULL ) strcpy( conf->video_skin_filename, s );

@@ -1026,7 +1026,11 @@ void * update_thread(void *cmd){
 		if ((screen_saver_to_cycles != 0) &&
 			(no_user_interaction_cycles >= screen_saver_to_cycles)){
 			no_user_interaction_cycles = SCREEN_SAVER_ACTIVE;
-			pwm_off();
+            if (config.diapo_enabled){
+              diapo_resume();
+            } else {
+              pwm_off();
+            }
 		}
 	}
 
@@ -1195,9 +1199,15 @@ void handle_mouse_event( int x, int y )
 
 
     if (no_user_interaction_cycles == SCREEN_SAVER_ACTIVE){
-    	/* If screen is OFF, turn it ON */
-    	pwm_resume();
-    	no_user_interaction_cycles = 0;
+        if (config.diapo_enabled){
+          diapo_stop();
+          display_image_to_fb(config.audio_config.bitmap );
+          display_current_file( current_filename, &config.audio_config);
+        } else {
+          /* If screen is OFF, turn it ON */
+          pwm_resume();
+        }
+        no_user_interaction_cycles = 0;
     	/*Do not handle event as we touch the screen while it was OFF*/
     	return;
     }
