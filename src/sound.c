@@ -40,14 +40,16 @@
 #include <barcelona/Barc_snd.h>
 
 #include "sound.h"
+#include "debug.h"
 
 #define SOUND_DEV_NAME "/dev/sound"
 #define DEVICE_NOT_OPENED -2
+#define HEADCONNECTOR_PATH "/proc/barcelona/headphoneconnector"
 
 static int check_fd(){
   static int snd_fd = DEVICE_NOT_OPENED;
 
-  if (snd_fd == DEVICE_NOT_OPENED){
+  if (snd_fd == DEVICE_NOT_OPENED){          
           /* If device not yet opened, then try to */
           snd_fd = open(SOUND_DEV_NAME, O_RDWR);
           if (snd_fd < 0){
@@ -126,13 +128,34 @@ int snd_check_headphone(void){
   int res = 0;
   unsigned int is_headphone = 0;
   int snd_fd;
-  
+  int test_fd;
+  int headphone_present = 0;
   
   snd_fd = check_fd();
   if (snd_fd<0){
     return -1;
   }
   
+  /* test whether headconnector exists !*/
+  test_fd =  open(HEADCONNECTOR_PATH, O_RDWR);
+  if (test_fd < 0 ){
+    perror("Error while trying to open " HEADCONNECTOR_PATH);
+    return -1;
+  } else {
+    char buffer[128];
+    if (read(test_fd,buffer,sizeof(buffer)) <= 0){
+      perror("Error while reading " HEADCONNECTOR_PATH);
+      close (test_fd);
+      return -1;          
+    }
+    headphone_present = strtol(buffer,NULL,10);    
+  }
+  close (test_fd);
+  if (!headphone_present){
+    PRINTDF("No headphone found\n");
+    return -1;
+  }
+
   /* Test whether headphones are connected */
   res = ioctl (snd_fd, COOLSOUND_GET_HEADPHONE_CONNECTED, &is_headphone);
   if ( res != 0){
