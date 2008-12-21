@@ -44,8 +44,6 @@
 
 
 #define KEY_SKIN_FILENAME           "filename"
-#define KEY_LOADING_BMP             "loading"
-#define KEY_EXITING_BMP             "exiting"
 
 
 #define KEY_FILTER_VIDEO_EXT        "filter_video"
@@ -214,13 +212,6 @@ struct skin_config{
  * \brief Main configuration structure
  */
 struct tomplayer_config{
-    char bitmap_loading_filename[PATH_MAX];     /*!<fullpath to the "loading" bitmap */
-    char bitmap_exiting_filename[PATH_MAX];     /*!<fullpath to the "exiting" bitmap */
-#if 0
-/*For now, not used */
-    ILuint bitmap_loading;			/*!<DevIL "loading" bitmap */
-    ILuint bitmap_exiting;			/*!<DevIL "exiting" bitmap */
-#endif
     char filter_video_ext[PATH_MAX];		/*!<List of supported video file extension */
     char filter_audio_ext[PATH_MAX];		/*!<List of supported audio file extension */
     char video_folder[PATH_MAX];			/*!<fullpath to the video folder */

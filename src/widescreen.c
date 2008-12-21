@@ -5,7 +5,7 @@
  * 
  * $URL$
  * $Rev$
- * $Author:$
+ * $Author$
  * $Date$
  *
  */
@@ -110,16 +110,6 @@ int ws_probe(void){
   return is_ws;
 }
 
-/** Modify configuration to be widescreen compliant
- *
- * \param conf main configuration file
- */
-void ws_translate(struct tomplayer_config * conf){
-
-  /* Prepend "ws_" to picture filenames */
-  transform_filename(conf->bitmap_loading_filename);
-  transform_filename(conf->bitmap_exiting_filename);
-}
 
 /** Returns whether the XY axes are inverted or not
 */

@@ -59,8 +59,6 @@ struct tomplayer_config config;
  * \param conf main configuration structure
  */
 static void display_config( struct tomplayer_config * conf ){
-    PRINTDF( "   - bitmap_loading_filename : %s\n", conf->bitmap_loading_filename );
-    PRINTDF( "   - bitmap_exiting_filename : %s\n", conf->bitmap_exiting_filename );
     PRINTDF( "   - filter_video_ext : %s\n", conf->filter_video_ext );
     PRINTDF( "   - filter_audio_ext : %s\n", conf->filter_audio_ext );
     PRINTDF( "   - video_folder : %s\n", conf->video_folder );
@@ -230,14 +228,7 @@ bool load_config( struct tomplayer_config * conf ){
 		PRINTDF( "Unable to load main configuration file <%s>\n", CONFIG_FILE );
 		return false ;
 	}
-
-	s = iniparser_getstring(ini, SECTION_GENERAL":"KEY_LOADING_BMP, NULL);
-	PRINTDF( "%s\n",s);
-	if( s != NULL ) strcpy( conf->bitmap_loading_filename, s );
-
-	s = iniparser_getstring(ini, SECTION_GENERAL":"KEY_EXITING_BMP, NULL);
-	if( s != NULL ) strcpy( conf->bitmap_exiting_filename, s );
-
+	
 	s = iniparser_getstring(ini, SECTION_GENERAL":"KEY_VIDEO_FILE_DIRECTORY, NULL);
 	if( s != NULL ) strcpy( conf->video_folder, s );
     if (stat(conf->video_folder, &folder_stats) != 0){
@@ -288,14 +279,7 @@ bool load_config( struct tomplayer_config * conf ){
 
     iniparser_freedict(ini);
 
-	display_config( conf );
-    if( ws_probe() ) ws_translate( conf );
-
-/* Not used any longer
-    load_bitmap( &conf->bitmap_loading, conf->bitmap_loading_filename );
-    load_bitmap( &conf->bitmap_exiting, conf->bitmap_exiting_filename );
-*/
- 
+	display_config( conf );    
 
     return true;
 }

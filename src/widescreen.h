@@ -77,7 +77,6 @@
 #define WS_FILENAME_PREFIX "ws_"
 
 extern int ws_probe(void);
-extern void ws_translate(struct tomplayer_config *);
 extern bool ws_are_axes_inverted(void);
 extern bool ws_get_size(int *, int * );
 #endif
