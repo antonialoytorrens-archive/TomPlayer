@@ -1009,8 +1009,10 @@ void * update_thread(void *cmd){
                   if( strcmp( p, current_filename ) ){
                       strcpy( current_filename, p);
                       // Affichage du nom du fichier
-                      display_current_file( p, &config.audio_config);
-                      display_bat_state(true);
+                      if (no_user_interaction_cycles != SCREEN_SAVER_ACTIVE){
+                        display_current_file( p, &config.audio_config);
+                        display_bat_state(true);
+                      }
                   }
               }
           }
@@ -1033,6 +1035,16 @@ void * update_thread(void *cmd){
             }
 		}
 	}
+
+    /* If problem with diapo then fall back on black screen*/
+    if (no_user_interaction_cycles == SCREEN_SAVER_ACTIVE){
+      if (config.diapo_enabled){
+        if (diapo_get_error()){
+          config.diapo_enabled = false;          
+          pwm_off();
+        }
+      }
+    }
 
 	/* Check for headphones presence to turn on/off internal speaker*/
         if (config.fm_transmitter == 0){
@@ -1199,6 +1211,7 @@ void handle_mouse_event( int x, int y )
 
 
     if (no_user_interaction_cycles == SCREEN_SAVER_ACTIVE){
+       
         if (config.diapo_enabled){
           diapo_stop();
           display_image_to_fb(config.audio_config.bitmap );
@@ -1207,7 +1220,7 @@ void handle_mouse_event( int x, int y )
           /* If screen is OFF, turn it ON */
           pwm_resume();
         }
-        no_user_interaction_cycles = 0;
+        no_user_interaction_cycles = 0; 
     	/*Do not handle event as we touch the screen while it was OFF*/
     	return;
     }

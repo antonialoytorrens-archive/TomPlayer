@@ -42,5 +42,6 @@ bool diapo_init(const  struct diapo_config * conf );
 bool diapo_resume (void);
 bool diapo_stop (void);
 void diapo_release(void);
+bool diapo_get_error(void);
 
 #endif

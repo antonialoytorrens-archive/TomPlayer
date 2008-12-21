@@ -53,13 +53,13 @@ static  int previous_setting =  PWM_DEFAULT_LIGHT;
 
 
 int pwm_get_brightness(int *val){
-    int fd, fd_pow;
+    int fd;
     int res = 0;
     bool is_sys_needed = false;
 
     fd = open("/dev/" PWM_DEVNAME, O_RDWR);
     if (fd < 0){
-        perror("Error while trying to open PWM module ");
+        //perror("Error while trying to open PWM module ");
         /* Try to open the sys entry instead of the pwn driver (for new TT kernel) */
         fd = open(SYS_PATH_BRIGHTNESS , O_RDWR);
         if (fd >= 0 ){
@@ -101,7 +101,7 @@ int pwm_set_brightness(int val){
 
     fd = open("/dev/" PWM_DEVNAME, O_RDWR);
     if (fd < 0){
-        perror("Error while trying to open PWM module ");
+        //perror("Error while trying to open PWM module ");
         /* Try to open the sys entry instead of the pwn driver (for new TT kernel) */
         fd = open(SYS_PATH_BRIGHTNESS , O_RDWR);
         if (fd >= 0 ){
@@ -179,7 +179,7 @@ int pwm_resume(void) {
 
 	fd = open("/dev/" PWM_DEVNAME, O_RDWR);
 	if (fd < 0){
-	    perror("Error while trying to open PWM module ");
+	    //perror("Error while trying to open PWM module ");
 	    /* Try to open the sys entry instead of the pwn driver (for new TT kernel) */
 	    fd = open(SYS_PATH_BRIGHTNESS , O_RDWR);
   	    if (fd >= 0 ){

@@ -33,6 +33,7 @@
 #include <unistd.h>
 #include <regex.h>
 #include <pthread.h>
+#include <time.h>
 
 #include "widescreen.h"
 #include "zip_skin.h"
@@ -46,13 +47,16 @@ static struct {
   char * path;
   unsigned int delay ;   
   regex_t compiled_re;
-  flenum pict_list;
-  const char * first_file;
+  flenum pict_list; 
   bool end_asked; 
   int screen_x;
   int screen_y;
   pthread_t thread_id;
-} diapo_state;
+  pthread_mutex_t mutex;
+  bool error;
+} diapo_state = {
+  .mutex = PTHREAD_MUTEX_INITIALIZER
+};
 
 
 static inline bool init_list(void){
@@ -68,11 +72,6 @@ static inline bool init_list(void){
   diapo_state.pict_list = fl_get_selection(list);
   fl_release(list);
 
-  diapo_state.first_file = flenum_get_next_file(diapo_state.pict_list,true);
-  if (diapo_state.first_file == NULL){
-    /* Not even a file to display ! */
-    return false;
-  }
   return true;
 }
 
@@ -83,42 +82,66 @@ static void img_transition(ILuint cur ,ILuint next){
   pwm_get_brightness(&init_bright);
   for (bright=init_bright; bright>=1; bright--) {
     pwm_set_brightness(bright);
+    usleep(15000);
+    if (diapo_state.end_asked){
+      pwm_set_brightness(init_bright);
+      break;
+   }
   }
   display_image_to_fb(next);  
   for (bright=1; bright<=init_bright; bright++) {
     pwm_set_brightness(bright);
+    usleep(15000);
+    if (diapo_state.end_asked){
+       pwm_set_brightness(init_bright);
+      break;
+    }
   }
   return;
 }
 
 static void * preriodic_thread(void *param){
+  bool no_file = false;
   const char * next_file;
   static ILuint current_image_id, next_image_id;
-
-  if (current_image_id == 0){
-    load_bitmap(&current_image_id, diapo_state.first_file);
-    iluScale(diapo_state.screen_x, diapo_state.screen_y,1);
-  }
-  display_image_to_fb(current_image_id);
+  struct timespec ts;
+  int loop;
+  loop = 0;
+  
 
   while (!diapo_state.end_asked){
-    sleep(diapo_state.delay);
-    next_file = flenum_get_next_file(diapo_state.pict_list,true);
-
-    if (next_file == NULL){
-      flenum_release(diapo_state.pict_list);
-      if (init_list() == false){
-        break;
-      } 
-      next_file = diapo_state.first_file;
-    }
-      load_bitmap(&next_image_id, next_file);
-      iluScale(diapo_state.screen_x, diapo_state.screen_y,1);
+    do{   
+      next_file = flenum_get_next_file(diapo_state.pict_list,true);    
+      if (next_file == NULL){            
+        flenum_release(diapo_state.pict_list);
+        init_list();
+        next_file = flenum_get_next_file(diapo_state.pict_list,true);    
+        loop++;
+        if ((loop>=2) || (next_file == NULL)) {
+          no_file = true;
+        }
+    }} while ( (!no_file) && (!load_bitmap(&next_image_id, next_file)) ) ;
+    if (no_file) break;   
+    loop = 0;
+    iluScale(diapo_state.screen_x, diapo_state.screen_y,1);
+    if (current_image_id != 0){
       img_transition(current_image_id, next_image_id);
       ilDeleteImages( 1, &current_image_id);
-      current_image_id = next_image_id;
-      next_image_id = 0;
+    }
+    current_image_id = next_image_id;
+    next_image_id = 0;
+
+    clock_gettime(CLOCK_REALTIME, &ts);      
+    ts.tv_sec  += diapo_state.delay;
+    if (pthread_mutex_timedlock(&diapo_state.mutex, &ts) == 0){
+      pthread_mutex_unlock(&diapo_state.mutex);
+    }
   }
+  if (current_image_id != 0){
+    ilDeleteImages( 1, &current_image_id);
+  }
+  if (no_file)
+    diapo_state.error = true;
   return NULL;
 }
 
@@ -160,19 +183,34 @@ bool diapo_init(const  struct diapo_config * conf ){
 }
 
 bool diapo_resume (void){
-  diapo_state.end_asked = false;
-  if (pthread_create(&diapo_state.thread_id,NULL, preriodic_thread, NULL) != 0){
+  pthread_attr_t attr;
+
+  if ((diapo_state.error) ||
+      (diapo_state.thread_id != 0)){
     return false;
   }
+  pthread_attr_init(&attr);   
+  diapo_state.end_asked = false;  
+  pthread_mutex_lock(&diapo_state.mutex);
+  if (pthread_create(&diapo_state.thread_id, &attr, preriodic_thread, NULL) != 0){
+   pthread_attr_destroy(&attr);
+    return false;
+  }
+  pthread_attr_destroy(&attr);
   return true;
 }
 
 bool diapo_stop (void){  
   if (diapo_state.thread_id == 0){
     return false;
-  }
+  }  
   diapo_state.end_asked = true;   
+  pthread_mutex_unlock(&diapo_state.mutex);
   pthread_join(diapo_state.thread_id, NULL);
   diapo_state.thread_id = 0;
   return true;
+}
+
+bool diapo_get_error(void){
+  return diapo_state.error;
 }

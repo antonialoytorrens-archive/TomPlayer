@@ -52,6 +52,8 @@
  */
 bool load_bitmap( ILuint * bitmap_obj, char * filename ){
 #ifdef WITH_DEVIL
+    ILint height, width;
+
     ilGenImages(1, bitmap_obj);
     ilBindImage(*bitmap_obj);
     if (!ilLoadImage(filename)) {
@@ -61,7 +63,14 @@ bool load_bitmap( ILuint * bitmap_obj, char * filename ){
     else{
     	PRINTDF("Loading bitmap <%s>\n", filename);
     }
-
+    /* Check that image is not too big - max about 1280x1024 - (otherwise ilConvertImage will kill the process!) */
+    height = ilGetInteger(IL_IMAGE_HEIGHT);
+    width =  ilGetInteger(IL_IMAGE_WIDTH);
+    if ((height*width)> 5500000){
+      PRINTDF("Image too big h*w = %ix%i\n", height,width);
+      ilDeleteImages( 1, bitmap_obj);
+      return false;
+    }
     ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
     return true;
 #else
