@@ -41,7 +41,7 @@
  * \def PRINTDF
  * \brief Debug macro with format
  */
-#define PRINTDF(s, ...) fprintf (stderr, (s), __VA_ARGS__)
+#define PRINTDF(s, ...) fprintf (stderr, (s), ##__VA_ARGS__)
 #else
 #define PRINTD(s)
 #define PRINTDF(s, ...)
