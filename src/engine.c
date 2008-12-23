@@ -1067,10 +1067,11 @@ void * update_thread(void *cmd){
 
 
 void * mplayer_thread(void *cmd){
+    pthread_t up_thread;
     pthread_t t;
 
     is_mplayer_finished = false;
-    pthread_create(&t, NULL, update_thread, NULL);
+    pthread_create(&up_thread, NULL, update_thread, NULL);
     pthread_create(&t, NULL, anim_thread, NULL);
 #ifdef NATIVE
     while (1){	
@@ -1089,6 +1090,8 @@ void * mplayer_thread(void *cmd){
           resume_save_playslist(current_filename);
     }
     is_mplayer_finished = true;
+    pthread_join(up_thread, NULL);
+    pthread_join(t, NULL);    
     pthread_exit(NULL);
 }
 
@@ -1151,7 +1154,8 @@ void launch_mplayer( char * folder, char * filename, int pos ){
       } else {
         resume_pos = 0;
       }
-
+      /* Need to read this before launching mplayer */
+      resume_get_video_settings(&v_settings);
     }
     else {
       load_skin_from_zip( config.audio_skin_filename, &config.audio_config, true );
@@ -1160,6 +1164,8 @@ void launch_mplayer( char * folder, char * filename, int pos ){
       resume_pos = 0;
       display_image_to_fb(config.audio_config.bitmap );
       display_current_file( "Loading...", &config.audio_config);
+      /* Need to read this before launching mplayer */
+      resume_get_audio_settings(&a_settings);
     }
 
     /*sprintf( cmd, cmd_mplayer, (ws_probe()? WS_YMAX : WS_NOXL_YMAX), rotated_param, resume_pos, fifo_command_name, playlist_param, folder , filename, fifo_stdout_name );*/
@@ -1169,34 +1175,35 @@ void launch_mplayer( char * folder, char * filename, int pos ){
     pthread_create(&t, NULL, mplayer_thread, cmd);
 
     usleep( 500000 );
-
-    if( is_video_file( filename ) ){
-    	blit_video_menu( fifo_menu, &config.video_config );
-        /* Restore video settings */
-        if (resume_get_video_settings(&v_settings) == 0){
-        	set_video_settings(&v_settings);
-        	current_video_settings = v_settings;
-        } else {
-        	 if (get_video_settings(&v_settings) == 0){
-        		current_video_settings = v_settings;
-        	 } else {
-        		 memset (&current_video_settings,0,sizeof(current_video_settings));
-        	 }
-        }
-    } else {
-    	/* Restore audio settings */
-    	if (resume_get_audio_settings(&a_settings) == 0){
-    		set_audio_settings(&a_settings);
-    		current_audio_settings = a_settings;
-    	} else {
-    		 if (get_audio_settings(&a_settings) == 0){
-        		current_audio_settings = a_settings;
-        	 } else {
-        		 memset (&current_audio_settings,0,sizeof(current_audio_settings));
-        	 }
-    	}
+    if (!is_mplayer_finished ){
+      if( is_video_file( filename ) ){
+          blit_video_menu( fifo_menu, &config.video_config );
+          /* Restore video settings */
+          if (resume_get_video_settings(&v_settings) == 0){
+              set_video_settings(&v_settings);
+              current_video_settings = v_settings;
+          } else {
+              if (get_video_settings(&v_settings) == 0){
+                  current_video_settings = v_settings;
+              } else {
+                  memset (&current_video_settings,0,sizeof(current_video_settings));
+              }
+          }
+      } else {
+          /* Restore audio settings */
+          if (resume_get_audio_settings(&a_settings) == 0){
+              set_audio_settings(&a_settings);
+              current_audio_settings = a_settings;
+          } else {
+              if (get_audio_settings(&a_settings) == 0){
+                  current_audio_settings = a_settings;
+              } else {
+                  memset (&current_audio_settings,0,sizeof(current_audio_settings));
+              }
+          }
+      }
+      display_bat_state(true);
     }
-    display_bat_state(true);
 
 }
 

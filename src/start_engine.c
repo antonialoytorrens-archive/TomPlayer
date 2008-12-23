@@ -67,16 +67,19 @@ static void get_events(void){
 
   is_rotated = ws_are_axes_inverted();
   ws_get_size(&h,&w);
-  
+
+
   /* Purge events */
   do {
+    /* To interrupt blocking read */
+    alarm(1);
     if (ts_read(ts, &samp, 1) < 0) {
       break;
     }
   } while (samp.pressure == 0);
 
   /* Main events loop */
-  while (is_mplayer_finished == false) { 
+  while (is_mplayer_finished == false) {    
     /* To interrupt blocking read */
     alarm(1);
     ret = ts_read(ts, &samp, 1);
