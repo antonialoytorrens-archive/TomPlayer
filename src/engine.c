@@ -1062,6 +1062,14 @@ void * update_thread(void *cmd){
     usleep(PB_UPDATE_PERIOD_US);
   }
 
+
+  if (no_user_interaction_cycles == SCREEN_SAVER_ACTIVE){   
+    if (config.diapo_enabled){
+      diapo_stop();   
+    } else {    
+      pwm_resume();
+    }
+  }
   pthread_exit(NULL);
 }
 
