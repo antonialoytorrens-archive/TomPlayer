@@ -33,7 +33,6 @@
 
 #include "debug.h"
 #include "engine.h"
-#include "pwm.h"
 #include "power.h"
 #include "screens.h"
 #include "window.h"
@@ -148,8 +147,7 @@ int main( int argc, char *argv[] ){
           fprintf( stderr, "Error while loading config\n" );
           exit(1);
     }
-    /* Turn on screen if it is not */
-    pwm_resume();
+
     if (screen_init(dfb, layer, splash_wanted)){
       while( screen_is_end_asked()  == false ){
               keybuffer->WaitForEventWithTimeout( keybuffer, 0, 100 );
