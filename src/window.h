@@ -54,9 +54,10 @@
 enum gui_type_ctrl{
 	GUI_TYPE_CTRL_TEXT = 1,	      /**< a static text */
 	GUI_TYPE_CTRL_BUTTON,	      /**< an icon button */
-        GUI_TYPE_CTRL_CLICKABLE_ZONE, /**< a clickable zone */ 
-	GUI_TYPE_CTRL_FILESELECTOR,   /**< a file selector */	
-        GUI_TYPE_CTRL_MAX_NB
+    GUI_TYPE_CTRL_CLICKABLE_ZONE, /**< a clickable zone */ 
+	GUI_TYPE_CTRL_FILESELECTOR,   /**< a file selector */    
+    GUI_TYPE_CTRL_VIEWMETER,      /**< A viewmeter */
+    GUI_TYPE_CTRL_MAX_NB
 };
 
 /** Handle on the window object */
@@ -71,7 +72,7 @@ struct gui_control{
 	enum gui_type_ctrl type;		/**< type of control */
         char * name ;                           /**< Name of the control */
         void * obj;                             /**< pointer to the underlying object (depends on type) 
-                                                  GUI_TYPE_CTRL_TEXT =>   IDirectFBFont * 
+                                                  GUI_TYPE_CTRL_TEXT =>  label_handle 
                                                   GUI_TYPE_CTRL_BUTTON => IDirectFBSurface * 
                                                   GUI_TYPE_CTRL_CLICKABLE_ZONE => None
                                                   GUI_TYPE_CTRL_FILESELECTOR => fs_handle

@@ -977,8 +977,12 @@ void * update_thread(void *cmd){
   current_filename[0] = 0;
 
   /* Timout in cycles before turning OFF screen while playing audio */
-  screen_saver_to_cycles = ((config.screen_saver_to * 1000000) / PB_UPDATE_PERIOD_US);
-
+  if (config.enable_screen_saver){
+    screen_saver_to_cycles = ((config.screen_saver_to * 1000000) / PB_UPDATE_PERIOD_US);
+  } else {
+    screen_saver_to_cycles = 0;
+  }
+  
   PRINTDF("starting thread update...\n screen saver to : %i - cycle : %i \n",config.screen_saver_to, screen_saver_to_cycles );
 
   while (is_mplayer_finished == false){

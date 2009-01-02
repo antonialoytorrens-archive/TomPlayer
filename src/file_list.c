@@ -218,6 +218,8 @@ file_list fl_create(const char * path, regex_t *re, bool mul){
 /** Release file list object */
 void fl_release(file_list fl){  
   int i ;
+
+  if (fl == NULL) return; 
   for (i=0; i<fl->entries_number; i++){
     free(fl->filenames[i]);
   }
@@ -230,7 +232,8 @@ void fl_release(file_list fl){
 }
 
 bool fl_select_by_pos(file_list fl, int idx, bool * change){
-
+  
+  if (fl == NULL) return false;
   if (change != NULL)
     *change = true;
 
@@ -258,6 +261,7 @@ bool fl_select_by_pos(file_list fl, int idx, bool * change){
 bool fl_select_all(file_list fl){
   int i;
 
+  if (fl == NULL) return false;
   if (!fl->multiple_select)
     return false;
 
@@ -271,6 +275,8 @@ bool fl_select_all(file_list fl){
 
 
 const char * fl_get_single_selection(file_list fl){
+
+  if (fl == NULL) return NULL;
   if (fl->multiple_select) {
     return NULL;
   }
@@ -283,6 +289,7 @@ const char * fl_get_single_selection(file_list fl){
 
 bool fl_unselect_by_pos(file_list fl, int i){
 
+  if (fl == NULL) return false;
   if ( (i < 0) || (i >= fl->entries_number)){
     return false;
   }
@@ -292,22 +299,27 @@ bool fl_unselect_by_pos(file_list fl, int i){
 
 
 bool fl_is_selected(file_list fl, int i){
+  if (fl == NULL) return false;
   return fl->is_selected[i];
 }
 
 bool fl_is_folder(file_list fl, int i){
+  if (fl == NULL) return false;
   return fl->is_folder[i];
 }
 
 int fl_get_entries_nb(file_list fl){
+  if (fl == NULL) return 0;
   return fl->entries_number;
 }
 
 const char * fl_get_filename(file_list fl, int i){
+  if (fl == NULL) return NULL;
   return fl->filenames[i];
 }
 
 const char * fl_get_basename(file_list fl){
+  if (fl == NULL) return NULL;
   return fl->basename;
 }
 
@@ -323,6 +335,7 @@ int fl_get_selected_number(const file_list fl){
   int i, nb_selected;
   nb_selected = 0;
   
+  if (fl == NULL) return 0;
   for (i=0; i< fl->entries_number; i++){
     if (fl->is_selected[i]) nb_selected++;                 
   }
@@ -340,6 +353,7 @@ flenum fl_get_selection(file_list fl){
   struct _fl_handle * fle;
   int i,j;
 
+  if (fl == NULL) return NULL;
   fle = malloc(sizeof(struct _fl_handle));  
   if (fle != NULL){
     fle->entries_number = fl_get_selected_number(fl);
@@ -375,6 +389,7 @@ flenum fl_get_selection(file_list fl){
 const char * flenum_get_next_file(flenum fl, bool is_random){
   int i = fl->current_idx;
 
+  if (fl == NULL) return NULL;
   if (fl->current_idx >= fl->entries_number){
     return NULL;
   }
@@ -404,6 +419,8 @@ const char * flenum_get_next_file(flenum fl, bool is_random){
  */
 bool flenum_release(flenum fl){
   int i;
+
+  if (fl == NULL) return;
   for (i=0; i<fl->entries_number; i++){
     free(fl->filenames[i]);
   }

@@ -132,7 +132,7 @@ int main( int argc, char *argv[] ){
     fprintf( stderr, "Error while loading config\n" );
   } else {
     /* Activate FM transmitter if needed */
-    if (config.fm_transmitter){
+    if (config.enable_fm_transmitter){
       if (!fm_set_state(1) ||
           !fm_set_freq(config.fm_transmitter) ||
           !fm_set_power(115) ||
@@ -151,7 +151,7 @@ int main( int argc, char *argv[] ){
   }
   get_events();
   /* Desactivate FM transmitter if needed */
-  if (config.fm_transmitter){
+  if (config.enable_fm_transmitter){
     fm_set_state(0);
     snd_mute_internal(false);
   }

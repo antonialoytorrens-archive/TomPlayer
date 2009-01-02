@@ -33,6 +33,9 @@
 #include "debug.h"
 #include "file_selector.h"
 #include "list.h"
+#include "label.h"
+#include "viewmeter.h"
+#include "config.h"
 #include "window.h"
 
 
@@ -86,6 +89,7 @@ static void probe_screen( IDirectFB *dfb){
   primary->Release(primary); 
 }
 
+#if 0
 /** Load a font  
  *
  * \param filename of the font
@@ -106,6 +110,8 @@ static IDirectFBFont * load_font(gui_window win, char * filename, int height ){
       	  return font;
         }
 }
+#endif
+
 
 /** Load an image to a DirectFB surface of a control
  *
@@ -143,7 +149,7 @@ static  bool init_window(gui_window win,  dictionary * ini){
   char* s;
   DFBWindowDescription  desc;     
   IDirectFBImageProvider *provider;
-  int opacity, font_height, tmp;
+  int opacity,  tmp;
 
   zone.x = iniparser_getint(ini, "general:x", 0);
   zone.y = iniparser_getint(ini, "general:y", 0);  
@@ -189,14 +195,7 @@ static  bool init_window(gui_window win,  dictionary * ini){
     win->background_surface->SetColor(win->background_surface, 0,0,0,0xFF);
     win->background_surface->FillRectangle(win->background_surface,0,0, desc.width,desc.height);
   }
-  
-  font_height = iniparser_getint(ini, "general:font_height", DEFAULT_FONT_HEIGHT);
-  s = iniparser_getstring(ini, "general:font", NULL);
-  if( s != NULL ) win->font = load_font (win, s, font_height );
-  if (win->font != NULL){
-    win->background_surface->SetColor(win->background_surface,win->color.r,  win->color.g, win->color.b, win->color.a);
-    win->background_surface->SetFont(win->background_surface, win->font);
-  }
+
   opacity = iniparser_getint(ini, "general:opacity", 0xFF);  
   if (is_rotated){
     win->win->SetOpacity(win->win, 255 );
@@ -210,47 +209,58 @@ static  bool init_window(gui_window win,  dictionary * ini){
 }
 
 static void draw_text(struct gui_control * ctrl,  dictionary * ini , int num_control ){
-  DFBColor color;
-  int font_height;
-  IDirectFBFont * font ;
+  struct label_config conf;  
   char * s;
   gui_window  window = ctrl->win;
-
   
-  font = NULL;
-  font_height = iniparser_getint(ini, get_key(num_control,"font_height"), DEFAULT_FONT_HEIGHT);
-  s = iniparser_getstring(ini, get_key(num_control,"font"), NULL);
-  if( s != NULL ) font = load_font (window, s, font_height );
-  color.r = iniparser_getint(ini, get_key(num_control,"r"), 0);
-  color.g = iniparser_getint(ini, get_key(num_control,"g"), 0);
-  color.b = iniparser_getint(ini, get_key(num_control,"b"), 0);
-  color.a = iniparser_getint(ini, get_key(num_control,"a"), 0xFF);
+  /* Get configuration from ini File */
+  conf.height = iniparser_getint(ini, get_key(num_control,"font_height"), DEFAULT_FONT_HEIGHT);
+  conf.name = iniparser_getstring(ini, get_key(num_control,"font"), NULL);
+  if( conf.name == NULL ) return ; 
+  conf.font_color.r = iniparser_getint(ini, get_key(num_control,"r"), 0);
+  conf.font_color.g = iniparser_getint(ini, get_key(num_control,"g"), 0);
+  conf.font_color.b = iniparser_getint(ini, get_key(num_control,"b"), 0);
+  conf.font_color.a = iniparser_getint(ini, get_key(num_control,"a"), 0xFF);
   s = iniparser_getstring(ini, get_key(num_control,"msg"),  NULL);
-  if (font == NULL){
-    window->background_surface->GetFont(window->background_surface, &font);
-  }
-  if (( s!=NULL) && (font != NULL)){
-    window->background_surface->SetColor(window->background_surface,color.r,  color.g, color.b, color.a);
-    window->background_surface->SetFont(window->background_surface, font);
-    window->background_surface->DrawString( window->background_surface , s, -1,ctrl->zone.x, ctrl->zone.y, DSTF_TOPLEFT);
-    font->GetHeight(font, &ctrl->zone.h);
-    font->GetStringWidth(font, s, -1, &ctrl->zone.w);  	
-    ctrl->obj = font;
-    /*font->Release(font);*/
-    /* Restore default font */
-    if (window->font){
-      window->background_surface->SetColor(window->background_surface,window->color.r,  window->color.g, window->color.b, window->color.a);
-      window->background_surface->SetFont(window->background_surface, window->font);
-    } 
-  }
+
+  /* Create Label */
+  conf.dfb = window->dfb;
+  conf.win = window->win; 
+  conf.pos = ctrl->zone;
+  ctrl->obj = label_create(&conf);
+  label_set_text(ctrl->obj,s);
 }
 
+
+static void add_viewmeter(struct gui_control * ctrl,  dictionary * ini , int num_control ){
+  struct vm_config conf;    
+  gui_window  window = ctrl->win;
+  
+  /* Get configuration from ini File */
+  conf.height = iniparser_getint(ini, get_key(num_control,"font_height"), DEFAULT_FONT_HEIGHT);
+  conf.name = iniparser_getstring(ini, get_key(num_control,"font"), NULL);
+  if( conf.name == NULL ) return ; 
+  conf.font_color.r = iniparser_getint(ini, get_key(num_control,"r"), 0);
+  conf.font_color.g = iniparser_getint(ini, get_key(num_control,"g"), 0);
+  conf.font_color.b = iniparser_getint(ini, get_key(num_control,"b"), 0);
+  conf.font_color.a = iniparser_getint(ini, get_key(num_control,"a"), 0xFF);
+  conf.format = iniparser_getstring(ini, get_key(num_control,"format"),  NULL);
+  conf.inc = iniparser_getdouble(  ini, get_key(num_control,"inc"), 1.00);
+  conf.min = iniparser_getdouble(  ini, get_key(num_control,"min"), 0.00);
+  conf.max = iniparser_getdouble(  ini, get_key(num_control,"max"), 999999999999999.99);
+  /*Create the object */
+  conf.dfb = window->dfb;
+  conf.win = window->win; 
+  conf.pos = ctrl->zone;
+  ctrl->obj = vm_create(&conf);
+}
 
 static  fs_handle load_fs_ctrl(struct gui_control * ctrl,  dictionary * ini , int num_control ){	
   #define RES_FOLDER "./res/icon/"
   #define FONT_FOLDER "./res/font/"
-
+  extern struct tomplayer_config config;
   char * s;
+
   struct fs_config conf = {
                             .graphics = { .filename = {RES_FOLDER "scroll_up_0.png",
                                                        RES_FOLDER "scroll_down_0.png" ,
@@ -273,6 +283,10 @@ static  fs_handle load_fs_ctrl(struct gui_control * ctrl,  dictionary * ini , in
                             }
                            };
 
+    if (config.enable_small_text){
+      conf.graphics.filename[FS_ICON_CHECK] = RES_FOLDER "check_1.png";
+      conf.graphics.filename[FS_ICON_FOLDER ] = RES_FOLDER "folder_1.png"; 
+    }
     conf.geometry.pos = ctrl->zone;
     s = iniparser_getstring(ini, get_key(num_control,"font"), NULL);
     if (s != NULL){
@@ -342,22 +356,24 @@ static bool load_window_config( const char * filename, gui_window  window ){
 
                 switch(control->type){
                   case GUI_TYPE_CTRL_TEXT:
+                    
                     draw_text(control,ini, num_control);
                     break;
                   case GUI_TYPE_CTRL_BUTTON :
                     s = iniparser_getstring(ini, get_key(num_control,"image"), NULL);
                     if( s != NULL ) {
                       control->obj = load_image_to_surface(control, s);
-                      window->background_surface->Blit( window->background_surface, control->obj, NULL, control->zone.x, control->zone.y );
-                      /*window->background_surface->Flip(window->background_surface,NULL,0);                      */
-                      /*window->background_surface->Blit( window->background_surface, control->obj, NULL, control->zone.x, control->zone.y );*/
+                      window->background_surface->Blit( window->background_surface, control->obj, NULL, control->zone.x, control->zone.y );                      
                     }
                     break;
                   case GUI_TYPE_CTRL_CLICKABLE_ZONE :
                     /* Nothing else todo */
                     break;
-	          case GUI_TYPE_CTRL_FILESELECTOR :
+                  case GUI_TYPE_CTRL_FILESELECTOR :
                     control->obj =  load_fs_ctrl(control,ini, num_control);
+                    break;
+                  case GUI_TYPE_CTRL_VIEWMETER :
+                    add_viewmeter(control,ini, num_control);
                     break;
                   default :
                     break;
@@ -465,7 +481,10 @@ bool gui_window_release(gui_window window){
                     free(control->name);
                     switch(control->type){
                       case GUI_TYPE_CTRL_TEXT :
-                        ((IDirectFBFont * )control->obj)->Release((IDirectFBFont * )control->obj);
+                        /*((IDirectFBFont * )control->obj)->Release((IDirectFBFont * )control->obj);*/
+                        if (control->obj != NULL){
+                          label_release(control->obj);
+                        }
                         break;
                       case GUI_TYPE_CTRL_CLICKABLE_ZONE :  
                         /* No specific underlying object to free */
@@ -474,10 +493,15 @@ bool gui_window_release(gui_window window){
                         if (control->obj != NULL)
                           ((IDirectFBSurface *)control->obj)->Release((IDirectFBSurface *)control->obj);
                         break;	
-	              case GUI_TYPE_CTRL_FILESELECTOR :
+                      case GUI_TYPE_CTRL_FILESELECTOR :
                           if (control->obj != NULL){
                             fs_release(control->obj);
                           }
+                        break;
+                      case GUI_TYPE_CTRL_VIEWMETER :
+                        if (control->obj != NULL){
+                          vm_release(control->obj);
+                        }
                         break;
                       default :
                         break;

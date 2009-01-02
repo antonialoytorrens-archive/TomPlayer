@@ -54,6 +54,12 @@
 
 struct tomplayer_config config;
 
+
+  /* Correct iniparser bug in naming function iniparser_setstring/iniparser_set */
+  extern int iniparser_set(dictionary * ini, char * entry, const char * val);
+  #define iniparser_setstring iniparser_set
+
+
 /** Show configuration parameters
  *
  * \param conf main configuration structure
@@ -251,9 +257,14 @@ bool load_config( struct tomplayer_config * conf ){
     if (conf->screen_saver_to < 0 ){
     	conf->screen_saver_to = SCREEN_SAVER_TO_S;
     }
+    conf->enable_screen_saver = iniparser_getint(ini,SECTION_GENERAL":"KEY_EN_SCREEN_SAVER,-1);
+    if (conf->enable_screen_saver  == -1){
+      conf->enable_screen_saver  = (conf->screen_saver_to? 1:0);
+    }
 
-    conf->fm_transmitter = iniparser_getint(ini, SECTION_GENERAL":"KEY_FM_TRANSMITTER, 0);
-    
+    conf->fm_transmitter = iniparser_getint(ini, SECTION_GENERAL":"KEY_FM_TRANSMITTER, 87000000);
+    conf->enable_fm_transmitter = iniparser_getint(ini, SECTION_GENERAL":"KEY_EN_FM_TRANSMITTER,0);
+
     conf->diapo_enabled = iniparser_getint(ini, SECTION_GENERAL":"KEY_DIAPO_ENABLED, 0);
     if (conf->diapo_enabled){
       s = iniparser_getstring(ini, SECTION_GENERAL":"KEY_DIAPO_FILTER, NULL);
@@ -276,7 +287,8 @@ bool load_config( struct tomplayer_config * conf ){
 
 	s = iniparser_getstring(ini, SECTION_AUDIO_SKIN":"KEY_SKIN_FILENAME, NULL);
 	if( s != NULL ) strcpy(conf->audio_skin_filename, s );
-
+    
+    conf->enable_small_text = iniparser_getint(ini, SECTION_GENERAL":"KEY_EN_SMALL_TEXT, 0);   
     iniparser_freedict(ini);
 
 	display_config( conf );    
@@ -284,3 +296,157 @@ bool load_config( struct tomplayer_config * conf ){
     return true;
 }
 
+bool config_set_skin(enum config_type type, const char * filename){
+  switch (type){
+    case CONFIG_AUDIO:
+      strncpy(config.audio_skin_filename,filename, sizeof(config.audio_skin_filename));
+    break;
+    case CONFIG_VIDEO:
+      strncpy(config.video_skin_filename,filename, sizeof(config.audio_skin_filename));      
+    break;
+    default :
+      return false;
+  } 
+  return true; 
+}
+
+bool config_set_default_folder(enum config_type type, const char * folder){
+ switch (type){
+    case CONFIG_AUDIO:
+      strncpy(config.audio_folder ,folder, sizeof(config.audio_folder));
+    break;
+    case CONFIG_VIDEO:
+      strncpy(config.video_folder ,folder, sizeof(config.video_folder));      
+    break;
+    default :
+      return false;
+  } 
+  return true; 
+}
+
+bool config_set_screensaver_to(int delay){
+  if (delay < 0){
+    return false;
+  }
+  config.screen_saver_to = delay;
+  return true;
+}
+
+bool config_toggle_screen_saver_state(void){
+  if (config.enable_screen_saver){
+    config.enable_screen_saver = 0;
+  } else {
+    config.enable_screen_saver = 1;
+  }
+  return true;
+}
+
+
+bool config_set_fm_frequency(int freq){
+  if ((freq  < 87000000) || (freq > 108000000)){
+    return false;
+  } else {
+    config.fm_transmitter = freq;
+  }
+  return true;
+}
+
+bool config_toggle_fm_transmitter_state(void){
+  if (config.enable_fm_transmitter){
+    config.enable_fm_transmitter = 0;
+  } else {
+    config.enable_fm_transmitter = 1;
+  }
+  return true;
+}
+
+bool config_toggle_small_text_state(void){
+  if (config.enable_small_text){
+    config.enable_small_text = 0;
+  } else {
+    config.enable_small_text = 1;
+  }
+  return true;
+}
+
+bool config_set_diapo_conf(int enable, const char * folder, int delay){
+   config.diapo_enabled = enable;
+   config.diapo.delay = delay;
+   if (config.diapo.file_path){
+      free(config.diapo.file_path);
+      config.diapo.file_path = strdup(folder);
+      if (config.diapo.file_path  == NULL){
+        return false;
+      }
+   }
+   return true;
+}
+
+bool config_save(void){
+    dictionary * ini ;    
+    char buffer[32];    
+    FILE * fp;
+    struct tomplayer_config * conf = &config;
+    int ret = true;
+
+    PRINTD( "Saving main configuration\n");   
+    ini = iniparser_load(CONFIG_FILE);
+    if (ini == NULL) {
+        PRINTDF( "Unable to load main configuration file <%s>\n", CONFIG_FILE );
+        return false ;
+    }
+    
+    fp = fopen( CONFIG_FILE, "w+" );
+    if( fp == NULL ){
+            PRINTD( "Unable to open main config file\n" );
+            ret = false;
+            goto error;
+    }
+
+    iniparser_setstring( ini, SECTION_GENERAL":"KEY_VIDEO_FILE_DIRECTORY, conf->video_folder);
+    iniparser_setstring( ini, SECTION_GENERAL":"KEY_AUDIO_FILE_DIRECTORY, conf->audio_folder);
+    iniparser_setstring( ini, SECTION_GENERAL":"KEY_FILTER_VIDEO_EXT, conf->filter_video_ext);
+    iniparser_setstring( ini, SECTION_GENERAL":"KEY_FILTER_AUDIO_EXT, conf->filter_audio_ext);
+    snprintf(buffer, sizeof(buffer),"%i",conf->screen_saver_to);
+    iniparser_setstring(ini, SECTION_GENERAL":"KEY_SCREEN_SAVER_TO, buffer);
+    snprintf(buffer, sizeof(buffer),"%i",conf->enable_screen_saver);
+    iniparser_setstring(ini, SECTION_GENERAL":"KEY_EN_SCREEN_SAVER, buffer);
+    snprintf(buffer, sizeof(buffer),"%i",conf->fm_transmitter);
+    iniparser_setstring(ini, SECTION_GENERAL":"KEY_FM_TRANSMITTER, buffer);
+    snprintf(buffer, sizeof(buffer),"%i",conf->enable_fm_transmitter);
+    iniparser_setstring(ini, SECTION_GENERAL":"KEY_EN_FM_TRANSMITTER, buffer);
+    snprintf(buffer, sizeof(buffer),"%i",conf->diapo_enabled);
+    iniparser_setstring(ini,  SECTION_GENERAL":"KEY_DIAPO_ENABLED, buffer);
+    iniparser_setstring(ini, SECTION_GENERAL":"KEY_DIAPO_FILTER, conf->diapo.filter);
+    iniparser_setstring(ini, SECTION_GENERAL":"KEY_DIAPO_PATH, conf->diapo.file_path);
+    snprintf(buffer, sizeof(buffer),"%i",conf->diapo.delay);
+    iniparser_setstring(ini, SECTION_GENERAL":"KEY_DIAPO_DELAY, buffer);
+    iniparser_setstring(ini, SECTION_VIDEO_SKIN":"KEY_SKIN_FILENAME, conf->video_skin_filename);
+    iniparser_setstring(ini, SECTION_AUDIO_SKIN":"KEY_SKIN_FILENAME, conf->audio_skin_filename);
+    snprintf(buffer, sizeof(buffer),"%i",conf->enable_small_text);
+    iniparser_setstring(ini, SECTION_GENERAL":"KEY_EN_SMALL_TEXT, buffer);
+
+    iniparser_dump_ini( ini, fp );
+    fclose( fp );    
+    system("cp -f " CONFIG_FILE " ./conf/tomplayer.ini");    
+    system( "unix2dos ./conf/tomplayer.ini" );
+
+error:
+    iniparser_freedict(ini);   
+    return ret;
+}
+
+/* Release config */
+void config_free(void){
+  if (config.diapo.filter != NULL) {
+    free(config.diapo.filter);
+  } 
+  if (config.diapo.file_path != NULL){
+    free(config.diapo.file_path);
+  }  
+}
+
+void config_reload(void){
+  config_free();
+  load_config( &config);
+}

@@ -45,6 +45,7 @@
 #include "config.h"
 #include "version.h"
 #include "resume.h"
+#include "viewmeter.h"
 
 enum gui_screens_type {
   GUI_SCREEN_MAIN,
@@ -57,6 +58,8 @@ enum gui_screens_type {
   GUI_SCREEN_SPLASH,
   GUI_SCREEN_NOT_IMPLEMENTED,
   GUI_SCREEN_RESUME,
+  GUI_SCREEN_CONFIGURATION,
+  GUI_SCREEN_SCREEN_SAVER,
   GUI_SCREEN_MAX
 };
 
@@ -81,8 +84,10 @@ static const char * graphic_conf_files[GUI_SCREEN_MAX] = {"main.cfg",
                                                           "video.cfg",
                                                           "about.cfg",
                                                           "splash.cfg",
-						          "not_implemented.cfg",
-                                                          "resume.cfg"
+                                                          "not_implemented.cfg",
+                                                          "resume.cfg",
+                                                          "config.cfg",
+                                                          "screen.cfg"
                                                          };
 
 static bool quit = false;
@@ -111,6 +116,25 @@ inline static const char * get_full_conf(enum gui_screens_type screen_type){
   static char buff[64];
   snprintf(buff, sizeof(buff) - 1, "%s%s",graphic_conf_folder , graphic_conf_files[screen_type]);
   return buff;    
+}
+
+/** utility function to blit a image */
+static void blit_img(struct gui_control * ctrl, int x, int y, const char *ctrl_name){
+  IDirectFBSurface * img_surf;
+  const struct gui_control * img_ctrl;
+  DFBRegion region;
+  IDirectFBSurface * back_surf = gui_window_get_surface(ctrl->win);  
+  img_ctrl =  gui_window_get_control(ctrl->win, ctrl_name);
+  if (img_ctrl != NULL){
+    img_surf = img_ctrl->obj;
+    back_surf->Blit(back_surf,img_surf,NULL,ctrl->zone.x,ctrl->zone.y);
+    region.x1 = img_ctrl->zone.x;
+    region.y1 = img_ctrl->zone.y;
+    region.x2 = img_ctrl->zone.x + img_ctrl->zone.w;
+    region.y2 = img_ctrl->zone.y + img_ctrl->zone.h;
+    back_surf->Flip(back_surf,&region,DSFLIP_WAITFORSYNC);
+  }
+  return;
 }
 
 
@@ -243,8 +267,7 @@ static void quit_about_window(struct gui_control * ctrl, int x, int y){
 }
 
 /** Display the about screen */
-static void enter_about(struct gui_control * ctrl, int x, int y){   
-   /* FIXME recup propre de la version */
+static void enter_about(struct gui_control * ctrl, int x, int y){     
    char version_text[16]; 
    gui_window  win;  
    struct gui_control * txt_ctrl;
@@ -470,73 +493,28 @@ static void resume_video( struct gui_control * ctrl, int x, int y){
 
 /** Update skin in tomplayer configuration file
  *
- * \return true on succes, false on failure
- *  \todo Should be moved to config module  TODO 
+ * \return true on succes, false on failure 
  */
 static bool update_skin( enum gui_screens_type type , const char * skin_filename){
-  /* Correct iniparser bug in naming function iniparser_setstring/iniparser_set */
-  extern int iniparser_set(dictionary * ini, char * entry, const char * val);
-  #define iniparser_setstring iniparser_set
+  enum config_type conf_type; 
+  bool ret = true; 
 
-  struct skin_config * conf = NULL;
-  char * original_skin_filename = NULL;
-  char * config_skin_filename_key = NULL;
-  char cmd[200];
-  dictionary * ini ;
-  bool ret = true;
-  FILE * fp;
-  
   PRINTDF( "select_skin %s\n", skin_filename);
-
   switch (type){
     case GUI_SCREEN_VIDEO_SKIN :
-      conf = &config.video_config;
-      original_skin_filename = config.video_skin_filename;
-      config_skin_filename_key = SECTION_VIDEO_SKIN":"KEY_SKIN_FILENAME;
+      conf_type = CONFIG_VIDEO;
       break;
     case GUI_SCREEN_AUDIO_SKIN :
-      conf = &config.audio_config;
-      original_skin_filename = config.audio_skin_filename;
-      config_skin_filename_key = SECTION_AUDIO_SKIN":"KEY_SKIN_FILENAME;
+      conf_type = CONFIG_AUDIO;
       break;
      default :
       return false;
   }
 
-  if( conf != NULL ){
-/*   unload_skin( conf );
-    if( load_skin_from_zip( skin_filename, conf ) == false ){
-      PRINTD("Error unable to load this skin\n");
-      load_skin_from_zip( original_skin_filename, conf );
-      ret = false;
-    }
-    else{*/
-    /* FIXME add a check of skin sanity */
-    ini = iniparser_load(CONFIG_FILE);
-    if( ini == NULL ){
-            PRINTD( "Unable to save main configuration\n" );
-            ret = false;
-            goto error;
-    }
-    fp = fopen( CONFIG_FILE, "w+" );
-    if( fp == NULL ){
-            PRINTD( "Unable to open main config file\n" );
-            ret = false;
-            goto error;
-    }
-    iniparser_setstring( ini, config_skin_filename_key, NULL );
-    iniparser_setstring( ini, config_skin_filename_key, skin_filename);
-    iniparser_dump_ini( ini, fp );
-    fclose( fp );
-
-    sprintf( cmd, "cp -f %s ./conf/tomplayer.ini", CONFIG_FILE );
-    system( cmd );
-    system( "unix2dos ./conf/tomplayer.ini" );
-error:
-    iniparser_freedict(ini);
-    /*}*/
+  ret = config_set_skin(conf_type, skin_filename);
+  if (ret){
+    ret = config_save();
   }
-
   return ret;
 }
 
@@ -615,6 +593,146 @@ static void select_skin(struct gui_control * ctrl, int x, int y){
    }
 }
 
+/*SCREEN SAVER */
+static int screen_saver_toggle_nb = 0;
+static void screen_saver_inc_delay(struct gui_control * ctrl, int x, int y){
+  struct gui_control * vm_ctrl;
+  vm_ctrl = gui_window_get_control(ctrl->win, "delay_value");
+  if (vm_ctrl != NULL){    
+      vm_inc(vm_ctrl->obj);
+  }
+}
+
+static void screen_saver_dec_delay(struct gui_control * ctrl, int x, int y){
+  struct gui_control * vm_ctrl;
+  vm_ctrl = gui_window_get_control(ctrl->win, "delay_value");
+  if (vm_ctrl != NULL){    
+      vm_dec(vm_ctrl->obj);
+  }
+}
+
+static void screen_saver_cancel(struct gui_control * ctrl, int x, int y){
+  /* Come back to the initial activation state */
+  if (screen_saver_toggle_nb & 1){
+    config_toggle_screen_saver_state();
+  }
+  gui_window_release(ctrl->win);
+  return;
+}
+
+static void screen_saver_ok(struct gui_control * ctrl, int x, int y){
+  struct gui_control * vm_ctrl;  
+  double val; 
+
+  vm_ctrl = gui_window_get_control(ctrl->win, "delay_value");
+  if (vm_ctrl != NULL){    
+    val = vm_get_value(vm_ctrl->obj);
+    /* Set new dleay (state has alreday been modified)*/
+    config_set_screensaver_to((int)val);
+  }
+  gui_window_release(ctrl->win);
+  return;
+}
+
+static void screen_saver_toggle(struct gui_control * ctrl, int x, int y){
+  struct gui_control * check;
+  
+  screen_saver_toggle_nb++;
+  config_toggle_screen_saver_state();
+  check = gui_window_get_control(ctrl->win, "check_screen_saver");
+  if (check != NULL){
+    if (config.enable_screen_saver){
+      blit_img(check,  0,  0, "check_screen_saver");
+    } else {
+      blit_img(check,  0,  0, "no_check_screen_saver");
+    }
+  }
+  return;
+}
+
+static void config_screen_saver(struct gui_control * ctrl, int x, int y){
+  gui_window  win;
+  struct gui_control * vm_ctrl;
+  struct gui_control * check;
+  screen_saver_toggle_nb = 0;
+  win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_SCREEN_SAVER)); 
+  gui_window_attach_cb(win,"cancel",screen_saver_cancel);
+  gui_window_attach_cb(win,"ok",screen_saver_ok);
+  gui_window_attach_cb(win,"plus_delay", screen_saver_inc_delay);
+  gui_window_attach_cb(win,"minus_delay", screen_saver_dec_delay);
+  gui_window_attach_cb(win,"check_screen_saver", screen_saver_toggle);
+  vm_ctrl = gui_window_get_control(win, "delay_value");
+  if (vm_ctrl != NULL){
+    vm_handle vm;
+    vm = vm_ctrl->obj;
+    vm_set_value(vm, config.screen_saver_to);
+  }
+  check = gui_window_get_control(win, "check_screen_saver");
+  if (check != NULL){
+    if (config.enable_screen_saver){
+      blit_img(check,  0,  0, "check_screen_saver");
+    } else {
+      blit_img(check,  0,  0, "no_check_screen_saver");
+    }
+  }   
+  
+}
+
+
+
+/* CONFIGURATION MENU */
+static int conf_nb_small_text_toggle;
+static void  conf_toggle_small_text(struct gui_control * ctrl, int x, int y){
+  conf_nb_small_text_toggle++;
+  config_toggle_small_text_state();
+  /* Display the check box according to the new small text config */
+  if (config.enable_small_text){
+    blit_img(ctrl,  x,  y, "check_small_text");
+  } else {
+    blit_img(ctrl,  x,  y, "no_check_small_text");
+  }
+  return;
+}
+
+/* Effectively save the new configuration */
+static void conf_save(struct gui_control * ctrl, int x, int y){
+  gui_window_release(ctrl->win);
+  config_save();
+  return;
+}
+
+static void conf_cancel(struct gui_control * ctrl, int x, int y){
+  if (conf_nb_small_text_toggle & 1){
+    config_toggle_small_text_state();
+  }  
+  gui_window_release(ctrl->win);
+}
+
+static void configuration_menu(struct gui_control * ctrl, int x, int y){
+  gui_window  win;
+  struct gui_control * check;
+  gui_window_release(ctrl->win);
+  win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_CONFIGURATION)); 
+
+  config_reload();
+  conf_nb_small_text_toggle = 0;
+  gui_window_attach_cb(win,"config_saver",config_screen_saver);  
+  gui_window_attach_cb(win,"check_small_text", conf_toggle_small_text);
+  gui_window_attach_cb(win,"cancel",conf_cancel);
+  gui_window_attach_cb(win,"ok",conf_save);
+
+  /* Display the check box according to current small text config */
+  check = gui_window_get_control(win, "check_small_text");
+  if (check != NULL){
+    if (config.enable_small_text){
+      blit_img(check,  0,  0, "check_small_text");
+    } else {
+      blit_img(check,  0,  0, "no_check_small_text");
+    }
+  }   
+}
+
+
 /* CHOOSE SETTINGS SCREEN */
 
 /** Callback on choose settings screen */
@@ -633,9 +751,10 @@ static void choose_settings(struct gui_control * ctrl, int x, int y){
      choose_button->cb_param=GUI_SCREEN_AUDIO_SKIN;
      gui_window_attach_cb(win, "skin_audio", select_skin);
    }
+   gui_window_attach_cb(win,"configuration",configuration_menu);
+   gui_window_attach_cb(win,"cancel",quit_current_window);
    return;
 }
-
 
 
 
@@ -702,25 +821,13 @@ static void unselect_all_files(struct gui_control * ctrl, int x, int y){
 }
 
 /** Callback on shuffle controller */
-static void toggle_suffle(struct gui_control * ctrl, int x, int y){
-  IDirectFBSurface * img_surf;
-  const struct gui_control * img_ctrl;
-  DFBRegion region;
-  IDirectFBSurface * back_surf = gui_window_get_surface(ctrl->win);
-
+static void toggle_suffle(struct gui_control * ctrl, int x, int y){  
   shuffle_state = !shuffle_state;
   if (shuffle_state){
-     img_ctrl =  gui_window_get_control(ctrl->win, "shuflle_on_button");
+    blit_img(ctrl,  x,  y, "shuflle_on_button");
   } else {
-     img_ctrl =  gui_window_get_control(ctrl->win, "shuflle_off_button");
-  }
-  img_surf = img_ctrl->obj;
-  back_surf->Blit(back_surf,img_surf,NULL,ctrl->zone.x,ctrl->zone.y);
-  region.x1 = img_ctrl->zone.x;
-  region.y1 = img_ctrl->zone.y;
-  region.x2 = img_ctrl->zone.x + img_ctrl->zone.w;
-  region.y2 = img_ctrl->zone.y + img_ctrl->zone.h;
-  back_surf->Flip(back_surf,&region,DSFLIP_WAITFORSYNC);
+    blit_img(ctrl,  x,  y, "shuflle_off_button");
+  }  
   return;
 }
 

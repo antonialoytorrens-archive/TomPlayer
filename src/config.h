@@ -69,10 +69,13 @@
 #define KEY_B_PROGRESSBAR           "pb_b"
 
 #define KEY_SCREEN_SAVER_TO			"screen_saver_to"
+#define KEY_EN_SCREEN_SAVER         "enable_screen_saver"
 #define KEY_FM_TRANSMITTER          "fm_transmitter"
+#define KEY_EN_FM_TRANSMITTER       "enable_fm_transmitter"
 #define KEY_TYPE_CONTROL            "type"
 #define KEY_CMD_CONTROL             "ctrl"
 #define KEY_CMD_CONTROL2            "cmd"
+#define KEY_EN_SMALL_TEXT           "enable_small_text"
 
 #define KEY_CIRCULAR_CONTROL_X      "x"
 #define KEY_CIRCULAR_CONTROL_Y      "y"
@@ -103,6 +106,11 @@
  * \brief fullpath to the main config file
  */
 #define CONFIG_FILE                 "/tmp/tomplayer.ini"
+
+enum config_type {
+  CONFIG_AUDIO,
+  CONFIG_VIDEO
+};
 
 /**
  * \enum SKIN_CMD
@@ -221,9 +229,12 @@ struct tomplayer_config{
     struct skin_config video_config;		/*!<video skin config */
     struct skin_config audio_config;		/*!<audio skin config */
     int screen_saver_to;			        /*!<screensaver timeout */
-    unsigned int fm_transmitter;            /*!<FM transmitter frequency in HZ (0 to disable) */
-    int diapo_enabled;
-    struct diapo_config diapo;
+    int enable_screen_saver;                /*!<Enable Screen saver */
+    unsigned int fm_transmitter;            /*!<FM transmitter frequency in HZ  */
+    int enable_fm_transmitter;              /*!<Enable FM transmitter*/ 
+    int diapo_enabled;                      /*!<Enable Diaporama */ 
+    struct diapo_config diapo;              /*!<Diaporama Config */
+    int enable_small_text;                  /*!<Enable samll text in file selector*/
 };
 
 
@@ -231,5 +242,15 @@ struct tomplayer_config{
 
 bool load_config( struct tomplayer_config * conf );
 bool load_skin_config( char *, struct skin_config *);
-
+bool config_save(void);
+bool config_set_skin(enum config_type type, const char * filename);
+bool config_set_default_folder(enum config_type type, const char * folder);
+bool config_set_screensaver_to(int delay);
+bool config_set_fm_frequency(int freq);
+bool config_set_diapo_conf(int enable, const char * folder, int delay);
+bool config_toggle_screen_saver_state(void);
+bool config_toggle_fm_transmitter_state(void);
+bool config_toggle_small_text_state(void);
+void config_free(void);
+void config_reload(void);
 #endif /* __TOMPLAYER_CONFIG_H__ */
