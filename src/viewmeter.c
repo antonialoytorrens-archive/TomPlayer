@@ -101,9 +101,10 @@ bool vm_inc(vm_handle hdl){
   double tmp;
   tmp =  hdl->val  + hdl->inc;
   if (tmp > hdl->max){
-    return false;
+    hdl->val =  hdl->min ;
+  } else {
+    hdl->val = tmp;
   }
-  hdl->val = tmp;
   refresh(hdl);
   return true;
 }
@@ -112,9 +113,10 @@ bool vm_dec(vm_handle hdl){
   double tmp;
   tmp =  hdl->val  - hdl->inc;
   if (tmp < hdl->min){
-    return false;
+    hdl->val =  hdl->max ;
+  } else {
+    hdl->val = tmp;
   }
-  hdl->val = tmp;
   refresh(hdl);
   return true;
 }

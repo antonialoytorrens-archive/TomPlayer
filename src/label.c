@@ -147,3 +147,7 @@ bool label_set_text(label_handle hdl, const char * msg){
   win_surf->Release(win_surf);
   return true;
 }
+
+IDirectFBFont * label_get_font(label_handle hdl){
+  return hdl->font;
+}

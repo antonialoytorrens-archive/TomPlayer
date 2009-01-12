@@ -46,4 +46,5 @@ struct label_config{
 label_handle label_create(const struct label_config * config);
 bool label_set_text(label_handle hdl, const char * msg);
 void label_release(label_handle hdl);
+IDirectFBFont * label_get_font(label_handle hdl);
 #endif

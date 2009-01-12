@@ -31,5 +31,5 @@
  * \def VERSION
  * \brief Application version number
  */
-#define VERSION "test"
+#define VERSION "0.220"
 

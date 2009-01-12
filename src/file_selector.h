@@ -106,6 +106,7 @@ IDirectFBSurface * fs_get_preview_surface(fs_handle);
 IDirectFBWindow *  fs_get_window(fs_handle);
 const struct fs_config * fs_get_config(fs_handle);
 const char * fs_get_single_selection(fs_handle);
+const char * fs_get_folder(fs_handle hdl);
 
 flenum  fs_get_selection(fs_handle);
 

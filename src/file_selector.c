@@ -935,3 +935,8 @@ const struct fs_config * fs_get_config(fs_handle hdl){
   }
 }
 
+/** retrieve the current folder */
+const char * fs_get_folder(fs_handle hdl){
+  return fl_get_basename(hdl->list);
+}
+

@@ -46,6 +46,7 @@
 #include "version.h"
 #include "resume.h"
 #include "viewmeter.h"
+#include "label.h"
 
 enum gui_screens_type {
   GUI_SCREEN_MAIN,
@@ -59,7 +60,11 @@ enum gui_screens_type {
   GUI_SCREEN_NOT_IMPLEMENTED,
   GUI_SCREEN_RESUME,
   GUI_SCREEN_CONFIGURATION,
-  GUI_SCREEN_SCREEN_SAVER,
+  GUI_SCREEN_CONF_SCREEN_SAVER,
+  GUI_SCREEN_CONF_DEFAULT_PATHS,
+  GUI_SCREEN_CONF_FM_TRANSMITTER,
+  GUI_SCREEN_CONF_DIAPO,
+  GUI_SCREEN_SELECT_FOLDER,
   GUI_SCREEN_MAX
 };
 
@@ -87,7 +92,11 @@ static const char * graphic_conf_files[GUI_SCREEN_MAX] = {"main.cfg",
                                                           "not_implemented.cfg",
                                                           "resume.cfg",
                                                           "config.cfg",
-                                                          "screen.cfg"
+                                                          "screen.cfg",
+                                                          "paths.cfg",
+                                                          "fm.cfg",
+                                                          "diapo.cfg",
+                                                          "folder.cfg"
                                                          };
 
 static bool quit = false;
@@ -285,7 +294,7 @@ static void enter_about(struct gui_control * ctrl, int x, int y){
    txt_ctrl = gui_window_get_control(win, "text");
    if (txt_ctrl == NULL)
     return;
-   about_thread_params.font = txt_ctrl->obj;
+   about_thread_params.font = label_get_font(txt_ctrl->obj);
    about_thread_params.surf = gui_window_get_surface(win);   
    about_thread_params.surf->SetFont(about_thread_params.surf, about_thread_params.font);
    i=snprintf(version_text,sizeof(version_text)-1 , "V %s", VERSION);
@@ -586,12 +595,111 @@ static void select_skin(struct gui_control * ctrl, int x, int y){
       fs_select_filename(fs, basename + 1);
    }
 
-   select_button = gui_window_get_control(win, "select_button");
+   select_button = gui_window_get_control(win, "select_button");    
    if (select_button  != NULL){
      select_button->cb_param=type;
      gui_window_attach_cb(win, "select_button", skin_selected);
    }
 }
+
+
+/* DEFAULT PATHS CONFIGURATION */
+static char *conf_video_path;
+static char *conf_audio_path;
+
+static void confpath_release_backup(void){
+  if (conf_video_path != NULL){
+    free(conf_video_path);
+  }
+  if (conf_audio_path != NULL){
+    free(conf_audio_path);
+  }
+}
+
+static void conf_paths_refresh(gui_window win){
+  struct gui_control * label_ctrl;      
+  label_ctrl = gui_window_get_control(win, "audio_path");
+  if (label_ctrl != NULL){
+    label_set_text(label_ctrl->obj, config.audio_folder);
+  }
+  label_ctrl = gui_window_get_control(win, "video_path");
+  if (label_ctrl != NULL){
+    label_set_text(label_ctrl->obj, config.video_folder);
+  }
+}
+
+static void conf_path_new(struct gui_control * ctrl, int x, int y){
+  const struct gui_control * fs_ctrl;
+  gui_window defpath_guiwin;
+  fs_ctrl =  gui_window_get_control(ctrl->win, "select_folder");  
+  if (fs_ctrl != NULL){        
+    config_set_default_folder(ctrl->cb_param, fs_get_folder(fs_ctrl->obj));    
+  }
+  gui_window_release(ctrl->win);
+  defpath_guiwin = gui_window_get_top();
+  if (defpath_guiwin != NULL){
+    conf_paths_refresh(defpath_guiwin);
+  }
+}
+
+static void conf_paths_choose(struct gui_control * ctrl, int x, int y){
+  gui_window  win;  
+  const struct gui_control * fs_ctrl;
+  struct gui_control * ok_button;
+  
+  win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_SELECT_FOLDER)); 
+  gui_window_attach_cb(win,"cancel", quit_current_window);
+  gui_window_attach_cb(win,"select_folder",dispatch_fs_event);
+  fs_ctrl =  gui_window_get_control(win, "select_folder");  
+  if (fs_ctrl != NULL){        
+    if (ctrl->cb_param == CONFIG_AUDIO){
+      fs_new_path(fs_ctrl->obj, config.audio_folder, "^$");    
+    } else {
+      fs_new_path(fs_ctrl->obj, config.video_folder, "^$");    
+    }
+  }
+  ok_button = gui_window_get_control(win, "ok");  
+  if (ok_button != NULL){        
+    ok_button->cb_param = ctrl->cb_param;
+    gui_window_attach_cb(win,"ok",conf_path_new);
+  }
+}
+
+static void conf_paths_cancel(struct gui_control * ctrl, int x, int y){  
+  config_set_default_folder(CONFIG_VIDEO, conf_video_path);    
+  config_set_default_folder(CONFIG_AUDIO, conf_audio_path);    
+  confpath_release_backup();
+  gui_window_release(ctrl->win);  
+}
+
+static void conf_paths_ok (struct gui_control * ctrl, int x, int y){
+  confpath_release_backup();
+  gui_window_release(ctrl->win);
+}
+
+static void conf_default_paths(struct gui_control * ctrl, int x, int y){
+  gui_window  win;
+  struct gui_control * select_folder_button;
+  /* Keep paths to be able to resore them in case of cancel */
+  conf_video_path = strdup(config.video_folder);
+  conf_audio_path = strdup(config.audio_folder);
+  
+  win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_CONF_DEFAULT_PATHS)); 
+  gui_window_attach_cb(win,"cancel",conf_paths_cancel);
+  gui_window_attach_cb(win,"ok",conf_paths_ok);
+  select_folder_button = gui_window_get_control(win,"choose_audio_path");
+  if (select_folder_button != NULL){
+    select_folder_button->cb_param = CONFIG_AUDIO;
+    gui_window_attach_cb(win,"choose_audio_path", conf_paths_choose);
+  }
+  select_folder_button = gui_window_get_control(win,"choose_video_path");
+  if (select_folder_button != NULL){
+    select_folder_button->cb_param = CONFIG_VIDEO;
+    gui_window_attach_cb(win,"choose_video_path", conf_paths_choose);
+  }
+  conf_paths_refresh(win);
+}
+
 
 /*SCREEN SAVER */
 static int screen_saver_toggle_nb = 0;
@@ -655,7 +763,7 @@ static void config_screen_saver(struct gui_control * ctrl, int x, int y){
   struct gui_control * vm_ctrl;
   struct gui_control * check;
   screen_saver_toggle_nb = 0;
-  win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_SCREEN_SAVER)); 
+  win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_CONF_SCREEN_SAVER)); 
   gui_window_attach_cb(win,"cancel",screen_saver_cancel);
   gui_window_attach_cb(win,"ok",screen_saver_ok);
   gui_window_attach_cb(win,"plus_delay", screen_saver_inc_delay);
@@ -678,12 +786,225 @@ static void config_screen_saver(struct gui_control * ctrl, int x, int y){
   
 }
 
+/* DIAPORAMA settings */
+static int diapo_toggle_nb ;
+static char *diapo_path;
 
+static void diapo_paths_refresh(gui_window win){
+  struct gui_control * label_ctrl;      
+  label_ctrl = gui_window_get_control(win, "photo_path");
+  if (label_ctrl != NULL){
+    label_set_text(label_ctrl->obj, config.diapo.file_path);
+  }
+}
+
+static void diapo_new_path(struct gui_control * ctrl, int x, int y){
+  const struct gui_control * fs_ctrl;
+  gui_window defpath_guiwin;
+  fs_ctrl =  gui_window_get_control(ctrl->win, "select_folder");  
+  if (fs_ctrl != NULL){        
+    config_set_diapo_folder(fs_get_folder(fs_ctrl->obj));    
+  }
+  gui_window_release(ctrl->win);
+  defpath_guiwin = gui_window_get_top();
+  if (defpath_guiwin != NULL){
+    diapo_paths_refresh(defpath_guiwin);
+  }
+}
+
+static void diapo_choose_path(struct gui_control * ctrl, int x, int y){
+  gui_window  win;  
+  const struct gui_control * fs_ctrl;
+  struct gui_control * ok_button;
+
+  win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_SELECT_FOLDER)); 
+  gui_window_attach_cb(win,"cancel", quit_current_window);
+  gui_window_attach_cb(win,"select_folder",dispatch_fs_event);
+  fs_ctrl =  gui_window_get_control(win, "select_folder");  
+  if (fs_ctrl != NULL){        
+    fs_new_path(fs_ctrl->obj, config.diapo.file_path, "^$");      
+  }
+  gui_window_attach_cb(win,"ok", diapo_new_path);
+}
+
+static void conf_diapo_release(void){
+  if (diapo_path != NULL){
+    free(diapo_path);
+    diapo_path=NULL;
+  }
+}
+
+static void diapo_inc_delay(struct gui_control * ctrl, int x, int y){
+  struct gui_control * vm_ctrl;
+  vm_ctrl = gui_window_get_control(ctrl->win, "delay_value");
+  if (vm_ctrl != NULL){    
+      vm_inc(vm_ctrl->obj);
+  }
+}
+
+static void diapo_dec_delay(struct gui_control * ctrl, int x, int y){
+  struct gui_control * vm_ctrl;
+  vm_ctrl = gui_window_get_control(ctrl->win, "delay_value");
+  if (vm_ctrl != NULL){    
+      vm_dec(vm_ctrl->obj);
+  }
+}
+
+static void diapo_toggle(struct gui_control * ctrl, int x, int y){
+  struct gui_control * check;
+  
+  diapo_toggle_nb++;
+  config_toggle_enable_diapo();
+  check = gui_window_get_control(ctrl->win, "check_diapo");
+  if (check != NULL){
+    if (config.diapo_enabled){
+      blit_img(check,  0,  0, "check_diapo");
+    } else {
+      blit_img(check,  0,  0, "no_check_diapo");
+    }
+  }
+  return;
+}
+
+static void diapo_cancel(struct gui_control * ctrl, int x, int y){
+  if (diapo_toggle_nb & 1){
+    config_toggle_enable_diapo();
+  }
+  config_set_diapo_folder(diapo_path);
+  conf_diapo_release();
+  gui_window_release(ctrl->win);
+  return;
+}
+
+
+static void diapo_ok(struct gui_control * ctrl, int x, int y){
+  struct gui_control * vm_ctrl;
+  vm_ctrl = gui_window_get_control(ctrl->win, "delay_value");
+  if (vm_ctrl != NULL){
+    config_set_diapo_delay((int)vm_get_value(vm_ctrl->obj));
+  }
+  conf_diapo_release();
+  gui_window_release(ctrl->win);
+  return;
+}
+
+static void conf_diapo(struct gui_control * ctrl, int x, int y){
+  gui_window  win;
+  struct gui_control * vm_ctrl;
+  struct gui_control * check;
+  diapo_toggle_nb = 0;
+  diapo_path = strdup(config.diapo.file_path);
+  win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_CONF_DIAPO)); 
+  gui_window_attach_cb(win,"cancel",diapo_cancel);
+  gui_window_attach_cb(win,"ok",diapo_ok);
+  gui_window_attach_cb(win,"plus_delay", diapo_inc_delay);
+  gui_window_attach_cb(win,"minus_delay", diapo_dec_delay);
+  gui_window_attach_cb(win,"choose_photo_path", diapo_choose_path);
+  vm_ctrl = gui_window_get_control(win, "delay_value");
+  if (vm_ctrl != NULL){
+    vm_handle vm;
+    vm = vm_ctrl->obj;
+    vm_set_value(vm, ((double)config.diapo.delay));
+  }
+  check = gui_window_get_control(win, "check_diapo");
+  if (check != NULL){
+    if (config.diapo_enabled){
+      blit_img(check,  0,  0, "check_diapo");
+    } else {
+      blit_img(check,  0,  0, "no_check_diapo");
+    }
+    gui_window_attach_cb(win,"check_diapo", diapo_toggle);
+  }   
+  diapo_paths_refresh(win);  
+}
+
+/* FM transmitter settings CONFIGUGARTION */
+static int fm_transmitter_toggle_nb = 0;
+static void fm_inc_freq(struct gui_control * ctrl, int x, int y){
+  struct gui_control * vm_ctrl;
+  vm_ctrl = gui_window_get_control(ctrl->win, "freq_value");
+  if (vm_ctrl != NULL){    
+      vm_inc(vm_ctrl->obj);
+  }
+}
+
+static void fm_dec_freq(struct gui_control * ctrl, int x, int y){
+  struct gui_control * vm_ctrl;
+  vm_ctrl = gui_window_get_control(ctrl->win, "freq_value");
+  if (vm_ctrl != NULL){    
+      vm_dec(vm_ctrl->obj);
+  }
+}
+
+static void fm_cancel(struct gui_control * ctrl, int x, int y){
+  /* Come back to the initial activation state */
+  if (fm_transmitter_toggle_nb & 1){
+    config_toggle_fm_transmitter_state();
+  }
+  gui_window_release(ctrl->win);
+  return;
+}
+
+static void fm_ok(struct gui_control * ctrl, int x, int y){
+  struct gui_control * vm_ctrl;  
+  double val; 
+
+  vm_ctrl = gui_window_get_control(ctrl->win, "freq_value");
+  if (vm_ctrl != NULL){    
+    val = vm_get_value(vm_ctrl->obj);
+    /* Set new dleay (state has alreday been modified)*/
+    config_set_fm_frequency((int)(val * (double)1000000.00));
+  }
+  gui_window_release(ctrl->win);
+  return;
+}
+
+static void fm_toggle(struct gui_control * ctrl, int x, int y){
+  struct gui_control * check;
+  
+  fm_transmitter_toggle_nb++;  
+  config_toggle_fm_transmitter_state();
+  check = gui_window_get_control(ctrl->win, "check_fm");
+  if (check != NULL){
+    if (config.enable_fm_transmitter){
+      blit_img(check,  0,  0, "check_fm");
+    } else {
+      blit_img(check,  0,  0, "no_check_fm");
+    }
+  }
+  return;
+}
+
+static void  conf_fm_tansmitter(struct gui_control * ctrl, int x, int y){
+  gui_window  win;
+  struct gui_control * vm_ctrl;
+  struct gui_control * check;
+  fm_transmitter_toggle_nb = 0;
+  win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_CONF_FM_TRANSMITTER)); 
+  gui_window_attach_cb(win,"cancel",fm_cancel);
+  gui_window_attach_cb(win,"ok",fm_ok);
+  gui_window_attach_cb(win,"plus_freq", fm_inc_freq);
+  gui_window_attach_cb(win,"minus_freq", fm_dec_freq);
+  gui_window_attach_cb(win,"check_fm", fm_toggle);
+  vm_ctrl = gui_window_get_control(win, "freq_value");
+  if (vm_ctrl != NULL){
+    vm_handle vm;
+    vm = vm_ctrl->obj;
+    vm_set_value(vm, ((double)config.fm_transmitter) / (double)1000000.00 );
+  }
+  check = gui_window_get_control(win, "check_fm");
+  if (check != NULL){
+    if (config.enable_fm_transmitter){
+      blit_img(check,  0,  0, "check_fm");
+    } else {
+      blit_img(check,  0,  0, "no_check_fm");
+    }
+  }   
+}
 
 /* CONFIGURATION MENU */
-static int conf_nb_small_text_toggle;
-static void  conf_toggle_small_text(struct gui_control * ctrl, int x, int y){
-  conf_nb_small_text_toggle++;
+
+static void  conf_toggle_small_text(struct gui_control * ctrl, int x, int y){  
   config_toggle_small_text_state();
   /* Display the check box according to the new small text config */
   if (config.enable_small_text){
@@ -697,15 +1018,12 @@ static void  conf_toggle_small_text(struct gui_control * ctrl, int x, int y){
 /* Effectively save the new configuration */
 static void conf_save(struct gui_control * ctrl, int x, int y){
   gui_window_release(ctrl->win);
-  config_save();
-  return;
+  config_save();  
 }
 
-static void conf_cancel(struct gui_control * ctrl, int x, int y){
-  if (conf_nb_small_text_toggle & 1){
-    config_toggle_small_text_state();
-  }  
+static void conf_cancel(struct gui_control * ctrl, int x, int y){    
   gui_window_release(ctrl->win);
+  config_reload();
 }
 
 static void configuration_menu(struct gui_control * ctrl, int x, int y){
@@ -714,10 +1032,12 @@ static void configuration_menu(struct gui_control * ctrl, int x, int y){
   gui_window_release(ctrl->win);
   win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_CONFIGURATION)); 
 
-  config_reload();
-  conf_nb_small_text_toggle = 0;
+
+  gui_window_attach_cb(win,"config_path", conf_default_paths);
   gui_window_attach_cb(win,"config_saver",config_screen_saver);  
   gui_window_attach_cb(win,"check_small_text", conf_toggle_small_text);
+  gui_window_attach_cb(win,"config_fm", conf_fm_tansmitter);
+  gui_window_attach_cb(win,"config_diapo", conf_diapo);
   gui_window_attach_cb(win,"cancel",conf_cancel);
   gui_window_attach_cb(win,"ok",conf_save);
 
@@ -865,7 +1185,7 @@ static void resume(struct gui_control * ctrl, int x, int y){
 
    gui_window_attach_cb(win, "resume_video", resume_video);
    gui_window_attach_cb(win, "resume_audio", resume_audio);
-
+   gui_window_attach_cb(win, "cancel", quit_current_window);
    return;
 }
 

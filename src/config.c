@@ -369,9 +369,17 @@ bool config_toggle_small_text_state(void){
   return true;
 }
 
-bool config_set_diapo_conf(int enable, const char * folder, int delay){
-   config.diapo_enabled = enable;
-   config.diapo.delay = delay;
+
+bool config_toggle_enable_diapo(void){
+  if (config.diapo_enabled){
+    config.diapo_enabled = false;
+  } else {
+    config.diapo_enabled = true;
+  }
+  return true;
+}
+
+bool config_set_diapo_folder(const char *folder){
    if (config.diapo.file_path){
       free(config.diapo.file_path);
       config.diapo.file_path = strdup(folder);
@@ -379,7 +387,12 @@ bool config_set_diapo_conf(int enable, const char * folder, int delay){
         return false;
       }
    }
-   return true;
+    return true;
+}
+
+bool config_set_diapo_delay(int delay){
+  config.diapo.delay = delay;
+  return true;  
 }
 
 bool config_save(void){

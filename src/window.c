@@ -630,3 +630,13 @@ void gui_window_get_pos(gui_window win, int *x, int* y){
 IDirectFBSurface * gui_window_get_surface(gui_window win){
   return win->background_surface;  
 }
+
+/** Retrieve top gui_window objet
+*/
+gui_window gui_window_get_top(void){
+  if (win_stack.current_win>=0){
+    return win_stack.winlist[win_stack.current_win];
+  } else {
+    return NULL;
+  }
+}

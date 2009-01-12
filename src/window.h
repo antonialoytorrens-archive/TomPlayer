@@ -91,6 +91,7 @@ void   gui_window_attach_cb(gui_window, const char *, gui_control_cb);
 void   gui_window_handle_click(int  x, int y);
 IDirectFBSurface * gui_window_get_surface(gui_window);
 void gui_window_release_all(void);
+gui_window gui_window_get_top(void);
 /*void   gui_window_get_pos(gui_window, int *, int* );*/
 
 #endif /* __WINDOW_H__ */
