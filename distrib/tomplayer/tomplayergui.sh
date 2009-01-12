@@ -72,6 +72,8 @@ else
 fi
 
 
+#sh ./dump_proc.sh > log.txt
+
 # Tomplayer / start_engine loop 
 END_ASKED=0
 NO_SPLASH=
@@ -83,7 +85,8 @@ sync
 ./splash_screen res/background/wait
 if [ -f /tmp/start_engine.sh ] ; then 
   /bin/sh /tmp/start_engine.sh
-   NO_SPLASH="--no-splash"
+  NO_SPLASH="--no-splash"
+  killall -9 mplayer
 else 
   END_ASKED=1
 fi
