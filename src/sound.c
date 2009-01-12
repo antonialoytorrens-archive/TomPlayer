@@ -45,6 +45,7 @@
 #define SOUND_DEV_NAME "/dev/sound"
 #define DEVICE_NOT_OPENED -2
 #define MODELID_PATH "/proc/barcelona/modelid"
+#define MODELNAME_PATH "/proc/barcelona/modelname"
 
 static int check_fd(){
   static int snd_fd = DEVICE_NOT_OPENED;
@@ -129,7 +130,7 @@ int snd_check_headphone(void){
   unsigned int is_headphone = 0;
   int snd_fd;
   int test_fd;
-  int modelid = 0;
+  int isLIVE = 0;
   
   snd_fd = check_fd();
   if (snd_fd<0){
@@ -137,22 +138,25 @@ int snd_check_headphone(void){
   }
   
   /* test whether headconnector exists !*/
-  test_fd =  open(MODELID_PATH, O_RDWR);
+  test_fd =  open(MODELNAME_PATH, O_RDWR);
   if (test_fd < 0 ){
     perror("Error while trying to open " MODELID_PATH);
     return -1;
   } else {
     char buffer[128];
+    memset(buffer,0,sizeof(buffer));
     if (read(test_fd,buffer,sizeof(buffer)) <= 0){
       perror("Error while reading " MODELID_PATH);
       close (test_fd);
       return -1;          
     }
-    modelid = strtol(buffer,NULL,10);    
+    if (strstr(buffer, "LIVE") != NULL) {
+      isLIVE = 1;
+    }    
   }
   close (test_fd);
-  if (modelid == 24){
-    PRINTDF("TT GO 740 Live - No headphoneconnector \n");
+  if (isLIVE){
+    PRINTDF("TT GO Live - No headphoneconnector \n");
     return -1;
   }
 
