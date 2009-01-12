@@ -1,5 +1,27 @@
 More informations on http://www.tomplayer.net
 
+Tomplayer V0.220
+Features :
+- Pictures diaporama can be used as screen saver :
+  * BMP, GIF, PNG and JPEG formats are handled
+  * Screen saver has be enabled for diaporama to work 
+  * Put your pictures in diapo_path folder
+    At best these pictures should be at your Tomtom native resolution. But, if not, they will be automatically resized with the following restriction : Pictures with higher resolution than 1280*1024 will be ignored.
+  * Pictures path and time between pictures can be set thanks to the new GUI 
+- GUI improvements :
+  * New GUI screens to configure :
+    - Default audio/video paths
+    - Screen saver
+    - diaporama
+    - FM transmitter
+    - and to enable/disable small fonts in file selector
+- Audio_blue skin now changes current track instead of moving forward or backward in current track
+- Video file filter has been modified to accept matroska container (mkv file)
+ 
+Bug correction :
+- When you  try to resume files (audio/video) that have been removed, you are no longer blocked
+- Audio blue skin : you can now click on progress bar to modify position 
+- Audio is now working on TT GO7x40 LIVE
 
 December 1st 2008, Tomplayer V0.213
 
