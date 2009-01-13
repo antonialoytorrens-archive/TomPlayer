@@ -1050,10 +1050,12 @@ void * update_thread(void *cmd){
       }
     }
 
-	/* Check for headphones presence to turn on/off internal speaker*/
-        if (config.fm_transmitter == 0){
-	 snd_check_headphone();
+	
+        if (config.enable_fm_transmitter == 0){
+          /* No FM transmitter : Check for headphones presence to turn on/off internal speaker */
+          snd_check_headphone();
         } else {
+          /* FM transmitter : always mute */
            snd_mute_internal(true);
         }
 

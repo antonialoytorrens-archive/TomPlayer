@@ -485,7 +485,7 @@ static void resume_video( struct gui_control * ctrl, int x, int y){
         /*launch_mplayer( "", filename, pos ); */
 	struct stat ftype;
 
-        if( !stat( filename, &ftype) ){
+        if( stat(filename, &ftype) != 0){
 	  DFBColor color = {255,255,50,50};
           message_box("Video does not exist any longer...", 24, &color, "./res/font/decker.ttf");    
 	}  else {

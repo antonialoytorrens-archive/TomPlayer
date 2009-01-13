@@ -140,7 +140,7 @@ int snd_check_headphone(void){
   /* test whether headconnector exists !*/
   test_fd =  open(MODELNAME_PATH, O_RDWR);
   if (test_fd < 0 ){
-    perror("Error while trying to open " MODELID_PATH);
+    perror("Error while trying to open " MODELNAME_PATH);
     return -1;
   } else {
     char buffer[128];
