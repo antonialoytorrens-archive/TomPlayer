@@ -589,7 +589,7 @@ fs_handle fs_create (IDirectFB  * dfb, IDirectFBWindow * win, const struct fs_co
   /* thread creation */
   if (config->options.events_thread){
     handle->end_asked = false;
-    pthread_create(&handle->thread, NULL, thread, handle);
+	pthread_create(&handle->thread, NULL, thread, handle);
   }
  
   return handle;
@@ -617,8 +617,12 @@ bool fs_release(fs_handle hdl){
  * \retval false Failure
  */
 bool fs_set_select_cb(fs_handle hdl, select_cb * f){
-  hdl->prev_cb = f;
-  return true;  
+  if (hdl->config->options.preview_box){
+	hdl->prev_cb = f;
+	return true;  
+  } else {
+	return false;
+  }
 }
 
 /** Handle click on the object
