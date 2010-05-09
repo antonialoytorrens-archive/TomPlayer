@@ -27,6 +27,8 @@ killall -9 refresh_wdg
 
 # Call script that creates symlinks for shared librairies
 ./create_symlinks.sh
+ln -sf  $TOMPLAYER_DIR/res/font/decker.ttf /tmp/
+
 
 #convert in UNIX text format the used configuration file
 cp -f conf/tomplayer.ini /tmp/tomplayer.ini
