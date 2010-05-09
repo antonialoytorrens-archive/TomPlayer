@@ -208,9 +208,11 @@ static  bool init_window(gui_window win,  dictionary * ini){
   return true; 
 }
 
-static void draw_text(struct gui_control * ctrl,  dictionary * ini , int num_control ){
+static void draw_text(struct gui_control * ctrl,  dictionary * ini , int num_control, int * w , int *h){
   struct label_config conf;  
   char * s;
+  IDirectFBFont * text_font;
+
   gui_window  window = ctrl->win;
   
   /* Get configuration from ini File */
@@ -229,6 +231,9 @@ static void draw_text(struct gui_control * ctrl,  dictionary * ini , int num_con
   conf.pos = ctrl->zone;
   ctrl->obj = label_create(&conf);
   label_set_text(ctrl->obj,s);
+  text_font = label_get_font(ctrl->obj);
+  text_font->GetStringWidth (text_font, s, -1, w);
+  text_font->GetHeight(text_font, h);  
 }
 
 
@@ -304,6 +309,10 @@ static  fs_handle load_fs_ctrl(struct gui_control * ctrl,  dictionary * ini , in
     } else {
       conf.options.preview_box = false;
     }
+    /* Configuration for video preview superseedes the screen config */
+    if (config.video_preview == 0){
+		 conf.options.preview_box = false;
+	}
     return fs_create (ctrl->win->dfb, ctrl->win->win, &conf);
 }
 
@@ -355,10 +364,9 @@ static bool load_window_config( const char * filename, gui_window  window ){
                 if( s != NULL ) control->name = strdup( s );
 
                 switch(control->type){
-                  case GUI_TYPE_CTRL_TEXT:
-                    
-                    draw_text(control,ini, num_control);
-                    break;
+                  case GUI_TYPE_CTRL_TEXT:		  
+                    draw_text(control,ini, num_control,&control->zone.w, &control->zone.h);								
+					break;				  
                   case GUI_TYPE_CTRL_BUTTON :
                     s = iniparser_getstring(ini, get_key(num_control,"image"), NULL);
                     if( s != NULL ) {

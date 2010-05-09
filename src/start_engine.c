@@ -114,8 +114,9 @@ static void get_events(void){
 
 int main( int argc, char *argv[] ){
   struct sigaction new_action;
-
-  if (argc != 3){
+  bool is_video;
+  
+  if (argc != 4){
     return -1;
   }
 
@@ -139,7 +140,9 @@ int main( int argc, char *argv[] ){
           !fm_set_stereo(1)){
         fprintf(stderr,"Error while activating FM transmitter\n");
       }
-      snd_mute_internal(true);
+      if (config.int_speaker == CONF_INT_SPEAKER_AUTO){
+		snd_mute_internal(true);
+	  }
     }
     if (config.diapo_enabled){
       if (diapo_init(&config.diapo) == false){
@@ -147,7 +150,12 @@ int main( int argc, char *argv[] ){
         config.diapo_enabled = false;
       }
     }
-    launch_mplayer("", argv[1], atoi(argv[2]));
+    is_video = false;
+	if (argv[2] != NULL){
+		if (strncmp(argv[3],"VIDEO",5) == 0)
+			is_video = true;
+	}
+    launch_mplayer("", argv[1], atoi(argv[2]), is_video);
   }
   get_events();
   /* Desactivate FM transmitter if needed */

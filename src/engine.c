@@ -70,7 +70,7 @@
 
 /*char * cmd_mplayer = "./mplayer -quiet -include ./conf/mplayer.conf -vf expand=%i:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -ss %i -slave -input file=%s %s \"%s/%s\" > %s";*/
 /* quiet option is mandatory to be able  to parse correctly mplayer output */
-char * cmd_mplayer = "./mplayer -quiet -include ./conf/mplayer.conf -vf expand=%i:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -ss %i -slave -input file=%s %s \"%s/%s\" > %s";
+char * cmd_mplayer = "./mplayer -quiet -include ./conf/mplayer.conf -vf expand=%i:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -slave -input file=%s %s \"%s/%s\" > %s 2> /dev/null";
 //char * cmd_mplayer = "mplayer -include ./conf/mplayer.conf -vf expand=%i:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -ss %i -slave -input file=%s %s \"%s/%s\" > %s";
 
 static char * fifo_command_name = "/tmp/mplayer-cmd.fifo";
@@ -87,6 +87,7 @@ bool is_mplayer_finished = false;
 bool is_playing_video = false;
 bool is_playing_audio = false;
 static bool is_paused = false;
+static int resume_pos;
 
 /* Hold -1 if the file is not being seeked
  * or the percent that has to be reached*/
@@ -899,13 +900,13 @@ void hide_menu( void ){
 static void quit_mplayer(void){
 	int pos;
 
-	if ( is_playing_video == true ){
+	/*if ( is_playing_video == true ){*/
 	  is_paused=false;
 	  pos = get_file_position_seconds();
 	  if (pos > 0){
 	    resume_write_pos(pos);
 	  }
-	}
+	/*}*/
 	send_raw_command( "quit\n" );
         quit_asked = true ;
 }
@@ -973,7 +974,8 @@ void * update_thread(void *cmd){
   int screen_saver_to_cycles;
   char current_buffer_filename[200];
   char *p;
-
+  char buffer[200];
+  
   current_filename[0] = 0;
 
   /* Timout in cycles before turning OFF screen while playing audio */
@@ -988,10 +990,44 @@ void * update_thread(void *cmd){
   while (is_mplayer_finished == false){
     flush_stdout();
 
+	pthread_mutex_lock(&display_mutex);
 
+	if (is_paused == false){
+	 /* False seek to force sync as with bmovl option the audio/video get out of sync if demuxer different from lavf*/	 
+     //send_command("seek 0 0\n");	   	 
+	 
+	 /* DO Not send periodic commands to mplayer while in pause because it unlocks the pause for a brief delay */        
+	 if( get_current_file_name( current_buffer_filename ) == true ){
+         if( !strncmp( "ANS_FILENAME='", current_buffer_filename, strlen( "ANS_FILENAME='" ) ) ){
+           p=current_buffer_filename + strlen( "ANS_FILENAME='" );
+           p[strlen(p)-2] = 0;
+           if( strcmp( p, current_filename ) ){
+             strcpy( current_filename, p);
+			 if (resume_pos != 0){
+			   sprintf( buffer, "seek %d 2\n",resume_pos);
+               send_command( buffer );	   	 
+			   resume_pos = 0;
+			 }
+			 if( is_playing_audio == true ){
+               // Affichage du nom du fichier
+               if (no_user_interaction_cycles != SCREEN_SAVER_ACTIVE){
+                 display_current_file( p, &config.audio_config);
+                 display_bat_state(true);
+               }
+             }
+             if(is_playing_video){
+				blit_video_menu( fifo_menu, &config.video_config );
+				display_bat_state(true);				
+			 }
+           }
+         }        
+	   }
+	}
+
+	
     if (((is_menu_showed == true) ||  ( is_playing_video == false ))  &&
        (is_paused == false)) {
-    	 pthread_mutex_lock(&display_mutex);
+
       /* Update progress bar */
       pos = get_file_position_percent();
       if (pos >= 0){
@@ -1005,6 +1041,7 @@ void * update_thread(void *cmd){
 
 
       /* DO Not send periodic commands to mplayer while in pause because it unlocks the pause for a brief delay */
+	  #if 0
       if( is_playing_audio == true ){
           if( get_current_file_name( current_buffer_filename ) == true ){
               if( !strncmp( "ANS_FILENAME='", current_buffer_filename, strlen( "ANS_FILENAME='" ) ) ){
@@ -1021,8 +1058,9 @@ void * update_thread(void *cmd){
               }
           }
       }
-      pthread_mutex_unlock(&display_mutex);
+      #endif    
     }
+    pthread_mutex_unlock(&display_mutex);
 
 
 	/* Handle screen saver */
@@ -1050,7 +1088,8 @@ void * update_thread(void *cmd){
       }
     }
 
-	
+
+	if (config.int_speaker == CONF_INT_SPEAKER_AUTO) {
         if (config.enable_fm_transmitter == 0){
           /* No FM transmitter : Check for headphones presence to turn on/off internal speaker */
           snd_check_headphone();
@@ -1058,7 +1097,18 @@ void * update_thread(void *cmd){
           /* FM transmitter : always mute */
            snd_mute_internal(true);
         }
+	} else {
+		if (config.int_speaker == CONF_INT_SPEAKER_NO ){
+			snd_mute_internal(true);
+		} else { /* CONF_INT_SPEAKER_ALWAYS */
+			snd_mute_internal(false);	
+		}
+	}
 
+    /* FIXME test*/     
+    /* Unmute external for eclipse and start test */  
+	/*snd_mute_external(false);*/
+	
 	/* Handle power button*/
 	if (power_is_off_button_pushed() == true){
 		quit_mplayer();
@@ -1099,20 +1149,20 @@ void * mplayer_thread(void *cmd){
 	   	resume_set_video_settings(&current_video_settings);
     } else {
     	resume_set_audio_settings(&current_audio_settings);
-        /* Save audio playlist if quit has been required (as opposed to an end of playlist exit)*/
-        if (quit_asked)
-          resume_save_playslist(current_filename);
     }
+    /* Save audio playlist if quit has been required (as opposed to an end of playlist exit)*/
+	if (quit_asked)
+		resume_save_playslist(current_filename);
+	
     is_mplayer_finished = true;
     pthread_join(up_thread, NULL);
     pthread_join(t, NULL);    
     pthread_exit(NULL);
 }
 
-void launch_mplayer( char * folder, char * filename, int pos ){
+void launch_mplayer( char * folder, char * filename, int pos, bool is_video ){
     pthread_t t;
-    char cmd[500];
-    int resume_pos;
+    char cmd[500];    
     char file[PATH_MAX+1];
     char rotated_param[10];
     char playlist_param[10];
@@ -1156,8 +1206,29 @@ void launch_mplayer( char * folder, char * filename, int pos ){
     is_playing_audio = false;
     is_paused = false;
     no_user_interaction_cycles = 0;
+	
+	resume_file_init();
+    if (pos > 5){
+      resume_pos = pos - 5;
+    } else {
+      resume_pos = 0;
+    }
+	if (is_video){
+	  is_playing_video = true;
+	  load_skin_from_zip( config.video_skin_filename, &config.video_config, true ) ;
+	  init_ctrl_bitmaps();	  
+	  resume_get_video_settings(&v_settings);
+	} else {
+	  is_playing_audio = true;	
+	  load_skin_from_zip( config.audio_skin_filename, &config.audio_config, true );
+	  init_ctrl_bitmaps();	  
+      display_image_to_fb(config.audio_config.bitmap );
+      display_current_file( "Loading...", &config.audio_config);
+      /* Need to read this before launching mplayer */
+      resume_get_audio_settings(&a_settings);
+	}
 
-
+#if 0
     if ( is_video_file( filename ) ) {
       load_skin_from_zip( config.video_skin_filename, &config.video_config, true ) ;
       is_playing_video = true;
@@ -1181,17 +1252,18 @@ void launch_mplayer( char * folder, char * filename, int pos ){
       /* Need to read this before launching mplayer */
       resume_get_audio_settings(&a_settings);
     }
+#endif
 
     /*sprintf( cmd, cmd_mplayer, (ws_probe()? WS_YMAX : WS_NOXL_YMAX), rotated_param, resume_pos, fifo_command_name, playlist_param, folder , filename, fifo_stdout_name );*/
-    sprintf( cmd, cmd_mplayer, (ws_probe()? WS_XMAX : WS_NOXL_XMAX), (ws_probe()? WS_YMAX : WS_NOXL_YMAX), rotated_param, resume_pos, fifo_command_name, playlist_param, folder , filename, fifo_stdout_name );
+    sprintf( cmd, cmd_mplayer, (ws_probe()? WS_XMAX : WS_NOXL_XMAX), (ws_probe()? WS_YMAX : WS_NOXL_YMAX), rotated_param, /*resume_pos,*/ fifo_command_name, playlist_param, folder , filename, fifo_stdout_name );
     PRINTDF("Mplayer command line : %s \n", cmd);
 
     pthread_create(&t, NULL, mplayer_thread, cmd);
 
     usleep( 500000 );
     if (!is_mplayer_finished ){
-      if( is_video_file( filename ) ){
-          blit_video_menu( fifo_menu, &config.video_config );
+      if(is_playing_video){
+          /* blit is performed on new video file in preiodic threa now blit_video_menu( fifo_menu, &config.video_config );*/
           /* Restore video settings */
           if (resume_get_video_settings(&v_settings) == 0){
               set_video_settings(&v_settings);

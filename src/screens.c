@@ -106,13 +106,21 @@ static IDirectFBDisplayLayer  *layer;
 static int screen_width, screen_height;
 
 
-static void launch_engine(const char * path, int pos){
+static void play_audio_video(struct gui_control * ctrl, int x, int y);
+static void select_all_files(struct gui_control * ctrl, int x, int y);
+static void unselect_all_files(struct gui_control * ctrl, int x, int y);
+static void toggle_suffle(struct gui_control * ctrl, int x, int y);  
+
+
+static void launch_engine(const char * path, int pos, bool is_video){
   int fd, i ;
   char buffer[128];
-
+  
+  
+  
   fd = open ("/tmp/start_engine.sh", O_CREAT | O_WRONLY | O_TRUNC, S_IRWXU);
   if (fd >= 0){
-    i = snprintf(buffer, sizeof(buffer) - 1,"./start_engine \"%s\" %i\n", path, pos);
+    i = snprintf(buffer, sizeof(buffer) - 1,"./start_engine \"%s\" %i %s\n", path, pos, is_video?"VIDEO":"AUDIO"  );
     buffer[i] = '\0';
     write(fd,buffer,i);
     fsync(fd);
@@ -153,14 +161,6 @@ static void quit_current_window(struct gui_control * ctrl, int x, int y){
    return;
 }
 
-#if 0
-/** Diplay the "not yet implemented error message */
-static void display_not_implemented(struct gui_control * ctrl, int x, int y){
-   gui_window  win;
-   win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_NOT_IMPLEMENTED)); 
-   gui_window_attach_cb(win, "any_part", quit_current_window);   
-}
-#endif
 
 
 /** Dispatch mouse event to a file selector controller (used by all the screens that holds a file selector) */
@@ -379,6 +379,7 @@ image=%s\n\
   return win ;
 }
 
+
 static void create_preview(fs_handle hdl,  enum  fs_events_type evt, const char * img_filename){
   static gui_window win_prev;
   IDirectFBWindow * win;
@@ -408,6 +409,7 @@ static void create_preview(fs_handle hdl,  enum  fs_events_type evt, const char 
   }
 }
 
+
 /** Callback of video file selector 
   * Handle movie preview
   */
@@ -428,74 +430,41 @@ static void video_select_cb(fs_handle hdl, const char * c, enum  fs_events_type 
 
 }
 
-
-/** Callback on video selection */
-static void play_video(struct gui_control * ctrl, int x, int y){
-  const char * file;
-  const struct gui_control * ctrl_fs =  gui_window_get_control(ctrl->win, "file_selector");
-  fs_handle fs = ctrl_fs->obj;  
-  file = fs_get_single_selection(fs);
-  
-  if (file != NULL){
-    launch_engine(file, 0 );
-    quit = true;
-  } else {
-    DFBColor color = {255,255,50,50};    
-    message_box("No file selected !", 24, &color, "./res/font/decker.ttf");
-    printf("No file selected !\n");
-  }
-}
-
-
-/** Callback that displays video selection screeen */
+/** Callback that displays video selection screen */
 static void select_video(struct gui_control * ctrl, int x, int y){
    gui_window  win;
    fs_handle fs;
    const struct gui_control * fs_ctrl;
+   struct gui_control *play_ctrl;
 
-   /* TODO  Write a decent config module !*/
+   /* TODO  Write a decent config module instead of grabbing a glocal conf that way !*/
    extern struct tomplayer_config config;
 
    win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_VIDEO)); 
    gui_window_attach_cb(win, "file_selector", dispatch_fs_event);
    gui_window_attach_cb(win, "goback_button", quit_current_window);
-   gui_window_attach_cb(win, "play_button",  play_video);
+   gui_window_attach_cb(win, "play_button",  play_audio_video);
+   gui_window_attach_cb(win, "selall_button", select_all_files);
+   gui_window_attach_cb(win, "nosel_button", unselect_all_files);   
+   gui_window_attach_cb(win, "shuflle_on_button", toggle_suffle);     
    fs_ctrl =  gui_window_get_control(win, "file_selector");
    if (fs_ctrl != NULL){
+	 const struct fs_config * conf;
+	 
      fs = fs_ctrl->obj;
-     fs_set_select_cb(fs, video_select_cb);
+	 fs_set_select_cb(fs, video_select_cb);
      fs_new_path(fs, config.video_folder, config.filter_video_ext);
-     /* Automatically select the first item */
-     fs_select(fs, 0);
+	 conf = fs_get_config(fs);
+	 if (!conf->options.multiple_selection){  
+		/* Automatically select the first item if single  selection */
+		fs_select(fs, 0);
+	 }	 
+   }
+   play_ctrl = gui_window_get_control(win, "play_button");
+   if (play_ctrl != NULL){ 
+	   play_ctrl->cb_param = true;
    }
 }
-
-/** Callback that resumes video  */
-static void resume_video( struct gui_control * ctrl, int x, int y){ 
-    int pos = 0;
-    char filename[PATH_MAX];
-
-    gui_window_release(ctrl->win);
-    if (resume_get_file_infos(filename, PATH_MAX, &pos) != 0){
-        DFBColor color = {255,255,50,50};
-        message_box("No resume video data...", 24, &color, "./res/font/decker.ttf");    	
-    }
-    else{
-    	/*display_current_file( filename, &config.video_config, config.bitmap_loading );*/
-        /*launch_mplayer( "", filename, pos ); */
-	struct stat ftype;
-
-        if( stat(filename, &ftype) != 0){
-	  DFBColor color = {255,255,50,50};
-          message_box("Video does not exist any longer...", 24, &color, "./res/font/decker.ttf");    
-	}  else {
-          launch_engine( filename, pos );
-          quit = true;
-	}
-    }
-    return;
-}
-
 
 
 /* SKINS SELECTION SCREENS (AUDIO and VIDEO) */
@@ -948,12 +917,25 @@ static void fm_cancel(struct gui_control * ctrl, int x, int y){
 static void fm_ok(struct gui_control * ctrl, int x, int y){
   struct gui_control * vm_ctrl;  
   double val; 
+  double freq;
 
   vm_ctrl = gui_window_get_control(ctrl->win, "freq_value");
   if (vm_ctrl != NULL){    
-    val = vm_get_value(vm_ctrl->obj);
-    /* Set new dleay (state has alreday been modified)*/
-    config_set_fm_frequency((int)(val * (double)1000000.00));
+    val = vm_get_value(vm_ctrl->obj);	    
+	freq = config.fm_transmitter;
+	if (val == (((double)config.fm_transmitter1) / (double)1000000.00 )){
+		config_set_fm_frequency1(freq);
+    } else {
+		if (val == (((double)config.fm_transmitter2) / (double)1000000.00 )){
+			config_set_fm_frequency2(freq);
+		} else {
+			config_set_fm_frequency2(config.fm_transmitter1);
+			config_set_fm_frequency1(freq);
+		}
+	}
+    /* Set new frequency (state has alreday been modified)*/
+    config_set_fm_frequency( (int)(val * (double)1000000.00));
+	
   }
   gui_window_release(ctrl->win);
   return;
@@ -975,10 +957,28 @@ static void fm_toggle(struct gui_control * ctrl, int x, int y){
   return;
 }
 
+static void fm_recall_fm(struct gui_control * ctrl, int x, int y){
+  struct gui_control * vm_ctrl;  
+
+  vm_ctrl = gui_window_get_control(ctrl->win, "freq_value");
+  if (vm_ctrl != NULL){
+    vm_handle vm;
+    vm = vm_ctrl->obj;
+	if (ctrl->cb_param == 1) {
+		vm_set_value(vm, ((double)config.fm_transmitter1) / (double)1000000.00 );
+	} else {
+		vm_set_value(vm, ((double)config.fm_transmitter2) / (double)1000000.00 );
+	}
+  }
+}
+
 static void  conf_fm_tansmitter(struct gui_control * ctrl, int x, int y){
   gui_window  win;
   struct gui_control * vm_ctrl;
   struct gui_control * check;
+  struct gui_control * recall_ctrl;
+  char buffer_fm[16];
+  
   fm_transmitter_toggle_nb = 0;
   win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_CONF_FM_TRANSMITTER)); 
   gui_window_attach_cb(win,"cancel",fm_cancel);
@@ -986,6 +986,20 @@ static void  conf_fm_tansmitter(struct gui_control * ctrl, int x, int y){
   gui_window_attach_cb(win,"plus_freq", fm_inc_freq);
   gui_window_attach_cb(win,"minus_freq", fm_dec_freq);
   gui_window_attach_cb(win,"check_fm", fm_toggle);
+  gui_window_attach_cb(win,"fm1", fm_recall_fm);
+  gui_window_attach_cb(win,"fm2", fm_recall_fm);
+  recall_ctrl = gui_window_get_control(win, "fm1");
+  if (recall_ctrl != NULL){	  
+	  recall_ctrl->cb_param = 1;  
+	  snprintf(buffer_fm, sizeof(buffer_fm),"%06.2f Mhz",(double)config.fm_transmitter1 / (double)1000000.00);	  
+	  label_set_text(recall_ctrl->obj,buffer_fm);  
+  }
+  recall_ctrl = gui_window_get_control(win, "fm2");
+  if (recall_ctrl != NULL){
+	  recall_ctrl->cb_param = 2;
+  	  snprintf(buffer_fm, sizeof(buffer_fm),"%06.2f Mhz",(double)config.fm_transmitter2 / (double)1000000.00);	  
+	  label_set_text(recall_ctrl->obj,buffer_fm);  
+  }  
   vm_ctrl = gui_window_get_control(win, "freq_value");
   if (vm_ctrl != NULL){
     vm_handle vm;
@@ -1080,9 +1094,9 @@ static void choose_settings(struct gui_control * ctrl, int x, int y){
 
 /* AUDIO SCREEN */
 
-static bool shuffle_state = true;
-/**Callback on audio selection*/
-static void play_audio(struct gui_control * ctrl, int x, int y){
+static bool shuffle_state = false;
+/**Callback on audio and video selection*/
+static void play_audio_video(struct gui_control * ctrl, int x, int y){
   FILE *fp;
   flenum list;
   const char * filename;
@@ -1104,24 +1118,33 @@ static void play_audio(struct gui_control * ctrl, int x, int y){
     DFBColor color = {255,255,50,50};
     message_box("No file selected !", 24, &color, "./res/font/decker.ttf");
   } else {
-    launch_engine("/tmp/playlist.m3u", 0);
+    launch_engine("/tmp/playlist.m3u", 0, ctrl->cb_param);
     quit = true;
   }
 }
 
-/** Callback on resume audio button */
-static void resume_audio(struct gui_control * ctrl, int x, int y){
-  #define RESUME_PLAYLIST_FILENAME "./conf/saved_playlist.m3u"
-  struct stat file_infos;
 
+/** Callback on resume audio and video buttons */
+static void resume_audio_video(struct gui_control * ctrl, int x, int y){
+  int pos = 0;
+  struct stat ftype;
+  char filename[PATH_MAX - 32];    
+  char mv_command[PATH_MAX];  
+  bool is_video = ctrl->cb_param;
+  
   gui_window_release(ctrl->win);
-
-  if (stat(RESUME_PLAYLIST_FILENAME, &file_infos) != 0){
+  if (resume_get_file_infos(filename, PATH_MAX, &pos) != 0){
         DFBColor color = {255,255,50,50};
-        message_box("No resume audio data...", 24, &color, "./res/font/decker.ttf");
-  } else {
-    system("mv " RESUME_PLAYLIST_FILENAME " /tmp/playlist.m3u");
-    launch_engine("/tmp/playlist.m3u", 0);
+        message_box("No resume data...", 24, &color, "./res/font/decker.ttf");    	
+		return;
+  }  
+  if( stat(filename, &ftype) != 0){
+	  DFBColor color = {255,255,50,50};
+      message_box("Error no saved playlist...", 24, &color, "./res/font/decker.ttf");    
+  }  else {
+	snprintf(mv_command, sizeof(mv_command), "mv %s /tmp/playlist.m3u",filename);
+	system(mv_command);	
+    launch_engine("/tmp/playlist.m3u", pos, is_video);  	
     quit = true;
   }
 }
@@ -1156,6 +1179,7 @@ static void select_audio(struct gui_control * ctrl, int x, int y){
    gui_window  win;
    fs_handle fs;
    const struct gui_control * fs_ctrl;
+   struct gui_control *play_ctrl;
 
    /* TODO  Write a decent config module !*/
    extern struct tomplayer_config config;
@@ -1165,7 +1189,7 @@ static void select_audio(struct gui_control * ctrl, int x, int y){
    gui_window_attach_cb(win, "goback_button", quit_current_window);
    gui_window_attach_cb(win, "selall_button", select_all_files);
    gui_window_attach_cb(win, "nosel_button", unselect_all_files);
-   gui_window_attach_cb(win, "play_button", play_audio);
+   gui_window_attach_cb(win, "play_button", play_audio_video);
    gui_window_attach_cb(win, "shuflle_on_button", toggle_suffle);
    fs_ctrl =  gui_window_get_control(win, "file_selector");
    if (fs_ctrl != NULL){
@@ -1173,6 +1197,10 @@ static void select_audio(struct gui_control * ctrl, int x, int y){
      /*fs_set_select_cb(fs, audio_select_cb);*/
      fs_new_path(fs, config.audio_folder, config.filter_audio_ext);
    }
+   play_ctrl = gui_window_get_control(win, "play_button");
+   if (play_ctrl != NULL){ 
+	   play_ctrl->cb_param = false;
+   }   
 }
 
 
@@ -1181,11 +1209,22 @@ static void select_audio(struct gui_control * ctrl, int x, int y){
 /** Callback on choose resume screen */
 static void resume(struct gui_control * ctrl, int x, int y){
    gui_window  win;
+   struct gui_control *play_ctrl;
+   
    win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_RESUME)); 
 
-   gui_window_attach_cb(win, "resume_video", resume_video);
-   gui_window_attach_cb(win, "resume_audio", resume_audio);
+   gui_window_attach_cb(win, "resume_video", resume_audio_video);
+   gui_window_attach_cb(win, "resume_audio", resume_audio_video);
    gui_window_attach_cb(win, "cancel", quit_current_window);
+   
+   play_ctrl = gui_window_get_control(win, "resume_video");   
+   if (play_ctrl != NULL){ 
+	   play_ctrl->cb_param = true;
+   }   
+   play_ctrl = gui_window_get_control(win, "resume_audio");   
+   if (play_ctrl != NULL){ 
+	   play_ctrl->cb_param = false;
+   }   
    return;
 }
 

@@ -36,64 +36,13 @@
 #include <IL/ilu.h>
 #include "diapo.h"
 
-/* Definition of section in the config file */
-#define SECTION_GENERAL             "general"
-#define SECTION_VIDEO_SKIN          "video_skin"
-#define SECTION_AUDIO_SKIN          "audio_skin"
-#define SECTION_CONTROL_FMT_STR     "CONTROL_%d:%s"
 
-
-#define KEY_SKIN_FILENAME           "filename"
-
-
-#define KEY_FILTER_VIDEO_EXT        "filter_video"
-#define KEY_FILTER_AUDIO_EXT        "filter_audio"
-#define KEY_VIDEO_FILE_DIRECTORY    "video_dir"
-#define KEY_AUDIO_FILE_DIRECTORY    "audio_dir"
-
-#define KEY_SKIN_BMP                "image"
-#define KEY_SKIN_CONF               "conf"
-
-#define KEY_TEXT_X1                 "text_x1"
-#define KEY_TEXT_Y1                 "text_y1"
-#define KEY_TEXT_X2                 "text_x2"
-#define KEY_TEXT_Y2                 "text_y2"
-
-#define KEY_R_TRANSPARENCY          "r"
-#define KEY_G_TRANSPARENCY          "g"
-#define KEY_B_TRANSPARENCY          "b"
-
-
-#define KEY_R_PROGRESSBAR           "pb_r"
-#define KEY_G_PROGRESSBAR	    	"pb_g"
-#define KEY_B_PROGRESSBAR           "pb_b"
-
-#define KEY_SCREEN_SAVER_TO			"screen_saver_to"
-#define KEY_EN_SCREEN_SAVER         "enable_screen_saver"
-#define KEY_FM_TRANSMITTER          "fm_transmitter"
-#define KEY_EN_FM_TRANSMITTER       "enable_fm_transmitter"
-#define KEY_TYPE_CONTROL            "type"
-#define KEY_CMD_CONTROL             "ctrl"
-#define KEY_CMD_CONTROL2            "cmd"
-#define KEY_EN_SMALL_TEXT           "enable_small_text"
-
-#define KEY_CIRCULAR_CONTROL_X      "x"
-#define KEY_CIRCULAR_CONTROL_Y      "y"
-#define KEY_CIRCULAR_CONTROL_R      "r"
-
-#define KEY_RECTANGULAR_CONTROL_X1  "x1"
-#define KEY_RECTANGULAR_CONTROL_X2  "x2"
-#define KEY_RECTANGULAR_CONTROL_Y1  "y1"
-#define KEY_RECTANGULAR_CONTROL_Y2  "y2"
-
-#define KEY_TEXT_COLOR "text_color"
-
-#define KEY_CTRL_BITMAP_FILENAME "bitmap"
-
-#define KEY_DIAPO_ENABLED   "diapo_enabled"
-#define KEY_DIAPO_FILTER    "diapo_filter"
-#define KEY_DIAPO_PATH      "diapo_path"
-#define KEY_DIAPO_DELAY     "diapo_delay"
+enum config_int_speaker_type{
+	CONF_INT_SPEAKER_AUTO = 0,
+	CONF_INT_SPEAKER_NO,
+	CONF_INT_SPEAKER_ALWAYS,
+	CONF_INT_SPEAKER_MAX
+};
 
 /**
  * \def MAX_SKIN_CONTROLS
@@ -231,10 +180,14 @@ struct tomplayer_config{
     int screen_saver_to;			        /*!<screensaver timeout */
     int enable_screen_saver;                /*!<Enable Screen saver */
     unsigned int fm_transmitter;            /*!<FM transmitter frequency in HZ  */
+    unsigned int fm_transmitter1;           /*!<First FM transmitter frequency backup  */
+    unsigned int fm_transmitter2;           /*!<Second FM transmitter frequency backup */ 
     int enable_fm_transmitter;              /*!<Enable FM transmitter*/ 
     int diapo_enabled;                      /*!<Enable Diaporama */ 
     struct diapo_config diapo;              /*!<Diaporama Config */
     int enable_small_text;                  /*!<Enable samll text in file selector*/
+    int int_speaker; 						/*!<Internal speaker configuration*/
+    int video_preview;						/*!<Enable video preview*/    
 };
 
 
@@ -247,6 +200,9 @@ bool config_set_skin(enum config_type type, const char * filename);
 bool config_set_default_folder(enum config_type type, const char * folder);
 bool config_set_screensaver_to(int delay);
 bool config_set_fm_frequency(int freq);
+bool config_set_fm_frequency1(int freq);
+bool config_set_fm_frequency2(int freq);
+bool config_set_int_speaker(int mode);
 bool config_toggle_enable_diapo(void);
 bool config_set_diapo_folder(const char *folder);
 bool config_set_diapo_delay(int delay);

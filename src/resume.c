@@ -3,10 +3,10 @@
  * \author wolfgar
  * \brief Resume file handling
  *
- * $URL:$
- * $Rev:$
- * $Author:$
- * $Date:$
+ * $URL$
+ * $Rev$
+ * $Author$
+ * $Date$
  *
  */
 
@@ -53,15 +53,17 @@ extern int iniparser_set(dictionary * ini, char * entry, char * val);
 #define RESUME_VOLUME_KEY "volume"
 #define RESUME_AUDIO_DELAY_KEY "audio_delay"
 
+
+#define RESUME_PLAYLIST_FILENAME "./conf/saved_playlist.m3u"
+
 /**
  * \fn int resume_file_init(char * file)
  * \brief Reinit the resume file
  *
- * \param file The opened media filename
  *
  * \return 0  on success, -1 on failure
  */
-int resume_file_init(char * file){
+int resume_file_init(void){
 	dictionary * ini ;
 	FILE * fp;
 	int ret = 0;
@@ -80,7 +82,7 @@ int resume_file_init(char * file){
 	}
 
 	iniparser_setstring( ini, RESUME_SECTION_KEY, NULL );
-	iniparser_setstring( ini, RESUME_SECTION_KEY":"RESUME_FILENAME_KEY, file );
+	iniparser_setstring( ini, RESUME_SECTION_KEY":"RESUME_FILENAME_KEY, RESUME_PLAYLIST_FILENAME);
 	iniparser_setstring( ini, RESUME_SECTION_KEY":"RESUME_POS_KEY, "-1" );
 
 	iniparser_dump_ini( ini, fp );
@@ -369,7 +371,7 @@ error:
 
 int resume_save_playslist(const char * current_filename){
   #define VOLATILE_PLAYLIST_FILENAME "/tmp/playlist.m3u"
-  #define RESUME_PLAYLIST_FILENAME "./conf/saved_playlist.m3u"
+  
   char buffer[PATH_MAX];
   FILE * in_pl = NULL;
   FILE * out_pl = NULL;

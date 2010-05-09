@@ -4,10 +4,10 @@
  * \brief Resume file handling
  *
  *
- * $URL:$
- * $Rev:$
- * $Author:$
- * $Date:$
+ * $URL$
+ * $Rev$
+ * $Author$
+ * $Date$
  *
  */
 
@@ -51,7 +51,7 @@ struct audio_settings {
 
 
 
-int resume_file_init(char * file);
+int resume_file_init(void);
 int resume_write_pos(int value);
 int resume_get_file_infos(char * filename, int len , int * pos);
 int resume_get_audio_settings(struct audio_settings * settings);
