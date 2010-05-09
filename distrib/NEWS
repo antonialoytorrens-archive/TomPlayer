@@ -1,5 +1,39 @@
 More informations on http://www.tomplayer.net
 
+May 10th 2010, TomplayerV0.230
+Features :
+- New mplayer build (SVN-r30895-snapshot-3.3.4 (C) 2000-2010 MPlayer Team)
+	* Among other new features, this new build can handle mkv with internal subtitles
+- New kernel for standalone version (based on tt348526)
+- Bluetooth DUN is available in this new standalone version 
+	(To connect from a Linux host type as root : dund --search -n)
+- Audio resume keeps the position in file and not only the file
+- Video playlist is available 
+- On FM options screen, we can recall the 2 previously used frequencies
+- New options in tomplayer.ini :
+	* FM values for recall from FM options screen 
+	 fm_transmitter1
+	 fm_transmitter2
+	* Internal speaker configuration (0 for auto mute - 1 always mute - 2 Never mute)
+	 int_speaker
+	(It is known that Tomtom GO950 have to set this int_speaker value to 2 in order to get sound)
+	* A way to enable/disable the video preview in file selector (0 to disable - 1 to enable)
+	video_preview=1
+- Tomtom Eclipse Full support 
+	* To use tomplayer on a TT eclipse : 
+		- Replace tomplayergui.sh by tomplayergui_eclipse.sh 
+		- If you want the sound only on your car speakers - You have to select "usb mode" in the radio and to set  
+			int_speaker = 1
+		in tomplayer.ini
+		- By the way, you can access USB storage from /mnt/mass_storage
+
+Bug correction :
+- Subtitles are always correctly displayed 
+
+Known Bugs :
+- Some issues have been reported with navcore v9 for integrated installation. Use standalone installation if you have such a navcore.
+
+
 January 13th 2009, Tomplayer V0.220
 Features :
 - Pictures diaporama can be used as screen saver :
