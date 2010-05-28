@@ -807,7 +807,7 @@ static void set_audio_settings(const struct audio_settings * settings){
 }
 
 
-/** Set audio settings
+/** Set video settings
  */
 static void set_video_settings(const struct video_settings * settings){
 	char buffer[256];
@@ -992,10 +992,7 @@ void * update_thread(void *cmd){
 
 	pthread_mutex_lock(&display_mutex);
 
-	if (is_paused == false){
-	 /* False seek to force sync as with bmovl option the audio/video get out of sync if demuxer different from lavf*/	 
-     //send_command("seek 0 0\n");	   	 
-	 
+	if (is_paused == false){	 
 	 /* DO Not send periodic commands to mplayer while in pause because it unlocks the pause for a brief delay */        
 	 if( get_current_file_name( current_buffer_filename ) == true ){
          if( !strncmp( "ANS_FILENAME='", current_buffer_filename, strlen( "ANS_FILENAME='" ) ) ){
@@ -1012,12 +1009,14 @@ void * update_thread(void *cmd){
                // Affichage du nom du fichier
                if (no_user_interaction_cycles != SCREEN_SAVER_ACTIVE){
                  display_current_file( p, &config.audio_config);
-                 display_bat_state(true);
+                 display_bat_state(true);				               
                }
+               set_audio_settings(&current_audio_settings);
              }
              if(is_playing_video){
 				blit_video_menu( fifo_menu, &config.video_config );
-				display_bat_state(true);				
+				display_bat_state(true);	
+				set_video_settings(&current_video_settings);
 			 }
            }
          }        
@@ -1038,27 +1037,6 @@ void * update_thread(void *cmd){
 
       /* Display battery state */
       display_bat_state(false);
-
-
-      /* DO Not send periodic commands to mplayer while in pause because it unlocks the pause for a brief delay */
-	  #if 0
-      if( is_playing_audio == true ){
-          if( get_current_file_name( current_buffer_filename ) == true ){
-              if( !strncmp( "ANS_FILENAME='", current_buffer_filename, strlen( "ANS_FILENAME='" ) ) ){
-                  p=current_buffer_filename + strlen( "ANS_FILENAME='" );
-                  p[strlen(p)-2] = 0;
-                  if( strcmp( p, current_filename ) ){
-                      strcpy( current_filename, p);
-                      // Affichage du nom du fichier
-                      if (no_user_interaction_cycles != SCREEN_SAVER_ACTIVE){
-                        display_current_file( p, &config.audio_config);
-                        display_bat_state(true);
-                      }
-                  }
-              }
-          }
-      }
-      #endif    
     }
     pthread_mutex_unlock(&display_mutex);
 
@@ -1228,31 +1206,6 @@ void launch_mplayer( char * folder, char * filename, int pos, bool is_video ){
       resume_get_audio_settings(&a_settings);
 	}
 
-#if 0
-    if ( is_video_file( filename ) ) {
-      load_skin_from_zip( config.video_skin_filename, &config.video_config, true ) ;
-      is_playing_video = true;
-      init_ctrl_bitmaps();
-      resume_file_init(file);
-      if (pos > 5){
-        resume_pos = pos - 5;
-      } else {
-        resume_pos = 0;
-      }
-      /* Need to read this before launching mplayer */
-      resume_get_video_settings(&v_settings);
-    }
-    else {
-      load_skin_from_zip( config.audio_skin_filename, &config.audio_config, true );
-      is_playing_audio = true;
-      init_ctrl_bitmaps();
-      resume_pos = 0;
-      display_image_to_fb(config.audio_config.bitmap );
-      display_current_file( "Loading...", &config.audio_config);
-      /* Need to read this before launching mplayer */
-      resume_get_audio_settings(&a_settings);
-    }
-#endif
 
     /*sprintf( cmd, cmd_mplayer, (ws_probe()? WS_YMAX : WS_NOXL_YMAX), rotated_param, resume_pos, fifo_command_name, playlist_param, folder , filename, fifo_stdout_name );*/
     sprintf( cmd, cmd_mplayer, (ws_probe()? WS_XMAX : WS_NOXL_XMAX), (ws_probe()? WS_YMAX : WS_NOXL_YMAX), rotated_param, /*resume_pos,*/ fifo_command_name, playlist_param, folder , filename, fifo_stdout_name );
