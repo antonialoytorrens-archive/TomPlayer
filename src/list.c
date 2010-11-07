@@ -141,13 +141,12 @@ void add_to_list_sorted( struct list_object ** list, void *object, int (*compare
 		if( compare( object, current_list->object ) < 0 ){
 			if( current_list == *list ){
 				new_elt->next = current_list;
-				list = &new_elt;
+				*list = new_elt;
 			}
 			else{
 				previous_list->next = new_elt;
 				new_elt->next = current_list;
 			}
-
 			return;
 		}
 		previous_list = current_list;
