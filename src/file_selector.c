@@ -77,6 +77,7 @@ struct fs_data {
   bool end_asked;                              /**< Flag to ask for thread events termination */
   select_cb *prev_cb;                          /**< callback funtion */
   regex_t compiled_re_filter;                  /**< Compiled re filter to apply filter */
+  int selected_item ;                          /**< Currently selected item */
 } ;
 
 
@@ -336,6 +337,8 @@ static bool display_obj(fs_handle hdl, enum fs_icon_ids id, DFBPoint * point){
  *
  */
 static bool refresh_display(fs_handle hdl){
+  char *filename;  
+  int len;
   int i,y = 0;
   DFBPoint point;
   int max_idx;
@@ -357,13 +360,28 @@ static bool refresh_display(fs_handle hdl){
   /* Display zone content */
   for (i=hdl->idx_first_displayed; i< max_idx; i++){  
 
-    
-    hdl->refresh_zone_surf->DrawString( hdl->refresh_zone_surf, 
-					fl_get_filename(hdl->list, i),                                        
-                                        -1,
-                                        hdl->file_zone.x - hdl->refresh_zone.x ,  
-                                        y, 
-                                        DSTF_TOPLEFT);
+    if (i != hdl->selected_item){
+        hdl->refresh_zone_surf->DrawString( hdl->refresh_zone_surf, 
+                                            fl_get_filename(hdl->list, i),                                        
+                                            -1,
+                                            hdl->file_zone.x - hdl->refresh_zone.x ,  
+                                            y, 
+                                            DSTF_TOPLEFT);
+    } else {
+        len = strlen(fl_get_filename(hdl->list, i));       
+        /*2 addtional characters + terminal 0*/
+        filename = malloc(len+3);
+        memcpy (&filename[2],fl_get_filename(hdl->list, i), len+1);        
+        filename[0] = '>';
+        filename[1] = ' ';
+        hdl->refresh_zone_surf->DrawString( hdl->refresh_zone_surf, 
+                                            filename,                                        
+                                            -1,
+                                            hdl->file_zone.x - hdl->refresh_zone.x ,  
+                                            y, 
+                                            DSTF_TOPLEFT);
+        free(filename);
+    }
     if (fl_is_selected(hdl->list,i)) {
       display_obj(hdl,FS_ICON_CHECK,&point);
     }
@@ -426,6 +444,36 @@ static void * thread(void *param){
 }
 
 
+
+static int item_selection(fs_handle hdl, int idx){
+    bool refresh = false;
+    if (!fl_is_folder(hdl->list,idx)) {
+        /* Regular file */
+        fs_select(hdl,idx);        
+        refresh = true;   
+    } else {
+        /* Folder */
+        char * full_path = alloca(strlen(fl_get_basename(hdl->list)) + strlen(fl_get_filename(hdl->list,idx)) + 2);
+        char * slash_index;
+        strcpy(full_path, fl_get_basename(hdl->list));
+        if ((strcmp(fl_get_filename(hdl->list,idx),"..") == 0) &&
+            ((slash_index = strrchr(full_path,'/')) != NULL) &&
+            (strcmp(slash_index+1,"..")!=0)) {
+            /* We cut the last folder when going up in a tree rather than concatening '..' => It simplifies pathnames */
+            if (slash_index == full_path){  
+            /* Specific case where we are at root */
+            *(slash_index +1)= '\0'; 
+            } else {
+            *slash_index = '\0';
+            }
+        } else {                      
+            strcat(full_path , "/");
+            strcat(full_path, fl_get_filename(hdl->list,idx));
+        }
+        fs_new_path(hdl,full_path, NULL);
+    }
+    return refresh;
+}
 
 
 /** Create a file selector object
@@ -591,7 +639,8 @@ fs_handle fs_create (IDirectFB  * dfb, IDirectFBWindow * win, const struct fs_co
     handle->end_asked = false;
 	pthread_create(&handle->thread, NULL, thread, handle);
   }
- 
+  
+  handle->selected_item = 0;
   return handle;
 
 error :
@@ -623,6 +672,40 @@ bool fs_set_select_cb(fs_handle hdl, select_cb * f){
   } else {
 	return false;
   }
+}
+
+
+void fs_handle_key(fs_handle hdl, DFBInputDeviceKeyIdentifier id){    
+    bool refresh = false;
+    if (id == DIKI_DOWN){
+        if  (hdl->selected_item < (fl_get_entries_nb(hdl->list) - 1))
+            hdl->selected_item++;
+        /*else
+           hdl->selected_item = 0;*/
+        refresh = true;
+    } else 
+    if (id == DIKI_UP){
+        if (hdl->selected_item > 0)
+            hdl->selected_item--;
+        /*else 
+            hdl->selected_item = fl_get_entries_nb(hdl->list) - 1;
+        */
+        refresh = true;
+    } else {
+        refresh = item_selection(hdl, hdl->selected_item);
+    }    
+    
+    if (hdl->selected_item >= (hdl->idx_first_displayed + hdl->nb_lines)){
+        hdl->idx_first_displayed++;
+    }
+    if (hdl->selected_item < hdl->idx_first_displayed){
+        hdl->idx_first_displayed--;
+    }
+
+    if (refresh){
+        refresh_display(hdl);
+    }      
+    
 }
 
 /** Handle click on the object
@@ -678,31 +761,7 @@ void fs_handle_click(fs_handle hdl,int x, int y){
         /* Test a file selection */
         idx = hdl->idx_first_displayed + ((y - hdl->refresh_zone.y) / hdl->line_height);
         if (idx < entries_nb) {
-        if (!fl_is_folder(hdl->list,idx)) {
-          /* Regular file */
-          fs_select(hdl,idx);        
-          refresh = true;   
-        } else {
-            /* Folder */
-          char * full_path = alloca(strlen(fl_get_basename(hdl->list)) + strlen(fl_get_filename(hdl->list,idx)) + 2);
-          char * slash_index;
-          strcpy(full_path, fl_get_basename(hdl->list));
-          if ((strcmp(fl_get_filename(hdl->list,idx),"..") == 0) &&
-              ((slash_index = strrchr(full_path,'/')) != NULL) &&
-              (strcmp(slash_index+1,"..")!=0)) {
-              /* We cut the last folder when going up in a tree rather than concatening '..' => It simplifies pathnames */
-              if (slash_index == full_path){  
-                /* Specific case where we are at root */
-                *(slash_index +1)= '\0'; 
-              } else {
-                *slash_index = '\0';
-              }
-          } else {                      
-            strcat(full_path , "/");
-            strcat(full_path, fl_get_filename(hdl->list,idx));
-          }
-          fs_new_path(hdl,full_path, NULL);
-        }
+            refresh = item_selection(hdl, idx);
         }
     }
   }
@@ -751,6 +810,7 @@ bool fs_new_path(fs_handle hdl, const char * path, const char * filter){
   hdl->idx_first_displayed = 0;
   fl_release(hdl->list);
   hdl->list = fl_create(path, hdl->config->folder.filter ? &hdl->compiled_re_filter : NULL,  hdl->config->options.multiple_selection );
+  hdl->selected_item = 0;
   refresh_display(hdl);
   return true;
 }

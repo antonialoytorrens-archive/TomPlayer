@@ -95,6 +95,7 @@ fs_handle fs_create (IDirectFB  *, IDirectFBWindow *,const struct fs_config *);
 bool fs_release(fs_handle);
 bool fs_set_select_cb(fs_handle, select_cb * );
 void fs_handle_click(fs_handle,int , int );
+void  fs_handle_key(fs_handle, DFBInputDeviceKeyIdentifier);
 bool fs_new_path(fs_handle hdl, const char * path, const char * filter);
 bool fs_select(fs_handle, int);
 bool fs_select_all(fs_handle);

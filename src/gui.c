@@ -30,12 +30,18 @@
 #include <unistd.h>
 #include <directfb.h>
 #include <getopt.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 
 #include "debug.h"
 #include "engine.h"
 #include "power.h"
 #include "screens.h"
 #include "window.h"
+
+
 
 
 static IDirectFB	      *dfb;
@@ -122,6 +128,9 @@ static bool dispatch_ts_event(DFBInputEvent *evt )
   else if (evt->type == DIET_BUTTONPRESS ){
     gui_window_handle_click( mouse_x, mouse_y);
   }
+  else if (evt->type == DIET_KEYPRESS){
+      gui_window_handle_key(evt->key_id); 	  
+  }
 
   return true;
 }
@@ -137,9 +146,10 @@ int main( int argc, char *argv[] ){
  
   int option_index = 0;
   int c;
+  int input_fd;
   DFBInputEvent evt;
 
-
+  input_fd = open(KEY_INPUT_FIFO,O_RDONLY|O_NONBLOCK);
   while ((c = getopt_long (argc, argv, "",long_options, &option_index)) != -1);
 
   if (init_resources( argc, argv ) == true){
@@ -149,8 +159,16 @@ int main( int argc, char *argv[] ){
     }
 
     if (screen_init(dfb, layer, splash_wanted)){
-      while( screen_is_end_asked()  == false ){
-              keybuffer->WaitForEventWithTimeout( keybuffer, 0, 100 );
+        while( screen_is_end_asked()  == false ){
+              if (keybuffer->WaitForEventWithTimeout( keybuffer, 0, 50 ) == DFB_TIMEOUT){
+                if (input_fd > 0){
+                    if (read(input_fd, &evt.key_id, sizeof(evt.key_id)) > 0){
+                        
+                        evt.type = DIET_KEYPRESS;
+                        dispatch_ts_event( &evt );
+                    }
+                }
+              }
               while (keybuffer->GetEvent( keybuffer, DFB_EVENT(&evt)) == DFB_OK) {
                       dispatch_ts_event( &evt );
               }
@@ -159,7 +177,7 @@ int main( int argc, char *argv[] ){
                 power_off_asked = true;
                 break;
               }
-      }
+        }
     }
     /*FIXME proper release of directfb may hang...
       Pb seems to appear from time to time when releasing directfb layer : i have not found the root of this pb */

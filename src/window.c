@@ -50,7 +50,8 @@ struct _gui_window{
 	struct list_object * controls;         /**< list of controls */        
         IDirectFBFont * font ;
         DFBColor color;                        /**< Text color */ 
-        bool is_detached;                      /**< If detahed, the window is not hndled in the window stack and does not receives events */
+        bool is_detached;                      /**< If detahed, the window is not handled in the window stack and does not receives events */
+        struct gui_control * selected_control; /**< Currently selected control (useful when using keyboard input events) */
 };
 
 /**/
@@ -70,6 +71,101 @@ static inline char * get_key(int ctrl_id,const char * ctrl_param){
   static char key[200];
   snprintf(key, sizeof(key) -1,"control_%02d:%s", ctrl_id, ctrl_param);
   return key;
+}
+
+
+/** Compare the position of two controls on the screen */
+static int cmp_control_position(void *c1, void *c2){
+    struct gui_control * elt1 = c1;
+    struct gui_control * elt2 = c2;
+    int res;
+    
+    if ((elt1->zone.y  <=  (elt2->zone.y + elt2->zone.h)) &&
+        (elt2->zone.y  <= (elt1->zone.y + elt1->zone.h))){
+        /* If the two controls intersect horizontally the lefter is the lesser*/        
+        return (elt1->zone.x - elt2->zone.x);
+    } else {
+        /* Otherwise the upper the lesser */
+        return (elt1->zone.y - elt2->zone.y);        
+    }
+    PRINTDF("comparison betweex %s and %s : %i\n",elt1->name, elt2->name, res);
+    return res;
+}
+
+
+
+static struct gui_control * __find_next_selectable_control(struct list_object * list_controls, struct gui_control* start_ctrl){               
+    struct list_object * head = list_controls;
+    struct gui_control * control;   
+    int control_nb = get_list_count(list_controls);
+    int tested = 0;
+    
+    if (start_ctrl != NULL){            
+        while (((struct gui_control *) list_controls->object) != start_ctrl){
+            list_controls = list_controls->next;        
+        }
+        list_controls = list_controls->next;      
+        if (list_controls == NULL){
+            list_controls = head; 
+        }
+    }
+        
+    while(tested < control_nb){
+        tested++;
+        control = (struct gui_control *) list_controls->object; 
+        if( control->cb != NULL){            
+            return control;
+        }       
+        list_controls = list_controls->next;      
+        if (list_controls == NULL){
+            list_controls = head; 
+        }
+    }       
+    return NULL;  
+}
+    
+static struct gui_control * find_next_selectable_control(gui_window win){               
+    __find_next_selectable_control(win->controls, win->selected_control);
+}
+
+static struct gui_control * find_prev_selectable_control(gui_window win){               
+    struct gui_control *next_control, *control;
+    struct list_object * list_controls = win->controls;
+       
+    if (win->selected_control != NULL){        
+        control = win->selected_control;
+        while (1) {             
+            next_control = __find_next_selectable_control(win->controls, control);     
+            if (next_control == NULL){
+                return NULL;
+            }
+            if (next_control == win->selected_control){
+                if (control != win->selected_control){
+                    return control;
+                } else {
+                    return NULL;
+                } 
+            }
+            control = next_control;
+        }
+    } else {
+        return find_next_selectable_control(win);
+    }    
+}
+
+
+static void switch_selection(gui_window win, struct gui_control * control){
+    struct gui_control * prev_control;
+    prev_control = win->selected_control;
+
+    if (control->cb == NULL)
+        return;
+    
+    if (prev_control != NULL){
+         prev_control->cb(prev_control, GUI_EVT_UNSELECT, NULL);
+    }    
+    win->selected_control = control;
+    control->cb(control, GUI_EVT_SELECT, NULL);    
 }
 
 /** Retrieve screen size to use them as default values when window sizes are not set */
@@ -386,7 +482,7 @@ static bool load_window_config( const char * filename, gui_window  window ){
                   default :
                     break;
                 }
-                add_to_list( &window->controls, control );
+                add_to_list_sorted( &window->controls, control, cmp_control_position );
                 num_control++;
         }
 
@@ -443,6 +539,9 @@ gui_window  gui_window_load(IDirectFB  *dfb, IDirectFBDisplayLayer *layer, const
     win_stack.current_win += 1;
     win_stack.winlist[win_stack.current_win] = window;
   }
+  
+  /* By default no control is selected */
+  window->selected_control = NULL;
   return window;
 }
 
@@ -557,6 +656,7 @@ struct gui_control * gui_window_get_control(gui_window win, const char * name){
   return ret;
 }
 
+
 void gui_window_attach_cb(gui_window win,const char * name, gui_control_cb cb){
   struct list_object * list_controls;
   struct gui_control * control;  
@@ -570,7 +670,59 @@ void gui_window_attach_cb(gui_window win,const char * name, gui_control_cb cb){
     }
     list_controls = list_controls->next;
   }
+  
+  if ((list_controls) && 
+      (win->selected_control == NULL)) {
+    /* The first attached callback is the default */
+    switch_selection(win, control);
+    
+  }
   return;
+}
+
+void gui_window_handle_key(DFBInputDeviceKeyIdentifier id){  
+  struct gui_control * control;  
+  union gui_event evt;
+  evt.key = id;
+  gui_window win;
+  if (win_stack.current_win < 0){
+    return;
+  }
+  win = win_stack.winlist[win_stack.current_win];
+  
+  switch (id){
+    case DIKI_TAB :
+        break;
+    case DIKI_ESCAPE :
+        break;
+        
+    case DIKI_LEFT :
+        control = find_prev_selectable_control(win);
+        if (control != NULL){
+           switch_selection(win,control);
+        }        
+        break;
+    case DIKI_RIGHT :
+        control = find_next_selectable_control(win);
+        if (control != NULL){
+           switch_selection(win,control);
+        }        
+        break;
+        
+    case DIKI_DOWN :
+    case DIKI_UP :            
+    case DIKI_SPACE :
+    case DIKI_ENTER :
+        control = win->selected_control;
+        if (control){
+           control->cb(control, GUI_EVT_KEY, &evt); 
+        }
+        break;
+
+    default :
+        PRINTD("Unhandled key\n");
+        break;
+  }
 }
 
 void gui_window_handle_click(int  x, int y){
@@ -578,6 +730,7 @@ void gui_window_handle_click(int  x, int y){
   struct gui_control * control;  
   int win_x, win_y;	
   gui_window win;
+  union gui_event evt;
 
   if (win_stack.current_win < 0){
     return;
@@ -616,7 +769,9 @@ void gui_window_handle_click(int  x, int y){
         ((control->zone.y + control->zone.h) >= y) 
         ) {      
         if( control->cb != NULL){
-          control->cb(control, x, y);
+	  evt.ts.x = x;
+	  evt.ts.y = y;
+          control->cb(control, GUI_EVT_TS, &evt);
 	  /* exit on first callback : needed as the cb may destroy the control list ! */
 	  break;
         }

@@ -50,6 +50,9 @@
 #include <directfb.h>
 
 
+/* FIFO Where key inputs can be read from */
+#define KEY_INPUT_FIFO "/tmp/key_fifo"
+
 /** define the type of control */
 enum gui_type_ctrl{
 	GUI_TYPE_CTRL_TEXT = 1,	      /**< a static text */
@@ -64,8 +67,19 @@ enum gui_type_ctrl{
 typedef struct _gui_window * gui_window;
 
 struct gui_control;
+
+union gui_event{
+    struct{ 
+	int x;
+	int y;
+    } ts;
+    DFBInputDeviceKeyIdentifier key;
+};
+
+enum gui_event_type {GUI_EVT_TS, GUI_EVT_KEY, GUI_EVT_SELECT, GUI_EVT_UNSELECT};
+
 /** Callback on a control click */
-typedef void (*gui_control_cb)(struct gui_control *, int, int);
+typedef void (*gui_control_cb)(struct gui_control *, enum gui_event_type, union gui_event*);
 
 /** define a single GUI control */
 struct gui_control{
