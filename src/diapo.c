@@ -54,6 +54,7 @@ static struct {
   pthread_t thread_id;
   pthread_mutex_t mutex;
   bool error;
+  bool inv_axes;         /**< Are the axes inverted */
 } diapo_state = {
   .mutex = PTHREAD_MUTEX_INITIALIZER
 };
@@ -123,7 +124,11 @@ static void * preriodic_thread(void *param){
     }} while ( (!no_file) && (!load_bitmap(&next_image_id, next_file)) ) ;
     if (no_file) break;   
     loop = 0;
-    iluScale(diapo_state.screen_x, diapo_state.screen_y,1);
+    if (diapo_state.inv_axes){
+        iluScale(diapo_state.screen_y, diapo_state.screen_x,1);
+    } else{
+        iluScale(diapo_state.screen_x, diapo_state.screen_y,1);
+    }
     if (current_image_id != 0){
       img_transition(current_image_id, next_image_id);
       ilDeleteImages( 1, &current_image_id);
@@ -179,6 +184,8 @@ bool diapo_init(const  struct diapo_config * conf ){
     diapo_release();
     return false;
   }
+  
+  diapo_state.inv_axes = ws_are_axes_inverted();
   return true;
 }
 
