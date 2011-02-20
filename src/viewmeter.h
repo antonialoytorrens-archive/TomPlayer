@@ -55,3 +55,4 @@ double vm_get_value(vm_handle hdl);
 void vm_release(vm_handle hdl);
 
 #endif
+

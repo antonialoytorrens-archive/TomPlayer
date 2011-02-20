@@ -902,7 +902,6 @@ static void diapo_new_path(struct gui_control *ctrl, enum gui_event_type type, u
 static void diapo_choose_path(struct gui_control *ctrl, enum gui_event_type type, union gui_event* evt){
     gui_window  win;  
     const struct gui_control * fs_ctrl;
-    struct gui_control * ok_button;
 
     if (evt) {
         win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_SELECT_FOLDER)); 
