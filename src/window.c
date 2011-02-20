@@ -78,7 +78,7 @@ static inline char * get_key(int ctrl_id,const char * ctrl_param){
 static int cmp_control_position(void *c1, void *c2){
     struct gui_control * elt1 = c1;
     struct gui_control * elt2 = c2;
-    int res;
+
     
     if ((elt1->zone.y  <=  (elt2->zone.y + elt2->zone.h)) &&
         (elt2->zone.y  <= (elt1->zone.y + elt1->zone.h))){
@@ -88,8 +88,6 @@ static int cmp_control_position(void *c1, void *c2){
         /* Otherwise the upper the lesser */
         return (elt1->zone.y - elt2->zone.y);        
     }
-    PRINTDF("comparison betweex %s and %s : %i\n",elt1->name, elt2->name, res);
-    return res;
 }
 
 
@@ -125,12 +123,11 @@ static struct gui_control * __find_next_selectable_control(struct list_object * 
 }
     
 static struct gui_control * find_next_selectable_control(gui_window win){               
-    __find_next_selectable_control(win->controls, win->selected_control);
+    return __find_next_selectable_control(win->controls, win->selected_control);
 }
 
 static struct gui_control * find_prev_selectable_control(gui_window win){               
-    struct gui_control *next_control, *control;
-    struct list_object * list_controls = win->controls;
+    struct gui_control *next_control, *control;   
        
     if (win->selected_control != NULL){        
         control = win->selected_control;
