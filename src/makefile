@@ -27,6 +27,9 @@ INSTALL_DIR=../distrib/tomplayer/
 ifdef DEBUG
 CFLAGS+=-DDEBUG -g 
 endif
+ifndef VERBOSE
+V:=@
+endif
 
 #Sources for the initial tomplayer interface 
 TOM_SRC = file_selector.c window.c  screens.c gui.c list.c zip_skin.c config.c widescreen.c  resume.c power.c file_list.c label.c viewmeter.c 
@@ -43,7 +46,8 @@ ENG_OBJ = $(subst .c,.o,$(ENG_SRC))
 ENG_OBJ += zip_skin_devil.o
 REM_OBJ = $(subst .c,.o,$(REM_INPUTS))
 
-TARGETS:=tomplayer refresh_wdg start_engine splash_screen remote_inputs carminat_inputs
+TARGETS:=tomplayer refresh_wdg start_engine splash_screen 
+#remote_inputs carminat_inputs
 
 .PHONY : clean clean_deps install_libdeps all
 
@@ -63,19 +67,23 @@ splash_screen : splash.o
 file_selector.o : CFLAGS+=-D_BSD_SOURCE
 zip_skin_devil.o : CFLAGS+=-DWITH_DEVIL
 zip_skin_devil.o : zip_skin.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(V)$(CC) $(CFLAGS) -c $< -o $@
+
 
 #Generic rules
 %.o : %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	@echo "[Compiling $<]"
+	$(V)$(CC) $(CFLAGS) -c $< -o $@
 
 %.d: %.c
-	$(CC) -M $(CFLAGS) $< | sed 's/$*.o/& $@/g' > $@
+	@echo "[Generating dependency for $<]"
+	$(V)$(CC) -M $(CFLAGS) $< | sed 's/$*.o/& $@/g' > $@
 
 % : 
-	$(CC) $(LDFLAGS) -o $@ $^  
-	cp $@ $(INSTALL_DIR)	
-	$(STRIP) $(INSTALL_DIR)/$@
+	@echo "[Linking and installing $@]"
+	$(V)$(CC) $(LDFLAGS) -o $@ $^  
+	$(V)cp $@ $(INSTALL_DIR)	
+	$(V)$(STRIP) $(INSTALL_DIR)/$@
 
 #Other make targets
 clean: 
@@ -94,5 +102,5 @@ install_libdeps :
 #include auto dependencies 
 NOINCLUDE=clean clean_deps
 ifeq ($(filter $(NOINCLUDE),$(MAKECMDGOALS)),)
-include $(SOURCES:.c=.d)
+-include $(SOURCES:.c=.d)
 endif
