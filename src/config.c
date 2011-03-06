@@ -119,11 +119,60 @@
 
 struct tomplayer_config config;
 
+/* Correct iniparser bug in naming function iniparser_setstring/iniparser_set */
+extern int iniparser_set(dictionary * ini, char * entry, const char * val);
+#define iniparser_setstring iniparser_set
 
-  /* Correct iniparser bug in naming function iniparser_setstring/iniparser_set */
-  extern int iniparser_set(dictionary * ini, char * entry, const char * val);
-  #define iniparser_setstring iniparser_set
 
+struct rectangular_skin_control control_get_zone(const struct skin_control *ctrl){
+    struct rectangular_skin_control zone;
+    switch(ctrl->type){
+        case CIRCULAR_SKIN_CONTROL :
+            zone.x1 = ctrl->area.circular.x - ctrl->area.circular.r ;
+            zone.y1 = ctrl->area.circular.y - ctrl->area.circular.r ;
+            zone.x2 = ctrl->area.circular.x + ctrl->area.circular.r ;
+            zone.y2 = ctrl->area.circular.y + ctrl->area.circular.r ;
+            break;
+        default :
+            zone = ctrl->area.rectangular;
+            break;
+    }
+    return zone;
+}
+
+static int control_compare(const struct skin_control *c1, const struct skin_control * c2){
+    struct rectangular_skin_control zone1, zone2;
+    
+    zone1 = control_get_zone(c1);
+    zone2 = control_get_zone(c2);    
+    if ((zone1.y1  <= zone2.y2) &&
+        (zone2.y1  <= zone1.y2)){
+        /* If the two controls intersect horizontally the lefter is the lesser*/        
+        return (zone1.x1 - zone2.x1);
+    } else {
+        /* Otherwise the upper the lesser */
+        return (zone1.y1 - zone2.y1);        
+    }
+}
+
+static void control_sort(struct skin_control *array, int length)  { 
+    int i, j;  
+    struct skin_control temp;
+    int test; 
+
+    for(i = length - 1; i > 0; i--){  
+        test=0;  
+        for(j = 0; j < i; j++){            
+            if (control_compare(&array[j], &array[j+1]) > 0){
+                temp = array[j];   
+                array[j] = array[j+1];  
+                array[j+1] = temp;  
+                test=1;  
+            }  
+        }
+        if(test==0) break; 
+    }
+} 
 
 /** Show configuration parameters
  *
@@ -160,110 +209,78 @@ void reset_skin_conf (struct skin_config * conf){
  * \return true on succes, false on failure
  */
 bool load_skin_config( char * filename, struct skin_config * skin_conf){
-	dictionary * ini ;
+    dictionary * ini ;
     char section_control[PATH_MAX + 1];
     int i,j;
     char * s;
     bool ret = true;
 
-
     reset_skin_conf(skin_conf);
     skin_conf->progress_bar_index = -1;
-
-	ini = iniparser_load(filename);
-	if (ini == NULL) {
-		PRINTDF( "Unable to load config file %s\n", filename);
-		return false ;
-	}
-
-	i = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_COLOR, 0xFF0000);
-        if( i < 0  ){
-      	 PRINTD("No text color\n");
-        } else{
-	 skin_conf->text_color = i;
-    	 PRINTDF("Read txt color : 0x%x  \n",skin_conf->text_color);
-        }
-
-	skin_conf->text_x1 = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_X1, 0);
-	skin_conf->text_x2 = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_X2, 0);
-	skin_conf->text_y1 = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_Y1, 0);
-	skin_conf->text_y2 = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_Y2, 0);
-
-	skin_conf->r = iniparser_getint(ini, SECTION_GENERAL":"KEY_R_TRANSPARENCY, 0);
-	skin_conf->g = iniparser_getint(ini, SECTION_GENERAL":"KEY_G_TRANSPARENCY, 0);
-	skin_conf->b = iniparser_getint(ini, SECTION_GENERAL":"KEY_B_TRANSPARENCY, 0);
-
-	skin_conf->pb_r = iniparser_getint(ini, SECTION_GENERAL":"KEY_R_PROGRESSBAR, 0);
-	skin_conf->pb_g = iniparser_getint(ini, SECTION_GENERAL":"KEY_G_PROGRESSBAR, 0);
-	skin_conf->pb_b = iniparser_getint(ini, SECTION_GENERAL":"KEY_B_PROGRESSBAR, 0);
-
-	s = iniparser_getstring(ini, SECTION_GENERAL":"KEY_SKIN_BMP, NULL);
-	if( s != NULL ) strcpy( skin_conf->bitmap_filename, s ); // FIXME replace by a strdup
-
-
+    ini = iniparser_load(filename);
+    if (ini == NULL) {
+        PRINTDF( "Unable to load config file %s\n", filename);
+        return false ;
+    }
+    i = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_COLOR, 0xFF0000);
+    if( i < 0  ){
+        PRINTD("No text color\n");
+    } else{
+        skin_conf->text_color = i;
+        PRINTDF("Read txt color : 0x%x  \n",skin_conf->text_color);
+    }
+    skin_conf->text_x1 = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_X1, 0);
+    skin_conf->text_x2 = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_X2, 0);
+    skin_conf->text_y1 = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_Y1, 0);
+    skin_conf->text_y2 = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_Y2, 0);
+    skin_conf->r = iniparser_getint(ini, SECTION_GENERAL":"KEY_R_TRANSPARENCY, 0);
+    skin_conf->g = iniparser_getint(ini, SECTION_GENERAL":"KEY_G_TRANSPARENCY, 0);
+    skin_conf->b = iniparser_getint(ini, SECTION_GENERAL":"KEY_B_TRANSPARENCY, 0);
+    skin_conf->pb_r = iniparser_getint(ini, SECTION_GENERAL":"KEY_R_PROGRESSBAR, 0);
+    skin_conf->pb_g = iniparser_getint(ini, SECTION_GENERAL":"KEY_G_PROGRESSBAR, 0);
+    skin_conf->pb_b = iniparser_getint(ini, SECTION_GENERAL":"KEY_B_PROGRESSBAR, 0);
+    s = iniparser_getstring(ini, SECTION_GENERAL":"KEY_SKIN_BMP, NULL);
+    if( s != NULL ) strcpy( skin_conf->bitmap_filename, s ); // FIXME replace by a strdup
+    
+    /* Parse controls description */
     for( i = 0; i < MAX_SKIN_CONTROLS; i++ ){
-		sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_TYPE_CONTROL );
-		j = iniparser_getint(ini, section_control, -1);
+        sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_TYPE_CONTROL );
+        j = iniparser_getint(ini, section_control, -1);
         if( j < 0  ){
            PRINTDF( "Warning : no section  <%s>\n", section_control );
            break;
         } else {
-	   skin_conf->controls[i].type = j;
+            skin_conf->controls[i].type = j;
         }
-
-        /* Read filename to load
-         *
-         * Wolf  : suppress dynamic allocation is not such a good idea : it wastes about 80Ko
-         * But now,  with mulitple config during the same session, a conf cleanup is needed (in unload_skin ?  Todo later)...
-         */
-	sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CTRL_BITMAP_FILENAME );
-	s = iniparser_getstring(ini, section_control, NULL);
-	if( s != NULL ) strcpy( skin_conf->controls[i].bitmap_filename, s );
-
-
-	sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CMD_CONTROL );
-	skin_conf->controls[i].cmd = iniparser_getint(ini, section_control, -1);
+        sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CTRL_BITMAP_FILENAME );
+        s = iniparser_getstring(ini, section_control, NULL);
+        if( s != NULL ) strcpy( skin_conf->controls[i].bitmap_filename, s );
+        sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CMD_CONTROL );
+        skin_conf->controls[i].cmd = iniparser_getint(ini, section_control, -1);
         if( skin_conf->controls[i].cmd < 0  ){
-			sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CMD_CONTROL2 );
-			skin_conf->controls[i].cmd = iniparser_getint(ini, section_control, -1);
-		}
-
-        if (skin_conf->controls[i].cmd == SKIN_CMD_BATTERY_STATUS){
-        	PRINTDF("Battery conf index :%i - filename : %s\n",i,skin_conf->controls[i].bitmap_filename);
-        	skin_conf->bat_index = i;
-        }
-
-        /* Fill table cmd -> skin index */
-        if ((skin_conf->controls[i].cmd >= 0) &&
-        	(skin_conf->controls[i].cmd < SKIN_CMD_MAX_NB)){
-        	skin_conf->cmd2idx[skin_conf->controls[i].cmd] = i;
-        }
-
+            sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CMD_CONTROL2 );
+            skin_conf->controls[i].cmd = iniparser_getint(ini, section_control, -1);
+        }    
         switch( skin_conf->controls[i].type ){
             case CIRCULAR_SKIN_CONTROL:
-				sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CIRCULAR_CONTROL_X );
-				skin_conf->controls[i].area.circular.x= iniparser_getint(ini, section_control, -1);
-				sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CIRCULAR_CONTROL_Y );
-				skin_conf->controls[i].area.circular.y = iniparser_getint(ini, section_control, -1);
-				sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CIRCULAR_CONTROL_R );
-				skin_conf->controls[i].area.circular.r = iniparser_getint(ini, section_control, -1);
+                sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CIRCULAR_CONTROL_X );
+                skin_conf->controls[i].area.circular.x= iniparser_getint(ini, section_control, -1);
+                sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CIRCULAR_CONTROL_Y );
+                skin_conf->controls[i].area.circular.y = iniparser_getint(ini, section_control, -1);
+                sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CIRCULAR_CONTROL_R );
+                skin_conf->controls[i].area.circular.r = iniparser_getint(ini, section_control, -1);
                 break;
             case RECTANGULAR_SKIN_CONTROL:
             case PROGRESS_SKIN_CONTROL_X:
             case PROGRESS_SKIN_CONTROL_Y:
-				sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_RECTANGULAR_CONTROL_X1 );
-				skin_conf->controls[i].area.rectangular.x1= iniparser_getint(ini, section_control, -1);
-				sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_RECTANGULAR_CONTROL_X2 );
-				skin_conf->controls[i].area.rectangular.x2 = iniparser_getint(ini, section_control, -1);
-				sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_RECTANGULAR_CONTROL_Y1 );
-				skin_conf->controls[i].area.rectangular.y1 = iniparser_getint(ini, section_control, -1);
-				sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_RECTANGULAR_CONTROL_Y2 );
-				skin_conf->controls[i].area.rectangular.y2 = iniparser_getint(ini, section_control, -1);
-
-				if ((skin_conf->controls[i].type == PROGRESS_SKIN_CONTROL_X) ||
-					(skin_conf->controls[i].type == PROGRESS_SKIN_CONTROL_Y)){
-					skin_conf->progress_bar_index = i;
-				}
+                sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_RECTANGULAR_CONTROL_X1 );
+                skin_conf->controls[i].area.rectangular.x1= iniparser_getint(ini, section_control, -1);
+                sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_RECTANGULAR_CONTROL_X2 );
+                skin_conf->controls[i].area.rectangular.x2 = iniparser_getint(ini, section_control, -1);
+                sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_RECTANGULAR_CONTROL_Y1 );
+                skin_conf->controls[i].area.rectangular.y1 = iniparser_getint(ini, section_control, -1);
+                sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_RECTANGULAR_CONTROL_Y2 );
+                skin_conf->controls[i].area.rectangular.y2 = iniparser_getint(ini, section_control, -1);
                 break;
             default:
                 fprintf( stderr, "Type not defined correctly for %s\n", section_control );
@@ -271,9 +288,27 @@ bool load_skin_config( char * filename, struct skin_config * skin_conf){
                 goto error;
         }
     }
-
+    /* Number of controls on the skin */
     skin_conf->nb = i;
-
+    /* Sort the controls */
+    control_sort(skin_conf->controls, skin_conf->nb);        
+    /* Fill in the indexes fields */
+    for (i = 0; i < skin_conf->nb; i++){
+        if (skin_conf->controls[i].cmd == SKIN_CMD_BATTERY_STATUS){
+            PRINTDF("Battery conf index :%i - filename : %s\n",i,skin_conf->controls[i].bitmap_filename);
+            skin_conf->bat_index = i;
+        }
+        if ((skin_conf->controls[i].type == PROGRESS_SKIN_CONTROL_X) ||
+            (skin_conf->controls[i].type == PROGRESS_SKIN_CONTROL_Y)){
+            skin_conf->progress_bar_index = i;
+        }
+        /* Fill table cmd -> skin index */
+        if ((skin_conf->controls[i].cmd >= 0) &&
+            (skin_conf->controls[i].cmd < SKIN_CMD_MAX_NB)){
+            skin_conf->cmd2idx[skin_conf->controls[i].cmd] = i;
+        }        
+    }
+    
 error:
     iniparser_freedict(ini);
     return ret;

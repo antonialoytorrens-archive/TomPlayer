@@ -26,108 +26,27 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */ 
 
-
-#include <stdio.h>
-#include <unistd.h>
-#include <signal.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include "tslib.h"
-#include "debug.h"
-#include "engine.h"
-#include "widescreen.h"
-#include "font.h"
 #include "fm.h"
 #include "sound.h"
 #include "diapo.h"
-
-static void alarm_handler(int sig) { 
- return;
-}
-
-static void get_events(void){
-  struct tsdev *ts;
-  char *tsdevice=NULL;
-  struct ts_sample samp;
-  int ret;
-  int last_pressure = 0;
-  int h,w; 
-  bool is_rotated;
-
-  if( (tsdevice = getenv("TSLIB_TSDEVICE")) != NULL ) {
-          ts = ts_open(tsdevice,0);
-  } else {
-    return ;
-  }
-
-  if (ts_config(ts)) {
-          perror("ts_config");
-          return;
-  }
-
-  is_rotated = ws_are_axes_inverted();
-  ws_get_size(&h,&w);
-
-
-  /* Purge events */
-  do {
-    /* To interrupt blocking read */
-    alarm(1);
-    if (ts_read(ts, &samp, 1) < 0) {
-      break;
-    }
-  } while (samp.pressure == 0);
-
-  /* Main events loop */
-  while (is_mplayer_finished == false) {    
-    /* To interrupt blocking read */
-    alarm(1);
-    ret = ts_read(ts, &samp, 1);
-    if (ret < 0) {
-            perror("ts_read");
-            continue;
-    }
-    if (ret != 1)
-            continue;
-
-    if (samp.pressure > 0){
-      if  (last_pressure == 0){
-        /*printf("delievring events %i %i %i \n", samp.x, samp.y,samp.pressure);*/
-        if (is_rotated){
-#ifdef NATIVE
-           handle_mouse_event( samp.y, h- samp.x);
-#else
-           handle_mouse_event( samp.x, samp.y);
-#endif
-        } else {
-          handle_mouse_event( samp.x, samp.y);
-        }
-        last_pressure = samp.pressure ;
-      }
-    } else {
-      /*printf("Not delievred  event %i %i %i \n", samp.x, samp.y,samp.pressure);*/
-      last_pressure = 0;
-    }
-  }
-}
-
+#include "engine.h"
 
 int main( int argc, char *argv[] ){
-  struct sigaction new_action;
   bool is_video;
   
   if (argc != 4){
     return -1;
   }
-
-  /*Handler on alarm signal */
-  new_action.sa_handler=alarm_handler;
-  sigemptyset(&new_action.sa_mask);
-  new_action.sa_flags=0;
-  sigaction(SIGALRM, &new_action, NULL);
-
-  init_engine();	
-
+  
+  is_video = false;
+  if (argv[2] != NULL){
+    if (strncmp(argv[3],"VIDEO",5) == 0)
+      is_video = true;
+  }
+  init_engine(is_video);
 
   if( load_config(&config) == false ){
     fprintf( stderr, "Error while loading config\n" );
@@ -141,8 +60,8 @@ int main( int argc, char *argv[] ){
         fprintf(stderr,"Error while activating FM transmitter\n");
       }
       if (config.int_speaker == CONF_INT_SPEAKER_AUTO){
-		snd_mute_internal(true);
-	  }
+        snd_mute_internal(true);
+      }
     }
     if (config.diapo_enabled){
       if (diapo_init(&config.diapo) == false){
@@ -150,14 +69,12 @@ int main( int argc, char *argv[] ){
         config.diapo_enabled = false;
       }
     }
-    is_video = false;
-	if (argv[2] != NULL){
-		if (strncmp(argv[3],"VIDEO",5) == 0)
-			is_video = true;
-	}
-    launch_mplayer("", argv[1], atoi(argv[2]), is_video);
+
+    launch_mplayer("", argv[1], atoi(argv[2]));
   }
-  get_events();
+  
+  event_loop();
+    
   /* Desactivate FM transmitter if needed */
   if (config.enable_fm_transmitter){
     fm_set_state(0);

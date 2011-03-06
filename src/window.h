@@ -50,9 +50,6 @@
 #include <directfb.h>
 
 
-/* FIFO Where key inputs can be read from */
-#define KEY_INPUT_FIFO "/tmp/key_fifo"
-
 /** define the type of control */
 enum gui_type_ctrl{
 	GUI_TYPE_CTRL_TEXT = 1,	      /**< a static text */

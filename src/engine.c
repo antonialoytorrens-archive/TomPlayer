@@ -68,24 +68,25 @@
 #define PB_UPDATE_PERIOD_US 250000
 #define SCREEN_SAVER_ACTIVE (-1)
 
-/*char * cmd_mplayer = "./mplayer -quiet -include ./conf/mplayer.conf -vf expand=%i:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -ss %i -slave -input file=%s %s \"%s/%s\" > %s";*/
+#ifdef NATIVE
+static const char * cmd_mplayer = "mplayer -quiet -vf expand=%i:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -slave -input file=%s %s \"%s/%s\" > %s 2> /dev/null";
+#else
 /* quiet option is mandatory to be able  to parse correctly mplayer output */
-char * cmd_mplayer = "./mplayer -quiet -include ./conf/mplayer.conf -vf expand=%i:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -slave -input file=%s %s \"%s/%s\" > %s 2> /dev/null";
-//char * cmd_mplayer = "mplayer -include ./conf/mplayer.conf -vf expand=%i:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -ss %i -slave -input file=%s %s \"%s/%s\" > %s";
-
-static char * fifo_command_name = "/tmp/mplayer-cmd.fifo";
-static char * fifo_menu_name = "/tmp/mplayer-menu.fifo";
-static char * fifo_stdout_name = "/tmp/mplayer-out.fifo";
+static const char * cmd_mplayer = "./mplayer -quiet -include ./conf/mplayer.conf -vf expand=%i:%i,bmovl=1:0:/tmp/mplayer-menu.fifo%s -slave -input file=%s %s \"%s/%s\" > %s 2> /dev/null";
+#endif
+static const char * fifo_command_name = "/tmp/mplayer-cmd.fifo";
+static const char * fifo_menu_name = "/tmp/mplayer-menu.fifo";
+static const char * fifo_stdout_name = "/tmp/mplayer-out.fifo";
 
 static int fifo_command;
 static int fifo_menu;
 static int fifo_out;
 
-/*struct tomplayer_config config;*/
+enum {MODE_VIDEO,
+      MODE_AUDIO} current_mode;
 bool is_menu_showed = false;
 bool is_mplayer_finished = false;
-bool is_playing_video = false;
-bool is_playing_audio = false;
+
 static bool is_paused = false;
 static int resume_pos;
 
@@ -129,9 +130,20 @@ static char current_filename[200];
 static bool quit_asked = false ;
 
 static void display_RGB_to_fb(unsigned char * buffer, int x, int y, int w, int h, bool transparency);
+static void display_RGB(unsigned char * buffer, int x, int y, int w, int h, bool transparency);
 
-int init_engine( void ){
-    // Initialize DevIL.
+/** This functions retrive the currently used skin */ 
+const struct skin_config * state_get_current_skin(void){
+  const struct skin_config * c;
+  if (current_mode == MODE_VIDEO)
+    c = &config.video_config;
+  else
+    c = &config.audio_config;
+  return c;
+}
+
+int init_engine( bool is_video ){
+    /* Initialize DevIL. */
     ilInit();
     iluInit();
 
@@ -145,6 +157,12 @@ int init_engine( void ){
     /* Initialize font size */
     font_init(11); /* FIXME font size hard coded */
 
+    /* initialise mode */
+    if (is_video)
+      current_mode = MODE_VIDEO;
+    else
+      current_mode = MODE_AUDIO;
+    
     return true;
 }
 
@@ -209,7 +227,7 @@ static void draw_text(const char * text, struct skin_config *skin_conf) {
       ilOverlayImage(text_image_id,0,0,0);
       ilCopyPixels(0, 0, 0, img_width, img_height, 1,
 		     IL_RGB, IL_UNSIGNED_BYTE, back_text_img);	
-      display_RGB_to_fb(back_text_img, skin_conf->text_x1,skin_conf->text_y1, img_width, img_height, false);
+      display_RGB(back_text_img, skin_conf->text_x1,skin_conf->text_y1, img_width, img_height, false);
       free(text_buffer);
       ilDeleteImages( 1, &text_image_id);
 }
@@ -221,7 +239,6 @@ static void display_current_file( char * filename, struct skin_config *skin_conf
 
 void blit_video_menu( int fifo, struct skin_config * conf )
 {
-    char str[100];
     int height, width;
     unsigned char * buffer;
     int buffer_size;
@@ -250,9 +267,7 @@ void blit_video_menu( int fifo, struct skin_config * conf )
     		buffer[i+3] = 0;
     	}
     }
-    sprintf(str, "RGBA32 %d %d %d %d %d %d\n", width, height, 0, 0 , 0, 0);
-    write(fifo_menu, str, strlen(str));
-    write(fifo_menu, buffer,buffer_size);
+    display_RGB(buffer, 0, 0, width, height, true);    
 
     free( buffer );
 }
@@ -260,22 +275,18 @@ void blit_video_menu( int fifo, struct skin_config * conf )
 /** Load bitmaps associated with controls
  * \note For now only Progress bar bitmap is involved */
 static void init_ctrl_bitmaps(void){
-	struct skin_config * c;
+  const struct skin_config * c;
 
-	prev_coords.x = -1;
-	prev_coords.y = -1;
+  prev_coords.x = -1;
+  prev_coords.y = -1;
+  c = state_get_current_skin();
 
-	if (is_playing_video == true )
-		c = &config.video_config;
-	else
-		c = &config.audio_config;
+  pb_cursor_id = c->controls[c->progress_bar_index].bitmap;
+  bat_cursor_id = c->controls[c->bat_index].bitmap;
+  skin_id = c->bitmap;
 
-    pb_cursor_id = c->controls[c->progress_bar_index].bitmap;
-    bat_cursor_id = c->controls[c->bat_index].bitmap;
-    skin_id = c->bitmap;
-
-    /* Turn ON screen if it is not */
-    pwm_resume();
+  /* Turn ON screen if it is not */
+  pwm_resume();
 }
 
 
@@ -293,7 +304,6 @@ static void display_cursor_over_skin (ILuint cursor_id, ILuint frame_id, int x, 
 	int height, width;
 	int buffer_size;
 	unsigned char * buffer;
-	char str[100];
 
 	/* Get cusor infos */
 	ilBindImage(cursor_id);
@@ -335,14 +345,7 @@ static void display_cursor_over_skin (ILuint cursor_id, ILuint frame_id, int x, 
 			 	width, height, 1,
 			 	IL_RGBA, IL_UNSIGNED_BYTE, buffer);
 
-	if( is_playing_video == true ) {
-		sprintf(str, "RGBA32 %d %d %d %d %d %d\n", width, height, x, y , 0, 0);
-		write(fifo_menu, str, strlen(str));
-		write(fifo_menu, buffer,buffer_size);
-	} else {
-		/*gui_buffer_rgb(buffer,width, height, x, y);*/
-		display_RGB_to_fb(buffer,x,y,width, height, true);
-	}
+  display_RGB(buffer, x, y, width, height, true);
 
 	/* Cleanup */
 	ilDeleteImages( 1, &tmp_skin_id);
@@ -357,7 +360,7 @@ static void display_cursor_over_skin (ILuint cursor_id, ILuint frame_id, int x, 
 static void display_bat_state(bool force){
 	static enum E_POWER_LEVEL previous_state = POWER_BAT_UNKNOWN;
 	enum E_POWER_LEVEL state;
-	struct skin_config * c;
+	const struct skin_config * c;
 	int x = -1;
 	int y = -1;
 
@@ -365,11 +368,7 @@ static void display_bat_state(bool force){
 		state = power_get_bat_state();
 		if ((state != previous_state) ||
 			(force == true )){
-			if( is_playing_video == true )
-		    	c = &config.video_config;
-		    else {
-		    	c = &config.audio_config;
-		    }
+      c = state_get_current_skin();
 			if (c->controls[c->bat_index].type == CIRCULAR_SKIN_CONTROL){
 				x = c->controls[c->bat_index].area.circular.x - c->controls[c->bat_index].area.circular.r;
 				y = c->controls[c->bat_index].area.circular.y - c->controls[c->bat_index].area.circular.r;
@@ -389,19 +388,14 @@ static void display_bat_state(bool force){
 
 static void display_progress_bar(int current)
 {
-    char str[100];
     int i;
     int x,y;
     int height, width;
     unsigned char * buffer;
     int buffer_size;
-    struct skin_config * c;
+    const struct skin_config * c;
 
-    if( is_playing_video == true )
-      c = &config.video_config;
-    else {
-      c = &config.audio_config;
-    }
+    c = state_get_current_skin();
 
     if (no_user_interaction_cycles == SCREEN_SAVER_ACTIVE){
     	/* No need to display progress bar as screen is off*/
@@ -452,15 +446,7 @@ static void display_progress_bar(int current)
 	            }
 		    }
 	    }
-	    if( is_playing_video == true ) {
-	          sprintf(str, "RGBA32 %d %d %d %d %d %d\n", width, height, c->controls[c->progress_bar_index].area.rectangular.x1, c->controls[c->progress_bar_index].area.rectangular.y1, 0, 0);
-	          write(fifo_menu, str, strlen(str));
-	          write(fifo_menu, buffer,buffer_size);
-	        } else {
-/*	          gui_buffer_rgb(buffer,width, height, c->controls[c->progress_bar_index].area.rectangular.x1, c->controls[c->progress_bar_index].area.rectangular.y1);*/
-	          display_RGB_to_fb(buffer, c->controls[c->progress_bar_index].area.rectangular.x1, c->controls[c->progress_bar_index].area.rectangular.y1, width, height,true);
-
-	    }
+	    display_RGB(buffer, c->controls[c->progress_bar_index].area.rectangular.x1, c->controls[c->progress_bar_index].area.rectangular.y1, width, height,true);
 
     } else {
     	/* A cursor bitmap is available */
@@ -519,14 +505,7 @@ static void display_progress_bar(int current)
 	    	         erase_width, height , 1,
 	    	    	 IL_RGBA, IL_UNSIGNED_BYTE, buffer);
 	    /*PRINTDF("Progress bar - erase x : %i - prev y : %i - w : %i -h : %i - buffer : @%x \n",erase_x,prev_coords.y,erase_width,height,buffer);*/
-	    if( is_playing_video == true ) {
-	    	sprintf(str, "RGBA32 %d %d %d %d %d %d\n", erase_width, height, erase_x, prev_coords.y , 0, 0);
-		    write(fifo_menu, str, strlen(str));
-		    write(fifo_menu, buffer,4*erase_width*height);
-        } else {
-   	        /*gui_buffer_rgb(buffer,erase_width, height, erase_x, prev_coords.y);*/
-   	        display_RGB_to_fb(buffer, erase_x, prev_coords.y, erase_width, height,true);
-	    }
+      display_RGB(buffer, erase_x, prev_coords.y, erase_width, height,true);
 
 		/* Display cursor at its new position after overlaying cursor bitmap on skin background */
 	    display_cursor_over_skin (pb_cursor_id, 0, new_x, prev_coords.y);
@@ -536,8 +515,7 @@ static void display_progress_bar(int current)
     free( buffer );
 }
 
-/** Flush any data from mplayer stdout
-*/
+/** Flush any data from mplayer stdout */
 static void flush_stdout(void){
   char buffer[200];
   int status;
@@ -898,17 +876,15 @@ void hide_menu( void ){
 }
 
 static void quit_mplayer(void){
-	int pos;
-
-	/*if ( is_playing_video == true ){*/
-	  is_paused=false;
-	  pos = get_file_position_seconds();
-	  if (pos > 0){
-	    resume_write_pos(pos);
-	  }
-	/*}*/
-	send_raw_command( "quit\n" );
-        quit_asked = true ;
+  int pos;
+  
+  is_paused=false;
+  pos = get_file_position_seconds();
+  if (pos > 0){
+    resume_write_pos(pos);
+  }
+  send_raw_command( "quit\n" );
+  quit_asked = true ;
 }
 
 
@@ -920,7 +896,7 @@ void *anim_thread(void * param){
 
 	anim_idx = config.audio_config.cmd2idx[SKIN_CMD_ANIM];
 
-	 if (( is_playing_audio == true ) &&
+	 if (( current_mode == MODE_AUDIO ) &&
 	     ( anim_idx !=-1)){
 
 		 ilBindImage(config.audio_config.controls[anim_idx].bitmap);
@@ -996,7 +972,7 @@ void * update_thread(void *cmd){
 	 /* DO Not send periodic commands to mplayer while in pause because it unlocks the pause for a brief delay */        
 	 if( get_current_file_name( current_buffer_filename ) == true ){
          if( !strncmp( "ANS_FILENAME='", current_buffer_filename, strlen( "ANS_FILENAME='" ) ) ){
-           p=current_buffer_filename + strlen( "ANS_FILENAME='" );
+           p = current_buffer_filename + strlen( "ANS_FILENAME='" );
            p[strlen(p)-2] = 0;
            if( strcmp( p, current_filename ) ){
              strcpy( current_filename, p);
@@ -1005,7 +981,7 @@ void * update_thread(void *cmd){
                send_command( buffer );	   	 
 			   resume_pos = 0;
 			 }
-			 if( is_playing_audio == true ){
+			 if( current_mode == MODE_AUDIO ){
                // Affichage du nom du fichier
                if (no_user_interaction_cycles != SCREEN_SAVER_ACTIVE){
                  display_current_file( p, &config.audio_config);
@@ -1013,18 +989,18 @@ void * update_thread(void *cmd){
                }
                set_audio_settings(&current_audio_settings);
              }
-             if(is_playing_video){
+             if(current_mode == MODE_VIDEO){
 				blit_video_menu( fifo_menu, &config.video_config );
 				display_bat_state(true);	
 				set_video_settings(&current_video_settings);
 			 }
            }
-         }        
+         }
 	   }
 	}
 
 	
-    if (((is_menu_showed == true) ||  ( is_playing_video == false ))  &&
+    if (((is_menu_showed == true) ||  ( current_mode == MODE_AUDIO ))  &&
        (is_paused == false)) {
 
       /* Update progress bar */
@@ -1042,7 +1018,7 @@ void * update_thread(void *cmd){
 
 
 	/* Handle screen saver */
-	if ((is_playing_video == false) &&
+	if ((current_mode == MODE_AUDIO) &&
 		(no_user_interaction_cycles != SCREEN_SAVER_ACTIVE)){
 		no_user_interaction_cycles++;
 		if ((screen_saver_to_cycles != 0) &&
@@ -1084,7 +1060,7 @@ void * update_thread(void *cmd){
 	}
 
     /* FIXME test*/     
-    /* Unmute external for eclipse and start test */  
+    /* Unmute external for eclipse AND CARMINAT and start test */  
 	/*snd_mute_external(false);*/
 	
 	/* Handle power button*/
@@ -1115,15 +1091,11 @@ void * mplayer_thread(void *cmd){
     is_mplayer_finished = false;
     pthread_create(&up_thread, NULL, update_thread, NULL);
     pthread_create(&t, NULL, anim_thread, NULL);
-#ifdef NATIVE
-    while (1){	
-      sleep (1);
-    }
-#endif
-    system( (char *) cmd );
+
+	system( (char *) cmd );
     printf("\nmplayer has exited\n");
     /* Save settings to resume file */
-    if ( is_playing_video == true ){
+    if ( current_mode == MODE_VIDEO){
 	   	resume_set_video_settings(&current_video_settings);
     } else {
     	resume_set_audio_settings(&current_audio_settings);
@@ -1138,7 +1110,7 @@ void * mplayer_thread(void *cmd){
     pthread_exit(NULL);
 }
 
-void launch_mplayer( char * folder, char * filename, int pos, bool is_video ){
+void launch_mplayer( char * folder, char * filename, int pos ){
     pthread_t t;
     char cmd[500];    
     char file[PATH_MAX+1];
@@ -1180,8 +1152,6 @@ void launch_mplayer( char * folder, char * filename, int pos, bool is_video ){
     fifo_out = open(fifo_stdout_name, O_RDWR);
 
     is_menu_showed = false;
-    is_playing_video = false;
-    is_playing_audio = false;
     is_paused = false;
     no_user_interaction_cycles = 0;
 	
@@ -1191,13 +1161,11 @@ void launch_mplayer( char * folder, char * filename, int pos, bool is_video ){
     } else {
       resume_pos = 0;
     }
-	if (is_video){
-	  is_playing_video = true;
+	if (current_mode == MODE_VIDEO){    
 	  load_skin_from_zip( config.video_skin_filename, &config.video_config, true ) ;
 	  init_ctrl_bitmaps();	  
 	  resume_get_video_settings(&v_settings);
-	} else {
-	  is_playing_audio = true;	
+	} else {    
 	  load_skin_from_zip( config.audio_skin_filename, &config.audio_config, true );
 	  init_ctrl_bitmaps();	  
       display_image_to_fb(config.audio_config.bitmap );
@@ -1215,7 +1183,7 @@ void launch_mplayer( char * folder, char * filename, int pos, bool is_video ){
 
     usleep( 500000 );
     if (!is_mplayer_finished ){
-      if(is_playing_video){
+      if(current_mode == MODE_VIDEO){
           /* blit is performed on new video file in preiodic threa now blit_video_menu( fifo_menu, &config.video_config );*/
           /* Restore video settings */
           if (resume_get_video_settings(&v_settings) == 0){
@@ -1247,15 +1215,13 @@ void launch_mplayer( char * folder, char * filename, int pos, bool is_video ){
 }
 
 
-void handle_mouse_event( int x, int y )
-{
-    int p;
-    char buffer[200];
-    struct video_settings v_settings;
-    struct audio_settings a_settings;
-    static bool update_settings = false;
-
-
+/** This function requires tomplayer menu to be displayed 
+ * \reval    0 The menu was already displayed
+ * \retval <>0 The menu has just been displayed   
+ *
+ * \note This function has to called on each input event 
+ */
+int ask_menu(void){
     if (no_user_interaction_cycles == SCREEN_SAVER_ACTIVE){
        
         if (config.diapo_enabled){
@@ -1268,16 +1234,26 @@ void handle_mouse_event( int x, int y )
         }
         no_user_interaction_cycles = 0; 
     	/*Do not handle event as we touch the screen while it was OFF*/
-    	return;
+    	return 1;
     }
     no_user_interaction_cycles = 0;
 
-    if( is_menu_showed == false && is_playing_video == true){
+    if( is_menu_showed == false && current_mode == MODE_VIDEO){
         show_menu();
-        return;
+        return 1;
     }
+    return 0;
+}
 
-    switch( get_command_from_xy( x, y, &p ) ){
+void handle_gui_cmd(int cmd, int p)
+{
+
+    char buffer[200];
+    struct video_settings v_settings;
+    struct audio_settings a_settings;
+    static bool update_settings = false;
+
+    switch(cmd){
         case SKIN_CMD_PAUSE:
         	send_raw_command("pause\n");
         	is_paused ^=  true;
@@ -1354,14 +1330,15 @@ void handle_mouse_event( int x, int y )
         	break;
         case SKIN_CMD_EXIT_MENU:
         default:
-            if( is_playing_video == true ) hide_menu();
+            if( current_mode == MODE_VIDEO ) hide_menu();
     }
 
     /* Update in-memory settings */
     if (update_settings == true) {
             if (!is_paused){
             /* We get no answer from mplayer while paused */
-              if ( is_playing_video == true ){
+            
+              if ( current_mode == MODE_VIDEO ){
                       if (get_video_settings(&v_settings) == 0){
                           current_video_settings = v_settings;
                       }
@@ -1379,12 +1356,10 @@ void handle_mouse_event( int x, int y )
 
 int get_command_from_xy( int x, int y, int * p ){
     int i,distance, cmd;
-    struct skin_config * c;
+    const struct skin_config * c;
 
     *p = -1;
-
-    if( is_playing_video == true ) c = &config.video_config;
-    else c = &config.audio_config;
+    c = state_get_current_skin();
 
     /* Init cmd !! */
     cmd = SKIN_CMD_EXIT_MENU;
@@ -1426,23 +1401,82 @@ int get_command_from_xy( int x, int y, int * p ){
     return cmd;
 }
 
+int control_set_select(struct skin_control * ctrl, bool state){
+    int x,y,w,h;
+    struct rectangular_skin_control zone;
+    unsigned char * select_square;
+    
+    zone = control_get_zone(ctrl);
+    x = zone.x1;
+    y = zone.y1;
+    w = zone.x2 - zone.x1;
+    h = zone.y2 - zone.y1;    
+    select_square = malloc(3*w*h);        
+    if (select_square == NULL){
+        return -1;
+    }          
+    /* copy the relevant skin background zone */
+    ilBindImage(skin_id);
+    ilCopyPixels(x, y, 0, w, h, 1,
+                 IL_RGB, IL_UNSIGNED_BYTE, select_square);
+    if (state){
+      int i,j;    
+      /* Draw a square around the control */        
+      for(j=0; j<h; j++){
+        for (i=0; i<w; i++){
+          if ((i==0) || (i==(w-1)) || (j==0) || (j==(h-1))){
+            select_square[(i+j*w)*3]   = 255;
+            select_square[(i+j*w)*3+1] = 0;
+            select_square[(i+j*w)*3+2] = 0;
+          }
+        }
+      }
+    }     
+    display_RGB(select_square, x, y , w, h, false);
+    free(select_square);
+    return 0;
+}
 
-/** Display a RGB or RGBA buffer to frame buffer
+
+/** Display a RGB or RGBA to screen 
+ */
+static void display_RGB(unsigned char * buffer, int x, int y, int w, int h, bool transparency){
+  char str[100];
+  int buffer_size;
+    
+  if( current_mode == MODE_VIDEO ) {
+    if (transparency){
+      sprintf(str, "RGBA32 %d %d %d %d %d %d\n", w, h, x, y , 0, 0);
+      buffer_size = w*h*4;
+    }
+    else{
+      sprintf(str, "RGB24 %d %d %d %d %d %d\n", w, h, x, y , 0, 0);        
+      buffer_size = w*h*3;
+    }
+    write(fifo_menu, str, strlen(str));
+    write(fifo_menu, buffer,buffer_size);
+  } else {    
+    display_RGB_to_fb(buffer, x, y, w, h, transparency);
+  }
+}
+
+/** Directly display a RGB or RGBA buffer to the frame buffer
  */
 static void display_RGB_to_fb(unsigned char * buffer, int x, int y, int w, int h, bool transparency){
-	static unsigned short * fb_mmap;
-	static struct fb_var_screeninfo screeninfo;
-	unsigned short * buffer16;
-	int buffer_size;
-	int fb;
-	int i,j ;
+    static unsigned short * fb_mmap;
+    static struct fb_var_screeninfo screeninfo;
+    unsigned short * buffer16;
+    int buffer_size;
+    int fb;
+    int i,j ;
         
-        if (x < 0) {
-           x = 0;
-        }
-        if (y < 0) {
-           y = 0;
-        }
+    if (x < 0) {
+        x = 0;
+    }
+    if (y < 0) {
+        y = 0;
+    }
+    
 	/* Alloc buffer for RBG conversion */
 	buffer_size = w * h * 2 ;
 	buffer16 = malloc( buffer_size );
@@ -1451,71 +1485,84 @@ static void display_RGB_to_fb(unsigned char * buffer, int x, int y, int w, int h
 	    return;
 	}
 
-
-	if (fb_mmap == NULL){
-		fb = open( getenv( "FRAMEBUFFER" ), O_RDWR);
-                if (fb < 0){  
-                  perror("unable to open fb ");
-                  return;
-                }
-                ioctl (fb, FBIOGET_VSCREENINFO, &screeninfo);
-		fb_mmap = mmap(NULL,  screeninfo.xres*screeninfo.yres*2 , PROT_READ|PROT_WRITE,MAP_SHARED, fb, 0);
-                if (fb_mmap == MAP_FAILED){
-                  perror("unable to mmap fb ");
-                  fb_mmap = NULL;
-                  close(fb);
-                  return;
-                }
-	        close(fb);
-	}
+    if (fb_mmap == NULL){
+        fb = open( getenv( "FRAMEBUFFER" ), O_RDWR);
+            if (fb < 0){  
+                perror("unable to open fb ");
+                return;
+            }
+            ioctl (fb, FBIOGET_VSCREENINFO, &screeninfo);
+            fb_mmap = mmap(NULL,  screeninfo.xres*screeninfo.yres*2 , PROT_READ|PROT_WRITE,MAP_SHARED, fb, 0);
+            if (fb_mmap == MAP_FAILED){
+                perror("unable to mmap fb ");
+                fb_mmap = NULL;
+                close(fb);
+                return;
+            }
+            close(fb);
+    }
         
-	
-        for( i = 0; i < (w * h); i++ ){
-                if (transparency == false ){
-                        /* Initial buffer is RGB24 */
-                        buffer16[i] =  ( (buffer[3*i] & 0xF8)  <<  8 | /* R 5 bits*/
-                                      (buffer[3*i+1] & 0xFC) << 3 | /* G 6 bits */
-                                          (buffer[3*i+2]>>3));          /* B 5 bits*/
-                } else {
-                        /* Initial buffer is RGBA*/
-                        buffer16[i] =  ( (buffer[4*i] & 0xF8) << 8 | /* R 5 bits*/
-                                                            (buffer[4*i+1] & 0xFC) << 3 | /* G 6 bits */
-                                                            (buffer[4*i+2]>>3));          /* B 5 bits*/
-
-                        /*TODO gerer transparence*/
-                }
-        }
-
-
-
+    if (transparency){
         if (coor_trans == 0){
-
-                for (i=y; i<y+h; i++){
-                        for(j=x; j<x+w; j++){
-                                fb_mmap[j+(i*screeninfo.xres)]=buffer16[((i-y)*w)+(j-x)];
-                        }
+            for (i=y; i<y+h; i++){
+                for(j=x; j<x+w; j++){
+                    buffer16[((i-y)*w)+(j-x)] = fb_mmap[j+(i*screeninfo.xres)];                                    
                 }
-
+            }
         }else{
-                int tmp;
-                int screen_width, screen_height;
-
-                ws_get_size(&screen_width, &screen_height);
-                tmp = y ;
-                y = x;
-                x = screen_width - tmp;
-
-                /* Magic combination for inverted coordinates */
-                for (i=x; i>x-h; i--){
-                        for(j=y; j<y+w; j++){
-                                fb_mmap[j*screeninfo.xres+i]=buffer16[(-i+x)*w+(j-y)];
-                        }
+            int tmp;
+            int screen_width, screen_height;
+            ws_get_size(&screen_width, &screen_height);
+            tmp = y;
+            y = x;
+            x = screen_width - tmp;
+            /* Magic combination for inverted coordinates */
+            for (i=x; i>x-h; i--){
+                for(j=y; j<y+w; j++){
+                    buffer16[(-i+x)*w+(j-y)] = fb_mmap[j*screeninfo.xres+i];
                 }
+            }
         }
+    }
 
-	
-	free( buffer16 );
+    for( i = 0; i < (w * h); i++ ){
+        if (transparency == false ){
+            /* Initial buffer is RGB24 */
+            buffer16[i] =  ( (buffer[3*i] & 0xF8)  <<  8 | /* R 5 bits*/
+                            (buffer[3*i+1] & 0xFC) << 3 | /* G 6 bits */
+                            (buffer[3*i+2]>>3));          /* B 5 bits*/
+        } else {
+            /* Initial buffer is RGBA*/   
+            /* FIXME only binary transparency for now ... */
+            if (buffer[4*i+3] != 0){
+                buffer16[i] =  ( (buffer[4*i] & 0xF8) << 8 |   /* R 5 bits*/
+                                 (buffer[4*i+1] & 0xFC) << 3 | /* G 6 bits */
+                                 (buffer[4*i+2]>>3));          /* B 5 bits*/
+            }                       
+        }
+    }
 
+    if (coor_trans == 0){
+        for (i=y; i<y+h; i++){
+            for(j=x; j<x+w; j++){
+                fb_mmap[j+(i*screeninfo.xres)] = buffer16[((i-y)*w)+(j-x)];
+            }
+        }
+    } else {
+        int tmp;
+        int screen_width, screen_height;
+        ws_get_size(&screen_width, &screen_height);
+        tmp = y;
+        y = x;
+        x = screen_width - tmp;
+        /* Magic combination for inverted coordinates */
+        for (i=x; i>x-h; i--){
+            for(j=y; j<y+w; j++){
+                fb_mmap[j*screeninfo.xres+i] = buffer16[(-i+x)*w+(j-y)];
+            }
+        }
+    }
+    free( buffer16 );
 }
 
 void display_image_to_fb(ILuint img){

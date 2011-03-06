@@ -36,6 +36,9 @@
 #include <IL/ilu.h>
 #include "diapo.h"
 
+/* FIFO Where key inputs can be read from */
+#define KEY_INPUT_FIFO "/tmp/key_fifo"
+
 
 enum config_int_speaker_type{
 	CONF_INT_SPEAKER_AUTO = 0,
@@ -211,4 +214,7 @@ bool config_toggle_fm_transmitter_state(void);
 bool config_toggle_small_text_state(void);
 void config_free(void);
 void config_reload(void);
+
+struct rectangular_skin_control control_get_zone(const struct skin_control *ctrl);
+    
 #endif /* __TOMPLAYER_CONFIG_H__ */

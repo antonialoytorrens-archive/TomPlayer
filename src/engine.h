@@ -30,7 +30,7 @@
 extern struct tomplayer_config config;
 extern bool is_mplayer_finished;
 
-int init_engine( void );
+int init_engine( bool );
 int release_engine( void );
 
 void send_command(const char * cmd );
@@ -42,6 +42,7 @@ void hide_menu( void );
 void handle_mouse_event( int x, int y );
 int get_command_from_xy( int x, int y, int * p );
 void display_image_to_fb( ILuint  );
-void launch_mplayer( char * , char * , int, bool );
+void launch_mplayer( char * , char * , int );
+const struct skin_config * state_get_current_skin(void);
 
 #endif /* __ENGINE_H__ */

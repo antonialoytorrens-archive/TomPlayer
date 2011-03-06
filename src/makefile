@@ -34,7 +34,7 @@ endif
 #Sources for the initial tomplayer interface 
 TOM_SRC = file_selector.c window.c  screens.c gui.c list.c zip_skin.c config.c widescreen.c  resume.c power.c file_list.c label.c viewmeter.c 
 #Sources for mplayer engine
-ENG_SRC = start_engine.c  engine.c config.c widescreen.c resume.c pwm.c sound.c  power.c font.c fm.c file_list.c diapo.c 
+ENG_SRC = start_engine.c  engine.c config.c widescreen.c resume.c pwm.c sound.c  power.c font.c fm.c file_list.c diapo.c event_inputs.c
 #Sources for remote inputs 
 REM_INPUTS = remote_inputs.c
 #All sources
@@ -56,7 +56,7 @@ all : $(TARGETS)
 # Final targets dependencies
 remote_inputs: $(REM_OBJ)
 carminat_inputs: carminat_remote.o
-tomplayer: LDFLAGS+= -liniparser -ldirectfb -lfusion -ldirect -lpthread -lz -lzip  -lm -lpthread -ljpeg -lpng $(ADD_LIBS)
+tomplayer: LDFLAGS+= -ldirectfb -lfusion -ldirect -lpthread -lz -lzip  -lm -lpthread -ljpeg -lpng -liniparser $(ADD_LIBS)
 tomplayer: $(TOM_OBJ)
 start_engine:  LDFLAGS+= -liniparser -lpthread -lz -lzip  -lm -lpthread -ljpeg -lILU  -lIL -lpng -lts -lrt -lfreetype $(ADD_LIBS)
 start_engine: $(ENG_OBJ) 
@@ -81,7 +81,7 @@ zip_skin_devil.o : zip_skin.c
 
 % : 
 	@echo "[Linking and installing $@]"
-	$(V)$(CC) $(LDFLAGS) -o $@ $^  
+	$(V)$(CC) -o $@ $^  $(LDFLAGS)
 	$(V)cp $@ $(INSTALL_DIR)	
 	$(V)$(STRIP) $(INSTALL_DIR)/$@
 
