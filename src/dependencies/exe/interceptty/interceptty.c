@@ -307,6 +307,7 @@ void dumpbuff_carminat_frame(int dir, unsigned char *buf, int buflen)
 
 	DFBInputDeviceKeyIdentifier key = 0;
 	int key_found  = 0;
+  int i;
 
 	/*
 #ifdef DEBUG
@@ -388,6 +389,21 @@ void dumpbuff_carminat_frame(int dir, unsigned char *buf, int buflen)
 
 		switch(evtJoy->direction)
 		{
+    case CARM_JOY_DIR_ADVANCED:
+      if   (evtJoy->down == CARM_JOY_PUSH_DOWN){
+        key = DIKI_ENTER;
+        key_found = 1;
+      } else {
+        if  (evtJoy->rotate == CARM_JOY_ROT_CCW){
+           key = DIKI_LEFT;
+           key_found = evtJoy->rotate_steps;
+        } 
+        if  (evtJoy->rotate == CARM_JOY_ROT_CW){
+           key = DIKI_RIGHT; 
+           key_found = evtJoy->rotate_steps;
+        }
+      }
+      break;
 		case CARM_JOY_DIR_FRONT :
 			key = DIKI_UP;
 			key_found = 1;
@@ -434,12 +450,14 @@ void dumpbuff_carminat_frame(int dir, unsigned char *buf, int buflen)
 			}
 		}
 		if (carm_fd > 0){
-			if (write(carm_fd, &key, sizeof(key)) < 0){
-				fprintf(outfile,"Nobody is reading the key FIFO for now...\n");
-			}
-		}
+      for (i=0; i<key_found; i++){
+        if (write(carm_fd, &key, sizeof(key)) < 0){
+          fprintf(outfile,"Nobody is reading the key FIFO for now...\n");
+        }
+      }
+    }
 		
-		fprintf(outfile,"Sendig Key to tomplayer : %x\n",key);
+		fprintf(outfile,"Sendig Key to tomplayer : %x %d times\n",key, key_found);
 		fflush(outfile);
 	}
 }

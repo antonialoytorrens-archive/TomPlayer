@@ -188,8 +188,9 @@ enum carminat_keys{
 };
 
 enum carminat_joy_dir{
+    CARM_JOY_DIR_ADVANCED = 0,
     CARM_JOY_DIR_FRONT = 1,
-	CARM_JOY_DIR_BACK  = 2,
+    CARM_JOY_DIR_BACK  = 2,
     CARM_JOY_DIR_LEFT  = 3,
     CARM_JOY_DIR_RIGHT = 4
 };
