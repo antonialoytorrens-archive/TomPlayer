@@ -582,8 +582,8 @@ bool config_save(void){
 
     iniparser_dump_ini( ini, fp );
     fclose( fp );    
-    system("cp -f " CONFIG_FILE " ./conf/tomplayer.ini");    
-    system( "unix2dos ./conf/tomplayer.ini" );
+    system("cp -f " CONFIG_FILE " ./conf/tomplaye.ini");    
+    system( "unix2dos ./conf/tomplaye.ini" );
 
 error:
     iniparser_freedict(ini);   

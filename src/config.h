@@ -57,7 +57,7 @@ enum config_int_speaker_type{
  * \def CONFIG_FILE
  * \brief fullpath to the main config file
  */
-#define CONFIG_FILE                 "/tmp/tomplayer.ini"
+#define CONFIG_FILE                 "/tmp/tomplaye.ini"
 
 enum config_type {
   CONFIG_AUDIO,

@@ -54,7 +54,7 @@ extern int iniparser_set(dictionary * ini, char * entry, char * val);
 #define RESUME_AUDIO_DELAY_KEY "audio_delay"
 
 
-#define RESUME_PLAYLIST_FILENAME "./conf/saved_playlist.m3u"
+#define RESUME_PLAYLIST_FILENAME "./conf/sav_pl.m3u"
 
 /**
  * \fn int resume_file_init(char * file)

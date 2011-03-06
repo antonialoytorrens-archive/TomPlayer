@@ -189,20 +189,22 @@ void event_loop(void){
   sigemptyset(&new_action.sa_mask);
   new_action.sa_flags=0;
   sigaction(SIGALRM, &new_action, NULL);
-  
+
+  printf("Enter Main event loop\n");
   if( (tsdevice = getenv("TSLIB_TSDEVICE")) != NULL ) {
-          ts = ts_open(tsdevice,0);
+    ts = ts_open(tsdevice,0);
+    if ((ts == NULL) || (ts_config(ts) != 0)){
+      perror("ts_config");
+      ts_available = false;            
+    }    
   } else {
     ts_available = false;
   }
-
-  if (ts_config(ts)) {
-    perror("ts_config");
-    ts_available = false;    
-  }
-
+  printf("Touchscreen availability : %d\n", ts_available);
+  
   /* Try to open tomplayer inputs FIFO */
   input_fd = open(KEY_INPUT_FIFO,O_RDONLY|O_NONBLOCK);
+  printf("FIFO availability : %d\n", input_fd);
   
   if (input_fd > 0){
     /* Purge FIFO events */
@@ -229,9 +231,12 @@ void event_loop(void){
   } else {    
     /* No touchscreen available */
     if (input_fd > 0){
+      int flags;
       ts_samp = 0;      
-      /* FIFO read is made blocking */
-      fcntl(input_fd, F_SETFL, 0);      
+      /* FIFO read is made blocking */      
+      flags = fcntl(input_fd, F_GETFL);
+      flags &= (~O_NONBLOCK);
+      fcntl(input_fd, F_SETFL, flags);      
     } else {
       /* No inputs available */
       fprintf(stderr, "no inputs available...\n");
