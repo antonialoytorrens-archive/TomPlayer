@@ -1,5 +1,17 @@
 More informations on http://www.tomplayer.net
 
+March 14th 2011, Tomplayerv0.240b2 (beta)
+Feature :
+- Support for tomtom Bluetoth remote 
+ 
+Bug correction :
+- Solve spurious reboots
+- Solve "slow" video symptom
+
+March 6th 2011, Tomplayerv0.240b1 (beta)
+Feature :
+- Support for carminat 
+
 May 10th 2010, TomplayerV0.230
 Features :
 - New mplayer build (SVN-r30895-snapshot-3.3.4 (C) 2000-2010 MPlayer Team)
