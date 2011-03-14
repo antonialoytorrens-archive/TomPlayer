@@ -46,8 +46,8 @@ ENG_OBJ = $(subst .c,.o,$(ENG_SRC))
 ENG_OBJ += zip_skin_devil.o
 REM_OBJ = $(subst .c,.o,$(REM_INPUTS))
 
-TARGETS:=tomplayer refresh_wdg start_engine splash_screen 
-#remote_inputs carminat_inputs
+TARGETS:=tomplayer refresh_wdg start_engine splash_screen remote_inputs
+# carminat_inputs
 
 .PHONY : clean clean_deps install_libdeps all
 
