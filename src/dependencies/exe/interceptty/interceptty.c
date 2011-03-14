@@ -275,29 +275,6 @@ void dumpbuff_raw(int dir, unsigned char *buf, int buflen)
 	
 	fflush(outfile);
 }
-/*
-void dumpbuff_raw(int dir, unsigned char *buf, int buflen)
-{
-	int i;
-	int ic;
-
-	for (i=0; i<buflen; i++)
-	{
-		if (dir)
-		{
-			fprintf(outfile, "B->F \t");
-		}
-		else
-		{
-			fprintf(outfile, "F->B \t");
-		}
-		ic=(unsigned char)buf[i];
-		fprintf(outfile, "%02x ",ic);
-	}
-	fprintf(outfile, "\n");
-	fflush(outfile);
-}
-*/
 
 void dumpbuff_carminat_frame(int dir, unsigned char *buf, int buflen)
 {
@@ -457,8 +434,8 @@ void dumpbuff_carminat_frame(int dir, unsigned char *buf, int buflen)
       }
     }
 		
-		fprintf(outfile,"Sendig Key to tomplayer : %x %d times\n",key, key_found);
-		fflush(outfile);
+		/*fprintf(outfile,"Sendig Key to tomplayer : %x %d times\n",key, key_found);
+		fflush(outfile);*/
 	}
 }
 
@@ -467,8 +444,8 @@ void dumpbuff_carminat(int dir, unsigned char *buf, int buflen)
 	int start = 0;
 	int end = 0;
 
-	/* FIXME raw log everything ! */
-	dumpbuff_raw(dir,buf,buflen);
+	/* FIXME raw log everything ! 
+	dumpbuff_raw(dir,buf,buflen);*/
 	//Only parses frame from CAN to Soft
 	if(!dir)
 	{
@@ -1076,12 +1053,12 @@ int main (int argc, char *argv[])
 			unlink(outfilename);
 			mkfifo(outfilename, 0777);
 			signal(SIGPIPE, SIG_IGN);
-			if ( (outfile = fopen("/media/sdcard/log/boot.txt","a")) == NULL)
+/*			if ( (outfile = fopen("/media/sdcard/log/boot.txt","a")) == NULL)
 				errorf("Couldn't open output file '%s' for write: %s\n","/media/sdcard/log/boot.txt",strerror(errno));
-			else { 
+			else { */
 				fprintf(outfile,"Starting interceptty \n");
 				fflush(outfile);
-			}
+			/*}*/
 		}
 	}
 
