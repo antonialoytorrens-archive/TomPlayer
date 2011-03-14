@@ -1420,17 +1420,47 @@ int control_set_select(struct skin_control * ctrl, bool state){
     ilCopyPixels(x, y, 0, w, h, 1,
                  IL_RGB, IL_UNSIGNED_BYTE, select_square);
     if (state){
-      int i,j;    
-      /* Draw a square around the control */        
-      for(j=0; j<h; j++){
-        for (i=0; i<w; i++){
-          if ((i==0) || (i==(w-1)) || (j==0) || (j==(h-1))){
-            select_square[(i+j*w)*3]   = 255;
-            select_square[(i+j*w)*3+1] = 0;
-            select_square[(i+j*w)*3+2] = 0;
-          }
+#if 0        
+      if (ctrl->type == CIRCULAR_SKIN_CONTROL){
+        int x, y, err ;                
+        int xm, ym, r;
+        r = w / 2;
+        xm = r;
+        ym = r;
+        x = -r;
+        y = 0;
+        err = 2-2*r;
+        do {
+          select_square[(xm-x+(ym+y)*w)*3]   = 255;
+          select_square[(xm-x+(ym+y)*w)*3+1] = 0;
+          select_square[(xm-x+(ym+y)*w)*3+2] = 0;  
+          select_square[(xm-y+(ym-x)*w)*3]   = 255;
+          select_square[(xm-y+(ym-x)*w)*3+1] = 0;
+          select_square[(xm-y+(ym-x)*w)*3+2] = 0;  
+          select_square[(xm+x+(ym-y)*w)*3]   = 255;
+          select_square[(xm+x+(ym-y)*w)*3+1] = 0;
+          select_square[(xm+x+(ym-y)*w)*3+2] = 0;  
+          select_square[(xm+y+(ym+x)*w)*3]   = 255;
+          select_square[(xm+y+(ym+x)*w)*3+1] = 0;
+          select_square[(xm+y+(ym+x)*w)*3+2] = 0;  
+          r = err;
+          if (r >  x) err += ++x*2+1; /* e_xy+e_x > 0 */
+          if (r <= y) err += ++y*2+1; /* e_xy+e_y < 0 */
+        } while (x < 0);    
+      } else {
+#endif
+        int i,j;    
+        /* Draw a square around the control */        
+        for(j=0; j<h; j++){
+            for (i=0; i<w; i++){
+            if ((i==0) || (i==(w-1)) || (j==0) || (j==(h-1))){
+                select_square[(i+j*w)*3]   = 255;
+                select_square[(i+j*w)*3+1] = 0;
+                select_square[(i+j*w)*3+2] = 0;
+            }
+            }
         }
-      }
+      /*}*/
     }     
     display_RGB(select_square, x, y , w, h, false);
     free(select_square);

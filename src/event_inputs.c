@@ -178,7 +178,7 @@ void event_loop(void){
   bool ts_available = true;
   int input_fd;
   DFBInputDeviceKeyIdentifier key;
-  #define TIMER_PERIOD_US 50000
+  #define TIMER_PERIOD_US 100000
   const struct itimerval timer_value = {.it_interval = {0,TIMER_PERIOD_US},
                                         .it_value = {0,TIMER_PERIOD_US}
                                        };               
@@ -205,7 +205,8 @@ void event_loop(void){
   /* Try to open tomplayer inputs FIFO */
   input_fd = open(KEY_INPUT_FIFO,O_RDONLY|O_NONBLOCK);
   printf("FIFO availability : %d\n", input_fd);
-  
+  /* FIXME pour tests */
+  ts_available = 0;
   if (input_fd > 0){
     /* Purge FIFO events */
     while (read(input_fd, &key, sizeof(key)) > 0);
@@ -247,7 +248,7 @@ void event_loop(void){
   /* Main events loop */
   while (is_mplayer_finished == false) {    
     /* To interrupt blocking read */
-    setitimer(ITIMER_REAL, &timer_value, NULL);    
+    setitimer(ITIMER_REAL, &timer_value, NULL);      
     if (ts_available){
       ts_samp = ts_read(ts, &samp, 1);    
     }
@@ -255,6 +256,11 @@ void event_loop(void){
       if (input_fd > 0){
         if (read(input_fd, &key, sizeof(key)) > 0) {      
           handle_key(key);          
+        } else {
+            if (errno != EINTR){
+                fprintf(stderr, "spurious wakeup : %d \n", errno);
+                usleep(TIMER_PERIOD_US);
+            }
         }
       }
     } else {
