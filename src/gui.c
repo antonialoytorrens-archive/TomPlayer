@@ -139,6 +139,7 @@ static bool dispatch_ts_event(DFBInputEvent *evt )
 int main( int argc, char *argv[] ){
   bool splash_wanted = true ;
   bool power_off_asked = false;
+  
   struct option long_options[] ={               
                {"no-splash", no_argument,(int *)&splash_wanted, 0},
                {0, 0, 0, 0}
@@ -150,6 +151,10 @@ int main( int argc, char *argv[] ){
   DFBInputEvent evt;
 
   input_fd = open(KEY_INPUT_FIFO,O_RDONLY|O_NONBLOCK);
+  /* Purge FIFO if available */
+  if (input_fd >= 0)
+    while (read(input_fd,  &evt.key_id, sizeof(evt.key_id)) > 0);
+    
   while ((c = getopt_long (argc, argv, "",long_options, &option_index)) != -1);
 
   if (init_resources( argc, argv ) == true){
