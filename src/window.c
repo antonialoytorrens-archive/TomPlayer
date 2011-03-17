@@ -74,7 +74,7 @@ static inline char * get_key(int ctrl_id,const char * ctrl_param){
 }
 
 
-/** Compare the position of two controls on the screen */
+/** Compare the position of two controls on the screen to give them a linear ordering */
 static int cmp_control_position(void *c1, void *c2){
     struct gui_control * elt1 = c1;
     struct gui_control * elt2 = c2;
@@ -90,9 +90,21 @@ static int cmp_control_position(void *c1, void *c2){
     }
 }
 
+/** Compute a distance betwwen 2 controls along x axis */
+static int dist_x(const struct gui_control* ctrl1, const struct gui_control* ctrl2){
+    if  (ctrl2->zone.x < (ctrl1->zone.x + ctrl1->zone.w)){    
+        if (ctrl2->zone.x + ctrl2->zone.w > ctrl1->zone.x){
+            return 0;
+        } else {
+            return (ctrl1->zone.x - ctrl2->zone.x - ctrl2->zone.w);
+        }
+    } else {
+        return (ctrl2->zone.x - ctrl1->zone.x - ctrl1->zone.w);
+    }
+}
 
 
-static struct gui_control * __find_next_selectable_control(struct list_object * list_controls, struct gui_control* start_ctrl){               
+static struct gui_control * __find_next_selectable_control(struct list_object * list_controls, struct gui_control* start_ctrl, bool loop){               
     struct list_object * head = list_controls;
     struct gui_control * control;   
     int control_nb = get_list_count(list_controls);
@@ -104,7 +116,10 @@ static struct gui_control * __find_next_selectable_control(struct list_object * 
         }
         list_controls = list_controls->next;      
         if (list_controls == NULL){
-            list_controls = head; 
+            if (loop)
+                list_controls = head; 
+            else 
+                return NULL;
         }
     }
         
@@ -116,39 +131,121 @@ static struct gui_control * __find_next_selectable_control(struct list_object * 
         }       
         list_controls = list_controls->next;      
         if (list_controls == NULL){
-            list_controls = head; 
+            if (loop)
+                list_controls = head; 
+            else 
+               return NULL;
         }
     }       
     return NULL;  
 }
-    
+
+
 static struct gui_control * find_next_selectable_control(gui_window win){               
-    return __find_next_selectable_control(win->controls, win->selected_control);
+    return __find_next_selectable_control(win->controls, win->selected_control, true);
 }
 
-static struct gui_control * find_prev_selectable_control(gui_window win){               
-    struct gui_control *next_control, *control;   
-       
-    if (win->selected_control != NULL){        
-        control = win->selected_control;
-        while (1) {             
-            next_control = __find_next_selectable_control(win->controls, control);     
-            if (next_control == NULL){
-                return NULL;
-            }
-            if (next_control == win->selected_control){
-                if (control != win->selected_control){
-                    return control;
-                } else {
-                    return NULL;
-                } 
-            }
-            control = next_control;
-        }
-    } else {
-        return find_next_selectable_control(win);
-    }    
+static struct gui_control * __find_prev_selectable_control(struct list_object * list_controls, struct gui_control* start_ctrl, bool loop){                 
+    struct list_object * head = list_controls;
+    struct gui_control * control;   
+    int control_nb = get_list_count(list_controls);
+    int tested = 0;
+    
+    for (tested = 0 ; tested < control_nb; tested++){        
+        control = (struct gui_control *) list_controls->object;            
+        if ( (control->cb != NULL) && (__find_next_selectable_control(head, control, loop) == start_ctrl))
+            return control;
+        list_controls = list_controls->next;      
+    }
+    return NULL;
 }
+
+static struct gui_control * find_prev_selectable_control(gui_window win){  
+    if (win->selected_control != NULL)
+        return __find_prev_selectable_control(win->controls,  win->selected_control, true);
+    else 
+        return find_next_selectable_control(win);
+}
+
+
+/** Try to find a control below the passed control */
+static struct gui_control * __find_down_control(struct list_object * list_controls, struct gui_control *ctrl){    
+    struct gui_control *prev_ctrl, *curr_ctrl;
+    int prev_dist, curr_dist;   
+    
+    curr_dist = 0;
+    prev_ctrl = ctrl;
+    curr_ctrl = NULL;
+    do{
+        prev_ctrl =  __find_next_selectable_control(list_controls, prev_ctrl, false);
+        if (prev_ctrl != NULL){
+            if (prev_ctrl->zone.y > (ctrl->zone.y + ctrl->zone.h)){
+            /* below OK now check for the best alignment */                
+                prev_dist = dist_x(prev_ctrl, ctrl);   
+                while(1){                                                    
+                    curr_ctrl = __find_next_selectable_control(list_controls, prev_ctrl, false);
+                    if ((curr_ctrl == NULL) || (curr_ctrl->zone.y > prev_ctrl->zone.y))
+                        return prev_ctrl;                    
+                    curr_dist = dist_x(curr_ctrl, ctrl);
+                    if (prev_dist < curr_dist){
+                        return prev_ctrl;
+                    }
+                    prev_dist = curr_dist;
+                    prev_ctrl = curr_ctrl;
+                }
+            }            
+        }
+    } while (prev_ctrl != NULL );
+    return __find_next_selectable_control(list_controls, NULL, false);
+}
+
+/** Try to find a control below currently selected control */
+static struct gui_control * find_down_control(gui_window win){      
+    if (win->selected_control != NULL)
+        return __find_down_control(win->controls,  win->selected_control);        
+    else 
+        return find_next_selectable_control(win);
+}
+
+/** Try to find a control above the passed control */
+static struct gui_control * __find_up_control(struct list_object * list_controls, struct gui_control *ctrl){    
+    struct gui_control *prev_ctrl, *curr_ctrl;
+    int prev_dist, curr_dist;   
+    
+    curr_dist = 0;
+    prev_ctrl = ctrl;
+    curr_ctrl = NULL;
+    do{
+        prev_ctrl =  __find_prev_selectable_control(list_controls, prev_ctrl, false);
+        if (prev_ctrl != NULL){
+            if ((prev_ctrl->zone.y + prev_ctrl->zone.h) < ctrl->zone.y){
+            /* below OK now check for the best alignment */                
+                prev_dist = dist_x(prev_ctrl, ctrl);   
+                while(1){                                                    
+                    curr_ctrl = __find_prev_selectable_control(list_controls, prev_ctrl, false);
+                    if ((curr_ctrl == NULL) || (curr_ctrl->zone.y < prev_ctrl->zone.y))
+                        return prev_ctrl;                    
+                    curr_dist = dist_x(curr_ctrl, ctrl);
+                    if (prev_dist < curr_dist){
+                        return prev_ctrl;
+                    }
+                    prev_dist = curr_dist;
+                    prev_ctrl = curr_ctrl;
+                }
+            }            
+        }
+    } while (prev_ctrl != NULL );
+    
+    return __find_prev_selectable_control(list_controls, __find_next_selectable_control(list_controls, NULL, false), true);    
+}
+/** Try to find a control above the currently selected control */
+static struct gui_control * find_up_control(gui_window win){
+    if (win->selected_control != NULL)
+        return __find_up_control(win->controls,  win->selected_control);
+    else 
+        return find_next_selectable_control(win);   
+}
+
 
 
 static void switch_selection(gui_window win, struct gui_control * control){
@@ -323,7 +420,7 @@ static void draw_text(struct gui_control * ctrl,  dictionary * ini , int num_con
   conf.win = window->win; 
   conf.pos = ctrl->zone;
   ctrl->obj = label_create(&conf);
-  label_set_text(ctrl->obj,s);
+  label_set_text(ctrl->obj, s);
   text_font = label_get_font(ctrl->obj);
   text_font->GetStringWidth (text_font, s, -1, w);
   text_font->GetHeight(text_font, h);  
@@ -458,8 +555,8 @@ static bool load_window_config( const char * filename, gui_window  window ){
 
                 switch(control->type){
                   case GUI_TYPE_CTRL_TEXT:		  
-                    draw_text(control,ini, num_control,&control->zone.w, &control->zone.h);								
-					break;				  
+                    draw_text(control,ini, num_control,&control->zone.w, &control->zone.h);
+                    break;
                   case GUI_TYPE_CTRL_BUTTON :
                     s = iniparser_getstring(ini, get_key(num_control,"image"), NULL);
                     if( s != NULL ) {
@@ -653,11 +750,38 @@ struct gui_control * gui_window_get_control(gui_window win, const char * name){
   return ret;
 }
 
+/** Search for the named control in a windows */
+static struct gui_control * find_control_by_name(gui_window win, const char * name){
+  struct gui_control * control; 
+  struct list_object * list_controls = win->controls;
+  
+  while( list_controls != NULL ){
+    control = (struct gui_control *) list_controls->object;
+    if ((control->name != NULL) && (strcmp(control->name, name)==0)) {      
+      break;
+    }
+    list_controls = list_controls->next;
+  }
+  if (list_controls != NULL) {
+    return control;
+  } else {
+    return NULL;
+  }
+}
 
-void gui_window_attach_cb(gui_window win,const char * name, gui_control_cb cb){
-  struct list_object * list_controls;
+void gui_window_attach_cb(gui_window win, const char * name, gui_control_cb cb){
+  /*struct list_object * list_controls;*/
   struct gui_control * control;  
 
+  control = find_control_by_name(win, name);
+  if (control != NULL){
+    control->cb = cb;
+    if (win->selected_control == NULL){
+      /* The first attached callback is the default */
+      switch_selection(win, control);   
+    }
+  }
+#if 0  
   list_controls = win->controls;
   while( list_controls != NULL ){
     control = (struct gui_control *) list_controls->object;
@@ -671,55 +795,116 @@ void gui_window_attach_cb(gui_window win,const char * name, gui_control_cb cb){
   if ((list_controls) && 
       (win->selected_control == NULL)) {
     /* The first attached callback is the default */
-    switch_selection(win, control);
+    switch_selection(win, control);   
+  }
+#endif
+  return;
+}
+
+/** Invoke the callback of  "cancel" button in the curent windows */
+void gui_window_cancel(gui_window win){
+  struct gui_control * control;  
+  union gui_event evt;    
     
+  control = find_control_by_name(win, "cancel");
+  if (control == NULL){
+      control = find_control_by_name(win, "goback_button");
+      if (control == NULL) return;  
+  }
+  if (control->cb){
+    evt.key = DIKI_ENTER; 
+    control->cb(control, GUI_EVT_KEY, &evt); 
   }
   return;
 }
 
-void gui_window_handle_key(DFBInputDeviceKeyIdentifier id){  
+/** Invoke the callback of ok button in the curent windows */
+void gui_window_ok(gui_window win){
   struct gui_control * control;  
-  union gui_event evt;
-  evt.key = id;
-  gui_window win;
-  if (win_stack.current_win < 0){
-    return;
+  union gui_event evt;    
+    
+  control = find_control_by_name(win, "ok");
+  if (control == NULL){
+      control = find_control_by_name(win, "select_button");      
+      if (control == NULL){
+          control = find_control_by_name(win, "play_button");      
+          if (control == NULL) return;  
+      }
   }
-  win = win_stack.winlist[win_stack.current_win];
+  if (control->cb){
+    evt.key = DIKI_ENTER; 
+    control->cb(control, GUI_EVT_KEY, &evt); 
+  }
+  return;
+}
+
+
+void gui_window_handle_key(DFBInputDeviceKeyIdentifier id){  
+  union gui_event evt;
+  gui_window win;
+  struct gui_control * new_control = NULL;  
+  struct gui_control * current_control;
   
+  evt.key = id; 
+  win = gui_window_get_top();
+  if (win == NULL) return;
+  current_control = win->selected_control;  
   switch (id){
-    case DIKI_TAB :
+    case DIKI_F9:  /*Map*/
+        gui_window_ok(win);
+        break;                
+    case DIKI_BACKSPACE : /*back*/
+        gui_window_cancel(win);
+        break;        
+    case DIKI_KP_MINUS: /*top left*/
+    case DIKI_KP_PLUS:  /*top right*/
+    case DIKI_F5:       /*dest*/
+    case DIKI_F6:       /*repeat*/
+    case DIKI_F7:       /*light*/
+    case DIKI_F8:       /*info*/
+    case DIKI_F10:      /*menu*/
         break;
-    case DIKI_ESCAPE :
-        break;
-        
     case DIKI_LEFT :
-        control = find_prev_selectable_control(win);
-        if (control != NULL){
-           switch_selection(win,control);
-        }        
+        new_control = find_prev_selectable_control(win);
         break;
     case DIKI_RIGHT :
-        control = find_next_selectable_control(win);
-        if (control != NULL){
-           switch_selection(win,control);
+        new_control = find_next_selectable_control(win);
+        break;        
+    case DIKI_DOWN :
+        /* FIXME : Would be better to hanldle return from callback to know 
+         *  whether the ctrol callback was interedted in the evt 
+         */
+        if ((current_control) && 
+            (current_control->type == GUI_TYPE_CTRL_FILESELECTOR)){
+            current_control->cb(current_control, GUI_EVT_KEY, &evt); 
+        } else {
+            new_control = find_down_control(win);
         }        
         break;
-        
-    case DIKI_DOWN :
     case DIKI_UP :            
-    case DIKI_SPACE :
-    case DIKI_ENTER :
-        control = win->selected_control;
-        if (control){
-           control->cb(control, GUI_EVT_KEY, &evt); 
-        }
+        /* FIXME : Would be better to hanldle return from callback to know 
+         *  whether the ctrol callback was interedted in the evt 
+         */
+        if ((current_control) && 
+            (current_control->type == GUI_TYPE_CTRL_FILESELECTOR)){
+            current_control->cb(current_control, GUI_EVT_KEY, &evt); 
+        } else {
+            new_control = find_up_control(win);
+        }                
         break;
-
+    case DIKI_ENTER :        
+        if (current_control){
+           current_control->cb(current_control, GUI_EVT_KEY, &evt); 
+        }
+    
+        break;
     default :
         PRINTD("Unhandled key\n");
         break;
   }
+  if (new_control != NULL){
+    switch_selection(win, new_control);
+  }    
 }
 
 void gui_window_handle_click(int  x, int y){
