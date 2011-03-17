@@ -282,7 +282,12 @@ static void init_ctrl_bitmaps(void){
   c = state_get_current_skin();
 
   pb_cursor_id = c->controls[c->progress_bar_index].bitmap;
-  bat_cursor_id = c->controls[c->bat_index].bitmap;
+  
+  if (c->bat_index != -1)
+    bat_cursor_id = c->controls[c->bat_index].bitmap;
+  else
+    bat_cursor_id = 0;
+  
   skin_id = c->bitmap;
 
   /* Turn ON screen if it is not */
