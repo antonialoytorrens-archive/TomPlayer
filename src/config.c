@@ -47,9 +47,7 @@
 #define SECTION_AUDIO_SKIN          "audio_skin"
 #define SECTION_CONTROL_FMT_STR     "CONTROL_%d:%s"
 
-
 #define KEY_SKIN_FILENAME           "filename"
-
 
 #define KEY_FILTER_VIDEO_EXT        "filter_video"
 #define KEY_FILTER_AUDIO_EXT        "filter_audio"
@@ -68,16 +66,18 @@
 #define KEY_G_TRANSPARENCY          "g"
 #define KEY_B_TRANSPARENCY          "b"
 
-
 #define KEY_R_PROGRESSBAR           "pb_r"
-#define KEY_G_PROGRESSBAR	    	"pb_g"
+#define KEY_G_PROGRESSBAR           "pb_g"
 #define KEY_B_PROGRESSBAR           "pb_b"
+#define KEY_SEL_ORDER               "selection_order"
+#define KEY_SEL_FIRST               "first_selection"
 
-#define KEY_SCREEN_SAVER_TO			"screen_saver_to"
+
+#define KEY_SCREEN_SAVER_TO         "screen_saver_to"
 #define KEY_EN_SCREEN_SAVER         "enable_screen_saver"
 #define KEY_FM_TRANSMITTER          "fm_transmitter"
-#define KEY_FM_TRANSMITTER1          "fm_transmitter1"
-#define KEY_FM_TRANSMITTER2          "fm_transmitter2"
+#define KEY_FM_TRANSMITTER1         "fm_transmitter1"
+#define KEY_FM_TRANSMITTER2         "fm_transmitter2"
 #define KEY_EN_FM_TRANSMITTER       "enable_fm_transmitter"
 #define KEY_TYPE_CONTROL            "type"
 #define KEY_CMD_CONTROL             "ctrl"
@@ -92,8 +92,8 @@
 #define KEY_RECTANGULAR_CONTROL_X2  "x2"
 #define KEY_RECTANGULAR_CONTROL_Y1  "y1"
 #define KEY_RECTANGULAR_CONTROL_Y2  "y2"
-
 #define KEY_TEXT_COLOR "text_color"
+
 
 #define KEY_CTRL_BITMAP_FILENAME "bitmap"
 
@@ -104,6 +104,7 @@
 
 #define KEY_INTERNAL_SPEAKER "int_speaker"
 #define KEY_VIDEO_PREVIEW "video_preview"
+
 
 /**
  * \def SCREEN_SAVER_TO_S
@@ -239,6 +240,9 @@ bool load_skin_config( char * filename, struct skin_config * skin_conf){
     skin_conf->pb_r = iniparser_getint(ini, SECTION_GENERAL":"KEY_R_PROGRESSBAR, 0);
     skin_conf->pb_g = iniparser_getint(ini, SECTION_GENERAL":"KEY_G_PROGRESSBAR, 0);
     skin_conf->pb_b = iniparser_getint(ini, SECTION_GENERAL":"KEY_B_PROGRESSBAR, 0);
+    skin_conf->selection_order = iniparser_getint(ini, SECTION_GENERAL":"KEY_SEL_ORDER, 0);
+    skin_conf->first_selection = iniparser_getint(ini, SECTION_GENERAL":"KEY_SEL_FIRST, 0);
+    
     s = iniparser_getstring(ini, SECTION_GENERAL":"KEY_SKIN_BMP, NULL);
     if( s != NULL ) strcpy( skin_conf->bitmap_filename, s ); // FIXME replace by a strdup
     
@@ -290,9 +294,16 @@ bool load_skin_config( char * filename, struct skin_config * skin_conf){
     }
     /* Number of controls on the skin */
     skin_conf->nb = i;
+    if (skin_conf->first_selection > skin_conf->nb){
+        skin_conf->first_selection = skin_conf->nb - 1;
+    }
     /* Sort the controls */
-    control_sort(skin_conf->controls, skin_conf->nb);        
+    if (!skin_conf->selection_order){
+        control_sort(skin_conf->controls, skin_conf->nb); 
+    }
+    
     /* Fill in the indexes fields */
+    skin_conf->bat_index = -1;
     for (i = 0; i < skin_conf->nb; i++){
         if (skin_conf->controls[i].cmd == SKIN_CMD_BATTERY_STATUS){
             PRINTDF("Battery conf index :%i - filename : %s\n",i,skin_conf->controls[i].bitmap_filename);

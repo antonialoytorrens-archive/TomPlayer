@@ -163,7 +163,9 @@ struct skin_config{
     int progress_bar_index;         /*!< index of progress bar object in controls table*/
     int pb_r, pb_g, pb_b;           /*!< progress bar color*/
     int bat_index;                  /*!< index of Battery object in controls table*/
-    int cmd2idx[SKIN_CMD_MAX_NB];   /*!<  command to skin control index table */
+    int cmd2idx[SKIN_CMD_MAX_NB];   /*!< command to skin control index table */
+    int selection_order;            /*!< if 0 an heuristic is used for navigation order otherwise the control description order is kept */
+    int first_selection;            /*!< Default selected  control */    
 };
 
 
