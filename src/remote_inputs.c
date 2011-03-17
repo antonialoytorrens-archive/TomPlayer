@@ -32,7 +32,11 @@ int main(int argc, char ** argv ){
   }
     
   do {      
+#ifdef NATIVE
+    fd_event = open("/dev/input/event1", O_RDONLY);
+#else
     fd_event = open("/dev/input/event0", O_RDONLY);
+#endif    
     if (fd_event < 0){
         printf("Error while opening /dev/input/event0 \n");
         perror("evdev open");	
@@ -68,18 +72,23 @@ int main(int argc, char ** argv ){
                 case KEY_ENTER :
                     dfb_key = DIKI_ENTER; 
                     break;   
+                case KEY_SPACE :
                 case KEY_EQUAL : /* BT remote => Back */
+                    dfb_key = DIKI_BACKSPACE; 
+                    break;                    
+                case KEY_KPMINUS :
                 case KEY_ESC : /* BT remote => select left */
-                    dfb_key = DIKI_ESCAPE; 
-                    break;				
+                    dfb_key = DIKI_KP_MINUS; 
+                    break;                    
+                case KEY_KPPLUS :
                 case KEY_BACKSPACE : /* BT remote => Select Right */                    
-                    dfb_key = DIKI_ENTER; 
+                    dfb_key = DIKI_KP_PLUS; 
                     break;    
                 case KEY_F9 :  /* BT Remote => map */          
-                    dfb_key = DIKI_ENTER; 
+                    dfb_key = DIKI_F9; 
                     break;
                 case KEY_F10 : /* BT Remote => menu */          
-                    dfb_key = DIKI_ENTER; 
+                    dfb_key = DIKI_F10; 
                     break;                         
                 default :
                     /* Unhandled key */
