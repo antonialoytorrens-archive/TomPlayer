@@ -333,16 +333,44 @@ void dumpbuff_carminat_frame(int dir, unsigned char *buf, int buflen)
 #endif
 		switch(evtKey->key)
 		{
-		case CARM_KEY_TOP_LEFT:
-			key = DIKI_ENTER;
-			key_found = 1;
-			break;
-		case CARM_KEY_MENU:
-		case CARM_KEY_BACK:
-			key = DIKI_ESCAPE;
-			key_found = 1;
-			break;
-		default:
+    case CARM_KEY_TOP_LEFT:
+        key = DIKI_KP_MINUS; 
+        key_found = 1;
+        break;          
+    case CARM_KEY_TOP_RIGHT:
+        key = DIKI_KP_PLUS;
+        key_found = 1;
+        break;    
+    case CARM_KEY_MAP:
+        key = DIKI_F9;
+        key_found = 1;
+        break;        
+    case CARM_KEY_MENU:
+        key = DIKI_F10;
+        key_found = 1;
+        break;        
+    case CARM_KEY_BACK:
+        key = DIKI_BACKSPACE;;
+        key_found = 1;
+        break;
+    /* The following keys are not on the remote */
+    case CARM_KEY_INFO:    
+        key = DIKI_F8;
+        key_found = 1;
+        break;        
+    case CARM_KEY_LIGHT:
+        key = DIKI_F7;
+        key_found = 1;
+        break;        
+    case CARM_KEY_REPEAT:
+        key = DIKI_F6;
+        key_found = 1;
+        break;        
+    case CARM_KEY_DEST:
+        key = DIKI_F5;
+        key_found = 1;
+        break;    
+    default:
 		{}
 		}
 
