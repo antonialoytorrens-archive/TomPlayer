@@ -283,7 +283,7 @@ name=any_part\n\
 
 /** About screen thread that handles the scroll */
 static void * about_thread(void *param){
-  const char * about_text = "Tomplayer a multimedia player for TomTom GPS - Code by nullpointer (Patrick Bruyere) and Wolfgar (Stephan Rafin) - Graphics by Flavien and Daniel Clermont - Many thanks to all users and contributors - Meet us at http://www.tomplayer.net - This is free software under GPL";
+  const char * about_text = "Tomplayer a multimedia player for TomTom GPS - Many thanks to all users and contributors - Meet us at http://www.tomplayer.net - This is free software under GPL";
 
   struct about_params * conf = param;
   int w, i ;
