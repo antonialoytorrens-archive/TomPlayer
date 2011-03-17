@@ -95,6 +95,7 @@ static void alarm_handler(int sig) {
 
 static void handle_key(DFBInputDeviceKeyIdentifier id){
   int new_idx = -1;
+  const struct skin_config * skin = state_get_current_skin();  
   
   if (ask_menu() == 0){
     switch(id){
@@ -120,14 +121,15 @@ static void handle_key(DFBInputDeviceKeyIdentifier id){
       default :
         break;  
     }
-    if (new_idx != -1){
-      /* update selected control */ 
-      const struct skin_config * skin = state_get_current_skin();  
-      control_set_select(&skin->controls[selected_ctrl_idx], false);
-      control_set_select(&skin->controls[new_idx], true);
-      selected_ctrl_idx = new_idx;      
-    }
-  }
+  } else {
+        new_idx = skin->first_selection;
+  } 
+  if (new_idx != -1){
+    /* update selected control */   
+    control_set_select(&skin->controls[selected_ctrl_idx], false);
+    control_set_select(&skin->controls[new_idx], true);
+    selected_ctrl_idx = new_idx;      
+  }  
 }
 
 static void handle_ts_coord(int x, int y){
@@ -178,6 +180,7 @@ void event_loop(void){
   bool ts_available = true;
   int input_fd;
   DFBInputDeviceKeyIdentifier key;
+  const struct skin_config * skin;
   #define TIMER_PERIOD_US 100000
   const struct itimerval timer_value = {.it_interval = {0,TIMER_PERIOD_US},
                                         .it_value = {0,TIMER_PERIOD_US}
@@ -205,20 +208,14 @@ void event_loop(void){
   /* Try to open tomplayer inputs FIFO */
   input_fd = open(KEY_INPUT_FIFO,O_RDONLY|O_NONBLOCK);
   printf("FIFO availability : %d\n", input_fd);
-  /* FIXME pour tests */
-  ts_available = 0;
+
   if (input_fd > 0){
     /* Purge FIFO events */
     while (read(input_fd, &key, sizeof(key)) > 0);
     /* Initialize selected control */
-    selected_ctrl_idx = get_ctrl(0,+1);      
-    if (selected_ctrl_idx == -1){
-        close(input_fd);
-        input_fd = -1;
-    } else {
-      const struct skin_config * skin = state_get_current_skin();        
-      control_set_select(&skin->controls[selected_ctrl_idx], true);
-    }
+    skin = state_get_current_skin();        
+    selected_ctrl_idx = skin->first_selection;
+    control_set_select(&skin->controls[selected_ctrl_idx], true);    
   }
   if (ts_available){
     /* Purge touchscreen events */
