@@ -1,4 +1,4 @@
-  /**
+/**
  * \file window.c
  * \author nullpointer & wolfgar
  * \brief This module provides window creation and handling facilities 
@@ -26,7 +26,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */ 
-
+#include <time.h>
 
 #include "dictionary.h"
 #include "iniparser.h"
@@ -36,6 +36,7 @@
 #include "label.h"
 #include "viewmeter.h"
 #include "config.h"
+#include "pwm.h"
 #include "window.h"
 
 
@@ -857,18 +858,39 @@ void gui_window_handle_key(DFBInputDeviceKeyIdentifier id){
         gui_window_cancel(win);
         break;        
     case DIKI_KP_MINUS: /*top left*/
+        pwm_modify_brightness(-5);
+        break;
     case DIKI_KP_PLUS:  /*top right*/
+        pwm_modify_brightness(5);
+        break;
     case DIKI_F5:       /*dest*/
     case DIKI_F6:       /*repeat*/
     case DIKI_F7:       /*light*/
     case DIKI_F8:       /*info*/
     case DIKI_F10:      /*menu*/
         break;
-    case DIKI_LEFT :
+    case DIKI_KP_4: /* knob CCW */
+        if ((current_control) && 
+            (current_control->type == GUI_TYPE_CTRL_FILESELECTOR)){
+            evt.key = DIKI_UP;
+            current_control->cb(current_control, GUI_EVT_KEY, &evt); 
+        } else {
+            new_control = find_prev_selectable_control(win);        
+        }
+    case DIKI_LEFT:
         new_control = find_prev_selectable_control(win);
         break;
+    case DIKI_KP_6: /* knob CW */
+        if ((current_control) && 
+            (current_control->type == GUI_TYPE_CTRL_FILESELECTOR)){
+            evt.key = DIKI_DOWN;
+            current_control->cb(current_control, GUI_EVT_KEY, &evt); 
+        } else {
+            new_control = find_next_selectable_control(win);        
+        }
+        break;
     case DIKI_RIGHT :
-        new_control = find_next_selectable_control(win);
+        new_control = find_next_selectable_control(win);        
         break;        
     case DIKI_DOWN :
         /* FIXME : Would be better to hanldle return from callback to know 
@@ -881,10 +903,7 @@ void gui_window_handle_key(DFBInputDeviceKeyIdentifier id){
             new_control = find_down_control(win);
         }        
         break;
-    case DIKI_UP :            
-        /* FIXME : Would be better to hanldle return from callback to know 
-         *  whether the ctrol callback was interedted in the evt 
-         */
+    case DIKI_UP :                    
         if ((current_control) && 
             (current_control->type == GUI_TYPE_CTRL_FILESELECTOR)){
             current_control->cb(current_control, GUI_EVT_KEY, &evt); 
@@ -985,3 +1004,4 @@ gui_window gui_window_get_top(void){
     return NULL;
   }
 }
+
