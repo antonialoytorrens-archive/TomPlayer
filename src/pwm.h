@@ -37,5 +37,6 @@ int pwm_off(void);
 int pwm_resume(void);
 int pwm_set_brightness(int val);
 int pwm_get_brightness(int *val);
+int pwm_modify_brightness(int delta);
 
 #endif

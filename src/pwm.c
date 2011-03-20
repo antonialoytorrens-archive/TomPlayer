@@ -233,4 +233,20 @@ out_pwm_resume:
 	return res;
 }
 
+/** Change the current brightness by a delta value */
+int pwm_modify_brightness(int delta){
+    int val;
+    int res = 0;
+    res = pwm_get_brightness(&val) ;
+    if (res != 0){
+        goto out;
+    }    
+    val += delta;
+    if (val > 100) val = 100;
+    if (val < 1) val = 1;
+    res = pwm_set_brightness(val);
+    
+out:    
+    return res;
+}
 
