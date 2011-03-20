@@ -39,7 +39,8 @@
 #include "engine.h"
 #include "widescreen.h"
 #include "font.h"
-
+#include "pwm.h"
+#include "engine.h"
 static int selected_ctrl_idx;
 
 static bool ctrl_is_selectable (enum SKIN_CMD type){
@@ -94,39 +95,104 @@ static void alarm_handler(int sig) {
 }
 
 static void handle_key(DFBInputDeviceKeyIdentifier id){
+  static bool is_selection_active = false;
   int new_idx = -1;
   const struct skin_config * skin = state_get_current_skin();  
-  
-  if (ask_menu() == 0){
-    switch(id){
-      case DIKI_TAB :
-        break;
-      case DIKI_ESCAPE :
+    
+  if (is_selection_active){
+    if ( ask_menu() == 0 ){
+    switch(id){ 
+      case DIKI_F10:        /*menu*/ 
+      case DIKI_BACKSPACE : /*back*/
+        is_selection_active = false;
+        /* update selected control */   
+        control_set_select(&skin->controls[selected_ctrl_idx], false);  
         handle_gui_cmd(SKIN_CMD_EXIT_MENU, -1); 
-        break;        
+        break;   
+      case DIKI_KP_4: 
       case DIKI_LEFT :
         new_idx = get_ctrl(selected_ctrl_idx, -1);
         break;
+      case DIKI_KP_6:
       case DIKI_RIGHT :
         new_idx = get_ctrl(selected_ctrl_idx, +1);          
-        break;        
+        break;   
+      case DIKI_KP_MINUS: /*top left*/
+        pwm_modify_brightness(-5);
+        break;
+      case DIKI_KP_PLUS:  /*top right*/
+        pwm_modify_brightness(5);
+        break;  
       case DIKI_DOWN :
-      case DIKI_UP :            
-      case DIKI_SPACE :
-      case DIKI_ENTER :{
-        const struct skin_config * skin = state_get_current_skin();  
+      case DIKI_UP : 
+          break;
+      case DIKI_ENTER :{        
         handle_gui_cmd(skin->controls[selected_ctrl_idx].cmd, -1);
         break;
       }
+      case DIKI_F9:  /*Map*/                               
+      case DIKI_F5:  /*dest*/
+      case DIKI_F6:  /*repeat*/
+      case DIKI_F7:  /*light*/
+      case DIKI_F8:  /*info*/
+        break;      
       default :
         break;  
     }
+    }
   } else {
-        new_idx = skin->first_selection;
-  } 
+    switch(id){
+      case DIKI_F10: /*menu*/ 
+        is_selection_active = true;
+        new_idx = selected_ctrl_idx;
+        ask_menu();
+        break;
+      case DIKI_BACKSPACE : /*back*/
+        handle_gui_cmd(SKIN_CMD_STOP, -1);        
+        break; 
+      case DIKI_KP_4:
+      case DIKI_LEFT :        
+        handle_gui_cmd(SKIN_CMD_BACKWARD,-1);
+        break;
+      case DIKI_KP_6:
+      case DIKI_RIGHT :
+        handle_gui_cmd(SKIN_CMD_FORWARD,-1);
+        break;   
+      case DIKI_KP_MINUS: /*top left*/
+        pwm_modify_brightness(-5);
+        break;
+      case DIKI_KP_PLUS:  /*top right*/
+        pwm_modify_brightness(5);
+        break;  
+      case DIKI_DOWN :
+        handle_gui_cmd(SKIN_CMD_NEXT,-1);  
+        break;
+      case DIKI_UP : 
+        handle_gui_cmd(SKIN_CMD_PREVIOUS,-1);  
+        break;
+      case DIKI_ENTER :
+        handle_gui_cmd(SKIN_CMD_PAUSE,-1);  
+        break;      
+      case DIKI_F8:  /*info*/  
+      case DIKI_F9:  /*Map*/  
+        eng_display_time();          
+        break;
+      case DIKI_F5:  /*dest*/
+        handle_gui_cmd(SKIN_CMD_MUTE,-1);
+        break;
+      case DIKI_F6:  /*repeat*/        
+        handle_gui_cmd(SKIN_CMD_VOL_MOINS, -1);
+        break;
+      case DIKI_F7:  /*light*/
+        handle_gui_cmd(SKIN_CMD_VOL_PLUS, -1);
+        break;
+      default :
+        break;  
+    }
+  }
   if (new_idx != -1){
     /* update selected control */   
-    control_set_select(&skin->controls[selected_ctrl_idx], false);
+    control_set_select(&skin->controls[selected_ctrl_idx], false);  
     control_set_select(&skin->controls[new_idx], true);
     selected_ctrl_idx = new_idx;      
   }  
@@ -204,18 +270,24 @@ void event_loop(void){
     ts_available = false;
   }
   printf("Touchscreen availability : %d\n", ts_available);
-  
+  /* FIXME force ts availability */
+  ts_available = false;
+    
   /* Try to open tomplayer inputs FIFO */
   input_fd = open(KEY_INPUT_FIFO,O_RDONLY|O_NONBLOCK);
   printf("FIFO availability : %d\n", input_fd);
+  
 
   if (input_fd > 0){
     /* Purge FIFO events */
     while (read(input_fd, &key, sizeof(key)) > 0);
     /* Initialize selected control */
-    skin = state_get_current_skin();        
-    selected_ctrl_idx = skin->first_selection;
-    control_set_select(&skin->controls[selected_ctrl_idx], true);    
+    skin = state_get_current_skin();      
+    if (skin->first_selection >= 0) {
+        selected_ctrl_idx = skin->first_selection;        
+    } else {
+        selected_ctrl_idx = get_ctrl(0, +1);
+    }    
   }
   if (ts_available){
     /* Purge touchscreen events */
@@ -254,7 +326,7 @@ void event_loop(void){
         if (read(input_fd, &key, sizeof(key)) > 0) {      
           handle_key(key);          
         } else {
-            if (errno != EINTR){
+            if (errno != EINTR) /*&& (errno != EAGAIN))*/{
                 fprintf(stderr, "spurious wakeup : %d \n", errno);
                 usleep(TIMER_PERIOD_US);
             }
