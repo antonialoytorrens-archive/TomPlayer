@@ -32,6 +32,7 @@
 
 #ifndef __TOMPLAYER_RESUME_H__
 #define __TOMPLAYER_RESUME_H__
+#include "engine.h"
 
 /**
  * \struct video_settings
@@ -50,14 +51,13 @@ struct audio_settings {
 };
 
 
-
-int resume_file_init(void);
-int resume_write_pos(int value);
-int resume_get_file_infos(char * filename, int len , int * pos);
+int resume_file_init(enum engine_mode);
+int resume_write_pos(enum engine_mode mode, int value);
+int resume_get_file_infos(enum engine_mode mode, char * filename, int len , int * pos);
 int resume_get_audio_settings(struct audio_settings * settings);
 int resume_get_video_settings(struct video_settings * settings);
 int resume_set_audio_settings(const struct audio_settings * settings);
 int resume_set_video_settings(const struct video_settings * settings);
-int resume_save_playslist(const char * current_filename);
+int resume_save_playslist(enum engine_mode mode, const char * current_filename);
 
 #endif

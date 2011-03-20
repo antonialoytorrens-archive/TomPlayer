@@ -43,7 +43,8 @@ extern int iniparser_set(dictionary * ini, char * entry, char * val);
 
 #define RESUME_FILENAME "./conf/resume.ini"
 
-#define RESUME_SECTION_KEY "RESUME"
+#define RESUME_VIDEO_SECTION_KEY "RESUME VIDEO"
+#define RESUME_AUDIO_SECTION_KEY "RESUME AUDIO"
 #define RESUME_VIDEO_SETTINGS_SECTION_KEY "VIDEO SETTINGS"
 #define RESUME_AUDIO_SETTINGS_SECTION_KEY "AUDIO SETTINGS"
 #define RESUME_FILENAME_KEY "file"
@@ -54,20 +55,20 @@ extern int iniparser_set(dictionary * ini, char * entry, char * val);
 #define RESUME_AUDIO_DELAY_KEY "audio_delay"
 
 
-#define RESUME_PLAYLIST_FILENAME "./conf/sav_pl.m3u"
+#define RESUME_PLAYLIST_FILENAME(x) (x == MODE_AUDIO)?"./conf/sav_apl.m3u":"./conf/sav_vpl.m3u"
+#define RESUME_SECTION_KEY_GET(x) (x == MODE_AUDIO)?RESUME_AUDIO_SECTION_KEY:RESUME_VIDEO_SECTION_KEY
 
 /**
- * \fn int resume_file_init(char * file)
- * \brief Reinit the resume file
- *
+ * Reinit the resume file
  *
  * \return 0  on success, -1 on failure
  */
-int resume_file_init(void){
+int resume_file_init(enum engine_mode mode){  
 	dictionary * ini ;
+  char ini_path[100];
 	FILE * fp;
-	int ret = 0;
-
+	int ret = 0;  
+  
 	ini = iniparser_load(RESUME_FILENAME);
 	if( ini == NULL ){
 		PRINTD( "resume file doesn't exist\n" );
@@ -79,11 +80,14 @@ int resume_file_init(void){
 		PRINTDF( "Unable to create resume file <%s>\n", RESUME_FILENAME );
 		ret = -1;
 		goto error;
-	}
-
-	iniparser_setstring( ini, RESUME_SECTION_KEY, NULL );
-	iniparser_setstring( ini, RESUME_SECTION_KEY":"RESUME_FILENAME_KEY, RESUME_PLAYLIST_FILENAME);
-	iniparser_setstring( ini, RESUME_SECTION_KEY":"RESUME_POS_KEY, "-1" );
+	}  
+	iniparser_setstring( ini, RESUME_SECTION_KEY_GET(mode), NULL );
+  snprintf(ini_path, sizeof(ini_path), "%s:%s", RESUME_SECTION_KEY_GET(mode), RESUME_FILENAME_KEY);
+  ini_path[sizeof(ini_path)-1] = 0;
+	iniparser_setstring( ini, ini_path, RESUME_PLAYLIST_FILENAME(mode));
+  snprintf(ini_path, sizeof(ini_path), "%s:%s", RESUME_SECTION_KEY_GET(mode), RESUME_POS_KEY);
+  ini_path[sizeof(ini_path)-1] = 0;
+	iniparser_setstring( ini, ini_path, "-1" );
 
 	iniparser_dump_ini( ini, fp );
 
@@ -101,8 +105,9 @@ error:
  *
  * \return 0  on success, -1 on failure
  */
-int resume_write_pos(int value){
+int resume_write_pos(enum engine_mode mode, int value){
   char buffer[100];
+  char ini_path[100];
   dictionary * ini ;
   FILE * fp;
   int ret = 0;
@@ -114,9 +119,10 @@ int resume_write_pos(int value){
   }
 
   snprintf(buffer, sizeof(buffer),"%i", value);
-  iniparser_setstring( ini, RESUME_SECTION_KEY, NULL );
-  iniparser_setstring( ini, RESUME_SECTION_KEY":"RESUME_POS_KEY, buffer );
-
+  iniparser_setstring( ini, RESUME_SECTION_KEY_GET(mode), NULL );
+  snprintf(ini_path, sizeof(ini_path), "%s:%s", RESUME_SECTION_KEY_GET(mode), RESUME_POS_KEY);
+  ini_path[sizeof(ini_path)-1] = 0;
+  iniparser_setstring( ini, ini_path, buffer );  
   fp = fopen( RESUME_FILENAME, "w+" );
   if( fp == NULL ){
   	PRINTDF( "Unable to create resume file <%s>\n", RESUME_FILENAME );
@@ -135,14 +141,16 @@ error:
 
 /** Get media file and position entry in resume file
  *
+ * \param mode audio or video mode
  * \param filename Buffer where the media filename has to be stored
  * \param len Length of the buffer where thefilename has to be copied
  * \param pos Last position in seconds
  *
  * \return 0  on success, -1 on failure
  */
-int resume_get_file_infos(char * filename, int len , int * pos){
+int resume_get_file_infos(enum engine_mode mode, char * filename, int len , int * pos){
   dictionary * ini ;
+  char ini_path[100];
   char *s;
   int ret = 0;
 
@@ -159,15 +167,19 @@ int resume_get_file_infos(char * filename, int len , int * pos){
   	return -1;
   }
 
-  s = iniparser_getstring(ini, RESUME_SECTION_KEY":"RESUME_FILENAME_KEY, NULL);
+  snprintf(ini_path, sizeof(ini_path), "%s:%s", RESUME_SECTION_KEY_GET(mode), RESUME_FILENAME_KEY);
+  ini_path[sizeof(ini_path)-1] = 0;
+  s = iniparser_getstring(ini, ini_path, NULL);
   if( s != NULL ) strncpy( filename, s, len-1 );
   else{
   	ret = -1;
   	PRINTDF( "Error while getting media filename in : %s \n ", RESUME_FILENAME);
   	goto error;
   }
-
-  s = iniparser_getstring(ini, RESUME_SECTION_KEY":"RESUME_POS_KEY, NULL);
+  
+  snprintf(ini_path, sizeof(ini_path), "%s:%s", RESUME_SECTION_KEY_GET(mode), RESUME_POS_KEY);
+  ini_path[sizeof(ini_path)-1] = 0;
+  s = iniparser_getstring(ini, ini_path, NULL);
   if( s != NULL ){
   	if (sscanf(s ,"%i", pos) != 1){
   		ret = -1;
@@ -369,7 +381,7 @@ error:
 }
 
 
-int resume_save_playslist(const char * current_filename){
+int resume_save_playslist(enum engine_mode mode, const char * current_filename){
   #define VOLATILE_PLAYLIST_FILENAME "/tmp/playlist.m3u"
   
   char buffer[PATH_MAX];
@@ -385,7 +397,7 @@ int resume_save_playslist(const char * current_filename){
   while (fgets(buffer, PATH_MAX-1,in_pl) != NULL){
     if (!found){
       if (strstr(buffer, current_filename) != NULL){
-        out_pl = fopen(RESUME_PLAYLIST_FILENAME,"w+");
+        out_pl = fopen(RESUME_PLAYLIST_FILENAME(mode),"w+");
         if (out_pl == NULL){
           break;
         }
