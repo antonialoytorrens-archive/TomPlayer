@@ -79,6 +79,12 @@ struct about_params{
 };
 
 
+/** Time thread parameters structure */
+struct time_params{
+    struct gui_control * txt_ctrl;
+    bool exit;
+};
+
 #define CFG_FOLDER "./conf"
 
 static const char * graphic_conf_files[GUI_SCREEN_MAX] = {"main.cfg",
@@ -154,7 +160,7 @@ static void blit_img(struct gui_control * ctrl, const char *ctrl_name){
   return;
 }
 
-/** Handle selection of an event */
+/** Handle selection of a control */
 static void handle_selection(struct gui_control *ctrl,  enum gui_event_type type){
     IDirectFBSurface * surf = gui_window_get_surface(ctrl->win);  
     
@@ -173,8 +179,8 @@ static void handle_selection(struct gui_control *ctrl,  enum gui_event_type type
             PRINTD("Cleaning button selection");
             blit_img(ctrl, ctrl->name);         
         } else {
-            PRINTD("Cleaning NON button selection");
-            */
+            PRINTD("Cleaning NON button selection");*/
+            
             surf->SetColor(surf, 0,0,0,0);
             surf->DrawRectangle(surf, 
                             ctrl->zone.x , 
@@ -1338,7 +1344,7 @@ static void resume_audio_video(struct gui_control *ctrl, enum gui_event_type typ
     if (evt){
         bool is_video = ctrl->cb_param;
         gui_window_release(ctrl->win);
-        if (resume_get_file_infos(filename, PATH_MAX, &pos) != 0){
+        if (resume_get_file_infos(is_video?MODE_VIDEO:MODE_AUDIO, filename, PATH_MAX, &pos) != 0){
             DFBColor color = {255,255,50,50};
             message_box("No resume data...", 24, &color, "./res/font/decker.ttf");    	
             return;
@@ -1458,9 +1464,34 @@ static void resume(struct gui_control *ctrl, enum gui_event_type type, union gui
 
 
 /* MAIN SCREEN */
+
+/** Thread in charge of updating time on the main screen */
+static void * time_thread(void *param){
+    char buff_time[16];
+    time_t curr_time;
+    struct tm * ptm;        
+    struct time_params * conf = param;
+    label_handle label = conf->txt_ctrl->obj;
+    
+    while (!conf->exit ){
+        time(&curr_time);
+        ptm= localtime(&curr_time);
+        snprintf(buff_time,sizeof(buff_time),"%02d:%02d",ptm->tm_hour, ptm->tm_min);
+        buff_time[sizeof(buff_time)-1]=0;
+        label_set_text(label, buff_time);  
+        sleep(1);
+    }
+    return NULL;
+}
+
 /** Callback on exit button */
-static void quit_tomplayer(struct gui_control *ctrl, enum gui_event_type type, union gui_event* evt){
+static void quit_tomplayer(struct gui_control *ctrl, enum gui_event_type type, union gui_event* evt){    
+    struct gui_control * txt_ctrl;
     if (evt) {
+        txt_ctrl = gui_window_get_control(ctrl->win, "time");
+        if (txt_ctrl != NULL) {
+          ((struct time_params *)txt_ctrl->cb_param)->exit = true;
+        }
         gui_window_release(ctrl->win);
         quit = true;
     } else {
@@ -1469,9 +1500,10 @@ static void quit_tomplayer(struct gui_control *ctrl, enum gui_event_type type, u
 }
 
 
-static bool load_main_screen(void){
-   /* We go there from splash screen */
-   gui_window  win;
+static bool load_main_screen(void){   
+   static struct time_params time_par;
+   pthread_t tid;
+   gui_window  win;   
    win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_MAIN)); 
    if (win == NULL){
     return false;
@@ -1482,6 +1514,13 @@ static bool load_main_screen(void){
    gui_window_attach_cb(win, "audio_button", select_audio);
    gui_window_attach_cb(win, "resume_button", resume);
    gui_window_attach_cb(win, "settings_button", choose_settings);
+   /* Launch thread time */
+   time_par.exit = false;
+   time_par.txt_ctrl = gui_window_get_control(win, "time");
+   if (time_par.txt_ctrl != NULL) {
+     time_par.txt_ctrl->cb_param = (int)&time_par;
+     pthread_create(&tid, NULL, time_thread,  &time_par);
+   }
   return true;
 }
 
