@@ -29,7 +29,8 @@
 
 extern struct tomplayer_config config;
 extern bool is_mplayer_finished;
-
+enum engine_mode{MODE_VIDEO,MODE_AUDIO};
+      
 int init_engine( bool );
 int release_engine( void );
 
@@ -44,5 +45,9 @@ int get_command_from_xy( int x, int y, int * p );
 void display_image_to_fb( ILuint  );
 void launch_mplayer( char * , char * , int );
 const struct skin_config * state_get_current_skin(void);
+int ask_menu(void);
+void handle_gui_cmd(int cmd, int p);
+int control_set_select(const struct skin_control * ctrl, bool state);
+void eng_display_time( void );
 
 #endif /* __ENGINE_H__ */

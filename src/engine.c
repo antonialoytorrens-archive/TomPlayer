@@ -82,10 +82,10 @@ static int fifo_command;
 static int fifo_menu;
 static int fifo_out;
 
-enum {MODE_VIDEO,
-      MODE_AUDIO} current_mode;
+enum engine_mode current_mode;
 bool is_menu_showed = false;
 bool is_mplayer_finished = false;
+
 
 static bool is_paused = false;
 static int resume_pos;
@@ -541,15 +541,14 @@ static void flush_stdout(void){
 *\retval >0 : line sucessfully read, the len of the line is returned
 *\retval -1 : An error occured
 */
-static int read_line_from_stdout(char * buffer, int len){
+static int read_line_from_stdout(char * buffer, int len){  
+  int read_bytes;
   int total_read = 0;
+  int eof_idx;
   fd_set rfds;
   struct timeval tv;
 
   do {
-    if  (total_read>=len){
-      return -1;
-    }
     FD_ZERO(&rfds);
     FD_SET(fifo_out, &rfds);
     tv.tv_sec = 0;
@@ -558,19 +557,28 @@ static int read_line_from_stdout(char * buffer, int len){
       /* Time out */
       return -1;
     }
-
-    if (read(fifo_out, &buffer[total_read], 1) != 1){
-      return -1;
+    read_bytes = read(fifo_out, &buffer[total_read], len-total_read);
+    if (read_bytes <= 0){
+        PRINTDF("Error while reading from mplayer FIFO : %d - errno : %d\n", read_bytes, errno);
+        return -1;
+    }        
+    total_read += read_bytes;
+    for (eof_idx = total_read-1; eof_idx >= 0; eof_idx--){
+        if (buffer[eof_idx] == '\n'){
+            //PRINTDF("EOF found at %d / %d\n", eof_idx+1, total_read);
+            break ;            
+        }
     }
-    total_read ++;
-  }while (buffer[total_read-1] != '\n' );
-
+  } while ((eof_idx < 0) && (total_read < len));
+  
+  
   if (total_read < len){
-    buffer[total_read]=0;
+    /* Remove '\n' and force 0-terminated string */
+    buffer[eof_idx]=0;
   } else {
     return -1;
   }
-  return total_read;
+  return eof_idx; 
 }
 
 /** retrieve an int value from mplayer stdout
@@ -604,19 +612,18 @@ static int get_int_from_stdout(int *val){
 /** retrieve any RAW string from mplayer stdout
 *
 * \param val[out]
-*\retval 0 : OK
+*\retval >0 : OK, string length
 *\retval -1 : KO
 */
-static int get_string_from_stdout(char *val){
-
-	char buffer[200];
-  	//PRINTD("get_string_from_stdout %s\n","");
-    if (read_line_from_stdout(buffer, sizeof(buffer)) > 0){
-        strcpy( val, buffer );
-        PRINTDF( "Fichier courant <%s>\n",buffer );
-        return 0;
+static int get_string_from_stdout(char *val, size_t len){
+    int nb_chars;
+    
+    nb_chars = read_line_from_stdout(val, len);
+    //PRINTDF("get_string_from_stdout : %d\n", nb_chars);
+    if (nb_chars > 0){
+        PRINTDF( "Line read from mplayer : %s\n", val);
+        return nb_chars;
     }
-
     return -1;
 }
 
@@ -652,20 +659,20 @@ static int get_float_from_stdout(float *val){
 * \param[in]  cmd the command to send
 * \param[out] val the string returned by mplayer
 *
-* \reval 0 : OK
+* \reval >0 : OK, string length
 * \reval -1 : An error occured
 *
 */
-static int send_command_wait_string(const char * cmd, char *val ){
+static int send_command_wait_string(const char * cmd, char *val, size_t len){
   int nb_try = 0;
   int res = 0;
   //PRINTD("send_command_wait_string : %s \n", cmd);
   pthread_mutex_lock(&request_mutex);
   send_command(cmd);
   do {
-    res = get_string_from_stdout(val);
+    res = get_string_from_stdout(val, len);
     nb_try++;
-  }while (( res == -1) && (nb_try < 5));
+  }while ((res == -1) && (nb_try < 5));
   pthread_mutex_unlock(&request_mutex);
   return res;
 }
@@ -730,14 +737,54 @@ static int get_file_position_percent(void){
     }
 }
 
-/** Return the current file been playing
-*/
-static bool get_current_file_name(char * filename){
-	//PRINTD("get_current_file_name %s\n","");
-    if (send_command_wait_string(" get_file_name\n", filename) == 0){
-    	return true;
+
+static int extract_mplayer_answer(char *buffer, int len, const char* pattern){
+    int extract_len = -1;
+    int pattern_len = strlen(pattern);
+        
+    if(!strncmp(pattern, buffer, pattern_len)){
+        /* Remove ANS pattern and final quote */   
+        extract_len = len - pattern_len - 1;
+        memmove(buffer, buffer + pattern_len, extract_len);
+        buffer[extract_len] = 0;
+        //PRINTDF("Extracted name : %s\n", buffer);        
+    } 
+    return extract_len;
+}
+
+/** Return the current file been playing */
+static int get_filename(char *buffer, size_t len){
+    #define FILENAME_ANS_PATTERN "ANS_FILENAME='"
+  
+    int nb_chars;   
+    nb_chars = send_command_wait_string(" get_file_name\n", buffer, len);    
+    if (nb_chars > 0){
+        return extract_mplayer_answer(buffer, nb_chars, FILENAME_ANS_PATTERN);        
     }
-    return false;
+    return -1;
+}
+
+/** Return the artist from the current file (from ID tag) */
+static int get_artist(char *buffer, size_t len){
+    #define ARTIST_ANS_PATTERN "ANS_META_ARTIST='"
+  
+    int nb_chars;   
+    nb_chars = send_command_wait_string(" get_meta_artist\n", buffer, len);    
+    if (nb_chars > 0){
+        return extract_mplayer_answer(buffer, nb_chars, ARTIST_ANS_PATTERN);        
+    }
+    return -1;
+}
+
+/** Return the title from the current file (from ID tag) */
+static int get_title(char *buffer, size_t len){
+    #define ALBUM_ANS_PATTERN "ANS_META_TITLE='"
+    int nb_chars;   
+    nb_chars = send_command_wait_string(" get_meta_title\n", buffer, len);    
+    if (nb_chars > 0){
+        return extract_mplayer_answer(buffer, nb_chars, ALBUM_ANS_PATTERN);        
+    }
+    return -1;
 }
 
 /** Return the current file position in seconds
@@ -849,7 +896,7 @@ bool is_audio_file( char * file ){
 
 
 void send_raw_command( const char * cmd ){
-	PRINTDF ("Raw Commande envoy�e : %s",cmd);
+	PRINTDF ("Raw sent command : %s",cmd);
 	write( fifo_command, cmd, strlen(cmd));
 }
 
@@ -862,7 +909,7 @@ void send_command( const char * cmd ){
 	char full_cmd [256];
 	int len;
 	len  = snprintf(full_cmd, sizeof(full_cmd), "%s %s", (is_paused ?"pausing " :"") , cmd);
-	PRINTDF ("Commande envoy�e : %s",full_cmd);
+	PRINTDF ("sent command : %s",full_cmd);
     write( fifo_command, full_cmd, len );
 }
 
@@ -880,13 +927,25 @@ void hide_menu( void ){
     send_menu( "HIDE\n" );
 }
 
+void eng_display_time( void ){
+  char buff_time[40];
+  time_t curr_time;
+  struct tm * ptm;   
+  
+  time(&curr_time);
+  ptm= localtime(&curr_time);
+  snprintf(buff_time,sizeof(buff_time),"osd_show_text \"Time : %02d:%02d\" 2000\n",ptm->tm_hour, ptm->tm_min);
+  buff_time[sizeof(buff_time)-1]=0; 
+  send_command(buff_time); 
+}
+
 static void quit_mplayer(void){
   int pos;
   
   is_paused=false;
   pos = get_file_position_seconds();
   if (pos > 0){
-    resume_write_pos(pos);
+    resume_write_pos(current_mode, pos);
   }
   send_raw_command( "quit\n" );
   quit_asked = true ;
@@ -954,8 +1013,10 @@ void * update_thread(void *cmd){
   int pos ;
   int screen_saver_to_cycles;
   char current_buffer_filename[200];
-  char *p;
-  char buffer[200];
+  char artist[200];
+  char title[200];
+  char displayed_name[300];
+  char buffer[32];
   
   current_filename[0] = 0;
 
@@ -971,40 +1032,47 @@ void * update_thread(void *cmd){
   while (is_mplayer_finished == false){
     flush_stdout();
 
-	pthread_mutex_lock(&display_mutex);
+  pthread_mutex_lock(&display_mutex);
 
-	if (is_paused == false){	 
-	 /* DO Not send periodic commands to mplayer while in pause because it unlocks the pause for a brief delay */        
-	 if( get_current_file_name( current_buffer_filename ) == true ){
-         if( !strncmp( "ANS_FILENAME='", current_buffer_filename, strlen( "ANS_FILENAME='" ) ) ){
-           p = current_buffer_filename + strlen( "ANS_FILENAME='" );
-           p[strlen(p)-2] = 0;
-           if( strcmp( p, current_filename ) ){
-             strcpy( current_filename, p);
-			 if (resume_pos != 0){
-			   sprintf( buffer, "seek %d 2\n",resume_pos);
-               send_command( buffer );	   	 
-			   resume_pos = 0;
-			 }
-			 if( current_mode == MODE_AUDIO ){
-               // Affichage du nom du fichier
-               if (no_user_interaction_cycles != SCREEN_SAVER_ACTIVE){
-                 display_current_file( p, &config.audio_config);
-                 display_bat_state(true);				               
-               }
-               set_audio_settings(&current_audio_settings);
-             }
-             if(current_mode == MODE_VIDEO){
-				blit_video_menu( fifo_menu, &config.video_config );
-				display_bat_state(true);	
-				set_video_settings(&current_video_settings);
-			 }
-           }
-         }
-	   }
-	}
+  if (is_paused == false){
+    /* DO Not send periodic commands to mplayer while in pause because it unlocks the pause for a brief delay */        
+    if( get_filename(current_buffer_filename, sizeof(current_buffer_filename)) > 0){                   
+        if( strcmp(current_buffer_filename, current_filename ) ){
+          /* Current filename has changed (new track)*/
+          strcpy(current_filename, current_buffer_filename);
+          if (resume_pos != 0){
+            sprintf( buffer, "seek %d 2\n",resume_pos);
+            send_command( buffer );	   	 
+            resume_pos = 0;
+          }
+          if( current_mode == MODE_AUDIO ){
+            // Affichage du nom du fichier
+            if (no_user_interaction_cycles != SCREEN_SAVER_ACTIVE){
+              if (get_title(title, sizeof(title)) > 0){
+                  if  (get_artist(artist, sizeof(artist)) > 0) {
+                    snprintf(displayed_name, sizeof(displayed_name),"%s - %s", artist, title);
+                  } else {
+                    snprintf(displayed_name, sizeof(displayed_name),"%s", title);
+                  }
+                  displayed_name[sizeof(displayed_name)-1] = 0;
+                  display_current_file(displayed_name, &config.audio_config);
+              } else {
+                display_current_file(current_filename, &config.audio_config);
+              }
+              display_bat_state(true);				               
+            }
+            set_audio_settings(&current_audio_settings);
+          }
+          if(current_mode == MODE_VIDEO){
+            blit_video_menu( fifo_menu, &config.video_config );
+            display_bat_state(true);	
+            set_video_settings(&current_video_settings);
+          }
+        }
+      }
+    
+  }
 
-	
     if (((is_menu_showed == true) ||  ( current_mode == MODE_AUDIO ))  &&
        (is_paused == false)) {
 
@@ -1072,10 +1140,8 @@ void * update_thread(void *cmd){
 	if (power_is_off_button_pushed() == true){
 		quit_mplayer();
 	}
-
-
     usleep(PB_UPDATE_PERIOD_US);
-  }
+  } /* End main loop */
 
 
   if (no_user_interaction_cycles == SCREEN_SAVER_ACTIVE){   
@@ -1107,7 +1173,7 @@ void * mplayer_thread(void *cmd){
     }
     /* Save audio playlist if quit has been required (as opposed to an end of playlist exit)*/
 	if (quit_asked)
-		resume_save_playslist(current_filename);
+		resume_save_playslist(current_mode, current_filename);
 	
     is_mplayer_finished = true;
     pthread_join(up_thread, NULL);
@@ -1160,7 +1226,7 @@ void launch_mplayer( char * folder, char * filename, int pos ){
     is_paused = false;
     no_user_interaction_cycles = 0;
 	
-	resume_file_init();
+	resume_file_init(current_mode);
     if (pos > 5){
       resume_pos = pos - 5;
     } else {
@@ -1228,7 +1294,6 @@ void launch_mplayer( char * folder, char * filename, int pos ){
  */
 int ask_menu(void){
     if (no_user_interaction_cycles == SCREEN_SAVER_ACTIVE){
-       
         if (config.diapo_enabled){
           diapo_stop();
           display_image_to_fb(config.audio_config.bitmap );
@@ -1244,7 +1309,7 @@ int ask_menu(void){
     no_user_interaction_cycles = 0;
 
     if( is_menu_showed == false && current_mode == MODE_VIDEO){
-        show_menu();
+        show_menu();   
         return 1;
     }
     return 0;
@@ -1335,7 +1400,7 @@ void handle_gui_cmd(int cmd, int p)
         	break;
         case SKIN_CMD_EXIT_MENU:
         default:
-            if( current_mode == MODE_VIDEO ) hide_menu();
+            if( current_mode == MODE_VIDEO ) hide_menu();            
     }
 
     /* Update in-memory settings */
@@ -1406,30 +1471,44 @@ int get_command_from_xy( int x, int y, int * p ){
     return cmd;
 }
 
-int control_set_select(struct skin_control * ctrl, bool state){
-    int x,y,w,h;
+int control_set_select(const struct skin_control * ctrl, bool state){
+    int x,y,w,h/*,xc,yc*/;
     struct rectangular_skin_control zone;
     unsigned char * select_square;
+    char buff_text[64];
+    
+    if (state){
+        snprintf(buff_text,sizeof(buff_text),"osd_show_text \"%s\" 1500\n",skin_cmd_2_txt(ctrl->cmd));        
+    
+    buff_text[sizeof(buff_text)-1]=0; 
+    send_command(buff_text); 
+    }
     
     zone = control_get_zone(ctrl);
     x = zone.x1;
     y = zone.y1;
-    w = zone.x2 - zone.x1;
-    h = zone.y2 - zone.y1;    
+    w = zone.x2 - zone.x1 ;
+    h = zone.y2 - zone.y1 ;    
     select_square = malloc(3*w*h);        
     if (select_square == NULL){
         return -1;
     }          
+    /*xc = 240-w/2;
+    yc = 272/2-h/2;*/
     /* copy the relevant skin background zone */
     ilBindImage(skin_id);
+    /*if (state)*/
     ilCopyPixels(x, y, 0, w, h, 1,
                  IL_RGB, IL_UNSIGNED_BYTE, select_square);
+/*    else
+    ilCopyPixels(xc, yc, 0, w, h, 1,
+                 IL_RGB, IL_UNSIGNED_BYTE, select_square);*/
     if (state){
-#if 0        
+        #if 0
       if (ctrl->type == CIRCULAR_SKIN_CONTROL){
         int x, y, err ;                
         int xm, ym, r;
-        r = w / 2;
+        r = (w / 2) - 2;
         xm = r;
         ym = r;
         x = -r;
@@ -1453,19 +1532,20 @@ int control_set_select(struct skin_control * ctrl, bool state){
           if (r <= y) err += ++y*2+1; /* e_xy+e_y < 0 */
         } while (x < 0);    
       } else {
-#endif
+          #endif
         int i,j;    
         /* Draw a square around the control */        
         for(j=0; j<h; j++){
             for (i=0; i<w; i++){
-            if ((i==0) || (i==(w-1)) || (j==0) || (j==(h-1))){
+            if ((i==1) || (i==(w-1)) || (j==1) || (j==(h-1))){
                 select_square[(i+j*w)*3]   = 255;
                 select_square[(i+j*w)*3+1] = 0;
                 select_square[(i+j*w)*3+2] = 0;
             }
             }
         }
-      /*}*/
+      
+      //}
     }     
     display_RGB(select_square, x, y , w, h, false);
     free(select_square);
@@ -1485,7 +1565,7 @@ static void display_RGB(unsigned char * buffer, int x, int y, int w, int h, bool
       buffer_size = w*h*4;
     }
     else{
-      sprintf(str, "RGB24 %d %d %d %d %d %d\n", w, h, x, y , 0, 0);        
+      sprintf(str, "RGB24 %d %d %d %d %d %d\n", w, h, x, y , 255, 0);        
       buffer_size = w*h*3;
     }
     write(fifo_menu, str, strlen(str));

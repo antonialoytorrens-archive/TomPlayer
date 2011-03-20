@@ -124,6 +124,29 @@ struct tomplayer_config config;
 extern int iniparser_set(dictionary * ini, char * entry, const char * val);
 #define iniparser_setstring iniparser_set
 
+static const char * cmd_labels[SKIN_CMD_MAX_NB] = { "EXIT      ",
+                                                    "PAUSE     ",
+                                                    "STOP      ",
+                                                    "MUTE      ",
+                                                    "VOL -     ",
+                                                    "VOL +     ",
+                                                    "BRIGHT -  ",
+                                                    "BRIGHT +  ",
+                                                    "DELAY -   ",
+                                                    "DELAY +   ",
+                                                    "CONTRAST -",
+                                                    "CONTRAST +",
+                                                    "FORWARD   ",
+                                                    "BACKWARD  ",
+                                                    "NEXT      ",
+                                                    "PREVIOUS  ",
+                                                    "          ",
+                                                    "          "
+                                                  };
+
+const char * skin_cmd_2_txt(enum SKIN_CMD cmd){
+    return cmd_labels[cmd];
+}
 
 struct rectangular_skin_control control_get_zone(const struct skin_control *ctrl){
     struct rectangular_skin_control zone;
@@ -241,7 +264,7 @@ bool load_skin_config( char * filename, struct skin_config * skin_conf){
     skin_conf->pb_g = iniparser_getint(ini, SECTION_GENERAL":"KEY_G_PROGRESSBAR, 0);
     skin_conf->pb_b = iniparser_getint(ini, SECTION_GENERAL":"KEY_B_PROGRESSBAR, 0);
     skin_conf->selection_order = iniparser_getint(ini, SECTION_GENERAL":"KEY_SEL_ORDER, 0);
-    skin_conf->first_selection = iniparser_getint(ini, SECTION_GENERAL":"KEY_SEL_FIRST, 0);
+    skin_conf->first_selection = iniparser_getint(ini, SECTION_GENERAL":"KEY_SEL_FIRST, -1);
     
     s = iniparser_getstring(ini, SECTION_GENERAL":"KEY_SKIN_BMP, NULL);
     if( s != NULL ) strcpy( skin_conf->bitmap_filename, s ); // FIXME replace by a strdup
@@ -295,7 +318,7 @@ bool load_skin_config( char * filename, struct skin_config * skin_conf){
     /* Number of controls on the skin */
     skin_conf->nb = i;
     if (skin_conf->first_selection > skin_conf->nb){
-        skin_conf->first_selection = skin_conf->nb - 1;
+        skin_conf->first_selection = -1;
     }
     /* Sort the controls */
     if (!skin_conf->selection_order){
