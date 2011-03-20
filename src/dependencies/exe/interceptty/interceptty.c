@@ -399,12 +399,12 @@ void dumpbuff_carminat_frame(int dir, unsigned char *buf, int buflen)
         key = DIKI_ENTER;
         key_found = 1;
       } else {
-        if  (evtJoy->rotate == CARM_JOY_ROT_CCW){
-           key = DIKI_LEFT;
+        if  (evtJoy->rotate == CARM_JOY_ROT_CCW){           
+           key = DIKI_KP_4;
            key_found = evtJoy->rotate_steps;
         } 
         if  (evtJoy->rotate == CARM_JOY_ROT_CW){
-           key = DIKI_RIGHT; 
+           key = DIKI_KP_6;           
            key_found = evtJoy->rotate_steps;
         }
       }
@@ -472,7 +472,7 @@ void dumpbuff_carminat(int dir, unsigned char *buf, int buflen)
 	int start = 0;
 	int end = 0;
 
-	/* FIXME raw log everything ! 
+	/* FIXME raw log everything !
 	dumpbuff_raw(dir,buf,buflen);*/
 	//Only parses frame from CAN to Soft
 	if(!dir)
@@ -1081,7 +1081,7 @@ int main (int argc, char *argv[])
 			unlink(outfilename);
 			mkfifo(outfilename, 0777);
 			signal(SIGPIPE, SIG_IGN);
-/*			if ( (outfile = fopen("/media/sdcard/log/boot.txt","a")) == NULL)
+	/*		if ( (outfile = fopen("/media/sdcard/log/boot.txt","a")) == NULL)
 				errorf("Couldn't open output file '%s' for write: %s\n","/media/sdcard/log/boot.txt",strerror(errno));
 			else { */
 				fprintf(outfile,"Starting interceptty \n");
