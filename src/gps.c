@@ -1,14 +1,47 @@
-/* Retrieves geodetic informations from GPS SiRF data
-*
-*/
+/** 
+ * \file gps.c
+ * \author Stephan Rafin
+ *
+ * This module handles GPS to extract useful information from SiRF geodetic message
+ *
+ * $URL$
+ * $Rev$
+ * $Author$
+ * $Date$
+ *
+ */
 
+/*
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
 
 #include <fcntl.h>
 #include <stdio.h>
-#include <time.h>
 #include <stdint.h>
+#include <pthread.h>
+#include "gps.h"
 
-#define SIRF_SYNC 0xA0A2
+#ifdef DEBUG
+#define PRINTDF(s, ...) fprintf (stderr, (s), ##__VA_ARGS__)
+#else
+#define PRINTDF(s, ...)
+#endif
+
+
+/* Internal SiRF constants and format description */
+#define SIRF_SYNC 0xA2A0
 #define SIRF_POST 0xB3B0
 #define SIRF_FRAME_LEN_MIN 8
 #define SIRF_FRAME_FOOTER_LEN 4
@@ -16,19 +49,6 @@
 #define SIRF_FRAME_CHCKSUM_LEN 2
 #define SIRF_PAYLOAD_MAX 1023
 #define SIRF_CKSUM_MASK 0x7FFF;
-
-struct gps_data{
-    unsigned short int lat_deg;
-    unsigned short int lat_mins;
-    unsigned short int long_deg;
-    unsigned short int long_mins;
-    unsigned int alt_cm;
-    unsigned int sat_id_list;
-    unsigned int sat_nb;
-    unsigned short int speed_kmh;
-    struct tm time;
-};
-
 #define SIRF_GEODETIC_MSGID 0x29
 #define SIRF_GEODETIC_MSG_LEN 91
 
@@ -44,7 +64,7 @@ struct geodetic_nav_data{
     uint8_t day;
     uint8_t hour;
     uint8_t minuts;
-    uint16_t seconds;
+    uint16_t msecs;
     uint32_t sat_id_list;
     uint32_t latitude;
     uint32_t longitude;
@@ -68,55 +88,87 @@ struct sirf_footer{
     uint16_t post_sync;
 };
 
-//#pragma pack() 
+#pragma pack() 
 
-static int gpsfd = -1;
-static struct gps_data data;
+/* GPS module status */
+static struct {
+    int gpsfd;
+    struct gps_data data;
+    pthread_mutex_t data_mutex;    
+}gps_state = {
+    .gpsfd = -1,
+    .data_mutex = PTHREAD_MUTEX_INITIALIZER
+};
 
 
+/** Stupid dump buffer debug function */
+#if DEBUG
 static void dump(unsigned char * buffer, int len ){
     int i;
     for(i = 0; i < len; i++){
-            printf("0.2X ", buffer[i]);
-            if ((i % 16) == 0){
-                printf ("\n");
-            }
+        if ((i % 16) == 0){
+            PRINTDF ("\n");
+        }
+        PRINTDF("%0.2X ", buffer[i]);
+          
     }
+    PRINTDF("\n");
 }
+#else 
+#define dump(x,y) do{}while(0)
+#endif
 
+/** 16 bits endianess hleper */
 static inline uint16_t endian16_swap(uint16_t val){    
     uint16_t temp;
     temp = val & 0xFF;
-    temp = (val >> 8) | (temp << 8);
+    temp = (val >> 8) | (temp << 8);    
+    return temp;
+}
+
+/** 32 bits endianess hleper */
+static inline uint32_t endian32_swap(uint32_t val){    
+    uint32_t temp;
+    temp = ( val >> 24) | ((val & 0x00FF0000) >> 8) |  ((val & 0x0000FF00) << 8) | ((val & 0x000000FF) << 24); 
     return temp;
 }
 
 
+/** Handle Output SiRF message 
+ *
+ * \note For now we are only interested in Geodetic message
+ */
 static void handle_msg(unsigned char * buffer, int len ){
     struct geodetic_nav_data * msg = (struct geodetic_nav_data *)buffer;
     if ((len != SIRF_GEODETIC_MSG_LEN) || (msg->msg_id != SIRF_GEODETIC_MSGID)){
         return;
     }
     /* Extract values from geodetic msg */
-    
-    data.lat_deg = msg->latitude / 10000000;
-    data.lat_mins = ((msg->latitude * 60) / 10000000 ) % 60;     
-    data.long_deg = msg->longitude / 10000000;    
-    data.long_mins = ((msg->longitude * 60) / 10000000 ) % 60;     
-    data.alt_cm = msg->altitude;
-    data.sat_id_list = msg->sat_id_list;
-    data.sat_nb = msg->sv_nb;
-    data.speed_kmh = (msg->speed * 36) / 1000;
-    data.time.tm_sec = msg->seconds;
-    data.time.tm_min = msg->minuts;
-    data.time.tm_hour = msg->hour;
-    data.time.tm_mday = msg->day;
-    data.time.tm_mon = msg->month;
-    data.time.tm_year = msg->year - 1900;
-    data.time.tm_isdst = -1;
-    mktime(&data.time);
+    pthread_mutex_lock(&gps_state.data_mutex);
+    gps_state.data.seq += 1;
+    gps_state.data.lat_deg = endian32_swap(msg->latitude) / 10000000;
+    gps_state.data.lat_mins = ((endian32_swap(msg->latitude) * 60) / 10000000 ) % 60;     
+    gps_state.data.long_deg = endian32_swap(msg->longitude) / 10000000;    
+    gps_state.data.long_mins = ((endian32_swap(msg->longitude) * 60) / 10000000 ) % 60;     
+    gps_state.data.alt_cm = endian32_swap(msg->altitude);
+    gps_state.data.sat_id_list = endian32_swap(msg->sat_id_list);
+    gps_state.data.sat_nb = msg->sv_nb;
+    gps_state.data.speed_kmh = (endian16_swap(msg->speed) * 36) / 1000;
+    gps_state.data.time.tm_sec = endian16_swap(msg->msecs)/1000;    
+    gps_state.data.time.tm_min = msg->minuts;    
+    gps_state.data.time.tm_hour = msg->hour;    
+    gps_state.data.time.tm_mday = msg->day;
+    gps_state.data.time.tm_mon = msg->month - 1;
+    gps_state.data.time.tm_year = endian16_swap(msg->year) - 1900;
+    gps_state.data.time.tm_isdst = -1;
+    mktime(&gps_state.data.time);
+    pthread_mutex_unlock(&gps_state.data_mutex);
+    PRINTDF("Geodetic OK ! \n");
 };
 
+/** Compute SiRF checksum 
+ * \return The computed checksum
+ */
 static uint16_t sirf_chksum(unsigned char * buffer, int len ){
     int i;
     uint16_t cksum = 0;
@@ -127,11 +179,13 @@ static uint16_t sirf_chksum(unsigned char * buffer, int len ){
     return cksum ;
 }
 
-/**
-\retval >0 Valid frame, returns its length (full frame len including header and footer)
-\retval  0 Incomplete frame
-\retval -1 Invalid frame
-*/
+/** Check SiRF frame validity 
+ *
+ * 
+ * \retval >0 Valid frame, returns its length (full frame len including header and footer)
+ * \retval  0 Incomplete frame
+ * \retval -1 Invalid frame
+ */
 static check_frame(unsigned char * buffer, int len ){
     uint16_t payload_len;
     struct sirf_footer * footer;
@@ -140,19 +194,23 @@ static check_frame(unsigned char * buffer, int len ){
         return 0;
     }
     payload_len = endian16_swap(header->len);
-    if (payload_len >= SIRF_PAYLOAD_MAX){
+    if (payload_len >= SIRF_PAYLOAD_MAX){      
+        PRINTDF("Error payload length : %d\n", payload_len);
         return -1;
     } else {
         if ((payload_len + SIRF_FRAME_HEADER_LEN + SIRF_FRAME_FOOTER_LEN) > len){
+            PRINTDF("Not enough data \n");
             return 0;
         } else {
             footer = ((struct sirf_footer * )&buffer[payload_len  + SIRF_FRAME_HEADER_LEN]);
             
             /* We have enought bytes - Perform sanity check */
-            if (footer->post_sync != SIRF_POST){
+            if (footer->post_sync != SIRF_POST){     
+                PRINTDF("Post sync not found \n");
                 return -1;
             }
-            if (sirf_chksum(&buffer[SIRF_FRAME_HEADER_LEN], payload_len) != footer->chk){
+            if (sirf_chksum(&buffer[SIRF_FRAME_HEADER_LEN], payload_len) != endian16_swap(footer->chk)){
+                PRINTDF("Bad cksum !\n");
                 return -1;
             }
             /* Frame is valid ! */ 
@@ -163,18 +221,25 @@ static check_frame(unsigned char * buffer, int len ){
 }
 
 
+/** Initialize the GPS module */
 int gps_init (void){      
-    gpsfd = open("/dev/gpsdata", O_RDONLY|O_NONBLOCK);
-    if (gpsfd < 0)
+    gps_state.gpsfd = open("/dev/gpsdata", O_RDONLY|O_NONBLOCK);
+    if (gps_state.gpsfd < 0)
     {    
-        gpsfd = -1;
+        gps_state.gpsfd = -1;
         return -1;        
     }       
     return 0;
 }
 
 
-int gps_read(){
+/** Read and Parse available GPS data
+ *  This function has to be called regulary to refresh the data provided by gps_get_data()
+ *
+ * \retval -1 No data was available
+ * \retval  0 Data has been handled
+ */
+int gps_update(void){
     #define BUFFER_LEN 1034 /* More than max SIRF frame */
     static unsigned char buffer[BUFFER_LEN];    
     static int curr_idx = 0; 
@@ -184,18 +249,22 @@ int gps_read(){
     int len;
     int i;
        
-    read_len = read(gpsfd, &buffer[curr_idx], sizeof (buffer)-curr_idx);
+    read_len = read(gps_state.gpsfd, &buffer[curr_idx], sizeof (buffer)-curr_idx);
     if (read_len <= 0)
-        return;
+        return -1;
+
     /* Search Prelude Sync            
         We look for a 16 bits synchro word */
     len = curr_idx + read_len ;        
+    PRINTDF("Buffer : curr idx : %d - %d \n", curr_idx, read_len );
+    dump(buffer, len);
     i = 0;
-    while (i < (len -1)){
-        header = (struct sirf_header *)buffer;
+    while (i < (len -1)){        
+        header = (struct sirf_header *)&buffer[i];
         if (header->sync == SIRF_SYNC){
-            printf("Sync found at %d\n", i);
+            PRINTDF("Sync found at %d\n", i);
             frame_state = check_frame(&buffer[i], len - i);
+            PRINTDF("frame state : %d\n", frame_state);
             if (frame_state > 0){
                 /* valid frame */                
                 i += frame_state;
@@ -212,15 +281,51 @@ int gps_read(){
             i++;
         }
     }
-    if (len > i) {
+    if (len >= i) {
         memmove(&buffer[0] , &buffer[i], len - i);
         curr_idx = len - i;
-    } 
-
+        PRINTDF("i : %d - cur idx = %i \n", i,  len - i);
+    } else {
+        PRINTDF("Error  we should never be there\n");
+    }
+    return 0;
 }
 
+/** Retrieve GPS data 
+  * \param[out] data the retrieved GPS data
+  *
+  * \retval  0 OK
+  * \retval -1 KO
+  * \note this function can be called by another thread than the one which calls gps_read()
+  */
+int gps_get_data(struct gps_data *data){
+    if (gps_state.gpsfd == -1) 
+        return -1;
+    pthread_mutex_lock(&gps_state.data_mutex);
+    *data = gps_state.data;
+    pthread_mutex_unlock(&gps_state.data_mutex);
+    return 0;
+}
 
+/* To test as a standalone executable */
 int main(){
+    struct gps_data info;
+    int disp_seq = 0;
+    
     gps_init();
-    gps_read();
+    while (1){
+        if (gps_update() == -1){
+            gps_get_data(&info);
+            if (info.seq != disp_seq){
+                disp_seq = info.seq;
+                printf("Lat  : %i°%i'\n", info.lat_deg, info.lat_mins);
+                printf("Long : %i°%i'\n", info.long_deg, info.long_mins);  
+                printf("Alt  : %i,%im\n", info.alt_cm / 100, info.alt_cm % 100);
+                printf("Sats : %i\n",    info.sat_nb );
+                printf("vit  : %ikm/h\n", info.speed_kmh);
+                printf("Time : %s\n",asctime(&info.time));
+            }
+            usleep(100000);
+        }
+    }
 }
