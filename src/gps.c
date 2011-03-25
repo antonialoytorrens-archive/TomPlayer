@@ -31,6 +31,10 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <pthread.h>
+#include <sys/time.h>
+#include <string.h>
+#include <stdlib.h>
+
 #include "gps.h"
 
 #ifdef DEBUG
@@ -139,7 +143,11 @@ static inline uint32_t endian32_swap(uint32_t val){
  * \note For now we are only interested in Geodetic message
  */
 static void handle_msg(unsigned char * buffer, int len ){
+    time_t curr_time, gps_time;
+    struct timeval new_time;     
+    char * saved_tz = NULL;    
     struct geodetic_nav_data * msg = (struct geodetic_nav_data *)buffer;
+    
     if ((len != SIRF_GEODETIC_MSG_LEN) || (msg->msg_id != SIRF_GEODETIC_MSGID)){
         return;
     }
@@ -161,7 +169,20 @@ static void handle_msg(unsigned char * buffer, int len ){
     gps_state.data.time.tm_mon = msg->month - 1;
     gps_state.data.time.tm_year = endian16_swap(msg->year) - 1900;
     gps_state.data.time.tm_isdst = -1;
-    mktime(&gps_state.data.time);
+    time(&curr_time);    
+    saved_tz = strdup(getenv("TZ"));    
+    unsetenv("TZ");
+    gps_time = mktime(&gps_state.data.time);
+    if (abs(gps_time - curr_time) > 10){
+        printf("Syncing clock needed ! system : %d - GPS : %d\n", curr_time, gps_time);
+        new_time.tv_sec = gps_time;
+        new_time.tv_usec = 0;        
+        settimeofday(&new_time, NULL);
+    }
+    if (saved_tz != NULL){
+        setenv("TZ", saved_tz, 1);
+        free(saved_tz);
+    }    
     pthread_mutex_unlock(&gps_state.data_mutex);
     PRINTDF("Geodetic OK ! \n");
 };
@@ -317,13 +338,18 @@ int main(){
         if (gps_update() == -1){
             gps_get_data(&info);
             if (info.seq != disp_seq){
+                time_t curr_time;
+                struct tm * ptm;   
                 disp_seq = info.seq;
                 printf("Lat  : %i°%i'\n", info.lat_deg, info.lat_mins);
                 printf("Long : %i°%i'\n", info.long_deg, info.long_mins);  
                 printf("Alt  : %i,%im\n", info.alt_cm / 100, info.alt_cm % 100);
                 printf("Sats : %i\n",    info.sat_nb );
                 printf("vit  : %ikm/h\n", info.speed_kmh);
-                printf("Time : %s\n",asctime(&info.time));
+                printf("TimeG: %s",asctime(&info.time));
+                time(&curr_time);
+                ptm = localtime(&curr_time);
+                printf("TimeS: %02d : %02d\n",ptm->tm_hour, ptm->tm_min );  
             }
             usleep(100000);
         }
