@@ -39,15 +39,17 @@
 /* FIXME hardcoded font */
 #define FONT_FILENAME "res/font/decker.ttf" 
 
-/* FT objects instanciated on init */
-static FT_Library    library;
-static FT_Face       face;
-
-/* height and width of curently draw string */
-static int height, width;
-/* RGBA image buffer*/
-static unsigned char * image;
-
+/* state module variables */
+static struct{
+    /* FT objects instanciated on init */
+    FT_Library    library;
+    FT_Face       face;
+    /* height and width of currently drawn string */
+    int height, width;
+    /* RGBA image buffer*/
+    unsigned char * image;
+    int default_size;
+}state;
 
 static bool draw_bitmap( const struct font_color * color,
                   FT_Bitmap*  bitmap,
@@ -62,10 +64,10 @@ static bool draw_bitmap( const struct font_color * color,
   {
     for ( j = y, q = 0; j < y_max; j++, q++ )
     {
-          image[(4*((j*width) + i)) + 0] = color->r;
-          image[(4*((j*width) + i)) + 1] = color->g;
-          image[(4*((j*width) + i)) + 2] = color->b;
-          image[(4*((j*width) + i)) + 3] = bitmap->buffer[ q * bitmap->width + p] ; 
+          state.image[(4*((j*state.width) + i)) + 0] = color->r;
+          state.image[(4*((j*state.width) + i)) + 1] = color->g;
+          state.image[(4*((j*state.width) + i)) + 2] = color->b;
+          state.image[(4*((j*state.width) + i)) + 3] = bitmap->buffer[ q * bitmap->width + p] ; 
     }
   }
 
@@ -74,17 +76,17 @@ static bool draw_bitmap( const struct font_color * color,
   {
     for ( j = 0, q = 0; j < y; j++, q++ )
     {
-          image[(4*((j*width) + i)) + 0] = color->r;
-          image[(4*((j*width) + i)) + 1] = color->g;
-          image[(4*((j*width) + i)) + 2] = color->b;
-          image[(4*((j*width) + i)) + 3] = 0;
+          state.image[(4*((j*state.width) + i)) + 0] = color->r;
+          state.image[(4*((j*state.width) + i)) + 1] = color->g;
+          state.image[(4*((j*state.width) + i)) + 2] = color->b;
+          state.image[(4*((j*state.width) + i)) + 3] = 0;
     }
-    for ( j = y_max, q = 0; j < height ; j++, q++ )
+    for ( j = y_max, q = 0; j < state.height ; j++, q++ )
     {
-          image[(4*((j*width) + i)) + 0] = color->r;
-          image[(4*((j*width) + i)) + 1] = color->g;
-          image[(4*((j*width) + i)) + 2] = color->b;
-          image[(4*((j*width) + i)) + 3] = 0;
+          state.image[(4*((j*state.width) + i)) + 0] = color->r;
+          state.image[(4*((j*state.width) + i)) + 1] = color->g;
+          state.image[(4*((j*state.width) + i)) + 2] = color->b;
+          state.image[(4*((j*state.width) + i)) + 3] = 0;
     }
   }
 
@@ -92,7 +94,7 @@ static bool draw_bitmap( const struct font_color * color,
   return true;
 }
 
-static bool  font_get_size(const char * text, int * width, int * height, int * orig){
+bool  font_get_size(const char * text, int * width, int * height, int * orig){
   int n;
   int num_chars;
   FT_Vector pen;
@@ -100,16 +102,16 @@ static bool  font_get_size(const char * text, int * width, int * height, int * o
   FT_GlyphSlot  slot;
   int up, down, max_up, max_down;
 
-  max_up = max_down =  0;
+  max_up = max_down = *orig = 0;
   num_chars = strlen(text);
   pen.x = 0 * 64;
   pen.y = 0 * 64;
-  slot = face->glyph;
+  slot = state.face->glyph;
   *height = 0;
 
   for ( n = 0; n < num_chars; n++ ){
     /* load glyph image into the slot (erase previous one) */
-    error = FT_Load_Char( face, text[n], FT_LOAD_RENDER );
+    error = FT_Load_Char( state.face, text[n], FT_LOAD_RENDER );
     if ( error ){
       return false;
     }
@@ -137,13 +139,13 @@ static bool  font_get_size(const char * text, int * width, int * height, int * o
 
 
 void font_release(void){
-  if (face != NULL){
-    FT_Done_Face( face );
-    face = NULL;
+  if (state.face != NULL){
+    FT_Done_Face(state.face);
+    state.face = NULL;
   }
-  if (library != NULL) {
-    FT_Done_FreeType( library );
-    library = NULL;
+  if (state.library != NULL) {
+    FT_Done_FreeType(state.library);
+    state.library = NULL;
   }
 }
 
@@ -159,21 +161,21 @@ bool font_draw(const struct font_color * color,  const char * text, unsigned cha
   int orig;
   int n;
 
-  if (font_get_size(text, &width, &height, &orig) == false){
+  if (font_get_size(text, &state.width, &state.height, &orig) == false){
     return false;
   }
 
-  *w = width;
-  *h = height;
-  image = malloc(width*height*4);
-  if (image == NULL){
+  *w = state.width;
+  *h = state.height;
+  state.image = malloc(state.width*state.height*4);
+  if (state.image == NULL){
     return false;
   }
-  memset (image,0,width*height*4);
-  *image_buffer = image;
+  memset (state.image,0,state.width*state.height*4);
+  *image_buffer = state.image;
 
   num_chars = strlen(text);
-  slot = face->glyph;
+  slot = state.face->glyph;
 
   /* the pen position in 26.6 cartesian space coordinates
      relative to the upper left corner  */
@@ -184,7 +186,7 @@ bool font_draw(const struct font_color * color,  const char * text, unsigned cha
   {
 
     /* load glyph image into the slot (erase previous one) */
-    error = FT_Load_Char( face, text[n], FT_LOAD_RENDER );
+    error = FT_Load_Char(state.face, text[n], FT_LOAD_RENDER);
     if ( error )
       continue;                 /* ignore errors */
 
@@ -192,13 +194,13 @@ bool font_draw(const struct font_color * color,  const char * text, unsigned cha
     draw_bitmap( color,
                  &slot->bitmap,
                  pen.x / 64 /*slot->bitmap_left*/,
-                 height-slot->bitmap_top-orig);
+                 state.height - slot->bitmap_top - orig);
 
     /* increment pen position */
     pen.x += slot->advance.x;
     pen.y += slot->advance.y;
   }
-  image = NULL;
+  state.image = NULL;
   return true;
 }
 
@@ -207,17 +209,25 @@ bool font_init(int size){
   FT_Error  error;
 
   /* Prevent multiple init without release */
-  if (library != NULL)
+  if (state.library != NULL)
     return false;
 
-  error = FT_Init_FreeType( &library );              /* initialize library */
+  error = FT_Init_FreeType( &state.library );              /* initialize library */
   /* error handling omitted */
-
-  error = FT_New_Face( library, FONT_FILENAME, 0, &face ); /* create face object */
+  error = FT_New_Face( state.library, FONT_FILENAME, 0, &state.face ); /* create face object */
   /* error handling omitted */
-
   /* set character size : use size ptt at 100dpi */
-  error = FT_Set_Char_Size( face,size * 64, 0, 100, 0 );
-
+  error = FT_Set_Char_Size(state.face, size * 64, 0, 100, 0 );  
+  state.default_size = size;
+  
   return true;
+}
+
+
+int font_change_size(int size){
+    return FT_Set_Char_Size(state.face, size * 64, 0, 100, 0 );  
+}
+
+int font_restore_default_size(void){
+    return FT_Set_Char_Size(state.face, state.default_size * 64, 0, 100, 0 );  
 }

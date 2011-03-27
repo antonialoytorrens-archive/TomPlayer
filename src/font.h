@@ -3,10 +3,10 @@
  * \author nullpointer & Wolfgar 
  * \brief This module enables to generate RGBA bitmap buffer with some text in it
  * 
- * $URL:$
- * $Rev:$
- * $Author:$
- * $Date:$
+ * $URL$
+ * $Rev$
+ * $Author$
+ * $Date$
  *
  */
 
@@ -36,9 +36,10 @@ struct font_color{
   unsigned char b;
 };
 
-
-bool font_draw(const struct font_color * ,  const char *, unsigned char ** , int * , int *);
 bool font_init(int );
+bool font_draw(const struct font_color * ,  const char *, unsigned char ** , int * , int *);
+int  font_change_size(int);
+int  font_restore_default_size(void);
+bool font_get_size(const char *, int *, int *, int *);
 void font_release(void);
-
 #endif
