@@ -205,16 +205,16 @@ static void quit_current_window(struct gui_control *ctrl, enum gui_event_type ty
 
 
 /** Dispatch mouse event to a file selector controller (used by all the screens that holds a file selector) */
-static void dispatch_fs_event(struct gui_control *ctrl, enum gui_event_type type, union gui_event* evt){
+static void dispatch_fs_event(struct gui_control *ctrl, enum gui_event_type type, union gui_event* evt){  
   fs_handle fs = ctrl->obj;
 
   if (evt)  {
     if (type == GUI_EVT_TS)
         fs_handle_click(fs, evt->ts.x , evt->ts.y );
-    else {
+    else {      
         fs_handle_key(fs, evt->key);
     }
-  } else {
+  } else {     
      handle_selection(ctrl, type); 
   }   
 }
@@ -509,9 +509,9 @@ static void select_video(struct gui_control *ctrl, enum gui_event_type type, uni
         if (fs_ctrl != NULL){
         const struct fs_config * conf;
 
-            fs = fs_ctrl->obj;
+        fs = fs_ctrl->obj;
         fs_set_select_cb(fs, video_select_cb);
-            fs_new_path(fs, config.video_folder, config.filter_video_ext);
+        fs_new_path(fs, config.video_folder, config.filter_video_ext);
         conf = fs_get_config(fs);
         if (!conf->options.multiple_selection){  
             /* Automatically select the first item if single  selection */
