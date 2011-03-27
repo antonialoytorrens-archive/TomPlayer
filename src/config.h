@@ -188,7 +188,7 @@ struct tomplayer_config{
     unsigned int fm_transmitter1;           /*!<First FM transmitter frequency backup  */
     unsigned int fm_transmitter2;           /*!<Second FM transmitter frequency backup */ 
     int enable_fm_transmitter;              /*!<Enable FM transmitter*/ 
-    int diapo_enabled;                      /*!<Enable Diaporama */ 
+    int diapo_enabled;                      /*!<Enable Diaporama */     
     struct diapo_config diapo;              /*!<Diaporama Config */
     int enable_small_text;                  /*!<Enable samll text in file selector*/
     int int_speaker; 						/*!<Internal speaker configuration*/
@@ -216,6 +216,7 @@ bool config_toggle_fm_transmitter_state(void);
 bool config_toggle_small_text_state(void);
 void config_free(void);
 void config_reload(void);
+const char * skin_cmd_2_txt(enum SKIN_CMD);
 
 struct rectangular_skin_control control_get_zone(const struct skin_control *ctrl);
     
