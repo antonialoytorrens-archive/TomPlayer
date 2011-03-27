@@ -50,7 +50,7 @@
  *
  * \return true on success, false on failure
  */
-bool load_bitmap( ILuint * bitmap_obj, char * filename ){
+bool load_bitmap( ILuint * bitmap_obj,const char * filename ){
 #ifdef WITH_DEVIL
     ILint height, width;
 

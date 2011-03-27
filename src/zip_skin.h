@@ -3,9 +3,9 @@
  * \author nullpointer
  * \brief handling of zipped skin
  *
- * $URL:$
- * $Rev:$
- * $Author:$
+ * $URL$
+ * $Rev$
+ * $Author$
  * $Date$
  */
 
@@ -32,7 +32,7 @@
 
 #define ZIP_SKIN_BITMAP_FILENAME "/tmp/bitmap"
 
-bool load_bitmap( ILuint * , char * );
+bool load_bitmap( ILuint * , const char * );
 bool load_skin_from_zip(const char * , struct skin_config * , bool );
 bool unload_skin(  struct skin_config *  );
 
