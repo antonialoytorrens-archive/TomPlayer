@@ -34,15 +34,12 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-
 #include "debug.h"
 #include "engine.h"
 #include "power.h"
 #include "screens.h"
 #include "window.h"
-
-
-
+#include "gps.h"
 
 static IDirectFB	      *dfb;
 static IDirectFBDisplayLayer  *layer;   
@@ -149,7 +146,9 @@ int main( int argc, char *argv[] ){
   int c;
   int input_fd;
   DFBInputEvent evt;
-
+   
+  /* Initialize GPS module */
+  gps_init();
   input_fd = open(KEY_INPUT_FIFO,O_RDONLY|O_NONBLOCK);
   /* Purge FIFO if available */
   if (input_fd >= 0)
@@ -172,7 +171,9 @@ int main( int argc, char *argv[] ){
                         evt.type = DIET_KEYPRESS;
                         dispatch_ts_event( &evt );
                     }
-                }
+                }     
+                /* Update info from GPS */
+                gps_update() ;
               }
               while (keybuffer->GetEvent( keybuffer, DFB_EVENT(&evt)) == DFB_OK) {
                       dispatch_ts_event( &evt );
