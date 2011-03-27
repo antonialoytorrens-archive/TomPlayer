@@ -92,7 +92,6 @@ static inline int  min(int x, int y ) {
 }
 
 
-
 /** Clear a surface
  * \param[in] surf DirectFb surface to clear
  */
@@ -163,9 +162,6 @@ error:
   *out2 = NULL;
   return false;
 }
-
-
-
 
 /** Release a fs object 
  *
@@ -475,6 +471,36 @@ static int item_selection(fs_handle hdl, int idx){
     return refresh;
 }
 
+/** Scroll down */
+static bool scroll_down(fs_handle hdl){
+    int entries_nb = fl_get_entries_nb(hdl->list);
+    
+    hdl->idx_first_displayed += hdl->nb_lines;
+    if (hdl->idx_first_displayed >= entries_nb ){
+        hdl->idx_first_displayed = 0 ;
+    }     
+    return true;
+}
+
+/** Scroll up */
+static bool scroll_up(fs_handle hdl){
+    int entries_nb = fl_get_entries_nb(hdl->list);
+    
+    /* Test scroll up */             
+    hdl->idx_first_displayed -= hdl->nb_lines ; 
+    if ((hdl->idx_first_displayed <= -1 ) && (hdl->idx_first_displayed > -hdl->nb_lines )) {
+        hdl->idx_first_displayed = 0;                        
+    }                   
+    if (hdl->idx_first_displayed <= -hdl->nb_lines) {    
+        if ( entries_nb >  hdl->nb_lines){
+            hdl->idx_first_displayed = entries_nb -  hdl->nb_lines ;
+        } else {
+            hdl->idx_first_displayed = 0;
+        }
+    }
+    return true;
+}
+
 
 /** Create a file selector object
  *
@@ -677,36 +703,42 @@ bool fs_set_select_cb(fs_handle hdl, select_cb * f){
 
 void fs_handle_key(fs_handle hdl, DFBInputDeviceKeyIdentifier id){    
     bool refresh = false;
-    if (id == DIKI_DOWN){
+    
+    switch(id){    
+    case DIKI_DOWN:
         if  (hdl->selected_item < (fl_get_entries_nb(hdl->list) - 1))
             hdl->selected_item++;
-        /*else
-           hdl->selected_item = 0;*/
         refresh = true;
-    } else 
-    if (id == DIKI_UP){
+        break;
+    case DIKI_UP:
         if (hdl->selected_item > 0)
             hdl->selected_item--;
-        /*else 
-            hdl->selected_item = fl_get_entries_nb(hdl->list) - 1;
-        */
         refresh = true;
-    } else {
+        break;
+    case DIKI_LEFT:
+        refresh = scroll_up(hdl);
+        hdl->selected_item = hdl->idx_first_displayed;
+        break;
+    case DIKI_RIGHT:
+        refresh = scroll_down(hdl);
+        hdl->selected_item = hdl->idx_first_displayed;
+        break;
+    default: 
         refresh = item_selection(hdl, hdl->selected_item);
+        break;    
     }    
-    
     if (hdl->selected_item >= (hdl->idx_first_displayed + hdl->nb_lines)){
         hdl->idx_first_displayed++;
     }
     if (hdl->selected_item < hdl->idx_first_displayed){
         hdl->idx_first_displayed--;
     }
-
     if (refresh){
         refresh_display(hdl);
-    }      
-    
+    }          
 }
+
+
 
 /** Handle click on the object
  *
@@ -728,31 +760,17 @@ void fs_handle_click(fs_handle hdl,int x, int y){
     if ((x >= hdl->arrow_list[FS_ICON_UP].x) &&
         (x <= (hdl->arrow_list[FS_ICON_UP].x + hdl->arrow_list[FS_ICON_UP].w)) &&
         (y >= hdl->arrow_list[FS_ICON_UP].y) &&
-        (y <= (hdl->arrow_list[FS_ICON_UP].y + hdl->arrow_list[FS_ICON_UP].h))){
-          /* Test scroll up */             
-          hdl->idx_first_displayed -= hdl->nb_lines ; 
-          if ((hdl->idx_first_displayed <= -1 ) && (hdl->idx_first_displayed > -hdl->nb_lines )) {
-            hdl->idx_first_displayed = 0;                        
-          }                   
-          if (hdl->idx_first_displayed <= -hdl->nb_lines) {	   
-            if ( entries_nb >  hdl->nb_lines){
-              hdl->idx_first_displayed = entries_nb -  hdl->nb_lines ;
-            } else {
-              hdl->idx_first_displayed = 0;
-            }
-          }
-          refresh = true;
+        (y <= (hdl->arrow_list[FS_ICON_UP].y + hdl->arrow_list[FS_ICON_UP].h))){          
+          /* Scroll up */
+          refresh = scroll_up(hdl);
     }
+    
     if ((x >= hdl->arrow_list[FS_ICON_DOWN].x) &&
         (x <= (hdl->arrow_list[FS_ICON_DOWN].x + hdl->arrow_list[FS_ICON_UP].w)) &&
         (y >= hdl->arrow_list[FS_ICON_DOWN].y) &&
         (y <= (hdl->arrow_list[FS_ICON_DOWN].y + hdl->arrow_list[FS_ICON_UP].h))){
-        /* Test scroll down */                   
-          hdl->idx_first_displayed += hdl->nb_lines;
-          if (hdl->idx_first_displayed >= entries_nb ){
-              hdl->idx_first_displayed = 0 ;
-          }                   
-          refresh = true;
+          /* Scroll down */                             
+          refresh = scroll_down(hdl);
     }
     if ((x >= hdl->refresh_zone.x) &&
         (x <= (hdl->refresh_zone.x + hdl->refresh_zone.w)) &&
