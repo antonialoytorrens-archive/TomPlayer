@@ -43,28 +43,6 @@ static bool are_axes_inverted = false;
 static int screen_width  = -1;
 static int screen_height = -1;
 
-/**
- * \fn static void transform_filename(char * filename)
- * \brief Adapt filename
- *
- * \param filename filename to adapt (add "ws_" at the beginning)
- */
-static void transform_filename(char * filename){
-  char temp_buf[PATH_MAX];
-  char * slash_pos;
-  int slash_off;
-
-  slash_pos=strrchr(filename,'/');
-  if (slash_pos == NULL){
-    slash_off = 0;
-  } else {
-    slash_off = (slash_pos - filename)+1;
-  }
-
-  memcpy(temp_buf, filename, slash_off);
-  snprintf(&temp_buf[slash_off], PATH_MAX,"%s%s", WS_FILENAME_PREFIX, &filename[slash_off]);
-  strncpy(filename, temp_buf, PATH_MAX);
-}
 
 /** Returns wether the device is equiped with a widescreen or not
  *
