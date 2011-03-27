@@ -420,7 +420,7 @@ const char * flenum_get_next_file(flenum fl, bool is_random){
 bool flenum_release(flenum fl){
   int i;
 
-  if (fl == NULL) return;
+  if (fl == NULL) return false;
   for (i=0; i<fl->entries_number; i++){
     free(fl->filenames[i]);
   }
