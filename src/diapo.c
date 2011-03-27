@@ -40,6 +40,8 @@
 #include "engine.h"
 #include "file_list.h"
 #include "pwm.h"
+#include "font.h"
+#include "gps.h"
 #include "diapo.h"
 
 
@@ -55,6 +57,7 @@ static struct {
   pthread_mutex_t mutex;
   bool error;
   bool inv_axes;         /**< Are the axes inverted */
+  enum diapo_type type;
 } diapo_state = {
   .mutex = PTHREAD_MUTEX_INITIALIZER
 };
@@ -101,11 +104,20 @@ static void img_transition(ILuint cur ,ILuint next){
   return;
 }
 
-static void * preriodic_thread(void *param){
+static inline void wait_next_cycle(int delay){
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);      
+    ts.tv_sec  += delay;
+    if (pthread_mutex_timedlock(&diapo_state.mutex, &ts) == 0){
+      pthread_mutex_unlock(&diapo_state.mutex);
+    }
+}
+
+static void * diapo_thread(void *param){
+  
   bool no_file = false;
   const char * next_file;
-  static ILuint current_image_id, next_image_id;
-  struct timespec ts;
+  static ILuint current_image_id, next_image_id;  
   int loop;
   loop = 0;
   
@@ -136,11 +148,7 @@ static void * preriodic_thread(void *param){
     current_image_id = next_image_id;
     next_image_id = 0;
 
-    clock_gettime(CLOCK_REALTIME, &ts);      
-    ts.tv_sec  += diapo_state.delay;
-    if (pthread_mutex_timedlock(&diapo_state.mutex, &ts) == 0){
-      pthread_mutex_unlock(&diapo_state.mutex);
-    }
+    wait_next_cycle(diapo_state.delay);
   }
   if (current_image_id != 0){
     ilDeleteImages( 1, &current_image_id);
@@ -150,6 +158,162 @@ static void * preriodic_thread(void *param){
   return NULL;
 }
 
+#if 0
+ unsigned char * buffer_to_display;
+    unsigned char * text_buffer;
+    ILuint  img_id; 
+    ILuint text_id;
+    int text_width, text_height;     
+    
+    buffer_to_display = malloc(3 * w * h);
+    if (buffer_to_display == NULL)
+        return;
+    ilGenImages(1, &img_id);
+    /* Bind to backgound image and copy the appropriate portion */
+    ilBindImage(skin_id); 
+    ilCopyPixels(x, y, 0, w, h, 1,
+                 IL_RGB, IL_UNSIGNED_BYTE, buffer_to_display);
+    ilBindImage(img_id);
+    ilTexImage(w, h, 1, 
+               3, IL_RGB, IL_UNSIGNED_BYTE, buffer_to_display);
+    /* Flip image because an ilTexImage is always LOWER_LEFT */
+    iluFlipImage();
+    
+    /* Generate the font rendering in a dedicated image */    
+    if (size != 0){
+        font_change_size(size);
+    }
+    if (font_draw(color, text, &text_buffer, &text_width, &text_height) == false){
+        goto out_release_buffer;
+    }
+    ilGenImages(1, &text_id);
+    ilBindImage(text_id);
+    ilTexImage(text_width, text_height, 1, 4, IL_RGBA, IL_UNSIGNED_BYTE, text_buffer);
+
+    /* Combinate font and background */
+    ilBindImage(img_id);  
+    ilOverlayImage(text_id, 0, 0, 0);
+    ilCopyPixels(0, 0, 0, w, h, 1,
+                 IL_RGB, IL_UNSIGNED_BYTE, buffer_to_display);
+                 
+    /* Display the result on screen */
+    display_RGB(buffer_to_display, x, y, w, h, false);
+    
+    /* Free resources */      
+    free(text_buffer);
+    ilDeleteImages( 1, &text_id);
+out_release_buffer:    
+    free(buffer_to_display);
+    ilDeleteImages( 1, &img_id);
+    if (size != 0)
+        font_restore_default_size();
+    
+    #endif
+    
+    
+static void draw_string(ILuint back_id, const char * text, int x, int y, int size){
+    int text_width, text_height;
+    struct font_color  color ;     
+    ILuint text_id;
+    unsigned char * text_buffer;  
+     
+    /* Set clok color */
+    color.r = 255;
+    color.g = 255;
+    color.b = 255;   
+    
+    ilGenImages(1, &text_id);
+    ilBindImage(text_id);    
+    font_change_size(size);      
+    font_draw(&color, text, &text_buffer, &text_width, &text_height);        
+    font_restore_default_size();
+    ilTexImage(text_width, text_height, 1, 4, IL_RGBA, IL_UNSIGNED_BYTE, text_buffer);    
+    ilBindImage(back_id);  
+    ilOverlayImage(text_id, x, y, 0);
+    
+    free(text_buffer);
+    ilDeleteImages( 1, &text_id);
+    return;
+}
+
+                          
+void clock_thread(void){
+  char buff_text[32];
+  time_t curr_time;
+  struct tm * ptm;   
+  unsigned char * img_buffer;   
+  int text_width, text_height, orig;  
+  struct gps_data info;
+  int y;
+  ILuint  img_id; 
+ 
+
+  /* Generate ILut image for background */
+  img_buffer = calloc(3 * diapo_state.screen_x * diapo_state.screen_y, 1);         
+  /* FIXME cas degrade */
+  ilGenImages(1, &img_id);   
+  
+  while (!diapo_state.end_asked){
+    /* Get GPS info */
+    gps_get_data(&info);
+    
+    /* Set background to black */
+    memset(img_buffer, 0, 3 * diapo_state.screen_x * diapo_state.screen_y);     
+    ilBindImage(img_id);
+    ilTexImage(diapo_state.screen_x, diapo_state.screen_y, 1, 
+               3, IL_RGB, IL_UNSIGNED_BYTE, img_buffer);
+               
+    
+    /* Display time */
+    time(&curr_time);
+    ptm= localtime(&curr_time);
+    snprintf(buff_text,sizeof(buff_text),"%02d : %02d",ptm->tm_hour, ptm->tm_min);   
+    font_change_size(50);      
+    font_get_size(buff_text, &text_width, &text_height, &orig);
+    draw_string(img_id, buff_text,  diapo_state.screen_x - text_width - 20, 20, 50);
+     
+
+    /* Display GPS infos */    
+    y = 20;
+    snprintf(buff_text,sizeof(buff_text),"Lat    : %02i %02i", info.lat_deg, info.lat_mins);
+    font_change_size(15); 
+    font_get_size(buff_text, &text_width, &text_height, &orig);
+    draw_string(img_id, buff_text,  20, y, 15);
+    y += text_height + 15;
+    snprintf(buff_text,sizeof(buff_text),"Long : %02i %02i", info.long_deg, info.long_mins);  
+    draw_string(img_id, buff_text,  20, y, 15);    
+    y += text_height + 15;
+    snprintf(buff_text,sizeof(buff_text),"Alt     : %04i m", info.alt_cm / 100);
+    draw_string(img_id, buff_text,  20, y, 15);        
+    y += text_height + 15;
+    
+    /* Display speed */    
+    snprintf(buff_text,sizeof(buff_text),"%03i km/h", info.speed_kmh);
+    font_change_size(40);      
+    font_get_size(buff_text, &text_width, &text_height, &orig);
+    draw_string(img_id, buff_text, (diapo_state.screen_x - text_width) / 2, 
+                (diapo_state.screen_y + y - text_height) / 2, 40);            
+
+    /* Display final image on framebuffer */
+    ilBindImage(img_id);      
+    ilCopyPixels(0, 0, 0, diapo_state.screen_x, diapo_state.screen_y, 1,
+                 IL_RGB, IL_UNSIGNED_BYTE, img_buffer);    
+    display_RGB(img_buffer, 0, 0, diapo_state.screen_x, diapo_state.screen_y, false);        
+    
+    wait_next_cycle(1);
+  }
+  free(img_buffer);    
+  ilDeleteImages( 1, &img_id);
+}
+
+static void * periodic_thread(void *param){
+    if (diapo_state.type == DIAPO_CLOCK ){
+        clock_thread();
+    } else {
+        diapo_thread(param);
+    }
+    return NULL;
+}
 
 void diapo_release(void){
   if (diapo_state.path != NULL){
@@ -165,7 +329,8 @@ void diapo_release(void){
   }
   return;
 }
-       
+    
+    
 bool diapo_init(const  struct diapo_config * conf ){
   diapo_state.path = strdup(conf->file_path);
   if (diapo_state.path == NULL){
@@ -176,9 +341,11 @@ bool diapo_init(const  struct diapo_config * conf ){
     return false;
   }
   diapo_state.delay = conf->delay;
-  if (init_list() == false){
-    diapo_release();
-    return false;
+  if (conf->type != DIAPO_CLOCK){
+    if (init_list() == false){
+        diapo_release();
+        return false;
+    }  
   }
   if (ws_get_size(&diapo_state.screen_x, &diapo_state.screen_y) == false){
     diapo_release();
@@ -186,6 +353,7 @@ bool diapo_init(const  struct diapo_config * conf ){
   }
   
   diapo_state.inv_axes = ws_are_axes_inverted();
+  diapo_state.type = conf->type;
   return true;
 }
 
@@ -199,7 +367,7 @@ bool diapo_resume (void){
   pthread_attr_init(&attr);   
   diapo_state.end_asked = false;  
   pthread_mutex_lock(&diapo_state.mutex);
-  if (pthread_create(&diapo_state.thread_id, &attr, preriodic_thread, NULL) != 0){
+  if (pthread_create(&diapo_state.thread_id, &attr, periodic_thread, NULL) != 0){
    pthread_attr_destroy(&attr);
     return false;
   }

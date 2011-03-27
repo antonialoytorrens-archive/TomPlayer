@@ -31,11 +31,12 @@
 #define __DIAPO_H__
 
 #include <stdbool.h>
- 
+enum diapo_type {DIAPO_NORMAL = 1, DIAPO_CLOCK};
 struct diapo_config{
-   const char *file_path; /**< Path to the images */
-   const char *filter;    /**< Regex *filter */
+   char *file_path; /**< Path to the images */
+   char *filter;    /**< Regex *filter */
    unsigned int delay;    /**< Delay between two images in seconds */
+   enum diapo_type type;
 };
 
 bool diapo_init(const  struct diapo_config * conf );
