@@ -41,6 +41,8 @@
 #include "font.h"
 #include "pwm.h"
 #include "engine.h"
+#include "gps.h"
+
 static int selected_ctrl_idx;
 
 static bool ctrl_is_selectable (enum SKIN_CMD type){
@@ -96,7 +98,7 @@ static void alarm_handler(int sig) {
 
 static void handle_key(DFBInputDeviceKeyIdentifier id){
   static bool is_selection_active = false;
-  int new_idx = -1;
+  int new_idx = -1;  
   const struct skin_config * skin = state_get_current_skin();  
     
   if (is_selection_active){
@@ -143,9 +145,9 @@ static void handle_key(DFBInputDeviceKeyIdentifier id){
   } else {
     switch(id){
       case DIKI_F10: /*menu*/ 
+        ask_menu();
         is_selection_active = true;
         new_idx = selected_ctrl_idx;
-        ask_menu();
         break;
       case DIKI_BACKSPACE : /*back*/
         handle_gui_cmd(SKIN_CMD_STOP, -1);        
@@ -252,14 +254,17 @@ void event_loop(void){
                                         .it_value = {0,TIMER_PERIOD_US}
                                        };               
 
-                                       
+  printf("Enter Main event loop\n");
+  
   /*Handler on alarm signal */
   new_action.sa_handler=alarm_handler;
   sigemptyset(&new_action.sa_mask);
   new_action.sa_flags=0;
   sigaction(SIGALRM, &new_action, NULL);
-
-  printf("Enter Main event loop\n");
+  
+  /* Initialize GPS module */
+  gps_init();
+  
   if( (tsdevice = getenv("TSLIB_TSDEVICE")) != NULL ) {
     ts = ts_open(tsdevice,0);
     if ((ts == NULL) || (ts_config(ts) != 0)){
@@ -275,8 +280,7 @@ void event_loop(void){
     
   /* Try to open tomplayer inputs FIFO */
   input_fd = open(KEY_INPUT_FIFO,O_RDONLY|O_NONBLOCK);
-  printf("FIFO availability : %d\n", input_fd);
-  
+  printf("FIFO availability : %d\n", input_fd);   
 
   if (input_fd > 0){
     /* Purge FIFO events */
@@ -327,7 +331,7 @@ void event_loop(void){
           handle_key(key);          
         } else {
             if (errno != EINTR) /*&& (errno != EAGAIN))*/{
-                fprintf(stderr, "spurious wakeup : %d \n", errno);
+                fprintf(stderr, "spurious wakeup : %d \n", errno);                
                 usleep(TIMER_PERIOD_US);
             }
         }
@@ -335,5 +339,7 @@ void event_loop(void){
     } else {
       handle_ts(&samp);
     }
+    /* Update info from GPS */
+    gps_update() ;
   }
 }
