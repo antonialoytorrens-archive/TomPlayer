@@ -252,6 +252,7 @@ void clock_thread(void){
   img_buffer = calloc(3 * diapo_state.screen_x * diapo_state.screen_y, 1);         
   /* FIXME cas degrade */
   ilGenImages(1, &img_id);   
+  memset (&info, 0, sizeof(struct gps_data));
   
   while (!diapo_state.end_asked){
     /* Get GPS info */
