@@ -1,5 +1,27 @@
 More informations on http://www.tomplayer.net
 
+March 27th 2011,Tomplayerv0.240b3 (beta)
+Features
+- Brand new way to interact thanks to keys (fix carminat joystick and Bluetooth remote controller). 
+  Full details provided in the delivery note on Tomplayer website.
+- Progress bar now displays the current time in a track and the remaining time
+- IDtags "title" and "artist" are now displayed instead filename if available 
+- New screen saver which displays time and GPS informattion (set diapo_enabled=2 in tomplaye.ini to activate it)
+- GPS data handling (extract usefull geodetic data from GPS SiRF stream)
+- Automatic time settings from received GPS data
+- New default skin designed by claudiot88 which provides usefull previous/next icons
+- Time is displayed on main menu
+- Time can be recalled while playing video
+- Default font color has been changed to white in file selector
+
+Bug correction :
+- The battery is no longer mandatory
+- The latency before applying sound and video settings on new track has been dimproved
+- The bug which was responsible for the volume set to 0 at the begining of the play has been corrected
+- The screen saver has been reworked and hopefully the crash on exit may be removed...
+- Default paths have been changed for carminat
+
+
 March 14th 2011, Tomplayerv0.240b2 (beta)
 Feature :
 - Support for tomtom Bluetoth remote 
