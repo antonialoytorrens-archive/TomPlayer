@@ -157,59 +157,6 @@ static void * diapo_thread(void *param){
     diapo_state.error = true;
   return NULL;
 }
-
-#if 0
- unsigned char * buffer_to_display;
-    unsigned char * text_buffer;
-    ILuint  img_id; 
-    ILuint text_id;
-    int text_width, text_height;     
-    
-    buffer_to_display = malloc(3 * w * h);
-    if (buffer_to_display == NULL)
-        return;
-    ilGenImages(1, &img_id);
-    /* Bind to backgound image and copy the appropriate portion */
-    ilBindImage(skin_id); 
-    ilCopyPixels(x, y, 0, w, h, 1,
-                 IL_RGB, IL_UNSIGNED_BYTE, buffer_to_display);
-    ilBindImage(img_id);
-    ilTexImage(w, h, 1, 
-               3, IL_RGB, IL_UNSIGNED_BYTE, buffer_to_display);
-    /* Flip image because an ilTexImage is always LOWER_LEFT */
-    iluFlipImage();
-    
-    /* Generate the font rendering in a dedicated image */    
-    if (size != 0){
-        font_change_size(size);
-    }
-    if (font_draw(color, text, &text_buffer, &text_width, &text_height) == false){
-        goto out_release_buffer;
-    }
-    ilGenImages(1, &text_id);
-    ilBindImage(text_id);
-    ilTexImage(text_width, text_height, 1, 4, IL_RGBA, IL_UNSIGNED_BYTE, text_buffer);
-
-    /* Combinate font and background */
-    ilBindImage(img_id);  
-    ilOverlayImage(text_id, 0, 0, 0);
-    ilCopyPixels(0, 0, 0, w, h, 1,
-                 IL_RGB, IL_UNSIGNED_BYTE, buffer_to_display);
-                 
-    /* Display the result on screen */
-    display_RGB(buffer_to_display, x, y, w, h, false);
-    
-    /* Free resources */      
-    free(text_buffer);
-    ilDeleteImages( 1, &text_id);
-out_release_buffer:    
-    free(buffer_to_display);
-    ilDeleteImages( 1, &img_id);
-    if (size != 0)
-        font_restore_default_size();
-    
-    #endif
-    
     
 static void draw_string(ILuint back_id, const char * text, int x, int y, int size){
     int text_width, text_height;
@@ -296,6 +243,7 @@ void clock_thread(void){
                 (diapo_state.screen_y + y - text_height) / 2, 40);            
 
     /* Display final image on framebuffer */
+    
     ilBindImage(img_id);      
     ilCopyPixels(0, 0, 0, diapo_state.screen_x, diapo_state.screen_y, 1,
                  IL_RGB, IL_UNSIGNED_BYTE, img_buffer);    
