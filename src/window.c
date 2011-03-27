@@ -91,7 +91,7 @@ static int cmp_control_position(void *c1, void *c2){
     }
 }
 
-/** Compute a distance betwwen 2 controls along x axis */
+/** Compute a distance between 2 controls along x axis */
 static int dist_x(const struct gui_control* ctrl1, const struct gui_control* ctrl2){
     if  (ctrl2->zone.x < (ctrl1->zone.x + ctrl1->zone.w)){    
         if (ctrl2->zone.x + ctrl2->zone.w > ctrl1->zone.x){
@@ -841,6 +841,9 @@ void gui_window_ok(gui_window win){
 
 
 void gui_window_handle_key(DFBInputDeviceKeyIdentifier id){  
+  /* Indicate whether the UP and Down keys are sent to the file selector object or not...*/
+  static bool file_selector_locked = false;
+  
   union gui_event evt;
   gui_window win;
   struct gui_control * new_control = NULL;  
@@ -855,7 +858,11 @@ void gui_window_handle_key(DFBInputDeviceKeyIdentifier id){
         gui_window_ok(win);
         break;                
     case DIKI_BACKSPACE : /*back*/
-        gui_window_cancel(win);
+        if (file_selector_locked){
+            file_selector_locked = false;
+        } else {
+            gui_window_cancel(win);
+        }
         break;        
     case DIKI_KP_MINUS: /*top left*/
         pwm_modify_brightness(-5);
@@ -877,8 +884,13 @@ void gui_window_handle_key(DFBInputDeviceKeyIdentifier id){
         } else {
             new_control = find_prev_selectable_control(win);        
         }
+        break;
     case DIKI_LEFT:
-        new_control = find_prev_selectable_control(win);
+        if (file_selector_locked){
+            current_control->cb(current_control, GUI_EVT_KEY, &evt); 
+        } else {
+            new_control = find_prev_selectable_control(win);
+        }
         break;
     case DIKI_KP_6: /* knob CW */
         if ((current_control) && 
@@ -890,7 +902,11 @@ void gui_window_handle_key(DFBInputDeviceKeyIdentifier id){
         }
         break;
     case DIKI_RIGHT :
-        new_control = find_next_selectable_control(win);        
+        if (file_selector_locked){
+            current_control->cb(current_control, GUI_EVT_KEY, &evt); 
+        } else {
+            new_control = find_next_selectable_control(win);        
+        }
         break;        
     case DIKI_DOWN :
         /* FIXME : Would be better to hanldle return from callback to know 
@@ -913,7 +929,7 @@ void gui_window_handle_key(DFBInputDeviceKeyIdentifier id){
         break;
     case DIKI_ENTER :        
         if (current_control){
-           current_control->cb(current_control, GUI_EVT_KEY, &evt); 
+            current_control->cb(current_control, GUI_EVT_KEY, &evt); 
         }
     
         break;
@@ -923,6 +939,11 @@ void gui_window_handle_key(DFBInputDeviceKeyIdentifier id){
   }
   if (new_control != NULL){
     switch_selection(win, new_control);
+    if (new_control->type == GUI_TYPE_CTRL_FILESELECTOR){
+      file_selector_locked = true; 
+    } else {
+      file_selector_locked = false; 
+    }
   }    
 }
 
