@@ -9,7 +9,7 @@ DEP_LIB=./dependencies/libs/
 INC_KERNEL=$(DEP_LIB)/golinux-tt2318/include
 CC=arm-linux-gcc
 STRIP=arm-linux-strip
-CFLAGS+=    -Wall -I$(INC_KERNEL)  -I$(DEP_BUILD)/include/ -I$(DEP_BUILD)/include/directfb
+CFLAGS+= -D_GNU_SOURCE -Wall -I$(INC_KERNEL)  -I$(DEP_BUILD)/include/ -I$(DEP_BUILD)/include/directfb
 LDFLAGS+=-L$(DEP_BUILD)/lib/ -Wl,-rpath=/usr/local/lib
 else
 #Compilation for native host
@@ -32,9 +32,9 @@ V:=@
 endif
 
 #Sources for the initial tomplayer interface 
-TOM_SRC = file_selector.c window.c  screens.c gui.c list.c zip_skin.c config.c widescreen.c  resume.c power.c file_list.c label.c viewmeter.c 
+TOM_SRC = file_selector.c window.c  screens.c gui.c list.c zip_skin.c config.c widescreen.c  resume.c power.c file_list.c label.c viewmeter.c pwm.c  gps.c
 #Sources for mplayer engine
-ENG_SRC = start_engine.c  engine.c config.c widescreen.c resume.c pwm.c sound.c  power.c font.c fm.c file_list.c diapo.c event_inputs.c
+ENG_SRC = start_engine.c  engine.c config.c widescreen.c resume.c pwm.c sound.c  power.c font.c fm.c file_list.c diapo.c event_inputs.c gps.c
 #Sources for remote inputs 
 REM_INPUTS = remote_inputs.c
 #All sources
