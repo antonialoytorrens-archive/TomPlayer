@@ -34,11 +34,6 @@ enum engine_mode{MODE_VIDEO,MODE_AUDIO};
 int init_engine( bool );
 int release_engine( void );
 
-void send_command(const char * cmd );
-void send_menu( char * cmd );
-
-void show_menu( void );
-void hide_menu( void );
 
 void handle_mouse_event( int x, int y );
 int get_command_from_xy( int x, int y, int * p );
@@ -49,5 +44,6 @@ int ask_menu(void);
 void handle_gui_cmd(int cmd, int p);
 int control_set_select(const struct skin_control * ctrl, bool state);
 void eng_display_time( void );
+void display_RGB(unsigned char * buffer, int x, int y, int w, int h, bool transparency);
 
 #endif /* __ENGINE_H__ */
