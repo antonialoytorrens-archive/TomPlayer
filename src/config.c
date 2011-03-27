@@ -419,6 +419,7 @@ bool load_config( struct tomplayer_config * conf ){
         conf->diapo.file_path = strdup("/mnt/sdcard/photos");
       }
       conf->diapo.delay = iniparser_getint(ini, SECTION_GENERAL":"KEY_DIAPO_DELAY, 5);
+      conf->diapo.type = conf->diapo_enabled;
     }
 
     s = iniparser_getstring(ini, SECTION_VIDEO_SKIN":"KEY_SKIN_FILENAME, NULL);
