@@ -33,6 +33,7 @@
 #include "sound.h"
 #include "diapo.h"
 #include "engine.h"
+#include "event_inputs.h"
 
 int main( int argc, char *argv[] ){
   bool is_video;
@@ -40,39 +41,39 @@ int main( int argc, char *argv[] ){
   if (argc != 4){
     return -1;
   }
-  
+  if( load_config(&config) == false ){
+   fprintf( stderr, "Error while loading config\n" );
+    return -1;
+  }
   is_video = false;
   if (argv[2] != NULL){
     if (strncmp(argv[3],"VIDEO",5) == 0)
       is_video = true;
   }
+
   init_engine(is_video);
 
-  if( load_config(&config) == false ){
-    fprintf( stderr, "Error while loading config\n" );
-  } else {
-    /* Activate FM transmitter if needed */
-    if (config.enable_fm_transmitter){
-      if (!fm_set_state(1) ||
-          !fm_set_freq(config.fm_transmitter) ||
-          !fm_set_power(115) ||
-          !fm_set_stereo(1)){
-        fprintf(stderr,"Error while activating FM transmitter\n");
-      }
-      if (config.int_speaker == CONF_INT_SPEAKER_AUTO){
-        snd_mute_internal(true);
-      }
+  /* Activate FM transmitter if needed */
+  if (config.enable_fm_transmitter){
+    if (!fm_set_state(1) ||
+        !fm_set_freq(config.fm_transmitter) ||
+        !fm_set_power(115) ||
+        !fm_set_stereo(1)){
+      fprintf(stderr,"Error while activating FM transmitter\n");
     }
-    if (config.diapo_enabled){
-      if (diapo_init(&config.diapo) == false){
-        fprintf(stderr,"Diaporama initialization failed ...\n");
-        config.diapo_enabled = false;
-      }
+    if (config.int_speaker == CONF_INT_SPEAKER_AUTO){
+      snd_mute_internal(true);
     }
-
-    launch_mplayer("", argv[1], atoi(argv[2]));
   }
-  
+  /* Initialize diaporama */
+  if (config.diapo_enabled){
+    if (diapo_init(&config.diapo) == false){
+      fprintf(stderr,"Diaporama initialization failed ...\n");
+      config.diapo_enabled = false;
+    }
+  }
+
+  launch_mplayer("", argv[1], atoi(argv[2])); 
   event_loop();
     
   /* Desactivate FM transmitter if needed */
@@ -80,6 +81,10 @@ int main( int argc, char *argv[] ){
     fm_set_state(0);
     snd_mute_internal(false);
   }
+  
+  /* Free resources */
   release_engine();
+  diapo_release();
+  config_free();
   return 0;
 }
