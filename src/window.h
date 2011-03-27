@@ -103,6 +103,6 @@ void   gui_window_handle_click(int  x, int y);
 IDirectFBSurface * gui_window_get_surface(gui_window);
 void gui_window_release_all(void);
 gui_window gui_window_get_top(void);
-/*void   gui_window_get_pos(gui_window, int *, int* );*/
+void gui_window_handle_key(DFBInputDeviceKeyIdentifier);
 
 #endif /* __WINDOW_H__ */
