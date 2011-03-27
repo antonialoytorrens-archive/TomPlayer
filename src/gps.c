@@ -34,6 +34,7 @@
 #include <sys/time.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "gps.h"
 
@@ -174,7 +175,7 @@ static void handle_msg(unsigned char * buffer, int len ){
     unsetenv("TZ");
     gps_time = mktime(&gps_state.data.time);
     if (abs(gps_time - curr_time) > 10){
-        printf("Syncing clock needed ! system : %d - GPS : %d\n", curr_time, gps_time);
+        PRINTDF("Syncing clock needed ! system : %d - GPS : %d\n", curr_time, gps_time);
         new_time.tv_sec = gps_time;
         new_time.tv_usec = 0;        
         settimeofday(&new_time, NULL);
@@ -184,7 +185,7 @@ static void handle_msg(unsigned char * buffer, int len ){
         free(saved_tz);
     }    
     pthread_mutex_unlock(&gps_state.data_mutex);
-    PRINTDF("Geodetic OK ! \n");
+    PRINTDF("Geodetic OK !\n");
 };
 
 /** Compute SiRF checksum 
@@ -207,7 +208,7 @@ static uint16_t sirf_chksum(unsigned char * buffer, int len ){
  * \retval  0 Incomplete frame
  * \retval -1 Invalid frame
  */
-static check_frame(unsigned char * buffer, int len ){
+static int check_frame(unsigned char * buffer, int len ){
     uint16_t payload_len;
     struct sirf_footer * footer;
     struct sirf_header * header = (struct sirf_header *)buffer;
@@ -269,7 +270,10 @@ int gps_update(void){
     int read_len;
     int len;
     int i;
-       
+    
+    if (gps_state.gpsfd == -1){
+        return -1;
+    }
     read_len = read(gps_state.gpsfd, &buffer[curr_idx], sizeof (buffer)-curr_idx);
     if (read_len <= 0)
         return -1;
@@ -328,6 +332,7 @@ int gps_get_data(struct gps_data *data){
     return 0;
 }
 
+#if 0
 /* To test as a standalone executable */
 int main(){
     struct gps_data info;
@@ -355,3 +360,4 @@ int main(){
         }
     }
 }
+#endif
