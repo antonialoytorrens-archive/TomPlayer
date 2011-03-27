@@ -89,7 +89,19 @@ int main(int argc, char ** argv ){
                     break;
                 case KEY_F10 : /* BT Remote => menu */          
                     dfb_key = DIKI_F10; 
-                    break;                         
+                    break;    
+                case KEY_F8 :   
+                     dfb_key = DIKI_F8;
+                     break;
+                case KEY_F7 :   
+                     dfb_key = DIKI_F7;
+                     break;
+                case KEY_F6 :   
+                     dfb_key = DIKI_F6;
+                     break;     
+                case KEY_F5 :   
+                     dfb_key = DIKI_F5;
+                     break;     
                 default :
                     /* Unhandled key */
                     break;
