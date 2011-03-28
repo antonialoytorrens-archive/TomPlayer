@@ -640,20 +640,21 @@ static void settings_update(){
  * \param size font size, if 0 then default size is used
  */
 static void draw_text_on_skin(const char * text, int x, int y, int w, int h, const struct font_color *color, int size){
-    unsigned char * buffer_to_display;
+    unsigned char * buffer_to_display;    
     unsigned char * text_buffer;
     ILuint  img_id; 
     ILuint text_id;
     int text_width, text_height;     
     
-    buffer_to_display = malloc(3 * w * h);
+   
+    buffer_to_display = malloc(4 * w * h);    
     if (buffer_to_display == NULL)
         return;
     ilGenImages(1, &img_id);
     /* Bind to backgound image and copy the appropriate portion */
     ilBindImage(skin_id); 
     ilCopyPixels(x, y, 0, w, h, 1,
-                 IL_RGB, IL_UNSIGNED_BYTE, buffer_to_display);
+                 IL_RGB, IL_UNSIGNED_BYTE, buffer_to_display);                             
     ilBindImage(img_id);
     ilTexImage(w, h, 1, 
                3, IL_RGB, IL_UNSIGNED_BYTE, buffer_to_display);
@@ -675,10 +676,10 @@ static void draw_text_on_skin(const char * text, int x, int y, int w, int h, con
     ilBindImage(img_id);  
     ilOverlayImage(text_id, 0, 0, 0);
     ilCopyPixels(0, 0, 0, w, h, 1,
-                 IL_RGB, IL_UNSIGNED_BYTE, buffer_to_display);
+                 IL_RGBA, IL_UNSIGNED_BYTE, buffer_to_display);
                  
     /* Display the result on screen */
-    display_RGB(buffer_to_display, x, y, w, h, false);
+    display_RGB(buffer_to_display, x, y, w, h, true);
     
     /* Free resources */      
     free(text_buffer);
@@ -820,33 +821,19 @@ void blit_video_menu( int fifo, struct skin_config * conf )
     int height, width;
     unsigned char * buffer;
     int buffer_size;
-    int i;
 
     ilBindImage(conf->bitmap);
     width  = ilGetInteger(IL_IMAGE_WIDTH);
     height = ilGetInteger(IL_IMAGE_HEIGHT);
-
     /* Alloc buffer for RBGA conversion */
     buffer_size = width * height * 4;
     buffer = malloc( buffer_size );
     if (buffer == NULL){
         fprintf(stderr, "Allocation error\n");
         return;
-	}
-
-
-    ilCopyPixels(0, 0, 0, width, height, 1, IL_RGBA, IL_UNSIGNED_BYTE, buffer);
-    PRINTDF(" couleur transparence %d, %d, %d \n", conf->r,conf->g,conf->b);
-    /* Aplly manually transparency */
-    for (i=0; i < buffer_size; i+=4){
-    	if ((buffer[i] == conf->r) &&
-    		(buffer[i+1] == conf->g) &&
-    		(buffer[i+2] == conf->b)){
-    		buffer[i+3] = 0;
-    	}
     }
+    ilCopyPixels(0, 0, 0, width, height, 1, IL_RGBA, IL_UNSIGNED_BYTE, buffer);
     display_RGB(buffer, 0, 0, width, height, true);    
-
     free( buffer );
 }
 
@@ -1692,11 +1679,23 @@ int control_set_select(const struct skin_control * ctrl, bool state){
 void display_RGB(unsigned char * buffer, int x, int y, int w, int h, bool transparency){
   char str[100];
   int buffer_size;
+  int i;
     
   if( current_mode == MODE_VIDEO ) {
     if (transparency){
+      const struct skin_config * conf = state_get_current_skin();
+      buffer_size = w * h * 4;
+      PRINTDF(" couleur transparence %d, %d, %d \n", conf->r,conf->g,conf->b);
+      /* Apply manually transparency */
+      for (i=0; i < buffer_size; i+=4){
+        if ((buffer[i] == conf->r) &&
+            (buffer[i+1] == conf->g) &&
+            (buffer[i+2] == conf->b)){
+            buffer[i+3] = 0;
+        }
+       }
       sprintf(str, "RGBA32 %d %d %d %d %d %d\n", w, h, x, y , 0, 0);
-      buffer_size = w*h*4;
+      
     }
     else{
       sprintf(str, "RGB24 %d %d %d %d %d %d\n", w, h, x, y , 255, 0);        
