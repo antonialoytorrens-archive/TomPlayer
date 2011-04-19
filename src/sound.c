@@ -179,6 +179,30 @@ int snd_check_headphone(void){
 }
 
 
+/** Set volume Db for alc5638 based devices (such as TT start)
+*
+* \param[in] vol Volume attenuation in DB (from 0  to 45)
+*
+* \return 0  on success, -1 on failure
+*/
+int snd_set_volume_db(unsigned int vol){
+  int res;
+  int snd_fd;
+
+  snd_fd = check_fd();
+  if (snd_fd<0){
+    return -1;
+  }
+  
+  res = ioctl (snd_fd,COOLSOUND_SET_VOLUME_dB, vol);
+  if ( res != 0){
+    perror("Error while trying to  set volume db");
+    return -1;
+  }
+  return 0;
+
+
+}
 
 
 

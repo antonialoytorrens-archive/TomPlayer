@@ -31,8 +31,11 @@
 #ifndef SOUND_H_
 #define SOUND_H_
 #include <stdbool.h>
+#include "barcelona/Barc_snd.h"
+
 
 int snd_mute_internal(bool state);
 int snd_mute_external(bool state);
 int snd_check_headphone(void);
+int snd_set_volume_db(unsigned int vol);
 #endif /*SOUND_H_*/
