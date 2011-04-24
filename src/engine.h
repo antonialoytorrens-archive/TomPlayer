@@ -1,10 +1,13 @@
-/***************************************************************************
- *            engine.h
+/**
+ * \file engine.h
+ * 
+ * $URL$
+ * $Rev$
+ * $Author$
+ * $Date$
  *
- *  Mon Feb 11 22:30:35 2008
- *  Copyright  2008  nullpointer
- *  Email
- ****************************************************************************/
+ */
+
 /*
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,27 +26,20 @@
 
 #ifndef __ENGINE_H__
 #define __ENGINE_H__
+
 #include <stdbool.h>
-#include "config.h"
 
+//#include "config.h"
+#include "skin.h"
 
-extern struct tomplayer_config config;
-extern bool is_mplayer_finished;
-enum engine_mode{MODE_VIDEO,MODE_AUDIO};
+enum eng_mode{MODE_VIDEO, MODE_AUDIO, MODE_UNKNOWN};
       
-int init_engine( bool );
-int release_engine( void );
-
-
-void handle_mouse_event( int x, int y );
-int get_command_from_xy( int x, int y, int * p );
-void display_image_to_fb( ILuint  );
-void launch_mplayer( char * , char * , int );
-const struct skin_config * state_get_current_skin(void);
-int ask_menu(void);
-void handle_gui_cmd(int cmd, int p);
-int control_set_select(const struct skin_control * ctrl, bool state);
-void eng_display_time( void );
-void display_RGB(unsigned char * buffer, int x, int y, int w, int h, bool transparency);
+int  eng_init(bool);
+int  eng_release(void);
+void eng_play(char * filename, int pos);
+int  eng_ask_menu(void);
+void eng_handle_cmd(int cmd, int p);
+int  eng_select_ctrl(const struct skin_control * ctrl, bool state);
+enum eng_mode eng_get_mode(void);
 
 #endif /* __ENGINE_H__ */

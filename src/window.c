@@ -454,7 +454,6 @@ static void add_viewmeter(struct gui_control * ctrl,  dictionary * ini , int num
 static  fs_handle load_fs_ctrl(struct gui_control * ctrl,  dictionary * ini , int num_control ){	
   #define RES_FOLDER "./res/icon/"
   #define FONT_FOLDER "./res/font/"
-  extern struct tomplayer_config config;
   char * s;
 
   struct fs_config conf = {
@@ -479,7 +478,7 @@ static  fs_handle load_fs_ctrl(struct gui_control * ctrl,  dictionary * ini , in
                             }
                            };
 
-    if (config.enable_small_text){
+    if (config_get_small_text_activation()){
       conf.graphics.filename[FS_ICON_CHECK] = RES_FOLDER "check_1.png";
       conf.graphics.filename[FS_ICON_FOLDER ] = RES_FOLDER "folder_1.png"; 
     }
@@ -501,9 +500,9 @@ static  fs_handle load_fs_ctrl(struct gui_control * ctrl,  dictionary * ini , in
       conf.options.preview_box = false;
     }
     /* Configuration for video preview superseedes the screen config */
-    if (config.video_preview == 0){
-		 conf.options.preview_box = false;
-	}
+    if (!config_get_video_preview()){
+        conf.options.preview_box = false;
+    }
     return fs_create (ctrl->win->dfb, ctrl->win->win, &conf);
 }
 

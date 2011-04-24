@@ -36,12 +36,13 @@
 #include <time.h>
 
 #include "widescreen.h"
-#include "zip_skin.h"
+#include "skin.h"
 #include "engine.h"
 #include "file_list.h"
 #include "pwm.h"
 #include "font.h"
 #include "gps.h"
+#include "draw.h"
 #include "diapo.h"
 
 
@@ -92,7 +93,7 @@ static void img_transition(ILuint cur ,ILuint next){
       break;
    }
   }
-  display_image_to_fb(next);  
+  draw_img(next);  
   for (bright=1; bright<=init_bright; bright++) {
     pwm_set_brightness(bright);
     usleep(15000);
@@ -133,7 +134,7 @@ static void * diapo_thread(void *param){
         if ((loop>=2) || (next_file == NULL)) {
           no_file = true;
         }
-    }} while ( (!no_file) && (!load_bitmap(&next_image_id, next_file)) ) ;
+    }} while ( (!no_file) && (!skin_load_bitmap(&next_image_id, next_file)) ) ;
     if (no_file) break;   
     loop = 0;
     if (diapo_state.inv_axes){
@@ -247,7 +248,7 @@ void clock_thread(void){
     ilBindImage(img_id);      
     ilCopyPixels(0, 0, 0, diapo_state.screen_x, diapo_state.screen_y, 1,
                  IL_RGB, IL_UNSIGNED_BYTE, img_buffer);    
-    display_RGB(img_buffer, 0, 0, diapo_state.screen_x, diapo_state.screen_y, false);        
+    draw_RGB_buffer(img_buffer, 0, 0, diapo_state.screen_x, diapo_state.screen_y, false);        
     
     wait_next_cycle(1);
   }

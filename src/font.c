@@ -72,16 +72,16 @@ static bool draw_bitmap( const struct font_color * color,
   }
 
 /* We also set the color as transparent in the empty area to bypass a devil bug thaht occurs later otherwise...*/
-  for ( i = x, p = 0; i < x_max; i++, p++ )
+  for ( i = x; i < x_max; i++ )
   {
-    for ( j = 0, q = 0; j < y; j++, q++ )
+    for ( j = 0; j < y; j++ )
     {
           state.image[(4*((j*state.width) + i)) + 0] = color->r;
           state.image[(4*((j*state.width) + i)) + 1] = color->g;
           state.image[(4*((j*state.width) + i)) + 2] = color->b;
           state.image[(4*((j*state.width) + i)) + 3] = 0;
     }
-    for ( j = y_max, q = 0; j < state.height ; j++, q++ )
+    for ( j = y_max; j < state.height ; j++ )
     {
           state.image[(4*((j*state.width) + i)) + 0] = color->r;
           state.image[(4*((j*state.width) + i)) + 1] = color->g;
@@ -132,7 +132,9 @@ bool  font_get_size(const char * text, int * width, int * height, int * orig){
     }
   }
 
-  *width  = pen.x / 64;
+  /* FIXME size is dalse Find why - by the time add a constant */
+  *width  = pen.x / 64 + 5;
+  
   return true;
 }
 
@@ -167,11 +169,11 @@ bool font_draw(const struct font_color * color,  const char * text, unsigned cha
 
   *w = state.width;
   *h = state.height;
-  state.image = malloc(state.width*state.height*4);
+  state.image = malloc(state.width * state.height * 4);
   if (state.image == NULL){
     return false;
   }
-  memset (state.image,0,state.width*state.height*4);
+  memset (state.image, 0, state.width * state.height * 4);
   *image_buffer = state.image;
 
   num_chars = strlen(text);

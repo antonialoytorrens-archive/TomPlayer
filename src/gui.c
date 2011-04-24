@@ -33,13 +33,16 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <linux/limits.h>
 
+#include "config.h"
 #include "debug.h"
 #include "engine.h"
 #include "power.h"
 #include "screens.h"
 #include "window.h"
 #include "gps.h"
+#include "resume.h"
 
 static IDirectFB	      *dfb;
 static IDirectFBDisplayLayer  *layer;   
@@ -63,7 +66,24 @@ static void release_resources( void )
 
 }
 
-
+/* Auto resume function */
+static int auto_resume (void){
+    int pos = 0;
+    struct stat ftype;
+    char filename[PATH_MAX - 32];    
+    char mv_command[PATH_MAX];       
+    
+    if (resume_get_file_infos(MODE_UNKNOWN, filename, PATH_MAX, &pos) == 0){                    
+        if( stat(filename, &ftype) == 0){            
+            snprintf(mv_command, sizeof(mv_command), "mv %s " RESUME_VOLATILE_PLAYLIST, filename);
+            system(mv_command);             
+            setup_engine(RESUME_VOLATILE_PLAYLIST, pos, (strstr(filename, RESUME_PLAYLIST_FILENAME(MODE_AUDIO)) == NULL));                
+            return 0;
+        }
+    }
+    return -1;
+}
+        
 /** Set up DirectFB and load resources
  *
  * \param argc argument count
@@ -132,6 +152,22 @@ static bool dispatch_ts_event(DFBInputEvent *evt )
   return true;
 }
 
+
+void setup_engine(const char * path, int pos, bool is_video){
+  int fd, i ;
+  char buffer[128];
+      
+  fd = open ("/tmp/start_engine.sh", O_CREAT | O_WRONLY | O_TRUNC, S_IRWXU);
+  if (fd >= 0){
+    i = snprintf(buffer, sizeof(buffer) - 1,"./start_engine \"%s\" %i %s\n", path, pos, is_video?"VIDEO":"AUDIO"  );
+    buffer[i] = '\0';
+    write(fd,buffer,i);
+    fsync(fd);
+    close(fd);
+  }
+  return;
+}
+
 /** Everything begins here ;-)  */
 int main( int argc, char *argv[] ){
   bool splash_wanted = true ;
@@ -146,22 +182,33 @@ int main( int argc, char *argv[] ){
   int c;
   int input_fd;
   DFBInputEvent evt;
-   
+
+  /* Parse arguments */
+  while ((c = getopt_long (argc, argv, "",long_options, &option_index)) != -1);
+
+  /* Load tomplayer configuration file */
+  if(config_init() == false){
+    fprintf( stderr, "Error while loading config\n" );
+    exit(1);
+  }
+  if ((splash_wanted) && 
+      (config_get_auto_resume())){
+    if (auto_resume() == 0){
+        exit(0);
+    }    
+  }
+  
   /* Initialize GPS module */
   gps_init();
+  
+  /* FIFO for key events */
   input_fd = open(KEY_INPUT_FIFO,O_RDONLY|O_NONBLOCK);
   /* Purge FIFO if available */
   if (input_fd >= 0)
     while (read(input_fd,  &evt.key_id, sizeof(evt.key_id)) > 0);
-    
-  while ((c = getopt_long (argc, argv, "",long_options, &option_index)) != -1);
+  
 
   if (init_resources( argc, argv ) == true){
-    if( load_config(&config) == false ){
-          fprintf( stderr, "Error while loading config\n" );
-          exit(1);
-    }
-
     if (screen_init(dfb, layer, splash_wanted)){
         while( screen_is_end_asked()  == false ){
               if (keybuffer->WaitForEventWithTimeout( keybuffer, 0, 50 ) == DFB_TIMEOUT){

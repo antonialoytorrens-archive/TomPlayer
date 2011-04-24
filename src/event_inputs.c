@@ -33,6 +33,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <pthread.h>
 
 #include "tslib.h"
 #include "debug.h"
@@ -42,10 +43,12 @@
 #include "pwm.h"
 #include "engine.h"
 #include "gps.h"
+#include "skin.h"
+#include "play_int.h"
 
 static int selected_ctrl_idx;
 
-static bool ctrl_is_selectable (enum SKIN_CMD type){
+static bool ctrl_is_selectable (enum skin_cmd type){
   bool ret;
   switch (type){
     case SKIN_CMD_PAUSE :
@@ -77,14 +80,14 @@ static bool ctrl_is_selectable (enum SKIN_CMD type){
 static int get_ctrl(int idx, int step){
   int checked_idx = 0;
   int current_idx = idx;    
-  const struct skin_config * skin = state_get_current_skin();
+  const struct skin_config * skin = skin_get_config();
   
   while (checked_idx < skin->nb){
     checked_idx++;
     current_idx += step;
     if (current_idx >= skin->nb) current_idx = 0;
     if (current_idx < 0) current_idx = (skin->nb-1);
-    if (skin->controls[current_idx].type < PROGRESS_SKIN_CONTROL_X) 
+    if (skin->controls[current_idx].type < SKIN_CONTROL_PROGRESS_X) 
       if (ctrl_is_selectable(skin->controls[current_idx].cmd)){
         return current_idx;        
       }
@@ -96,20 +99,21 @@ static void alarm_handler(int sig) {
  return;
 }
 
+
 static void handle_key(DFBInputDeviceKeyIdentifier id){
   static bool is_selection_active = false;
   int new_idx = -1;  
-  const struct skin_config * skin = state_get_current_skin();  
+  const struct skin_config * skin = skin_get_config();  
     
   if (is_selection_active){
-    if ( ask_menu() == 0 ){
+    if ( eng_ask_menu() == 0 ){
     switch(id){ 
       case DIKI_F10:        /*menu*/ 
       case DIKI_BACKSPACE : /*back*/
         is_selection_active = false;
         /* update selected control */   
-        control_set_select(&skin->controls[selected_ctrl_idx], false);  
-        handle_gui_cmd(SKIN_CMD_EXIT_MENU, -1); 
+        eng_select_ctrl(&skin->controls[selected_ctrl_idx], false);  
+        eng_handle_cmd(SKIN_CMD_EXIT_MENU, -1); 
         break;   
       case DIKI_KP_4: 
       case DIKI_LEFT :
@@ -129,7 +133,7 @@ static void handle_key(DFBInputDeviceKeyIdentifier id){
       case DIKI_UP : 
           break;
       case DIKI_ENTER :{        
-        handle_gui_cmd(skin->controls[selected_ctrl_idx].cmd, -1);
+        eng_handle_cmd(skin->controls[selected_ctrl_idx].cmd, -1);
         break;
       }
       case DIKI_F9:  /*Map*/                               
@@ -145,20 +149,23 @@ static void handle_key(DFBInputDeviceKeyIdentifier id){
   } else {
     switch(id){
       case DIKI_F10: /*menu*/ 
-        ask_menu();
-        is_selection_active = true;
-        new_idx = selected_ctrl_idx;
+        if (eng_ask_menu() == 0){
+            is_selection_active = true;
+            new_idx = selected_ctrl_idx;
+        }
         break;
       case DIKI_BACKSPACE : /*back*/
-        handle_gui_cmd(SKIN_CMD_STOP, -1);        
+        if (eng_ask_menu() == 0){
+            eng_handle_cmd(SKIN_CMD_STOP, -1);        
+        }
         break; 
       case DIKI_KP_4:
       case DIKI_LEFT :        
-        handle_gui_cmd(SKIN_CMD_BACKWARD,-1);
+        eng_handle_cmd(SKIN_CMD_BACKWARD,-1);
         break;
       case DIKI_KP_6:
       case DIKI_RIGHT :
-        handle_gui_cmd(SKIN_CMD_FORWARD,-1);
+        eng_handle_cmd(SKIN_CMD_FORWARD,-1);
         break;   
       case DIKI_KP_MINUS: /*top left*/
         pwm_modify_brightness(-5);
@@ -167,26 +174,26 @@ static void handle_key(DFBInputDeviceKeyIdentifier id){
         pwm_modify_brightness(5);
         break;  
       case DIKI_DOWN :
-        handle_gui_cmd(SKIN_CMD_NEXT,-1);  
+        eng_handle_cmd(SKIN_CMD_NEXT,-1);  
         break;
       case DIKI_UP : 
-        handle_gui_cmd(SKIN_CMD_PREVIOUS,-1);  
+        eng_handle_cmd(SKIN_CMD_PREVIOUS,-1);  
         break;
       case DIKI_ENTER :
-        handle_gui_cmd(SKIN_CMD_PAUSE,-1);  
+        eng_handle_cmd(SKIN_CMD_PAUSE,-1);  
         break;      
       case DIKI_F8:  /*info*/  
-      case DIKI_F9:  /*Map*/  
-        eng_display_time();          
+      case DIKI_F9:  /*Map*/            
+        playint_display_time();
         break;
       case DIKI_F5:  /*dest*/
-        handle_gui_cmd(SKIN_CMD_MUTE,-1);
+        eng_handle_cmd(SKIN_CMD_MUTE,-1);
         break;
       case DIKI_F6:  /*repeat*/        
-        handle_gui_cmd(SKIN_CMD_VOL_MOINS, -1);
+        eng_handle_cmd(SKIN_CMD_VOL_MOINS, -1);
         break;
       case DIKI_F7:  /*light*/
-        handle_gui_cmd(SKIN_CMD_VOL_PLUS, -1);
+        eng_handle_cmd(SKIN_CMD_VOL_PLUS, -1);
         break;
       default :
         break;  
@@ -194,18 +201,18 @@ static void handle_key(DFBInputDeviceKeyIdentifier id){
   }
   if (new_idx != -1){
     /* update selected control */   
-    control_set_select(&skin->controls[selected_ctrl_idx], false);  
-    control_set_select(&skin->controls[new_idx], true);
+    eng_select_ctrl(&skin->controls[selected_ctrl_idx], false);  
+    eng_select_ctrl(&skin->controls[new_idx], true);
     selected_ctrl_idx = new_idx;      
   }  
 }
 
 static void handle_ts_coord(int x, int y){
   int p;
-  int cmd;
-  if (ask_menu() == 0){
-    cmd = get_command_from_xy( x, y, &p );
-    handle_gui_cmd(cmd, p);
+  enum skin_cmd cmd;
+  if (eng_ask_menu() == 0){
+    cmd = skin_get_cmd_from_xy(x, y, &p);
+    eng_handle_cmd(cmd, p);
   }
 }
 
@@ -239,7 +246,8 @@ static void handle_ts(struct ts_sample * sample){
   }
 }
 
-void event_loop(void){
+
+void *event_loop(void * param){
   struct sigaction new_action;
   struct tsdev *ts;
   char *tsdevice=NULL;
@@ -275,8 +283,8 @@ void event_loop(void){
     ts_available = false;
   }
   printf("Touchscreen availability : %d\n", ts_available);
-  /* FIXME force ts availability */
-  ts_available = false;
+  /* FIXME force ts availability 
+  ts_available = false;*/
     
   /* Try to open tomplayer inputs FIFO */
   input_fd = open(KEY_INPUT_FIFO,O_RDONLY|O_NONBLOCK);
@@ -286,7 +294,7 @@ void event_loop(void){
     /* Purge FIFO events */
     while (read(input_fd, &key, sizeof(key)) > 0);
     /* Initialize selected control */
-    skin = state_get_current_skin();      
+    skin = skin_get_config();      
     if (skin->first_selection >= 0) {
         selected_ctrl_idx = skin->first_selection;        
     } else {
@@ -314,12 +322,12 @@ void event_loop(void){
     } else {
       /* No inputs available */
       fprintf(stderr, "no inputs available...\n");
-      return;
+      pthread_exit(NULL);      
     }
   }
   
   /* Main events loop */
-  while (is_mplayer_finished == false) {    
+  while (playint_is_running()) {    
     /* To interrupt blocking read */
     setitimer(ITIMER_REAL, &timer_value, NULL);      
     if (ts_available){
@@ -331,7 +339,7 @@ void event_loop(void){
           handle_key(key);          
         } else {
             if (errno != EINTR) /*&& (errno != EAGAIN))*/{
-                fprintf(stderr, "spurious wakeup : %d \n", errno);                
+               // fprintf(stderr, "spurious wakeup : %d \n", errno);                
                 usleep(TIMER_PERIOD_US);
             }
         }
@@ -342,4 +350,5 @@ void event_loop(void){
     /* Update info from GPS */
     gps_update() ;
   }
+   pthread_exit(NULL);
 }

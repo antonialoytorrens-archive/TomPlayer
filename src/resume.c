@@ -43,6 +43,7 @@ extern int iniparser_set(dictionary * ini, char * entry, char * val);
 
 #define RESUME_FILENAME "./conf/resume.ini"
 
+#define RESUME_SECTION_KEY "RESUME"
 #define RESUME_VIDEO_SECTION_KEY "RESUME VIDEO"
 #define RESUME_AUDIO_SECTION_KEY "RESUME AUDIO"
 #define RESUME_VIDEO_SETTINGS_SECTION_KEY "VIDEO SETTINGS"
@@ -54,16 +55,25 @@ extern int iniparser_set(dictionary * ini, char * entry, char * val);
 #define RESUME_VOLUME_KEY "volume"
 #define RESUME_AUDIO_DELAY_KEY "audio_delay"
 
-
-#define RESUME_PLAYLIST_FILENAME(x) (x == MODE_AUDIO)?"./conf/sav_apl.m3u":"./conf/sav_vpl.m3u"
-#define RESUME_SECTION_KEY_GET(x) (x == MODE_AUDIO)?RESUME_AUDIO_SECTION_KEY:RESUME_VIDEO_SECTION_KEY
+static inline char * RESUME_SECTION_KEY_GET(enum eng_mode x){
+    switch (x){
+      case MODE_AUDIO:
+        return RESUME_AUDIO_SECTION_KEY;
+        break;
+      case MODE_VIDEO:
+        return RESUME_VIDEO_SECTION_KEY;
+        break;
+      default :
+        return RESUME_SECTION_KEY;
+    }
+}
 
 /**
  * Reinit the resume file
  *
  * \return 0  on success, -1 on failure
  */
-int resume_file_init(enum engine_mode mode){  
+int resume_file_init(enum eng_mode mode){  
 	dictionary * ini ;
   char ini_path[100];
 	FILE * fp;
@@ -105,7 +115,7 @@ error:
  *
  * \return 0  on success, -1 on failure
  */
-int resume_write_pos(enum engine_mode mode, int value){
+int resume_write_pos(enum eng_mode mode, int value){
   char buffer[100];
   char ini_path[100];
   dictionary * ini ;
@@ -118,11 +128,23 @@ int resume_write_pos(enum engine_mode mode, int value){
   	return -1;
   }
 
+  /* Write pos in "resume audio" or "resume video" */
   snprintf(buffer, sizeof(buffer),"%i", value);
   iniparser_setstring( ini, RESUME_SECTION_KEY_GET(mode), NULL );
   snprintf(ini_path, sizeof(ini_path), "%s:%s", RESUME_SECTION_KEY_GET(mode), RESUME_POS_KEY);
   ini_path[sizeof(ini_path)-1] = 0;
   iniparser_setstring( ini, ini_path, buffer );  
+    
+  /* Keep last resume info in resume section */
+  iniparser_setstring( ini, RESUME_SECTION_KEY, NULL );
+  snprintf(ini_path, sizeof(ini_path), "%s:%s", RESUME_SECTION_KEY, RESUME_POS_KEY);
+  ini_path[sizeof(ini_path)-1] = 0;
+  iniparser_setstring( ini, ini_path, buffer );  
+  snprintf(ini_path, sizeof(ini_path), "%s:%s", RESUME_SECTION_KEY, RESUME_FILENAME_KEY);
+  ini_path[sizeof(ini_path)-1] = 0;
+  iniparser_setstring( ini, ini_path, RESUME_PLAYLIST_FILENAME(mode));
+
+  
   fp = fopen( RESUME_FILENAME, "w+" );
   if( fp == NULL ){
   	PRINTDF( "Unable to create resume file <%s>\n", RESUME_FILENAME );
@@ -148,7 +170,7 @@ error:
  *
  * \return 0  on success, -1 on failure
  */
-int resume_get_file_infos(enum engine_mode mode, char * filename, int len , int * pos){
+int resume_get_file_infos(enum eng_mode mode, char * filename, int len , int * pos){
   dictionary * ini ;
   char ini_path[100];
   char *s;
@@ -381,15 +403,13 @@ error:
 }
 
 
-int resume_save_playslist(enum engine_mode mode, const char * current_filename){
-  #define VOLATILE_PLAYLIST_FILENAME "/tmp/playlist.m3u"
-  
+int resume_save_playslist(enum eng_mode mode, const char * current_filename){    
   char buffer[PATH_MAX];
   FILE * in_pl = NULL;
   FILE * out_pl = NULL;
   bool found = false;
 
-  in_pl = fopen(VOLATILE_PLAYLIST_FILENAME,"r");
+  in_pl = fopen(RESUME_VOLATILE_PLAYLIST, "r");
   if (in_pl == NULL){
     return -1;
   }

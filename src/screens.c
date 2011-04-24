@@ -33,7 +33,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <pthread.h>
-
+#include <linux/limits.h>
 
 #include "dictionary.h"
 #include "iniparser.h"
@@ -41,12 +41,13 @@
 #include "window.h"
 #include "engine.h"
 #include "file_selector.h"
-#include "zip_skin.h"
+#include "skin.h"
 #include "config.h"
 #include "version.h"
 #include "resume.h"
 #include "viewmeter.h"
 #include "label.h"
+#include "diapo.h"
 
 enum gui_screens_type {
   GUI_SCREEN_MAIN,
@@ -116,24 +117,6 @@ static void play_audio_video(struct gui_control *ctrl, enum gui_event_type type,
 static void select_all_files(struct gui_control *ctrl, enum gui_event_type type, union gui_event* evt);
 static void unselect_all_files(struct gui_control *ctrl, enum gui_event_type type, union gui_event* evt);
 static void toggle_suffle(struct gui_control *ctrl, enum gui_event_type type, union gui_event* evt);  
-
-
-static void launch_engine(const char * path, int pos, bool is_video){
-  int fd, i ;
-  char buffer[128];
-  
-  
-  
-  fd = open ("/tmp/start_engine.sh", O_CREAT | O_WRONLY | O_TRUNC, S_IRWXU);
-  if (fd >= 0){
-    i = snprintf(buffer, sizeof(buffer) - 1,"./start_engine \"%s\" %i %s\n", path, pos, is_video?"VIDEO":"AUDIO"  );
-    buffer[i] = '\0';
-    write(fd,buffer,i);
-    fsync(fd);
-    close(fd);
-  }
-  return;
-}
 
 inline static const char * get_full_conf(enum gui_screens_type screen_type){
   static char buff[64];
@@ -494,9 +477,6 @@ static void select_video(struct gui_control *ctrl, enum gui_event_type type, uni
     const struct gui_control * fs_ctrl;
     struct gui_control *play_ctrl;
 
-    /* TODO  Write a decent config module instead of grabbing a glocal conf that way !*/
-    extern struct tomplayer_config config;
-
     if (evt){
         win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_VIDEO)); 
         gui_window_attach_cb(win, "file_selector", dispatch_fs_event);
@@ -511,7 +491,7 @@ static void select_video(struct gui_control *ctrl, enum gui_event_type type, uni
 
         fs = fs_ctrl->obj;
         fs_set_select_cb(fs, video_select_cb);
-        fs_new_path(fs, config.video_folder, config.filter_video_ext);
+        fs_new_path(fs, config_get_folder(CONFIG_VIDEO), config_get_ext(CONFIG_VIDEO));
         conf = fs_get_config(fs);
         if (!conf->options.multiple_selection){  
             /* Automatically select the first item if single  selection */
@@ -550,7 +530,7 @@ static bool update_skin( enum gui_screens_type type , const char * skin_filename
       return false;
   }
 
-  ret = config_set_skin(conf_type, skin_filename);
+  ret = config_set_skin_filename(conf_type, skin_filename);
   if (ret){
     ret = config_save();
   }
@@ -559,12 +539,10 @@ static bool update_skin( enum gui_screens_type type , const char * skin_filename
 
 
 /** Callback of skin preview */
-static void skin_select_cb(fs_handle hdl, const char * c, enum  fs_events_type evt){
-  struct skin_config  skin_conf;
-
+static void skin_select_cb(fs_handle hdl, const char * c, enum  fs_events_type evt){  
   if (evt == FS_EVT_SELECT){
-      load_skin_from_zip(c , &skin_conf , false );
-      unload_skin(  &skin_conf);
+      skin_init(c, false);
+      skin_release();
   }
   create_preview(hdl, evt,  ZIP_SKIN_BITMAP_FILENAME);
 }
@@ -622,13 +600,17 @@ static void select_skin(struct gui_control *ctrl, enum gui_event_type evt_type, 
         gui_window_attach_cb(win, "goback_button", quit_current_window);   
         fs_ctrl =  gui_window_get_control(win, "file_selector");
         if (fs_ctrl != NULL){
+            const char * skin_filename;
             char * basename;
             fs = fs_ctrl->obj;
             fs_set_select_cb(fs, skin_select_cb);     
             fs_new_path(fs, (type==GUI_SCREEN_AUDIO_SKIN) ? "./skins/audio": "./skins/video" , "^.*\\.zip$");
-            basename = strrchr((type==GUI_SCREEN_AUDIO_SKIN) ? config.audio_skin_filename :config.video_skin_filename, '/');
-            if (basename != NULL)
-            fs_select_filename(fs, basename + 1);
+            skin_filename = config_get_skin_filename((type==GUI_SCREEN_AUDIO_SKIN)?CONFIG_AUDIO:CONFIG_VIDEO);
+            if (skin_filename != NULL){
+                basename = strrchr(skin_filename, '/');
+                if (basename != NULL)
+                    fs_select_filename(fs, basename + 1);         
+            }                                   
         }
 
         select_button = gui_window_get_control(win, "select_button");    
@@ -659,11 +641,11 @@ static void conf_paths_refresh(gui_window win){
   struct gui_control * label_ctrl;      
   label_ctrl = gui_window_get_control(win, "audio_path");
   if (label_ctrl != NULL){
-    label_set_text(label_ctrl->obj, config.audio_folder);
+    label_set_text(label_ctrl->obj, config_get_folder(CONFIG_AUDIO));
   }
   label_ctrl = gui_window_get_control(win, "video_path");
   if (label_ctrl != NULL){
-    label_set_text(label_ctrl->obj, config.video_folder);
+    label_set_text(label_ctrl->obj, config_get_folder(CONFIG_VIDEO));
   }
 }
 
@@ -698,9 +680,9 @@ static void conf_paths_choose(struct gui_control *ctrl, enum gui_event_type type
         fs_ctrl =  gui_window_get_control(win, "select_folder");  
         if (fs_ctrl != NULL){        
             if (ctrl->cb_param == CONFIG_AUDIO){
-            fs_new_path(fs_ctrl->obj, config.audio_folder, "^$");    
+            fs_new_path(fs_ctrl->obj, config_get_folder(CONFIG_AUDIO), "^$");    
             } else {
-            fs_new_path(fs_ctrl->obj, config.video_folder, "^$");    
+            fs_new_path(fs_ctrl->obj, config_get_folder(CONFIG_VIDEO), "^$");    
             }
         }
         ok_button = gui_window_get_control(win, "ok");  
@@ -739,8 +721,8 @@ static void conf_default_paths(struct gui_control *ctrl, enum gui_event_type typ
     
     if (evt){
         /* Keep paths to be able to resore them in case of cancel */
-        conf_video_path = strdup(config.video_folder);
-        conf_audio_path = strdup(config.audio_folder);
+        conf_video_path = strdup(config_get_folder(CONFIG_VIDEO));        
+        conf_audio_path = strdup(config_get_folder(CONFIG_AUDIO));
         
         win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_CONF_DEFAULT_PATHS)); 
         gui_window_attach_cb(win,"cancel",conf_paths_cancel);
@@ -830,7 +812,7 @@ static void screen_saver_toggle(struct gui_control *ctrl, enum gui_event_type ty
         config_toggle_screen_saver_state();
         check = gui_window_get_control(ctrl->win, "check_screen_saver");
         if (check != NULL){
-            if (config.enable_screen_saver){
+            if (config_get_screen_saver()){
                 blit_img(check, "check_screen_saver");
             } else {
                 blit_img(check, "no_check_screen_saver");
@@ -859,11 +841,11 @@ static void config_screen_saver(struct gui_control *ctrl, enum gui_event_type ty
         if (vm_ctrl != NULL){
             vm_handle vm;
             vm = vm_ctrl->obj;
-            vm_set_value(vm, config.screen_saver_to);
+            vm_set_value(vm, config_get_screen_saver_to());
         }
         check = gui_window_get_control(win, "check_screen_saver");
         if (check != NULL){
-            if (config.enable_screen_saver){
+            if (config_get_screen_saver()){
             blit_img(check, "check_screen_saver");
             } else {
             blit_img(check, "no_check_screen_saver");
@@ -882,7 +864,7 @@ static void diapo_paths_refresh(gui_window win){
   struct gui_control * label_ctrl;      
   label_ctrl = gui_window_get_control(win, "photo_path");
   if (label_ctrl != NULL){
-    label_set_text(label_ctrl->obj, config.diapo.file_path);
+    label_set_text(label_ctrl->obj, config_get_diapo()->file_path);
   }
 }
 
@@ -915,7 +897,7 @@ static void diapo_choose_path(struct gui_control *ctrl, enum gui_event_type type
         gui_window_attach_cb(win,"select_folder",dispatch_fs_event);
         fs_ctrl =  gui_window_get_control(win, "select_folder");  
         if (fs_ctrl != NULL){        
-            fs_new_path(fs_ctrl->obj, config.diapo.file_path, "^$");      
+            fs_new_path(fs_ctrl->obj, config_get_diapo()->file_path, "^$");      
         }
         gui_window_attach_cb(win,"ok", diapo_new_path);
     } else {
@@ -964,7 +946,7 @@ static void diapo_toggle(struct gui_control *ctrl, enum gui_event_type type, uni
         config_toggle_enable_diapo();
         check = gui_window_get_control(ctrl->win, "check_diapo");
         if (check != NULL){
-            if (config.diapo_enabled){
+            if (config_get_diapo_activation()){
             blit_img(check, "check_diapo");
             } else {
             blit_img(check, "no_check_diapo");
@@ -1014,7 +996,7 @@ static void conf_diapo(struct gui_control *ctrl, enum gui_event_type type, union
 
     if (evt){
         diapo_toggle_nb = 0;
-        diapo_path = strdup(config.diapo.file_path);
+        diapo_path = strdup(config_get_diapo()->file_path);
         win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_CONF_DIAPO)); 
         gui_window_attach_cb(win,"cancel",diapo_cancel);
         gui_window_attach_cb(win,"ok",diapo_ok);
@@ -1025,11 +1007,11 @@ static void conf_diapo(struct gui_control *ctrl, enum gui_event_type type, union
         if (vm_ctrl != NULL){
             vm_handle vm;
             vm = vm_ctrl->obj;
-            vm_set_value(vm, ((double)config.diapo.delay));
+            vm_set_value(vm, ((double)config_get_diapo()->delay));
         }
         check = gui_window_get_control(win, "check_diapo");
         if (check != NULL){
-            if (config.diapo_enabled){
+            if (config_get_diapo_activation()){
             blit_img(check, "check_diapo");
             } else {
             blit_img(check, "no_check_diapo");
@@ -1092,19 +1074,19 @@ static void fm_ok(struct gui_control *ctrl, enum gui_event_type type, union gui_
         vm_ctrl = gui_window_get_control(ctrl->win, "freq_value");
         if (vm_ctrl != NULL){    
         val = vm_get_value(vm_ctrl->obj);	    
-        freq = config.fm_transmitter;
-        if (val == (((double)config.fm_transmitter1) / (double)1000000.00 )){
-        config_set_fm_frequency1(freq);
+        freq = config_get_fm(CONFIG_FM_DEFAULT);        
+        if (val == (((double)config_get_fm(CONFIG_FM_SAV1)) / (double)1000000.00 )){
+        config_set_fm_frequency(CONFIG_FM_SAV1, freq);
         } else {
-        if (val == (((double)config.fm_transmitter2) / (double)1000000.00 )){
-            config_set_fm_frequency2(freq);
+        if (val == (((double)config_get_fm(CONFIG_FM_SAV2)) / (double)1000000.00 )){
+            config_set_fm_frequency(CONFIG_FM_SAV2, freq);
         } else {
-            config_set_fm_frequency2(config.fm_transmitter1);
-            config_set_fm_frequency1(freq);
+            config_set_fm_frequency(CONFIG_FM_SAV2, config_get_fm(CONFIG_FM_SAV1));
+            config_set_fm_frequency(CONFIG_FM_SAV1, freq);
         }
         }
         /* Set new frequency (state has alreday been modified)*/
-        config_set_fm_frequency( (int)(val * (double)1000000.00));
+        config_set_fm_frequency(CONFIG_FM_DEFAULT , (int)(val * (double)1000000.00));
 
         }
         gui_window_release(ctrl->win);
@@ -1122,7 +1104,7 @@ static void fm_toggle(struct gui_control *ctrl, enum gui_event_type type, union 
         config_toggle_fm_transmitter_state();
         check = gui_window_get_control(ctrl->win, "check_fm");
         if (check != NULL){
-            if (config.enable_fm_transmitter){
+            if (config_get_fm_activation()){
                 blit_img(check, "check_fm");
             } else {
                 blit_img(check, "no_check_fm");
@@ -1143,9 +1125,9 @@ static void fm_recall_fm(struct gui_control *ctrl, enum gui_event_type type, uni
         vm_handle vm;
         vm = vm_ctrl->obj;
         if (ctrl->cb_param == 1) {
-            vm_set_value(vm, ((double)config.fm_transmitter1) / (double)1000000.00 );
+            vm_set_value(vm, ((double)config_get_fm(CONFIG_FM_SAV1)) / (double)1000000.00 );
         } else {
-            vm_set_value(vm, ((double)config.fm_transmitter2) / (double)1000000.00 );
+            vm_set_value(vm, ((double)config_get_fm(CONFIG_FM_SAV2)) / (double)1000000.00 );
         }
         }
     } else {
@@ -1173,24 +1155,24 @@ static void  conf_fm_tansmitter(struct gui_control *ctrl, enum gui_event_type ty
         recall_ctrl = gui_window_get_control(win, "fm1");
         if (recall_ctrl != NULL){	  
             recall_ctrl->cb_param = 1;  
-            snprintf(buffer_fm, sizeof(buffer_fm),"%06.2f Mhz",(double)config.fm_transmitter1 / (double)1000000.00);	  
+            snprintf(buffer_fm, sizeof(buffer_fm),"%06.2f Mhz",(double)config_get_fm(CONFIG_FM_SAV1) / (double)1000000.00);	  
             label_set_text(recall_ctrl->obj,buffer_fm);  
         }
         recall_ctrl = gui_window_get_control(win, "fm2");
         if (recall_ctrl != NULL){
             recall_ctrl->cb_param = 2;
-            snprintf(buffer_fm, sizeof(buffer_fm),"%06.2f Mhz",(double)config.fm_transmitter2 / (double)1000000.00);	  
+            snprintf(buffer_fm, sizeof(buffer_fm),"%06.2f Mhz",(double)config_get_fm(CONFIG_FM_SAV2) / (double)1000000.00);	  
             label_set_text(recall_ctrl->obj,buffer_fm);  
         }  
         vm_ctrl = gui_window_get_control(win, "freq_value");
         if (vm_ctrl != NULL){
             vm_handle vm;
             vm = vm_ctrl->obj;
-            vm_set_value(vm, ((double)config.fm_transmitter) / (double)1000000.00 );
+            vm_set_value(vm, ((double)config_get_fm(CONFIG_FM_DEFAULT)) / (double)1000000.00 );
         }
         check = gui_window_get_control(win, "check_fm");
         if (check != NULL){
-            if (config.enable_fm_transmitter){
+            if (config_get_fm_activation()){
             blit_img(check, "check_fm");
             } else {
             blit_img(check, "no_check_fm");
@@ -1207,7 +1189,7 @@ static void  conf_toggle_small_text(struct gui_control *ctrl, enum gui_event_typ
     if (evt) {
         config_toggle_small_text_state();
         /* Display the check box according to the new small text config */
-        if (config.enable_small_text){
+        if ( config_get_small_text_activation()){
             blit_img(ctrl, "check_small_text");
         } else {
             blit_img(ctrl, "no_check_small_text");
@@ -1257,7 +1239,7 @@ static void configuration_menu(struct gui_control *ctrl, enum gui_event_type typ
     /* Display the check box according to current small text config */
     check = gui_window_get_control(win, "check_small_text");
     if (check != NULL){
-        if (config.enable_small_text){
+        if (config_get_small_text_activation()){
         blit_img(check, "check_small_text");
         } else {
         blit_img(check, "no_check_small_text");
@@ -1313,7 +1295,7 @@ static void play_audio_video(struct gui_control *ctrl, enum gui_event_type type,
         int file_nb = 0;
         fs_handle fs = ctrl_fs->obj;    
         list =  fs_get_selection(fs);
-        fp = fopen( "/tmp/playlist.m3u", "w+" );
+        fp = fopen(RESUME_VOLATILE_PLAYLIST, "w+" );
         while ( (filename = flenum_get_next_file(list, shuffle_state)) != NULL)  {
             file_nb++;
             fprintf( fp, filename );
@@ -1325,7 +1307,7 @@ static void play_audio_video(struct gui_control *ctrl, enum gui_event_type type,
             DFBColor color = {255,255,50,50};
             message_box("No file selected !", 24, &color, "./res/font/decker.ttf");
         } else {
-            launch_engine("/tmp/playlist.m3u", 0, ctrl->cb_param);
+            setup_engine(RESUME_VOLATILE_PLAYLIST, 0, ctrl->cb_param);
             quit = true;
         }
     } else {
@@ -1353,9 +1335,9 @@ static void resume_audio_video(struct gui_control *ctrl, enum gui_event_type typ
             DFBColor color = {255,255,50,50};
             message_box("Error no saved playlist...", 24, &color, "./res/font/decker.ttf");    
         }  else {
-            snprintf(mv_command, sizeof(mv_command), "mv %s /tmp/playlist.m3u",filename);
+            snprintf(mv_command, sizeof(mv_command), "mv %s " RESUME_VOLATILE_PLAYLIST, filename);
             system(mv_command);	
-            launch_engine("/tmp/playlist.m3u", pos, is_video);  	
+            setup_engine(RESUME_VOLATILE_PLAYLIST, pos, is_video);  	
             quit = true;
         }
     } else {
@@ -1407,9 +1389,6 @@ static void select_audio(struct gui_control *ctrl, enum gui_event_type type, uni
     const struct gui_control * fs_ctrl;
     struct gui_control *play_ctrl;
     
-    /* TODO  Write a decent config module !*/
-    extern struct tomplayer_config config;
-
     if (evt) {
         win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_AUDIO)); 
         gui_window_attach_cb(win, "file_selector", dispatch_fs_event);
@@ -1422,7 +1401,7 @@ static void select_audio(struct gui_control *ctrl, enum gui_event_type type, uni
         if (fs_ctrl != NULL){
             fs = fs_ctrl->obj;
             /*fs_set_select_cb(fs, audio_select_cb);*/
-            fs_new_path(fs, config.audio_folder, config.filter_audio_ext);
+            fs_new_path(fs, config_get_folder(CONFIG_AUDIO), config_get_ext(CONFIG_AUDIO));
         }
         play_ctrl = gui_window_get_control(win, "play_button");
         if (play_ctrl != NULL){ 

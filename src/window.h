@@ -105,4 +105,5 @@ void gui_window_release_all(void);
 gui_window gui_window_get_top(void);
 void gui_window_handle_key(DFBInputDeviceKeyIdentifier);
 
+void setup_engine(const char * path, int pos, bool is_video);
 #endif /* __WINDOW_H__ */

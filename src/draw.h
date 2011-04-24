@@ -1,8 +1,13 @@
 /**
- * \file event_inputs.h
- * \author Wolfgar 
- * \brief This module deals with inputs whatever the are (key posted in FIFO or event from touchscreen)
- * 
+ * \file draw.h 
+ * \brief This module implements low level drawing functions.
+ *
+ * Contrary to the main menu which relies on directfb, 
+ * Tomplayer engine implements its own drawing functions.
+ *
+ * When in video mode, the frame buffer is used directly 
+ * When in audio mode, the display is sent to mplayer to be displayed as overlay
+ *  
  * $URL$
  * $Rev$
  * $Author$
@@ -24,9 +29,17 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- */ 
-#ifndef __EVENT_INPUTS_H__
-#define __EVENT_INPUTS_H__
-void *event_loop(void *);
-#endif
+ */
 
+#ifndef __DRAW_H__
+#define __DRAW_H__
+
+#include <stdbool.h>
+#include <IL/ilu.h>
+
+void draw_RGB_buffer(unsigned char * buffer, int x, int y, int w, int h, bool transparency);
+void draw_img(ILuint img);
+void draw_text(const char * text, int x, int y, int w, int h, const struct font_color *color, int size);
+void draw_cursor(ILuint cursor_id, ILuint frame_id, int x, int y );
+
+#endif
