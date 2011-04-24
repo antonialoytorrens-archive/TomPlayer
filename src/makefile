@@ -32,9 +32,9 @@ V:=@
 endif
 
 #Sources for the initial tomplayer interface 
-TOM_SRC = file_selector.c window.c  screens.c gui.c list.c zip_skin.c config.c widescreen.c  resume.c power.c file_list.c label.c viewmeter.c pwm.c  gps.c
+TOM_SRC = file_selector.c window.c  screens.c gui.c list.c skin.c config.c widescreen.c  resume.c power.c file_list.c label.c viewmeter.c pwm.c  gps.c
 #Sources for mplayer engine
-ENG_SRC = start_engine.c  engine.c config.c widescreen.c resume.c pwm.c sound.c  power.c font.c fm.c file_list.c diapo.c event_inputs.c gps.c
+ENG_SRC = start_engine.c  engine.c config.c widescreen.c resume.c pwm.c sound.c  power.c font.c fm.c file_list.c diapo.c event_inputs.c play_int.c gps.c draw.c
 #Sources for remote inputs 
 REM_INPUTS = remote_inputs.c
 #All sources
@@ -43,7 +43,7 @@ SOURCES:=$(TOM_SRC) $(ENG_SRC) $(REM_INPUTS)
 #Objects 
 TOM_OBJ = $(subst .c,.o,$(TOM_SRC))
 ENG_OBJ = $(subst .c,.o,$(ENG_SRC))
-ENG_OBJ += zip_skin_devil.o
+ENG_OBJ += skin_devil.o
 REM_OBJ = $(subst .c,.o,$(REM_INPUTS))
 
 TARGETS:=tomplayer refresh_wdg start_engine splash_screen remote_inputs
@@ -63,10 +63,11 @@ start_engine: $(ENG_OBJ)
 refresh_wdg : watchdog.o
 splash_screen : splash.o 
 
+
 # Objects with specific flags or source to be built from
 file_selector.o : CFLAGS+=-D_BSD_SOURCE
-zip_skin_devil.o : CFLAGS+=-DWITH_DEVIL
-zip_skin_devil.o : zip_skin.c
+skin_devil.o : CFLAGS+=-DWITH_DEVIL
+skin_devil.o : skin.c
 	$(V)$(CC) $(CFLAGS) -c $< -o $@
 
 
