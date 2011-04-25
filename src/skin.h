@@ -1,6 +1,6 @@
 /**
  * \file skin.h 
- * \brief Handle skins
+ * \brief Handle skins configuration
  *
  * $URL$
  * $Rev$
@@ -35,6 +35,7 @@
 
 /** Function associated to a control */ 
 enum skin_cmd{
+    /* Begin of commands for mplayer */ 
     SKIN_CMD_EXIT_MENU      = 0, /*!<exit skin */
     SKIN_CMD_PAUSE          = 1, /*!<send a pause command to mplayer */
     SKIN_CMD_STOP           = 2, /*!<send a stop command to mplayer */
@@ -51,21 +52,32 @@ enum skin_cmd{
     SKIN_CMD_BACKWARD       = 13,/*!<send a backward command to mplayer */
     SKIN_CMD_NEXT           = 14,/*!<send a next command to mplayer */
     SKIN_CMD_PREVIOUS       = 15,/*!<send a previous command to mplayer */
+    /* Others */ 
     SKIN_CMD_BATTERY_STATUS = 16,
     SKIN_CMD_ANIM           = 17,
-    SKIN_CMD_TEXT_TIME      = 18,
-    SKIN_CMD_TEXT_LAT       = 19,  
-    SKIN_CMD_TEXT_LONG      = 20, 
-    SKIN_CMD_TEXT_ALT       = 21,
-    SKIN_CMD_TEXT_SPEED     = 22,
-    SKIN_CMD_TEXT_ARTIST    = 23,
-    SKIN_CMD_TEXT_TRACK     = 24,
-    SKIN_CMD_TEXT_ALBUM     = 25,
-    SKIN_CMD_TEXT_TITLE     = 26,
-    SKIN_CMD_COVERART       = 27,
-    SKIN_CMD_NONE           = 28,
+    SKIN_CMD_TEXT_UPTIME    = 18, 
+    SKIN_CMD_TEXT_TIME      = 19, 
+    /* Begin of GPS info */
+    SKIN_CMD_TEXT_LAT       = 20,  
+    SKIN_CMD_TEXT_LONG      = 21, 
+    SKIN_CMD_TEXT_ALT       = 22,
+    SKIN_CMD_TEXT_SPEED     = 23,
+    /* Begin of tags related info */    
+    SKIN_CMD_TEXT_ARTIST    = 30,
+    SKIN_CMD_TEXT_TRACK     = 31,
+    SKIN_CMD_TEXT_ALBUM     = 32,
+    SKIN_CMD_TEXT_TITLE     = 33,
+    SKIN_CMD_TEXT_YEAR      = 34,
+    SKIN_CMD_TEXT_COMMENT   = 35,
+    SKIN_CMD_TEXT_GENRE     = 36,
+    SKIN_CMD_COVERART       = 37,       
     SKIN_CMD_MAX_NB
 };
+
+#define SKIN_CMD_TAGS_FIRST  SKIN_CMD_TEXT_ARTIST
+#define SKIN_CMD_TAGS_LAST   SKIN_CMD_TEXT_GENRE
+#define SKIN_CMD_GPS_FIRST   SKIN_CMD_TEXT_LAT 
+#define SKIN_CMD_GPS_LAST    SKIN_CMD_TEXT_SPEED
 
 /** Define the shape of a skin control */ 
 enum skin_control_type {
@@ -99,8 +111,6 @@ struct skin_rectangular_shape {
     int x2; /*!< right corner */
     int y2; /*!<lower corner */
 } ;
-
-
 
 
 /**
