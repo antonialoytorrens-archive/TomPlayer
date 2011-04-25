@@ -331,7 +331,7 @@ void *event_loop(void * param){
     /* To interrupt blocking read */
     setitimer(ITIMER_REAL, &timer_value, NULL);      
     if (ts_available){
-      ts_samp = ts_read(ts, &samp, 1);    
+      ts_samp = ts_read(ts, &samp, 1);          
     }
     if (ts_samp < 1){
       if (input_fd > 0){

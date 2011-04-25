@@ -358,13 +358,15 @@ int playint_get_file_length(void){
     }
 }
 
-static int extract_mplayer_answer(char *buffer, int len, const char* pattern){
+static int extract_mplayer_answer(char *buffer, int len, const char* pattern, bool quote){
     int extract_len = -1;
     int pattern_len = strlen(pattern);
         
     if(!strncmp(pattern, buffer, pattern_len)){
         /* Remove ANS pattern and final quote */   
-        extract_len = len - pattern_len - 1;
+        extract_len = len - pattern_len;
+        if (quote)
+           extract_len -= 1;
         memmove(buffer, buffer + pattern_len, extract_len);
         buffer[extract_len] = 0;
         //PRINTDF("Extracted name : %s\n", buffer);        
@@ -380,7 +382,19 @@ int playint_get_filename(char *buffer, size_t len){
     
     nb_chars = send_command_wait_string(" get_file_name\n", buffer, len, FILENAME_ANS_PATTERN);    
     if (nb_chars > 0){
-        return extract_mplayer_answer(buffer, nb_chars, FILENAME_ANS_PATTERN);        
+        return extract_mplayer_answer(buffer, nb_chars, FILENAME_ANS_PATTERN, true);        
+    }      
+    return -1;
+}
+
+int playint_get_path(char *buffer, size_t len){
+    #define PATH_ANS_PATTERN "ANS_path="
+  
+    int nb_chars;   
+    
+    nb_chars = send_command_wait_string("get_property path\n", buffer, len, PATH_ANS_PATTERN);    
+    if (nb_chars > 0){
+        return extract_mplayer_answer(buffer, nb_chars, PATH_ANS_PATTERN, false);        
     }      
     return -1;
 }
@@ -392,7 +406,7 @@ int playint_get_artist(char *buffer, size_t len){
     int nb_chars;   
     nb_chars = send_command_wait_string(" get_meta_artist\n", buffer, len, ARTIST_ANS_PATTERN);    
     if (nb_chars > 0){
-        return extract_mplayer_answer(buffer, nb_chars, ARTIST_ANS_PATTERN);        
+        return extract_mplayer_answer(buffer, nb_chars, ARTIST_ANS_PATTERN, true);        
     }
     return -1;
 }
@@ -403,7 +417,7 @@ int playint_get_title(char *buffer, size_t len){
     int nb_chars;   
     nb_chars = send_command_wait_string(" get_meta_title\n", buffer, len, ALBUM_ANS_PATTERN);    
     if (nb_chars > 0){
-        return extract_mplayer_answer(buffer, nb_chars, ALBUM_ANS_PATTERN);        
+        return extract_mplayer_answer(buffer, nb_chars, ALBUM_ANS_PATTERN, true);        
     }
     return -1;
 }
@@ -422,6 +436,19 @@ int playint_get_file_position_seconds(void){
   }
 }
 
+/** Return the current file position in percent
+*/
+int playint_get_file_position_percent(void){  
+  int val = 0;
+  if (is_paused)
+    return -1;  
+  if (send_command_wait_int(" get_property percent_pos\n",&val) == 0){
+    return val;
+  } else {
+    /* Return 0 if command failed */
+    return 0;
+  }
+}
 
 /** Ask mplayer for the curent video settings */ 
 int playint_get_audio_settings(struct audio_settings * settings){

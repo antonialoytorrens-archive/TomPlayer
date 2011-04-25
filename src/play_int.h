@@ -52,12 +52,14 @@ void playint_seek(int val, enum playint_seek type);
 int  playint_get_artist(char *buffer, size_t len);
 int  playint_get_title(char *buffer, size_t len);
 int  playint_get_file_position_seconds(void);
+int  playint_get_file_position_percent(void);
 void playint_set_audio_settings(const struct audio_settings * settings);
 void playint_set_video_settings(const struct video_settings * settings);
 int  playint_get_audio_settings( struct audio_settings * settings);
 int  playint_get_video_settings( struct video_settings * settings);
 int  playint_get_file_length(void);
 int  playint_get_filename(char *buffer, size_t len);
+int  playint_get_path(char *buffer, size_t len);
 void playint_mute(void);
 void playint_pause(void);
 bool playint_is_paused(void);
@@ -68,6 +70,7 @@ void playint_skip(int step);
 void playint_delay(double step);
 void playint_osd(const char *text, int to);
 void playint_display_time(void);
+
 
 void playint_menu_show(void);
 void playint_menu_hide(void);

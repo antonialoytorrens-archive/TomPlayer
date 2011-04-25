@@ -29,6 +29,7 @@
 #include <stdlib.h>
 #include <tag_c.h>
 
+#include "engine.h"
 #include "track.h"
 
 static TagLib_File *current_file;
@@ -36,6 +37,13 @@ static char *current_filename;
 static struct track_tags current_tags;
 
 const char * track_get_current_filename(void){
+    const char * ret; 
+    if (current_filename != NULL){
+        ret = (const char *)strrchr(current_filename, '/');
+        if (ret != NULL){
+            return ret+1;
+        }
+    }
     return current_filename;
 }
 
@@ -57,49 +65,53 @@ bool track_update(const char * filename){
   
   /* Release current */
   track_release();
+ 
   
-  /* Set new infos */  
-  taglib_set_strings_unicode(0);
-  current_file = taglib_file_new(filename);
-  if(current_file == NULL){
-      return false;  
-  }
+  /* Set new infos */    
   current_filename = strdup(filename);
   if (current_filename == NULL){
       taglib_file_free(current_file);
       return false;
   }
   
-  tag = taglib_file_tag(current_file);
-  if (tag != NULL){ 
-    current_tags.title = taglib_tag_title(tag);
-    current_tags.artist = taglib_tag_artist(tag);
-    current_tags.album =  taglib_tag_album(tag);
-    snprintf(current_tags.year, sizeof(current_tags.year), "%d", taglib_tag_year(tag));    
-    current_tags.year[sizeof(current_tags.year)-1] = 0;
-    current_tags.comment = taglib_tag_comment(tag);
-    snprintf(current_tags.track, sizeof(current_tags.track), "%d", taglib_tag_track(tag));
-    current_tags.track[sizeof(current_tags.track)-1] = 0;
-    current_tags.genre = taglib_tag_genre(tag);
-  }
-  properties = taglib_file_audioproperties(current_file);
-  if(properties != NULL) {
-      current_tags.length = taglib_audioproperties_length(properties);
-      current_tags.bitrate = taglib_audioproperties_bitrate(properties);
-      current_tags.sample_rate = taglib_audioproperties_samplerate(properties);
-      current_tags.channels =  taglib_audioproperties_channels(properties);
-  }    
-  cover_len = taglib_file_cover_size(current_file);
-  if (cover_len > 0){
-    buffer = (char *)malloc(cover_len);
-    taglib_file_cover(current_file, buffer, cover_len);
-    ilGenImages(1, &current_tags.coverart);
-    ilBindImage(current_tags.coverart);
-    if (!ilLoadL(IL_TYPE_UNKNOWN, buffer, cover_len)){
-         ilDeleteImages( 1, &current_tags.coverart);
-         current_tags.coverart = 0;
+  if (eng_get_mode() == MODE_AUDIO){
+    taglib_set_strings_unicode(0);
+    current_file = taglib_file_new(filename);
+    if(current_file == NULL){
+        return false;  
+    }
+    
+    tag = taglib_file_tag(current_file);
+    if (tag != NULL){ 
+        current_tags.title = taglib_tag_title(tag);
+        current_tags.artist = taglib_tag_artist(tag);
+        current_tags.album =  taglib_tag_album(tag);
+        snprintf(current_tags.year, sizeof(current_tags.year), "%d", taglib_tag_year(tag));    
+        current_tags.year[sizeof(current_tags.year)-1] = 0;
+        current_tags.comment = taglib_tag_comment(tag);
+        snprintf(current_tags.track, sizeof(current_tags.track), "%d", taglib_tag_track(tag));
+        current_tags.track[sizeof(current_tags.track)-1] = 0;
+        current_tags.genre = taglib_tag_genre(tag);
+    }
+    properties = taglib_file_audioproperties(current_file);
+    if(properties != NULL) {
+        current_tags.length = taglib_audioproperties_length(properties);
+        current_tags.bitrate = taglib_audioproperties_bitrate(properties);
+        current_tags.sample_rate = taglib_audioproperties_samplerate(properties);
+        current_tags.channels =  taglib_audioproperties_channels(properties);
     }    
-    free(buffer);
+    cover_len = taglib_file_cover_size(current_file);
+    if (cover_len > 0){
+        buffer = (char *)malloc(cover_len);
+        taglib_file_cover(current_file, buffer, cover_len);
+        ilGenImages(1, &current_tags.coverart);
+        ilBindImage(current_tags.coverart);
+        if (!ilLoadL(IL_TYPE_UNKNOWN, buffer, cover_len)){
+            ilDeleteImages( 1, &current_tags.coverart);
+            current_tags.coverart = 0;
+        }    
+        free(buffer);
+    }
   }
   return true;
 }

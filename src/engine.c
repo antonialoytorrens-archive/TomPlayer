@@ -291,7 +291,7 @@ static void * update_thread(void *val){
      * Anyway it does not make sense to test for a new track while paused... 
      */ 
     if (playint_is_paused() == false){
-      if (playint_get_filename(buffer_filename, sizeof(buffer_filename)) > 0){                   
+      if (playint_get_path(buffer_filename, sizeof(buffer_filename)) > 0){                   
         if (track_has_changed(buffer_filename)){
           /* Current filename has changed (new track)*/          
           settings_update();
@@ -349,7 +349,7 @@ static void * update_thread(void *val){
       quit();      
     }        
   } /* End main loop */
-
+   
   /* Stop screen saver if active on exit */
   if (screen_saver_is_running()){   
     if (config_get_diapo_activation()){
@@ -358,6 +358,7 @@ static void * update_thread(void *val){
       pwm_resume();
     }
   }
+  track_release();
   pthread_exit(NULL);
 }
 
@@ -409,8 +410,7 @@ int eng_release(void){
 
 void eng_play(char * filename, int pos){
     pthread_t up_tid;    
-    pthread_t player_tid;            
-    pthread_t evt_tid;
+    pthread_t player_tid;                
     pthread_t anim_tid;
     int resume_pos;
     
@@ -426,10 +426,9 @@ void eng_play(char * filename, int pos){
     /* Launch all threads */
     pthread_create(&up_tid, NULL, update_thread, (void *)resume_pos);
     pthread_create(&anim_tid, NULL, anim_thread, NULL);
-    pthread_create(&player_tid, NULL, mplayer_thread, filename);     
-    pthread_create(&evt_tid, NULL, event_loop, NULL);
-    /* Wait for the end of mplayer thread */
-    pthread_join(player_tid, NULL);    
+    pthread_create(&player_tid, NULL, mplayer_thread, filename);             
+    
+    event_loop(NULL);
     
     /* Save settings to resume file */
     if (state.current_mode == MODE_VIDEO){
@@ -444,8 +443,7 @@ void eng_play(char * filename, int pos){
     
     /* Wait for everyone termination */
     pthread_join(up_tid, NULL);
-    pthread_join(anim_tid, NULL);    
-    pthread_join(evt_tid, NULL);    
+    pthread_join(anim_tid, NULL);        
 }
 
 

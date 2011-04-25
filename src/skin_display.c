@@ -31,6 +31,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include "widescreen.h"
 #include "power.h"
 #include "skin.h"
 #include "track.h"
@@ -70,7 +71,7 @@ static void refresh_filename(void){
   tags = track_get_tags();
   if (tags->title != NULL){
     if (tags->artist != NULL){
-        snprintf(displayed_name, sizeof(displayed_name),"%s - %s", tags->title, tags->title);
+        snprintf(displayed_name, sizeof(displayed_name),"%s - %s", tags->artist, tags->title);
     } else {
         snprintf(displayed_name, sizeof(displayed_name),"%s", tags->title);
     }
@@ -105,6 +106,11 @@ static const char *get_string_tag_ctrl(const struct track_tags * tags, enum skin
 static void display_txt_ctrl(const struct skin_control *ctrl, const char* string){
     int text_width, text_height, orig;
     struct font_color color;        
+    int screen_width, screen_height;
+
+    if ((string == NULL) || (strlen(string) == 0)){
+        return;
+    }
     
     if (ctrl != NULL){
         if (ctrl->params.text.size != -1)
@@ -121,8 +127,17 @@ static void display_txt_ctrl(const struct skin_control *ctrl, const char* string
             color.g = COLOR_G(ctrl->params.text.color);
             color.b = COLOR_B(ctrl->params.text.color);
         }
+        ws_get_size(&screen_width, &screen_height);
+        
+        /* Truncate height and width if needed */
+        if ((text_width + ctrl->params.text.x) > screen_width){
+            text_width = screen_width - ctrl->params.text.x - 1;
+        }
+        if ((text_height + ctrl->params.text.y) > screen_height){
+            text_height = screen_height - ctrl->params.text.y -1;
+        }
         draw_text(string, 
-                  ctrl->params.text.x, ctrl->params.text.y - text_height,
+                  ctrl->params.text.x, ctrl->params.text.y,
                   text_width, text_height, &color, 
                   (ctrl->params.text.size != -1)?ctrl->params.text.size:0);
     }
@@ -188,7 +203,10 @@ static int track_get_string(char * buffer, size_t len, int time, bool is_hour){
     return ret;    
 }
 
-static void display_progress_bar(int current, int length)
+/* Percent param may appear as a redundant param but it is not : 
+   It is handled as an independant params to set the cursor on progress bar
+   (the underlying issue is that mplayer may reports wrong pos for VBR streams)  */
+static void display_progress_bar(int current, int length, int percent)
 {
     /* Previous coord of progress bar cursor */
     static struct{
@@ -198,8 +216,7 @@ static void display_progress_bar(int current, int length)
     
     int i, x, y, height, width;
     unsigned char * buffer;
-    int buffer_size;    
-    int percent_pos;
+    int buffer_size;       
     struct font_color color;
     char displayed_text[16];
     int text_height, text_width, orig; 
@@ -221,9 +238,8 @@ static void display_progress_bar(int current, int length)
     pb_prev_val.length = length;
     pb_zone = skin_ctrl_get_zone(pb);
     
-    percent_pos = (current * 100) / length;
-    /* Display current time in file at the beginig of progress bar */
-    
+
+    /* Display current time in file at the beginig of progress bar */    
     height = pb_zone.y2 - pb_zone.y1;
     color.r = 255;
     color.g = 255;
@@ -266,7 +282,7 @@ static void display_progress_bar(int current, int length)
         col1r = skin_get_config()->pb_r;
         col1g = skin_get_config()->pb_g;
         col1b = skin_get_config()->pb_b;
-        step1 =  percent_pos * width / 100;
+        step1 =  percent * width / 100;
 
         i = 0;
         for( y = 0; y < height; y++ ){
@@ -308,7 +324,7 @@ static void display_progress_bar(int current, int length)
             }
         }
         new_x = pb_zone.x1 +
-                percent_pos * (pb_zone.x2 - pb_zone.x1) / 100 - width / 2;
+                percent * (pb_zone.x2 - pb_zone.x1) / 100 - width / 2;
 
         /* Alloc buffer for RBGA conversion */
         buffer_size = width * height * 4;
@@ -337,12 +353,21 @@ static void display_progress_bar(int current, int length)
 
 static void refresh_progress_bar(void){
     int pos;    
-    int length;    
-        
+    int length;       
+    int percent;
+    
     pos = playint_get_file_position_seconds();    
-    length = track_get_tags()->length;       
-    if ((pos >= 0) && (length > 0)) {
-        display_progress_bar(pos, length);
+    length = track_get_tags()->length;            
+    if ((pos >= 0) && (length > 0)) {          
+        /* BUG : pos may be plain wrong coz mplayer does not correctly handle VBR */
+        /* Dont know how to fix correctly : Just Avoid crazy figures for now */
+        if (pos <= length){
+            percent = pos * 100 / length;
+        } else {
+            pos = length;
+            percent = 100;
+        }
+        display_progress_bar(pos, length, percent);
     }
 }
 
@@ -443,8 +468,8 @@ static void refresh_uptime(void){
     ctrl = skin_get_ctrl(SKIN_CMD_TEXT_UPTIME);
     if (ctrl != NULL){
         secs = get_uptime();
-        hours = round(secs / (double)3600.0);
-        mins = round(secs - round(secs / (double)3600.0));
+        hours = floor(secs / (double)3600.0);
+        mins = floor((secs - ((double)hours * (double)3600.0))/(double)60.0);
         snprintf(buffer, sizeof(buffer), "%02i:%02i", hours, mins);
         display_txt_ctrl(ctrl, buffer);
     }    
