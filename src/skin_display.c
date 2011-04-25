@@ -2,10 +2,10 @@
  * \file skin_display.c
  * \brief Handle skin display and the update of the controls  
  *
- * $URL:$
- * $Rev:$
- * $Author:$
- * $Date:$
+ * $URL$
+ * $Rev$
+ * $Author$
+ * $Date$
  */
 
 /*
