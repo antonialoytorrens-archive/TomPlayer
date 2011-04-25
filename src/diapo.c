@@ -215,7 +215,7 @@ void clock_thread(void){
     
     /* Display time */
     time(&curr_time);
-    ptm= localtime(&curr_time);
+    ptm = localtime(&curr_time);
     snprintf(buff_text,sizeof(buff_text),"%02d : %02d",ptm->tm_hour, ptm->tm_min);   
     font_change_size(50);      
     font_get_size(buff_text, &text_width, &text_height, &orig);

@@ -1,6 +1,6 @@
 /**
  * \file skin.c 
- * \brief Handle skins
+ * \brief Handle skins configuration
  *
  * $URL$
  * $Rev$
@@ -305,18 +305,18 @@ static bool load_skin_config(char * filename){
         
     
     /* Parse controls description */
-    for( i = 0; i < MAX_SKIN_CONTROLS; i++ ){
-        sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_TYPE_CONTROL );
+    for(i = 0; i < MAX_SKIN_CONTROLS; i++){
+        sprintf(section_control, SECTION_CONTROL_FMT_STR, i, KEY_TYPE_CONTROL);
         j = iniparser_getint(ini, section_control, -1);
-        if( j < 0  ){
+        if (j < 0){
            PRINTDF( "Warning : no section  <%s>\n", section_control );
            break;
         } else {
             skin_conf->controls[i].type = j;
         }
-        sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CTRL_BITMAP_FILENAME );
+        sprintf(section_control, SECTION_CONTROL_FMT_STR, i, KEY_CTRL_BITMAP_FILENAME);
         s = iniparser_getstring(ini, section_control, NULL);
-        if(s != NULL){
+        if (s != NULL){
             skin_conf->controls[i].bitmap_filename = strdup(s);
             if (skin_conf->controls[i].bitmap_filename == NULL){
                 ret = false;
@@ -325,11 +325,11 @@ static bool load_skin_config(char * filename){
         }
         sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CMD_CONTROL );
         skin_conf->controls[i].cmd = iniparser_getint(ini, section_control, -1);
-        if( skin_conf->controls[i].cmd < 0  ){
+        if (skin_conf->controls[i].cmd < 0){
             sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CMD_CONTROL2 );
             skin_conf->controls[i].cmd = iniparser_getint(ini, section_control, -1);
         }    
-        switch( skin_conf->controls[i].type ){
+        switch (skin_conf->controls[i].type){
             case SKIN_CONTROL_CIRCULAR:
                 sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_CIRCULAR_CONTROL_X );
                 skin_conf->controls[i].params.circ_icon.x= iniparser_getint(ini, section_control, -1);
@@ -366,18 +366,19 @@ static bool load_skin_config(char * filename){
                 goto error;
         }
     }
+    
     /* Number of controls on the skin */
     skin_conf->nb = i;
     if (skin_conf->first_selection > skin_conf->nb){
         skin_conf->first_selection = -1;
     }
+    
     /* Sort the controls */
     if (!skin_conf->selection_order){
         control_sort(skin_conf->controls, skin_conf->nb); 
     }
     
     /* Fill in the indexes fields */
-
     for (i = 0; i < skin_conf->nb; i++){
         /* Special case of progress bar for now - FIXME : generic handling - */
         if ((skin_conf->controls[i].type == SKIN_CONTROL_PROGRESS_X) ||

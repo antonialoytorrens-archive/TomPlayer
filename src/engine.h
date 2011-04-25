@@ -28,8 +28,6 @@
 #define __ENGINE_H__
 
 #include <stdbool.h>
-
-//#include "config.h"
 #include "skin.h"
 
 enum eng_mode{MODE_VIDEO, MODE_AUDIO, MODE_UNKNOWN};
