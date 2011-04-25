@@ -410,8 +410,10 @@ int playint_get_title(char *buffer, size_t len){
 
 /** Return the current file position in seconds
 */
-int playint_get_file_position_seconds(void){
+int playint_get_file_position_seconds(void){  
   int val = 0;
+  if (is_paused)
+    return -1;  
   if (send_command_wait_int(" get_property time_pos\n",&val) == 0){
     return val;
   } else {
