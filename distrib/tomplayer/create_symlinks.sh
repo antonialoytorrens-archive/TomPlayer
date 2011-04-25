@@ -119,3 +119,7 @@ ln -sf $LOCAL_DIR/deps//usr/local/lib/libz.so.1.2.3 /usr/local/lib/libz.so.1
 ln -sf $LOCAL_DIR/deps//usr/local/lib/libpng12.pc /usr/local/lib/libpng.pc
 ln -sf $LOCAL_DIR/deps//usr/local/lib/libmad.so.0.2.1 /usr/local/lib/libmad.so.0.2.1
 ln -sf $LOCAL_DIR/deps//usr/local/lib/libmad.so.0.2.1 /usr/local/lib/libmad.so.0
+ln -sf $LOCAL_DIR/deps//usr/local/lib/libtag_c.so.0.0.0 /usr/local/lib/libtag_c.so
+ln -sf $LOCAL_DIR/deps//usr/local/lib/libtag_c.so.0.0.0 /usr/local/lib/libtag_c.so.0
+ln -sf $LOCAL_DIR/deps//usr/local/lib/libtag.so.1.7.0 /usr/local/lib/libtag.so 
+ln -sf $LOCAL_DIR/deps//usr/local/lib/libtag.so.1.7.0 /usr/local/lib/libtag.so.1
