@@ -569,7 +569,7 @@ void eng_handle_cmd(int cmd, int p)
 
 int eng_select_ctrl(const struct skin_control * ctrl, bool state){
     static const struct skin_control *selected_ctrl;
-    int x,y,w,h/*,xc,yc*/;
+    int x,y,w,h;
     struct skin_rectangular_shape zone;
     unsigned char * select_square;
     
@@ -595,46 +595,13 @@ int eng_select_ctrl(const struct skin_control * ctrl, bool state){
     if (select_square == NULL){
         return -1;
     }          
-    /*xc = 240-w/2;
-    yc = 272/2-h/2;*/
+
     /* copy the relevant skin background zone */
     ilBindImage(skin_get_background());
     /*if (state)*/
     ilCopyPixels(x, y, 0, w, h, 1,
                  IL_RGB, IL_UNSIGNED_BYTE, select_square);
-/*    else
-    ilCopyPixels(xc, yc, 0, w, h, 1,
-                 IL_RGB, IL_UNSIGNED_BYTE, select_square);*/
     if (state){
-        #if 0
-      if (ctrl->type == CIRCULAR_SKIN_CONTROL){
-        int x, y, err ;                
-        int xm, ym, r;
-        r = (w / 2) - 2;
-        xm = r;
-        ym = r;
-        x = -r;
-        y = 0;
-        err = 2-2*r;
-        do {
-          select_square[(xm-x+(ym+y)*w)*3]   = 255;
-          select_square[(xm-x+(ym+y)*w)*3+1] = 0;
-          select_square[(xm-x+(ym+y)*w)*3+2] = 0;  
-          select_square[(xm-y+(ym-x)*w)*3]   = 255;
-          select_square[(xm-y+(ym-x)*w)*3+1] = 0;
-          select_square[(xm-y+(ym-x)*w)*3+2] = 0;  
-          select_square[(xm+x+(ym-y)*w)*3]   = 255;
-          select_square[(xm+x+(ym-y)*w)*3+1] = 0;
-          select_square[(xm+x+(ym-y)*w)*3+2] = 0;  
-          select_square[(xm+y+(ym+x)*w)*3]   = 255;
-          select_square[(xm+y+(ym+x)*w)*3+1] = 0;
-          select_square[(xm+y+(ym+x)*w)*3+2] = 0;  
-          r = err;
-          if (r >  x) err += ++x*2+1; /* e_xy+e_x > 0 */
-          if (r <= y) err += ++y*2+1; /* e_xy+e_y < 0 */
-        } while (x < 0);    
-      } else {
-          #endif
         int i,j;    
         /* Draw a square around the control */        
         for(j=0; j<h; j++){
@@ -645,9 +612,7 @@ int eng_select_ctrl(const struct skin_control * ctrl, bool state){
                 select_square[(i+j*w)*3+2] = 0;
             }
             }
-        }
-      
-      //}
+        }      
     }     
     draw_RGB_buffer(select_square, x, y , w, h, false);
     free(select_square);
