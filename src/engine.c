@@ -1,14 +1,13 @@
 /**
- * \file engine.c
- * \author nullpointer & wolfgar 
+ * \file engine.c 
  * \brief This module implements the core engine during playing a media
  *
- * This module implements the core engine during playing a media.
- * \li It displays and update the skins and their objects 
+ * This module implements the core engine during playing a media. 
  * \li It Implements the logic behind the actions required by the input events
- * \li It Drives mplayer through the slave interface available in play_int.h 
  * \li It handles the screen saver triggering  
  * \li It takes cares of restoring and saving the current settings
+ * \li It Drives mplayer through the slave interface available in play_int.h 
+ * \li It triggers the update of skins through the interface skin_display.h 
  * 
  * $URL$
  * $Rev$
@@ -35,7 +34,9 @@
 
 #include <pthread.h>
 #include <unistd.h>
+#include <signal.h>
 
+#include "gps.h"
 #include "config.h"
 #include "resume.h"
 #include "widescreen.h"
@@ -51,6 +52,7 @@
 #include "draw.h"
 #include "track.h"
 #include "skin_display.h"
+#include "fm.h"
 #include "engine.h"
 
 /* Update period in ms */
@@ -81,6 +83,12 @@ static struct {
 
 /* Mutex to prevent animation thread to interact badly with standard update thread */
 static pthread_mutex_t display_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+
+
+static void alarm_handler(int sig) { 
+ return;
+}
 
 static void quit(){
   int pos;  
@@ -313,7 +321,10 @@ static void * update_thread(void *val){
         pthread_mutex_unlock(&display_mutex);
         break;
     }
-
+    
+    /* Update info from GPS */
+    gps_update() ;
+    
     /* Periodic update of the skin controls if they are visible */
     if (((state.menu_showed == true) ||  
         ((state.current_mode == MODE_AUDIO) && (!screen_saver_is_running())))) {
@@ -370,9 +381,33 @@ static void *mplayer_thread(void *filename){
 }
 
 
-int eng_init(bool is_video){       
+static int init(const char * mode){    
+    struct sigaction new_action;
+    bool is_video;      
+    
     /* Dont want to be killed by SIGPIPE */
-    signal (SIGPIPE, SIG_IGN);
+    signal (SIGPIPE, SIG_IGN);    
+    /*Handler on alarm signal */
+    new_action.sa_handler=alarm_handler;
+    sigemptyset(&new_action.sa_mask);
+    new_action.sa_flags=0;
+    sigaction(SIGALRM, &new_action, NULL);
+
+    /* Read generic configuration  */
+    if (config_init() == false){
+        fprintf( stderr, "Error while loading config\n" );
+        return -1;
+    }
+    
+    /* Test current mode */
+    is_video = false;
+    if (mode != NULL){
+    if (strncmp(mode, "VIDEO", 5) == 0)
+      is_video = true;
+    }
+    
+    /* Initialize GPS module */
+    gps_init();
     
     /* Initialize DevIL. */
     ilInit();
@@ -384,7 +419,7 @@ int eng_init(bool is_video){
     /* Initialize font module */
     font_init(11); /* Default font size is hard coded */
         
-    /* Initialize tomplayer status */            
+    /* Initialize tomplayer status and skin module */            
     if (is_video){
       state.current_mode = MODE_VIDEO;
       skin_init(config_get_skin_filename(CONFIG_VIDEO), true);        
@@ -393,22 +428,59 @@ int eng_init(bool is_video){
       skin_init(config_get_skin_filename(CONFIG_AUDIO), true);        
     }
     
+    /* Initialize Screen saver */
     screen_saver_init();
+    
+    /* Initialize resume function */
     resume_file_init(state.current_mode);
+    
+    /* Initialize settings module*/
     settings_init();    
+    
+    /* Initialize diaporama */
+    if (config_get_diapo_activation()){
+        if (diapo_init(config_get_diapo()) == false){
+            fprintf(stderr,"Diaporama initialization failed ...\n");      
+            config_toggle_enable_diapo();
+        }
+    }
+    
     /* Turn ON screen if it is not */
     pwm_resume();
-    return true;
+    
+    /* Activate FM transmitter if needed */
+    if (config_get_fm_activation()){
+        if (!fm_set_state(1) ||
+            !fm_set_freq(config_get_fm(CONFIG_FM_DEFAULT)) ||
+            !fm_set_power(115) ||
+            !fm_set_stereo(1)){
+        fprintf(stderr,"Error while activating FM transmitter\n");
+        }
+        if (config_get_speaker() == CONF_INT_SPEAKER_AUTO){
+        snd_mute_internal(true);
+        }
+    }
+ 
+    return 0;
 }
 
-int eng_release(void){
+static void release(void){         
+    /* Desactivate FM transmitter if needed */
+    if (config_get_fm_activation()){
+        fm_set_state(0);
+        snd_mute_internal(false);
+    }
+  
+    /* Free resources */    
+    diapo_release();
+    config_free();
     ilShutDown();
     font_release();    
     skin_release();
-    return true;
+    return;
 }
 
-void eng_play(char * filename, int pos){
+static void play(char * filename, int pos){
     pthread_t up_tid;    
     pthread_t player_tid;                
     pthread_t anim_tid;
@@ -428,7 +500,7 @@ void eng_play(char * filename, int pos){
     pthread_create(&anim_tid, NULL, anim_thread, NULL);
     pthread_create(&player_tid, NULL, mplayer_thread, filename);             
     
-    event_loop(NULL);
+    event_loop();
     
     /* Save settings to resume file */
     if (state.current_mode == MODE_VIDEO){
@@ -621,4 +693,19 @@ int eng_select_ctrl(const struct skin_control * ctrl, bool state){
 
 enum eng_mode eng_get_mode(void){
     return state.current_mode;
+}
+
+int main( int argc, char *argv[] ){ 
+  
+  if (argc != 4){
+    return -1;
+  }
+  
+  if (init(argv[3]) == 0){
+    play(argv[1], atoi(argv[2]));     
+  }
+  
+  release();
+  
+  return 0;
 }

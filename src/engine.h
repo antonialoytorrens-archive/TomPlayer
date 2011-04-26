@@ -32,9 +32,6 @@
 
 enum eng_mode{MODE_VIDEO, MODE_AUDIO, MODE_UNKNOWN};
       
-int  eng_init(bool);
-int  eng_release(void);
-void eng_play(char * filename, int pos);
 int  eng_ask_menu(void);
 void eng_handle_cmd(int cmd, int p);
 int  eng_select_ctrl(const struct skin_control * ctrl, bool state);

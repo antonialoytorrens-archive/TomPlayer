@@ -28,7 +28,6 @@
 
 #include <stdio.h>
 #include <unistd.h>
-#include <signal.h>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -95,9 +94,6 @@ static int get_ctrl(int idx, int step){
   return -1;
 }
 
-static void alarm_handler(int sig) { 
- return;
-}
 
 
 static void handle_key(DFBInputDeviceKeyIdentifier id){
@@ -247,8 +243,7 @@ static void handle_ts(struct ts_sample * sample){
 }
 
 
-void *event_loop(void * param){
-  struct sigaction new_action;
+void event_loop(void){
   struct tsdev *ts;
   char *tsdevice=NULL;
   struct ts_sample samp;
@@ -264,15 +259,7 @@ void *event_loop(void * param){
 
   printf("Enter Main event loop\n");
   
-  /*Handler on alarm signal */
-  new_action.sa_handler=alarm_handler;
-  sigemptyset(&new_action.sa_mask);
-  new_action.sa_flags=0;
-  sigaction(SIGALRM, &new_action, NULL);
-  
-  /* Initialize GPS module */
-  gps_init();
-  
+
   if( (tsdevice = getenv("TSLIB_TSDEVICE")) != NULL ) {
     ts = ts_open(tsdevice,0);
     if ((ts == NULL) || (ts_config(ts) != 0)){
@@ -346,9 +333,7 @@ void *event_loop(void * param){
       }
     } else {
       handle_ts(&samp);
-    }
-    /* Update info from GPS */
-    gps_update() ;
+    }   
   }
-   pthread_exit(NULL);
+   
 }

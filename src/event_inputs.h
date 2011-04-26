@@ -27,6 +27,6 @@
  */ 
 #ifndef __EVENT_INPUTS_H__
 #define __EVENT_INPUTS_H__
-void *event_loop(void *);
+void event_loop(void);
 #endif
 

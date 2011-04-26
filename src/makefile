@@ -17,8 +17,8 @@ DEP_LIB=./dependencies/libs/
 INC_KERNEL=$(DEP_LIB)/golinux-tt2318/include
 CC=gcc
 STRIP=strip
-CFLAGS+=   -DNATIVE -Wall -I$(INC_KERNEL)  -I./dependencies/build_native/include -I./dependencies/build_native/usr/local/include -I/usr/include/freetype2 -I./dependencies/build_native/usr/local/include/directfb -I./dependencies/build_native/usr/local/include/taglib
-LDFLAGS+=  -L./dependencies/build_native/lib -L./dependencies/build_native/usr/local/lib -ljasper
+CFLAGS+=   -DNATIVE -Wall -I$(INC_KERNEL)  -I./dependencies/build_native/include -I./dependencies/build_native/usr/local/include -I/usr/include/freetype2 -I./dependencies/build_native/usr/local/include/directfb -I/usr/local/include/taglib
+LDFLAGS+=  -L./dependencies/build_native/lib -L./dependencies/build_native/usr/local/lib -ljasper -L/usr/local/lib
 endif
 
 #installation dir
@@ -34,7 +34,7 @@ endif
 #Sources for the initial tomplayer interface 
 TOM_SRC = file_selector.c window.c  screens.c gui.c list.c skin.c config.c widescreen.c  resume.c power.c file_list.c label.c viewmeter.c pwm.c  gps.c
 #Sources for mplayer engine
-ENG_SRC = start_engine.c  engine.c config.c widescreen.c resume.c pwm.c sound.c  power.c font.c fm.c file_list.c diapo.c event_inputs.c play_int.c gps.c draw.c track.c skin_display.c
+ENG_SRC = engine.c config.c widescreen.c resume.c pwm.c sound.c  power.c font.c fm.c file_list.c diapo.c event_inputs.c play_int.c gps.c draw.c track.c skin_display.c
 #Sources for remote inputs 
 REM_INPUTS = remote_inputs.c
 #All sources
