@@ -170,8 +170,12 @@ static void handle_msg(unsigned char * buffer, int len ){
     gps_state.data.time.tm_mon = msg->month - 1;
     gps_state.data.time.tm_year = endian16_swap(msg->year) - 1900;
     gps_state.data.time.tm_isdst = -1;
-    time(&curr_time);    
-    saved_tz = strdup(getenv("TZ"));    
+    time(&curr_time);  
+    if (getenv("TZ") != NULL){
+        saved_tz = strdup(getenv("TZ"));    
+    } else{
+        saved_tz = NULL;
+    }
     unsetenv("TZ");
     gps_time = mktime(&gps_state.data.time);
     if (abs(gps_time - curr_time) > 10){
