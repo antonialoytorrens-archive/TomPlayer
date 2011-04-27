@@ -123,3 +123,5 @@ ln -sf $LOCAL_DIR/deps//usr/local/lib/libtag_c.so.0.0.0 /usr/local/lib/libtag_c.
 ln -sf $LOCAL_DIR/deps//usr/local/lib/libtag_c.so.0.0.0 /usr/local/lib/libtag_c.so.0
 ln -sf $LOCAL_DIR/deps//usr/local/lib/libtag.so.1.7.0 /usr/local/lib/libtag.so 
 ln -sf $LOCAL_DIR/deps//usr/local/lib/libtag.so.1.7.0 /usr/local/lib/libtag.so.1
+ln -sf $LOCAL_DIR/deps//usr/local/lib/libstdc++.so.5.0.6 /usr/local/lib/libstdc++.so.5
+ln -sf $LOCAL_DIR/deps//usr/local/lib/libstdc++.so.5.0.6 /usr/local/lib/libstdc++.so
