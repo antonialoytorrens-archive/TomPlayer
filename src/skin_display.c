@@ -221,6 +221,7 @@ static void display_progress_bar(int current, int length, int percent)
     char displayed_text[16];
     int text_height, text_width, orig; 
     struct skin_rectangular_shape pb_zone;
+    const struct skin_control *ctrl;
     const struct skin_control *pb = skin_get_pb();
     
     if (pb == NULL){
@@ -236,39 +237,54 @@ static void display_progress_bar(int current, int length, int percent)
     }
     pb_prev_val.pos = current;
     pb_prev_val.length = length;
-    pb_zone = skin_ctrl_get_zone(pb);
-    
-
-    /* Display current time in file at the beginig of progress bar */    
+    pb_zone = skin_ctrl_get_zone(pb);    
+    width =  pb_zone.x2 - pb_zone.x1;
     height = pb_zone.y2 - pb_zone.y1;
+    
+    /* Display current time in file at the beginig of progress bar */        
     color.r = 255;
     color.g = 255;
-    color.b = 255; 
-    if ((height - 4) > 0){
-        /* Display current track time */
-        track_get_string(displayed_text, sizeof(displayed_text), current, !(length < 3600));
-        font_change_size(height-4);        
-        font_get_size(displayed_text, &text_width, &text_height, &orig);
-        font_restore_default_size();  
-        draw_text(displayed_text, pb_zone.x1, pb_zone.y1 - text_height,
-                          text_width, text_height, &color, height-4);
-        /* Display remaining track time */                      
-        current = current - length;
-        track_get_string(displayed_text, sizeof(displayed_text), current, !(length < 3600));
-        font_change_size(height-4);        
-        font_get_size(displayed_text, &text_width, &text_height, &orig);
-        font_restore_default_size();  
-        draw_text(displayed_text,  pb_zone.x2 - text_width, pb_zone.y1 - text_height,
-                          text_width, text_height, &color, height-4);        
+    color.b = 255;        
+         
+    /* Display current track time */
+    track_get_string(displayed_text, sizeof(displayed_text), current, !(length < 3600));
+    ctrl = skin_get_ctrl(SKIN_CMD_CURRENT_POS);
+    if (ctrl == NULL){
+        /* No explicit ctrl in conf */
+        if ((height - 4) > 0){
+            font_change_size(height-4);        
+            font_get_size(displayed_text, &text_width, &text_height, &orig);
+            font_restore_default_size();  
+            draw_text(displayed_text, pb_zone.x1, pb_zone.y1 - text_height,
+                        text_width, text_height, &color, height-4);
+        }
+    } else {
+        display_txt_ctrl(ctrl, displayed_text);
     }
-                       
     
+    /* Display remaining track time */                      
+    current = current - length;
+    track_get_string(displayed_text, sizeof(displayed_text), current, !(length < 3600));
+    ctrl = skin_get_ctrl(SKIN_CMD_REMAINING_TIME);
+    if (ctrl == NULL){
+        /* No explicit ctrl in conf */
+        if ((height - 4) > 0){
+            font_change_size(height-4);        
+            font_get_size(displayed_text, &text_width, &text_height, &orig);
+            font_restore_default_size();  
+            draw_text(displayed_text,  pb_zone.x2 - text_width, pb_zone.y1 - text_height,
+                        text_width, text_height, &color, height-4);        
+        }
+    } else {
+        display_txt_ctrl(ctrl, displayed_text);
+    }
+                           
     if (skin_get_pb_img() == 0) {
         /* No cursor bitmap : just fill progress bar */
         int step1;
         unsigned char col1r, col1g, col1b;
         
-        width =  pb_zone.x2 - pb_zone.x1;
+      
         if ((height== 0) || (width <= 0)){
             /*dont care if progress bar not visible */
             return;
@@ -304,49 +320,59 @@ static void display_progress_bar(int current, int length, int percent)
     } else {
         /* A cursor bitmap is available */
         int new_x;
-        int erase_width;
-        int erase_x;
+        int buffer_height, bg_y;   
+        int cursor_width, cursor_height;
+        ILuint  img_id; 
                           
         /* Get cusor infos and compute new coordinate */
         ilBindImage(skin_get_pb_img());
-        width  = ilGetInteger(IL_IMAGE_WIDTH);
-        height = ilGetInteger(IL_IMAGE_HEIGHT);
+        cursor_width  = ilGetInteger(IL_IMAGE_WIDTH);
+        cursor_height = ilGetInteger(IL_IMAGE_HEIGHT);
         if (pb_prev_val.y == -1){
             PRINTDF("New progress bar coord : y1 : %i - y2 : %i - h : %i\n",
-                    pb_zone.y1, pb_zone.y2, height);
-            pb_prev_val.y = pb_zone.y1 + (pb_zone.y2 - pb_zone.y1) / 2  - height/2;                           
-            if (pb_prev_val.y < 0){
+                    pb_zone.y1, pb_zone.y2, cursor_height);
+            if (cursor_height >= height){
                 pb_prev_val.y = 0;
+            } else {
+                pb_prev_val.y = (height - cursor_height) / 2;
             }
-            pb_prev_val.x = pb_zone.x1 - width / 2;
-            if (pb_prev_val.x < 0){
-                pb_prev_val.x = 0;
-            }
+            pb_prev_val.x = 0;
         }
-        new_x = pb_zone.x1 +
-                percent * (pb_zone.x2 - pb_zone.x1) / 100 - width / 2;
-
-        /* Alloc buffer for RBGA conversion */
-        buffer_size = width * height * 4;
+        /* Compute new position */
+        new_x = percent * (pb_zone.x2 - cursor_width - pb_zone.x1) / 100;
+        /* Alloc buffer */
+        buffer_height = (cursor_height > height)?cursor_height:height;
+        buffer_size = width * buffer_height * 4;
         buffer = malloc( buffer_size );
         if (buffer == NULL){
             fprintf(stderr, "Allocation error\n");
             return;
         }
-
-        /* Restore Background */
-        ilBindImage(skin_get_background());
-        erase_width = width;
-        erase_x = pb_prev_val.x;        
-        ilCopyPixels(erase_x, pb_prev_val.y, 0,
-                     erase_width, height , 1,
+        /* Copy Background */
+        if (cursor_height >= height){
+            bg_y = pb_zone.y1 - ((cursor_height - height) / 2);
+        } else {
+            bg_y = pb_zone.y1;
+        }
+        ilBindImage(skin_get_background());                
+        ilCopyPixels(pb_zone.x1, bg_y, 0,
+                     width, buffer_height , 1,
                      IL_RGBA, IL_UNSIGNED_BYTE, buffer);
-        /*PRINTDF("Progress bar - erase x : %i - prev y : %i - w : %i -h : %i - buffer : @%x \n",erase_x,prev_coords.y,erase_width,height,buffer);*/
-        draw_RGB_buffer(buffer, erase_x, pb_prev_val.y, erase_width, height, true);
+        ilGenImages(1, &img_id);            
+        ilBindImage(img_id);
+        ilTexImage(width, buffer_height, 1, 
+               4, IL_RGBA, IL_UNSIGNED_BYTE, buffer);
+        /* Flip image because an ilTexImage is always LOWER_LEFT */
+        iluFlipImage();                     
+        /* Combine cursor with background */
+        ilOverlayImage(skin_get_pb_img(), new_x, pb_prev_val.y, 0);     
+        ilCopyPixels(0, 0, 0, width, buffer_height, 1,
+                 IL_RGBA, IL_UNSIGNED_BYTE, buffer);                
+        /* Display new progress bar */
+        draw_RGB_buffer(buffer, pb_zone.x1, bg_y, width, buffer_height, true);
 
-        /* Display cursor at its new position after overlaying cursor bitmap on skin background */
-        draw_cursor(skin_get_pb_img(), 0, new_x, pb_prev_val.y);
         pb_prev_val.x = new_x;
+        ilDeleteImages( 1, &img_id);
     }
     free(buffer);
 }

@@ -71,6 +71,9 @@ enum skin_cmd{
     SKIN_CMD_TEXT_COMMENT   = 35,
     SKIN_CMD_TEXT_GENRE     = 36,
     SKIN_CMD_COVERART       = 37,       
+    /* Misc */
+    SKIN_CMD_CURRENT_POS    = 40,
+    SKIN_CMD_REMAINING_TIME = 41,
     SKIN_CMD_MAX_NB
 };
 
