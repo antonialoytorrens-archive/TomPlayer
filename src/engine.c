@@ -369,7 +369,7 @@ static void * update_thread(void *val){
       pwm_resume();
     }
   }
-  track_release();
+  
   pthread_exit(NULL);
 }
 
@@ -436,7 +436,10 @@ static int init(const char * mode){
     
     /* Initialize settings module*/
     settings_init();    
-    
+          
+    /* Init interface with mplayer */
+    playint_init();
+  
     /* Initialize diaporama */
     if (config_get_diapo_activation()){
         if (diapo_init(config_get_diapo()) == false){
@@ -472,6 +475,7 @@ static void release(void){
     }
   
     /* Free resources */    
+    track_release();
     diapo_release();
     config_free();
     ilShutDown();
@@ -492,14 +496,12 @@ static void play(char * filename, int pos){
       resume_pos = 0;
     }    
     
-    /* Init interface with mplayer */
-    playint_init();
-    
     /* Launch all threads */
     pthread_create(&up_tid, NULL, update_thread, (void *)resume_pos);
     pthread_create(&anim_tid, NULL, anim_thread, NULL);
     pthread_create(&player_tid, NULL, mplayer_thread, filename);             
     
+    /* Handle input events */
     event_loop();
     
     /* Save settings to resume file */
