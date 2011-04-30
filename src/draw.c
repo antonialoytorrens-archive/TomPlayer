@@ -202,10 +202,10 @@ void draw_text(const char * text, int x, int y, int w, int h, const struct font_
     /* Bind to backgound image and copy the appropriate portion */
     ilBindImage(skin_get_background()); 
     ilCopyPixels(x, y, 0, w, h, 1,
-                 IL_RGB, IL_UNSIGNED_BYTE, buffer_to_display);                             
+                 IL_RGBA, IL_UNSIGNED_BYTE, buffer_to_display);                             
     ilBindImage(img_id);
     ilTexImage(w, h, 1, 
-               3, IL_RGB, IL_UNSIGNED_BYTE, buffer_to_display);
+               4, IL_RGBA, IL_UNSIGNED_BYTE, buffer_to_display);
     /* Flip image because an ilTexImage is always LOWER_LEFT */
     iluFlipImage();
     
@@ -219,7 +219,8 @@ void draw_text(const char * text, int x, int y, int w, int h, const struct font_
     
     ilGenImages(1, &text_id);
     ilBindImage(text_id);
-    ilTexImage(text_width, text_height, 1, 4, IL_RGBA, IL_UNSIGNED_BYTE, text_buffer); 
+    ilTexImage(text_width, text_height, 1, 4, IL_RGBA, IL_UNSIGNED_BYTE, text_buffer);         
+    iluFlipImage();
     /* Combinate font and background */
     ilBindImage(img_id);  
     ilOverlayImage(text_id, 0, 0, 0);     

@@ -70,27 +70,6 @@ static bool draw_bitmap( const struct font_color * color,
           state.image[(4*((j*state.width) + i)) + 3] = bitmap->buffer[ q * bitmap->width + p] ; 
     }
   }
-
-/* We also set the color as transparent in the empty area to bypass a devil bug thaht occurs later otherwise...*/
-  for ( i = x; i < x_max; i++ )
-  {
-    for ( j = 0; j < y; j++ )
-    {
-          state.image[(4*((j*state.width) + i)) + 0] = color->r;
-          state.image[(4*((j*state.width) + i)) + 1] = color->g;
-          state.image[(4*((j*state.width) + i)) + 2] = color->b;
-          state.image[(4*((j*state.width) + i)) + 3] = 0;
-    }
-    for ( j = y_max; j < state.height ; j++ )
-    {
-          state.image[(4*((j*state.width) + i)) + 0] = color->r;
-          state.image[(4*((j*state.width) + i)) + 1] = color->g;
-          state.image[(4*((j*state.width) + i)) + 2] = color->b;
-          state.image[(4*((j*state.width) + i)) + 3] = 0;
-    }
-  }
-
-
   return true;
 }
 
