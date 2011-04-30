@@ -97,10 +97,10 @@ ln -sf $LOCAL_DIR/deps//usr/local/lib/libfreetype.so.6.3.16 /usr/local/lib/libfr
 ln -sf $LOCAL_DIR/deps//usr/local/lib/libfreetype.so.6.3.16 /usr/local/lib/libfreetype.so.6
 ln -sf $LOCAL_DIR/deps//usr/local/lib/libfusion-1.3.so.0.0.0 /usr/local/lib/libfusion-1.3.so.0
 ln -sf $LOCAL_DIR/deps//usr/local/lib/libfusion-1.3.so.0.0.0 /usr/local/lib/libfusion.so
-ln -sf $LOCAL_DIR/deps//usr/local/lib/libIL.so.1.0.0 /usr/local/lib/libIL.so
-ln -sf $LOCAL_DIR/deps//usr/local/lib/libIL.so.1.0.0 /usr/local/lib/libIL.so.1
-ln -sf $LOCAL_DIR/deps//usr/local/lib/libILU.so.1.0.0 /usr/local/lib/libILU.so
-ln -sf $LOCAL_DIR/deps//usr/local/lib/libILU.so.1.0.0 /usr/local/lib/libILU.so.1
+ln -sf $LOCAL_DIR/deps//usr/local/lib/libIL.so.1.1.0 /usr/local/lib/libIL.so
+ln -sf $LOCAL_DIR/deps//usr/local/lib/libIL.so.1.1.0 /usr/local/lib/libIL.so.1
+ln -sf $LOCAL_DIR/deps//usr/local/lib/libILU.so.1.1.0 /usr/local/lib/libILU.so
+ln -sf $LOCAL_DIR/deps//usr/local/lib/libILU.so.1.1.0 /usr/local/lib/libILU.so.1
 ln -sf $LOCAL_DIR/deps//usr/local/lib/libILUT.so.1.0.0 /usr/local/lib/libILUT.so
 ln -sf $LOCAL_DIR/deps//usr/local/lib/libILUT.so.1.0.0 /usr/local/lib/libILUT.so.1
 ln -sf $LOCAL_DIR/deps//usr/local/lib/libiniparser.so.0 /usr/local/lib/libiniparser.so
