@@ -1,5 +1,24 @@
 More informations on http://www.tomplayer.net
 
+May the 1st 2011, Tomplayer v0.240b4 (beta)
+Features :
+- Add auto resume feature (ticket#1)
+- Package mplayer v1.0rc4 and adds  support for aac audio format (ticket #6)
+- Enable to display many new data on the audio skin including tags, acoverart, time, uptime, GPS data (ticket #8)
+- The video skins have the same features as audio skin in fact so wxe can display GPS data on them (ticket #10)
+- Uptime is made available for displaying on skin (ticket #9)
+- OSD has been added on audio skin when changing the volume (ticket #19)
+
+Bug correction :
+- The flickering of the progress bar has been solved (ticket #12)
+- Solve the total length of the track issue when encoded as VBR (ticket #7)
+
+Known Bug :
+- When seeking in a VBR encoded track, the progress bar cursor is no longer correctly displayed because mplayer reports wrong position after a seek...
+
+Note :
+- Under the hood, a deep refactoring of tomplayer engine has been done...
+
 March 27th 2011,Tomplayerv0.240b3 (beta)
 Features
 - Brand new way to interact thanks to keys (fix carminat joystick and Bluetooth remote controller). 
@@ -15,12 +34,16 @@ Features
 - Default font color has been changed to white in file selector
 
 Bug correction :
-- The battery is no longer mandatory
+- The battery icon is no longer mandatory on skins
 - The latency before applying sound and video settings on new track has been dimproved
 - The bug which was responsible for the volume set to 0 at the begining of the play has been corrected
 - The screen saver has been reworked and hopefully the crash on exit may be removed...
 - Default paths have been changed for carminat
 
+Known Bug :
+The total length of a track is wrong. 
+It is a mplayer issue : the reported total length is plain wrong with our current mplayer build !
+I will build a new mplayer soon and check it that helps...
 
 March 14th 2011, Tomplayerv0.240b2 (beta)
 Feature :
