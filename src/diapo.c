@@ -175,7 +175,9 @@ static void draw_string(ILuint back_id, const char * text, int x, int y, int siz
     font_change_size(size);      
     font_draw(&color, text, &text_buffer, &text_width, &text_height);        
     font_restore_default_size();
-    ilTexImage(text_width, text_height, 1, 4, IL_RGBA, IL_UNSIGNED_BYTE, text_buffer);    
+    ilTexImage(text_width, text_height, 1, 4, IL_RGBA, IL_UNSIGNED_BYTE, text_buffer);  
+    iluFlipImage();
+ 
     ilBindImage(back_id);  
     ilOverlayImage(text_id, x, y, 0);
     
@@ -192,12 +194,15 @@ void clock_thread(void){
   unsigned char * img_buffer;   
   int text_width, text_height, orig;  
   struct gps_data info;
-  int y;
+  int y, i;
   ILuint  img_id; 
  
 
   /* Generate ILut image for background */
-  img_buffer = calloc(3 * diapo_state.screen_x * diapo_state.screen_y, 1);         
+  img_buffer = calloc(4 * diapo_state.screen_x * diapo_state.screen_y, 1); 
+  for (i = 0; i < diapo_state.screen_x * diapo_state.screen_y; i++){
+      img_buffer[i*4 + 3] = 255;
+  }
   /* FIXME cas degrade */
   ilGenImages(1, &img_id);   
   memset (&info, 0, sizeof(struct gps_data));
@@ -207,10 +212,13 @@ void clock_thread(void){
     gps_get_data(&info);
     
     /* Set background to black */
-    memset(img_buffer, 0, 3 * diapo_state.screen_x * diapo_state.screen_y);     
+    memset(img_buffer, 0, 4 * diapo_state.screen_x * diapo_state.screen_y);     
+    for (i = 0; i < diapo_state.screen_x * diapo_state.screen_y; i++){
+      img_buffer[i*4 + 3] = 255;
+    }
     ilBindImage(img_id);
     ilTexImage(diapo_state.screen_x, diapo_state.screen_y, 1, 
-               3, IL_RGB, IL_UNSIGNED_BYTE, img_buffer);
+               4, IL_RGBA, IL_UNSIGNED_BYTE, img_buffer);
                
     
     /* Display time */
@@ -247,8 +255,8 @@ void clock_thread(void){
     
     ilBindImage(img_id);      
     ilCopyPixels(0, 0, 0, diapo_state.screen_x, diapo_state.screen_y, 1,
-                 IL_RGB, IL_UNSIGNED_BYTE, img_buffer);    
-    draw_RGB_buffer(img_buffer, 0, 0, diapo_state.screen_x, diapo_state.screen_y, false);        
+                 IL_RGBA, IL_UNSIGNED_BYTE, img_buffer);    
+    draw_RGB_buffer(img_buffer, 0, 0, diapo_state.screen_x, diapo_state.screen_y, true);        
     
     wait_next_cycle(1);
   }
