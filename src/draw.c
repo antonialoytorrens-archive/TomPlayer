@@ -46,35 +46,8 @@
 #include "engine.h"
 #include "draw.h"
 
-static unsigned short * screen_buffer;
+static unsigned short *screen_buffer;
 static bool refresh;
-
-void draw_refresh(void){
-    int fb;
-    static unsigned short * fb_mmap;   
-    int screen_width, screen_height;
-    
-    if (!refresh)
-        return;    
-    ws_get_size(&screen_width, &screen_height);    
-    if (fb_mmap == NULL){        
-        fb = open( getenv( "FRAMEBUFFER" ), O_RDWR);
-            if (fb < 0){  
-                perror("unable to open fb ");
-                return;
-            }            
-            fb_mmap = mmap(NULL,  screen_width*screen_height*2 , PROT_READ|PROT_WRITE,MAP_SHARED, fb, 0);
-            if (fb_mmap == MAP_FAILED){
-                perror("unable to mmap fb ");
-                fb_mmap = NULL;
-                close(fb);
-                return;
-            }
-            close(fb);
-    }
-    memcpy(fb_mmap, screen_buffer, screen_width*screen_height*2);
-    refresh = false;    
-}
 
 /** Write directly a RGB or RGBA buffer to the frame buffer */
 static void display_RGB_to_fb(unsigned char * buffer, int x, int y, int w, int h, bool transparency){        
@@ -339,3 +312,29 @@ void draw_img(ILuint img){
     free( buffer );
 }
 
+void draw_refresh(void){
+    int fb;
+    static unsigned short * fb_mmap;   
+    int screen_width, screen_height;
+    
+    if (!refresh)
+        return;    
+    ws_get_size(&screen_width, &screen_height);    
+    if (fb_mmap == NULL){        
+        fb = open( getenv( "FRAMEBUFFER" ), O_RDWR);
+            if (fb < 0){  
+                perror("unable to open fb ");
+                return;
+            }            
+            fb_mmap = mmap(NULL,  screen_width*screen_height*2 , PROT_READ|PROT_WRITE,MAP_SHARED, fb, 0);
+            if (fb_mmap == MAP_FAILED){
+                perror("unable to mmap fb ");
+                fb_mmap = NULL;
+                close(fb);
+                return;
+            }
+            close(fb);
+    }
+    memcpy(fb_mmap, screen_buffer, screen_width*screen_height*2);
+    refresh = false;    
+}
