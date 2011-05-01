@@ -92,6 +92,6 @@ bool config_set_diapo_delay(int delay);
 bool config_toggle_screen_saver_state(void);
 bool config_toggle_fm_transmitter_state(void);
 bool config_toggle_small_text_state(void);
-
+bool config_toggle_auto_resume(void);
     
 #endif /* __TOMPLAYER_CONFIG_H__ */

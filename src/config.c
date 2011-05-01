@@ -352,6 +352,14 @@ bool config_toggle_screen_saver_state(void){
   return true;
 }
 
+bool config_toggle_auto_resume(void){
+  if (config.auto_resume){
+    config.auto_resume = 0;
+  } else {
+    config.auto_resume = 1;
+  }
+  return true;
+}
 
 bool config_set_fm_frequency(enum config_fm_type type, unsigned int freq){
     if ((freq  < 87000000) || (freq > 108000000))
@@ -479,7 +487,8 @@ bool config_save(void){
     iniparser_setstring(ini, SECTION_AUDIO_SKIN":"KEY_SKIN_FILENAME, conf->audio_skin_filename);
     snprintf(buffer, sizeof(buffer),"%i",conf->enable_small_text);
     iniparser_setstring(ini, SECTION_GENERAL":"KEY_EN_SMALL_TEXT, buffer);
-
+    snprintf(buffer, sizeof(buffer),"%i",conf->auto_resume);
+    iniparser_setstring(ini, SECTION_GENERAL":"KEY_AUTO_RESUME, buffer);
     iniparser_dump_ini( ini, fp );
     fclose( fp );    
     system("cp -f " CONFIG_FILE " ./conf/tomplaye.ini");    

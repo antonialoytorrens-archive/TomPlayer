@@ -1,6 +1,5 @@
 /**
  * \file screens.c
- * \author nullpointer & wolfgar 
  * \brief This module implements GUI programmatic behavior.
  * 
  * $URL$
@@ -1415,17 +1414,35 @@ static void select_audio(struct gui_control *ctrl, enum gui_event_type type, uni
 
 /* CHOOSE RESUME SCREEN */
 
+/**Callback on checkbox auto_resume */
+static void  auto_resume_toggle(struct gui_control *ctrl, enum gui_event_type type, union gui_event* evt){  
+    if (evt) {
+        config_toggle_auto_resume();
+        /* Display the check box according to the new small text config */
+        if (config_get_auto_resume()){
+            blit_img(ctrl, "auto_resume");
+        } else {
+            blit_img(ctrl, "no_auto_resume");
+        }
+        config_save();
+    } else {
+        handle_selection(ctrl, type);
+    }
+    return;
+}
+
 /** Callback on choose resume screen */
 static void resume(struct gui_control *ctrl, enum gui_event_type type, union gui_event* evt){
     gui_window  win;
-    struct gui_control *play_ctrl;
-
+    struct gui_control *play_ctrl, *check;
+ 
     if (evt){
         win = gui_window_load(dfb, layer, get_full_conf(GUI_SCREEN_RESUME)); 
 
         gui_window_attach_cb(win, "resume_video", resume_audio_video);
         gui_window_attach_cb(win, "resume_audio", resume_audio_video);
         gui_window_attach_cb(win, "cancel", quit_current_window);
+        gui_window_attach_cb(win, "auto_resume", auto_resume_toggle);
 
         play_ctrl = gui_window_get_control(win, "resume_video");   
         if (play_ctrl != NULL){ 
@@ -1435,6 +1452,16 @@ static void resume(struct gui_control *ctrl, enum gui_event_type type, union gui
         if (play_ctrl != NULL){ 
             play_ctrl->cb_param = false;
         }   
+        
+        /* Display the auto resume check box  */
+        check = gui_window_get_control(win, "auto_resume");
+        if (check != NULL){
+            if (config_get_auto_resume()){
+                blit_img(check, "auto_resume");                   
+            } else {
+                blit_img(check, "no_auto_resume");
+            }
+        }
     } else {
         handle_selection(ctrl, type);
     }
