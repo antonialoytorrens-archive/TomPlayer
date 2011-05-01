@@ -191,24 +191,25 @@ int main( int argc, char *argv[] ){
     fprintf( stderr, "Error while loading config\n" );
     exit(1);
   }
-  if ((splash_wanted) && 
-      (config_get_auto_resume())){
-    if (auto_resume() == 0){
-        exit(0);
-    }    
-  }
-  
-  /* Initialize GPS module */
-  gps_init();
-  
-  /* FIFO for key events */
-  input_fd = open(KEY_INPUT_FIFO,O_RDONLY|O_NONBLOCK);
-  /* Purge FIFO if available */
-  if (input_fd >= 0)
-    while (read(input_fd,  &evt.key_id, sizeof(evt.key_id)) > 0);
-  
-
   if (init_resources( argc, argv ) == true){
+    if ((splash_wanted) && 
+      (config_get_auto_resume())){
+      if (auto_resume() == 0){
+        release_resources();
+        exit(0);
+      }    
+    }
+  
+  
+    /* Initialize GPS module */
+    gps_init();
+  
+    /* FIFO for key events */
+    input_fd = open(KEY_INPUT_FIFO,O_RDONLY|O_NONBLOCK);
+    /* Purge FIFO if available */
+    if (input_fd >= 0)
+        while (read(input_fd,  &evt.key_id, sizeof(evt.key_id)) > 0);
+  
     if (screen_init(dfb, layer, splash_wanted)){
         while( screen_is_end_asked()  == false ){
               if (keybuffer->WaitForEventWithTimeout( keybuffer, 0, 50 ) == DFB_TIMEOUT){
