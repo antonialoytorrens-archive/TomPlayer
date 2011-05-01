@@ -546,6 +546,7 @@ void eng_handle_cmd(int cmd, int p)
     struct video_settings v_settings;
     struct audio_settings a_settings;
     static bool update_settings = false;
+    char text_buffer[32];
 
     switch(cmd){
         case SKIN_CMD_PAUSE:
@@ -561,7 +562,11 @@ void eng_handle_cmd(int cmd, int p)
             if (p == -1) 
                 playint_vol(1, PLAYINT_VOL_REL);
             else
-                playint_vol(p, PLAYINT_VOL_ABS);            
+                playint_vol(p, PLAYINT_VOL_ABS);    
+            if (state.current_mode == MODE_AUDIO){
+                snprintf(text_buffer, sizeof(text_buffer),"Volume : %02d%%", settings.audio.volume);
+                skin_display_text(2, text_buffer);
+            }
             update_settings = true;
         break;
         case SKIN_CMD_VOL_MOINS:
@@ -569,6 +574,11 @@ void eng_handle_cmd(int cmd, int p)
                 playint_vol(-1, PLAYINT_VOL_REL);
             else
                 playint_vol(p, PLAYINT_VOL_ABS);                            
+            if (state.current_mode == MODE_AUDIO){
+                snprintf(text_buffer, sizeof(text_buffer),"Volume : %02d%%", settings.audio.volume);
+                skin_display_text(2, text_buffer);
+            }
+
             update_settings = true;
             break;
         case SKIN_CMD_LIGHT_PLUS:            
@@ -632,7 +642,7 @@ void eng_handle_cmd(int cmd, int p)
                     settings.video = v_settings;
                 }
             } else {
-                if (playint_get_audio_settings( &a_settings) == 0){
+                if (playint_get_audio_settings(&a_settings) == 0){
                     settings.audio = a_settings;
                 }
             }

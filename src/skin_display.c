@@ -46,6 +46,46 @@
 #define COLOR_G(x) ((x & 0x00FF00) >> 8)
 #define COLOR_B(x)  (x & 0x0000FF)
 
+static struct{
+    unsigned char * buffer;
+    int x, y, width, height;
+    time_t time_limit;
+    bool back_refresh;
+    bool refresh;
+}osd;
+
+
+static void osd_display(void){
+    ILuint  img_id;
+    
+    ilGenImages(1, &img_id);            
+    ilBindImage(img_id);    
+    ilTexImage(osd.width, osd.height, 1, 
+               4, IL_RGBA, IL_UNSIGNED_BYTE, osd.buffer);        
+    iluFlipImage();                     
+    draw_cursor(img_id, 0, osd.x, osd.y);
+    ilDeleteImages( 1, &img_id);
+    
+}
+
+static void osd_clear(void){    
+    free(osd.buffer);       
+    memset(&osd, 0, sizeof(osd));
+    osd.back_refresh = true;
+}
+
+
+static void refresh_osd(void){
+    if (osd.refresh){
+        osd_display();
+    }
+    if (osd.time_limit != 0){
+        if (time(NULL) >= osd.time_limit){
+            osd_clear();
+        }
+    }
+}
+
 static void draw_track_text(const char * text) {               
     const struct skin_config * skin_conf;
     int img_width, img_height;
@@ -83,6 +123,7 @@ static void refresh_filename(void){
 }
 
 static const char *get_string_tag_ctrl(const struct track_tags * tags, enum skin_cmd cmd){
+    const char * string;
     switch (cmd){
         case SKIN_CMD_TEXT_ARTIST :
             return tags->artist;
@@ -91,7 +132,12 @@ static const char *get_string_tag_ctrl(const struct track_tags * tags, enum skin
         case SKIN_CMD_TEXT_ALBUM :
             return tags->album;
         case SKIN_CMD_TEXT_TITLE :
-            return tags->title;
+            string = tags->title;
+            if ((string != NULL) && (strlen(string) > 0)){
+                return string;
+            } else {
+                return track_get_current_filename();
+            }            
         case SKIN_CMD_TEXT_YEAR :
             return tags->year;
         case SKIN_CMD_TEXT_COMMENT :
@@ -503,7 +549,7 @@ static void refresh_uptime(void){
 
 void skin_display_refresh(enum skin_display_update type){        
 
-    if (type == SKIN_DISPLAY_NEW_TRACK){
+    if (type == SKIN_DISPLAY_NEW_TRACK || osd.back_refresh){
         /* We have to redraw the background for video on new track event
            coz mplayer does not keep overlay from one track to the other...
            For audio, it enables not to care about erasing tags and filename */
@@ -511,6 +557,7 @@ void skin_display_refresh(enum skin_display_update type){
         refresh_tags_infos();   
         refresh_filename();
         refresh_battery_status(true);
+        osd.back_refresh = false;
     }
     
     /* Common treatments for SKIN_DISPLAY_NEW_TRACK and  SKIN_DISPLAY_PERIODIC */   
@@ -519,6 +566,47 @@ void skin_display_refresh(enum skin_display_update type){
     refresh_gps_infos();
     refresh_time();
     refresh_uptime();
+    refresh_osd();
     
     return;
 }
+
+
+/** Display a RGBA buffer for a certain amount of time 
+ * \warning The buffer will be automatically freed */
+void skin_display_buffer(int to, unsigned char * buffer, int width, int height){
+    int screen_width, screen_height;
+    int x, y;
+    
+    if (osd.buffer != NULL){
+       osd_clear();
+    }
+    ws_get_size(&screen_width, &screen_height);
+    x = (screen_width - width) / 2;
+    if (x < 0)
+        x = 0;    
+    y = (screen_height - height) / 2;
+    if (y < 0)
+        y = 0;    
+    osd.buffer = buffer;
+    osd.x = x;
+    osd.y = y;
+    osd.width = (screen_width > width)?width:screen_width;
+    osd.height = (screen_height > height)?height:screen_height;
+    osd.refresh = true;
+    osd.time_limit = time(NULL) + to;    
+}
+
+/** Display a text for a certain amount of time */
+void skin_display_text(int to, const char *txt){
+    int width, height;    
+    unsigned char *buffer;
+    struct font_color color;
+    
+    color.r = 0xFF;
+    color.g = 0xFF;
+    color.b = 0xFF;
+    font_draw(&color, txt, &buffer, &width, &height);    
+    skin_display_buffer(to, buffer, width, height);
+}
+
