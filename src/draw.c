@@ -46,38 +46,24 @@
 #include "engine.h"
 #include "draw.h"
 
-/** Write directly a RGB or RGBA buffer to the frame buffer */
-static void display_RGB_to_fb(unsigned char * buffer, int x, int y, int w, int h, bool transparency){
-    static unsigned short * fb_mmap;
-    static struct fb_var_screeninfo screeninfo;
-    unsigned short * buffer16;
-    int buffer_size;
-    int fb;
-    int i,j ;
-        
-    if (x < 0) {
-        x = 0;
-    }
-    if (y < 0) {
-        y = 0;
-    }
-    
-  /* Alloc buffer for RBG conversion */
-  buffer_size = w * h * 2 ;
-  buffer16 = malloc( buffer_size );
-  if (buffer16 == NULL){
-      fprintf(stderr, "Allocation error\n");
-      return;
-  }
+static unsigned short * screen_buffer;
+static bool refresh;
 
-    if (fb_mmap == NULL){
+void draw_refresh(void){
+    int fb;
+    static unsigned short * fb_mmap;   
+    int screen_width, screen_height;
+    
+    if (!refresh)
+        return;    
+    ws_get_size(&screen_width, &screen_height);    
+    if (fb_mmap == NULL){        
         fb = open( getenv( "FRAMEBUFFER" ), O_RDWR);
             if (fb < 0){  
                 perror("unable to open fb ");
                 return;
-            }
-            ioctl (fb, FBIOGET_VSCREENINFO, &screeninfo);
-            fb_mmap = mmap(NULL,  screeninfo.xres*screeninfo.yres*2 , PROT_READ|PROT_WRITE,MAP_SHARED, fb, 0);
+            }            
+            fb_mmap = mmap(NULL,  screen_width*screen_height*2 , PROT_READ|PROT_WRITE,MAP_SHARED, fb, 0);
             if (fb_mmap == MAP_FAILED){
                 perror("unable to mmap fb ");
                 fb_mmap = NULL;
@@ -86,25 +72,53 @@ static void display_RGB_to_fb(unsigned char * buffer, int x, int y, int w, int h
             }
             close(fb);
     }
-        
+    memcpy(fb_mmap, screen_buffer, screen_width*screen_height*2);
+    refresh = false;    
+}
+
+/** Write directly a RGB or RGBA buffer to the frame buffer */
+static void display_RGB_to_fb(unsigned char * buffer, int x, int y, int w, int h, bool transparency){        
+    unsigned short * buffer16;
+    int buffer_size;
+    int i,j ;
+    int screen_width, screen_height;
+    ws_get_size(&screen_width, &screen_height);
+
+    if (screen_buffer == NULL){
+        screen_buffer = malloc(screen_width * screen_height * 2);
+    }
+    if (x < 0) {
+        x = 0;
+    }
+    if (y < 0) {
+        y = 0;
+    }
+  
+    
+    /* Alloc buffer for RBG conversion */
+    buffer_size = w * h * 2 ;
+    buffer16 = malloc( buffer_size );
+    if (buffer16 == NULL){
+      fprintf(stderr, "Allocation error\n");
+      return;
+    }
+
     if (transparency){
         if (ws_are_axes_inverted() == 0){
             for (i=y; i<y+h; i++){
                 for(j=x; j<x+w; j++){
-                    buffer16[((i-y)*w)+(j-x)] = fb_mmap[j+(i*screeninfo.xres)];                                    
+                    buffer16[((i-y)*w)+(j-x)] = screen_buffer[j+(i*screen_width)];
                 }
             }
         }else{
             int tmp;
-            int screen_width, screen_height;
-            ws_get_size(&screen_width, &screen_height);
             tmp = y;
             y = x;
             x = screen_width - tmp;
             /* Magic combination for inverted coordinates */
             for (i=x; i>x-h; i--){
                 for(j=y; j<y+w; j++){
-                    buffer16[(-i+x)*w+(j-y)] = fb_mmap[j*screeninfo.xres+i];
+                    buffer16[(-i+x)*w+(j-y)] = screen_buffer[j*screen_width+i];
                 }
             }
         }
@@ -130,24 +144,24 @@ static void display_RGB_to_fb(unsigned char * buffer, int x, int y, int w, int h
     if (ws_are_axes_inverted() == 0){
         for (i=y; i<y+h; i++){
             for(j=x; j<x+w; j++){
-                fb_mmap[j+(i*screeninfo.xres)] = buffer16[((i-y)*w)+(j-x)];
+                screen_buffer[j+(i*screen_width)] = buffer16[((i-y)*w)+(j-x)];
             }
         }
     } else {
         int tmp;
-        int screen_width, screen_height;
-        ws_get_size(&screen_width, &screen_height);
+
         tmp = y;
         y = x;
         x = screen_width - tmp;
         /* Magic combination for inverted coordinates */
         for (i=x; i>x-h; i--){
             for(j=y; j<y+w; j++){
-                fb_mmap[j*screeninfo.xres+i] = buffer16[(-i+x)*w+(j-y)];
+                screen_buffer[j*screen_width+i] = buffer16[(-i+x)*w+(j-y)];
             }
         }
     }
     free( buffer16 );
+    refresh = true;   
 }
 
 

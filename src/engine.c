@@ -359,6 +359,8 @@ static void * update_thread(void *val){
     if (power_is_off_button_pushed() == true){
       quit();      
     }        
+    
+    draw_refresh();
   } /* End main loop */
    
   /* Stop screen saver if active on exit */

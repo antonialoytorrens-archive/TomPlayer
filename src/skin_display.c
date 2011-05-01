@@ -47,41 +47,74 @@
 #define COLOR_B(x)  (x & 0x0000FF)
 
 static struct{
-    unsigned char * buffer;
-    int x, y, width, height;
+    unsigned char * buffer;   
     time_t time_limit;
     bool back_refresh;
-    bool refresh;
 }osd;
 
-
-static void osd_display(void){
-    ILuint  img_id;
-    
-    ilGenImages(1, &img_id);            
-    ilBindImage(img_id);    
-    ilTexImage(osd.width, osd.height, 1, 
-               4, IL_RGBA, IL_UNSIGNED_BYTE, osd.buffer);        
-    iluFlipImage();                     
-    draw_cursor(img_id, 0, osd.x, osd.y);
-    ilDeleteImages( 1, &img_id);
-    
-}
+static struct{
+    char *txt;    
+    int to;
+    bool new;    
+}osd_request;
 
 static void osd_clear(void){    
     free(osd.buffer);       
-    memset(&osd, 0, sizeof(osd));
+    memset(&osd, 0, sizeof(osd));   
     osd.back_refresh = true;
 }
 
+/** Display a RGBA buffer for a certain amount of time 
+  \warning The buffer will be automatically freed */
+static void osd_display_buffer(int to, unsigned char * buffer, int width, int height){
+    int screen_width, screen_height;
+    int x, y;
+    ILuint  img_id;
+    
+    ws_get_size(&screen_width, &screen_height);
+    x = (screen_width - width) / 2;
+    if (x < 0)
+        x = 0;    
+    y = (screen_height - height) / 2;
+    if (y < 0)
+        y = 0;    
+    osd.buffer = buffer;    
+    osd.time_limit = time(NULL) + to;    
+    width = (screen_width > width)?width:screen_width;
+    height = (screen_height > height)?height:screen_height;    
+    
+    ilGenImages(1, &img_id);            
+    ilBindImage(img_id);    
+    ilTexImage(width, height, 1, 
+               4, IL_RGBA, IL_UNSIGNED_BYTE, osd.buffer);        
+    iluFlipImage();                     
+    draw_cursor(img_id, 0, x, y);
+    ilDeleteImages( 1, &img_id);
+}
 
 static void refresh_osd(void){
-    if (osd.refresh){
-        osd_display();
+    int width, height;    
+    unsigned char *buffer;
+    struct font_color color;
+            
+    if (osd_request.new){
+        if (osd.buffer != NULL){
+            osd_clear();
+        } else {
+            if (osd_request.txt){
+                color.r = 0xFF;
+                color.g = 0xFF;
+                color.b = 0xFF;
+                font_draw(&color, osd_request.txt, &buffer, &width, &height);
+                osd_display_buffer(osd_request.to, buffer, width, height);               
+                free(osd_request.txt);
+            }
+            memset(&osd_request, 0, sizeof(osd_request));
+        }
     }
     if (osd.time_limit != 0){
         if (time(NULL) >= osd.time_limit){
-            osd_clear();
+            osd_clear();            
         }
     }
 }
@@ -572,41 +605,14 @@ void skin_display_refresh(enum skin_display_update type){
 }
 
 
-/** Display a RGBA buffer for a certain amount of time 
- * \warning The buffer will be automatically freed */
-void skin_display_buffer(int to, unsigned char * buffer, int width, int height){
-    int screen_width, screen_height;
-    int x, y;
-    
-    if (osd.buffer != NULL){
-       osd_clear();
-    }
-    ws_get_size(&screen_width, &screen_height);
-    x = (screen_width - width) / 2;
-    if (x < 0)
-        x = 0;    
-    y = (screen_height - height) / 2;
-    if (y < 0)
-        y = 0;    
-    osd.buffer = buffer;
-    osd.x = x;
-    osd.y = y;
-    osd.width = (screen_width > width)?width:screen_width;
-    osd.height = (screen_height > height)?height:screen_height;
-    osd.refresh = true;
-    osd.time_limit = time(NULL) + to;    
-}
 
 /** Display a text for a certain amount of time */
 void skin_display_text(int to, const char *txt){
-    int width, height;    
-    unsigned char *buffer;
-    struct font_color color;
-    
-    color.r = 0xFF;
-    color.g = 0xFF;
-    color.b = 0xFF;
-    font_draw(&color, txt, &buffer, &width, &height);    
-    skin_display_buffer(to, buffer, width, height);
+    if (osd_request.new)
+        return;
+    osd_request.txt = strdup(txt);
+    osd_request.to = to;
+    osd_request.new = true;    
+    return;    
 }
 

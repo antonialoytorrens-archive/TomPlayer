@@ -34,6 +34,5 @@ enum skin_display_update{
 };
 
 void skin_display_refresh(enum skin_display_update type);
-void skin_display_buffer(int to, unsigned char * buffer, int width, int height);
 void skin_display_text(int to, const char *txt);
 #endif
