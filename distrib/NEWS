@@ -5,6 +5,7 @@ Features :
 - Add auto resume feature (ticket#1)
 - Package mplayer v1.0rc4 and adds  support for aac audio format (ticket #6)
 - Enable to display many new data on the audio skin including tags, acoverart, time, uptime, GPS data (ticket #8)
+- 2 great audio skins have been added : audio_caesar.zip and claudio_spotlight.zip
 - The video skins have the same features as audio skin in fact so wxe can display GPS data on them (ticket #10)
 - Uptime is made available for displaying on skin (ticket #9)
 - OSD has been added on audio skin when changing the volume (ticket #19)
