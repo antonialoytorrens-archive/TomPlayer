@@ -247,11 +247,12 @@ void event_loop(void){
   struct tsdev *ts;
   char *tsdevice=NULL;
   struct ts_sample samp;
-  int ts_samp;
+  int ts_samp, ret;
   bool ts_available = true;
   int input_fd;
   DFBInputDeviceKeyIdentifier key;
   const struct skin_config * skin;
+  
   #define TIMER_PERIOD_US 100000
   const struct itimerval timer_value = {.it_interval = {0,TIMER_PERIOD_US},
                                         .it_value = {0,TIMER_PERIOD_US}
@@ -270,15 +271,17 @@ void event_loop(void){
     ts_available = false;
   }
   printf("Touchscreen availability : %d\n", ts_available);
-  /* FIXME force ts availability 
-  ts_available = false;*/
+  /* FIXME force ts availability */
+  //ts_available = false;
     
   /* Try to open tomplayer inputs FIFO */
-  input_fd = open(KEY_INPUT_FIFO,O_RDONLY|O_NONBLOCK);
+  input_fd = open(KEY_INPUT_FIFO,O_RDONLY);
   printf("FIFO availability : %d\n", input_fd);   
 
   if (input_fd > 0){
     /* Purge FIFO events */
+    /* To interrupt blocking read */    
+    setitimer(ITIMER_REAL, &timer_value, NULL);         
     while (read(input_fd, &key, sizeof(key)) > 0);
     /* Initialize selected control */
     skin = skin_get_config();      
@@ -292,41 +295,47 @@ void event_loop(void){
     /* Purge touchscreen events */
     do {
       /* To interrupt blocking read */
-      alarm(1);
+      setitimer(ITIMER_REAL, &timer_value, NULL);     
       if (ts_read(ts, &samp, 1) < 0) {
         break;
       }
     } while (samp.pressure == 0);
-  } else {    
+  
     /* No touchscreen available */
     if (input_fd > 0){
-      int flags;
-      ts_samp = 0;      
-      /* FIFO read is made blocking */      
+      int flags;    
+      /* FIFO read is made non blocking */      
       flags = fcntl(input_fd, F_GETFL);
-      flags &= (~O_NONBLOCK);
-      fcntl(input_fd, F_SETFL, flags);      
+      //printf("initial flags : %x\n", flags);
+      flags |= O_NONBLOCK;
+      ret = fcntl(input_fd, F_SETFL, flags);      
+      //printf("ret : %d - flags :%x \n", ret, flags);
     } else {
       /* No inputs available */
       fprintf(stderr, "no inputs available...\n");
-      pthread_exit(NULL);      
+      return;
     }
+  } else {
+    ts_samp = 0;      
   }
   
   /* Main events loop */
   while (playint_is_running()) {    
     /* To interrupt blocking read */
-    setitimer(ITIMER_REAL, &timer_value, NULL);      
+    setitimer(ITIMER_REAL, &timer_value, NULL);         
     if (ts_available){
       ts_samp = ts_read(ts, &samp, 1);          
+      //printf("Wake up ts samp : %d\n", ts_samp);
     }
     if (ts_samp < 1){
       if (input_fd > 0){
-        if (read(input_fd, &key, sizeof(key)) > 0) {      
+        ret =  read(input_fd, &key, sizeof(key));
+        //printf("ret : %d\n", ret);
+        if ( ret > 0) {                         
           handle_key(key);          
         } else {
-            if (errno != EINTR) /*&& (errno != EAGAIN))*/{
-               // fprintf(stderr, "spurious wakeup : %d \n", errno);                
+            if ((errno != EINTR) && (errno != EAGAIN)){
+                //fprintf(stderr, "spurious wakeup errno %d : %s\n", errno, strerror(errno));
                 usleep(TIMER_PERIOD_US);
             }
         }
@@ -334,6 +343,5 @@ void event_loop(void){
     } else {
       handle_ts(&samp);
     }   
-  }
-   
+  }    
 }
