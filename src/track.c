@@ -47,8 +47,8 @@ const char * track_get_current_filename(void){
     return current_filename;
 }
 
-bool track_has_changed(const char * filename){
-   if (current_file != NULL){
+bool track_has_changed(const char * filename){   
+   if (current_filename != NULL){
       /* Check whether the current file has changed */
       if (strcmp(current_filename, filename) == 0){
           return false;
@@ -69,8 +69,7 @@ bool track_update(const char * filename){
   
   /* Set new infos */    
   current_filename = strdup(filename);
-  if (current_filename == NULL){
-      taglib_file_free(current_file);
+  if (current_filename == NULL){    
       return false;
   }
   
