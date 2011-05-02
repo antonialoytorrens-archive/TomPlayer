@@ -85,11 +85,19 @@ bool track_update(const char * filename){
         current_tags.title = taglib_tag_title(tag);
         current_tags.artist = taglib_tag_artist(tag);
         current_tags.album =  taglib_tag_album(tag);
-        snprintf(current_tags.year, sizeof(current_tags.year), "%d", taglib_tag_year(tag));    
-        current_tags.year[sizeof(current_tags.year)-1] = 0;
+        if (taglib_tag_year(tag) > 0){
+            snprintf(current_tags.year, sizeof(current_tags.year), "%d", taglib_tag_year(tag));    
+            current_tags.year[sizeof(current_tags.year)-1] = 0;
+        } else {
+            current_tags.year[0] = 0;
+        }
         current_tags.comment = taglib_tag_comment(tag);
-        snprintf(current_tags.track, sizeof(current_tags.track), "%d", taglib_tag_track(tag));
-        current_tags.track[sizeof(current_tags.track)-1] = 0;
+        if (taglib_tag_track(tag) > 0){
+            snprintf(current_tags.track, sizeof(current_tags.track), "%d", taglib_tag_track(tag));
+            current_tags.track[sizeof(current_tags.track)-1] = 0;
+        } else {
+            current_tags.track[0] = 0;
+        }
         current_tags.genre = taglib_tag_genre(tag);
     }
     properties = taglib_file_audioproperties(current_file);
