@@ -138,6 +138,11 @@ static void refresh_filename(void){
   const char *filename;
   const struct track_tags * tags;
   
+  /* No filename on video skin (legacy) */
+  if (eng_get_mode() == MODE_VIDEO)
+      return;
+  /* Skin explicitly states not to display filename 
+     (likely to be a recent skin which uses tags instead)*/
   if (skin_get_config()->display_filename == 0)
       return;
   filename = track_get_current_filename();
@@ -462,7 +467,11 @@ static void refresh_progress_bar(void){
     int percent;
     
     pos = playint_get_file_position_seconds();    
-    length = track_get_tags()->length;            
+    length = track_get_tags()->length;        
+    if (length == 0){
+        /* No tag length available then ask mplayer */
+        length = playint_get_file_length();
+    }
     if ((pos >= 0) && (length > 0)) {          
         /* BUG : pos may be plain wrong coz mplayer does not correctly handle VBR */
         /* Dont know how to fix correctly : Just Avoid crazy figures for now */
@@ -608,6 +617,7 @@ void skin_display_refresh(enum skin_display_update type){
 
 /** Display a text for a certain amount of time */
 void skin_display_text(int to, const char *txt){
+    /* No lock because all calls are performed from the same thread */
     if (osd_request.new)
         return;
     osd_request.txt = strdup(txt);
