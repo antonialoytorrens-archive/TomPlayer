@@ -350,6 +350,8 @@ static int send_command_wait_float(const char * cmd, float *val ){
 
 int playint_get_file_length(void){
   int val = 0;
+    if (is_paused)
+        return -1;  
     if (send_command_wait_int(" get_property length\n", &val) == 0){
       return val;
     } else {
