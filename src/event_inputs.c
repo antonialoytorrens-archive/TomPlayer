@@ -113,11 +113,13 @@ static void handle_key(DFBInputDeviceKeyIdentifier id){
         break;   
       case DIKI_KP_4: 
       case DIKI_LEFT :
-        new_idx = get_ctrl(selected_ctrl_idx, -1);
+        if (playint_is_paused() == false)
+            new_idx = get_ctrl(selected_ctrl_idx, -1);
         break;
       case DIKI_KP_6:
       case DIKI_RIGHT :
-        new_idx = get_ctrl(selected_ctrl_idx, +1);          
+        if (playint_is_paused() == false)
+            new_idx = get_ctrl(selected_ctrl_idx, +1);          
         break;   
       case DIKI_KP_MINUS: /*top left*/
         pwm_modify_brightness(-5);
@@ -145,14 +147,17 @@ static void handle_key(DFBInputDeviceKeyIdentifier id){
   } else {
     switch(id){
       case DIKI_F10: /*menu*/ 
-        if (eng_ask_menu() == 0){
+        if (eng_ask_menu() != 0){
             is_selection_active = true;
             new_idx = selected_ctrl_idx;
-        }
+        }        
         break;
       case DIKI_BACKSPACE : /*back*/
-        if (eng_ask_menu() == 0){
+        if (eng_ask_menu() != 1){
             eng_handle_cmd(SKIN_CMD_STOP, -1);        
+        } else {
+            is_selection_active = true;
+            new_idx = selected_ctrl_idx;
         }
         break; 
       case DIKI_KP_4:
@@ -161,7 +166,7 @@ static void handle_key(DFBInputDeviceKeyIdentifier id){
         break;
       case DIKI_KP_6:
       case DIKI_RIGHT :
-        eng_handle_cmd(SKIN_CMD_FORWARD,-1);
+        eng_handle_cmd(SKIN_CMD_FORWARD,-1);        
         break;   
       case DIKI_KP_MINUS: /*top left*/
         pwm_modify_brightness(-5);
@@ -271,8 +276,8 @@ void event_loop(void){
     ts_available = false;
   }
   printf("Touchscreen availability : %d\n", ts_available);
-  /* FIXME force ts availability */
-  //ts_available = false;
+  /* FIXME force ts availability 
+  ts_available = false;*/
     
   /* Try to open tomplayer inputs FIFO */
   input_fd = open(KEY_INPUT_FIFO,O_RDONLY);
@@ -334,10 +339,13 @@ void event_loop(void){
         if ( ret > 0) {                         
           handle_key(key);          
         } else {
-            if ((errno != EINTR) && (errno != EAGAIN)){
-                //fprintf(stderr, "spurious wakeup errno %d : %s\n", errno, strerror(errno));
+            usleep(TIMER_PERIOD_US);
+            #if 0
+            if (errno != EINTR) /*&& (errno != EAGAIN))*/{
+                fprintf(stderr, "spurious wakeup errno %d : %s\n", errno, strerror(errno));
                 usleep(TIMER_PERIOD_US);
             }
+            #endif
         }
       }
     } else {
