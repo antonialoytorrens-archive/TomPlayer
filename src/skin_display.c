@@ -202,7 +202,7 @@ static void display_txt_ctrl(const struct skin_control *ctrl, const char* string
         font_get_size(string, &text_width, &text_height, &orig);
         if (ctrl->params.text.size != -1)
             font_restore_default_size();  
-        if (ctrl->params.text.color != -1){
+        if (ctrl->params.text.color == -1){
             color.r = 0xFF;
             color.g = 0xFF;
             color.b = 0xFF;
