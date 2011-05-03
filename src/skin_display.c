@@ -308,11 +308,7 @@ static void display_progress_bar(int current, int length, int percent)
     const struct skin_control *ctrl;
     const struct skin_control *pb = skin_get_pb();
     
-    if (pb == NULL){
-        /* No progress bar on skin nothing to do */
-        return;
-    }
-    
+
     if ((pb_prev_val.pos == current) && 
         (pb_prev_val.length == length)){
         /* current position in seconds since last call have not been modified
@@ -321,9 +317,14 @@ static void display_progress_bar(int current, int length, int percent)
     }
     pb_prev_val.pos = current;
     pb_prev_val.length = length;
-    pb_zone = skin_ctrl_get_zone(pb);    
-    width =  pb_zone.x2 - pb_zone.x1;
-    height = pb_zone.y2 - pb_zone.y1;
+    if (pb != NULL){
+        pb_zone = skin_ctrl_get_zone(pb);    
+        width =  pb_zone.x2 - pb_zone.x1;
+        height = pb_zone.y2 - pb_zone.y1;
+    } else  {
+        width = 0;
+        height = 0;
+    }
     
     /* Display current time in file at the beginig of progress bar */        
     color.r = 255;
@@ -361,8 +362,13 @@ static void display_progress_bar(int current, int length, int percent)
         }
     } else {
         display_txt_ctrl(ctrl, displayed_text);
+    }    
+    
+    if (pb == NULL){
+        /* No progress bar on skin nothing to do */
+        return;
     }
-                           
+    
     if (skin_get_pb_img() == 0) {
         /* No cursor bitmap : just fill progress bar */
         int step1;
@@ -514,7 +520,7 @@ static const char *get_string_gps_ctrl(struct gps_data *info, enum skin_cmd cmd)
         case SKIN_CMD_TEXT_LONG :
             snprintf(buff_text,sizeof(buff_text),"%02i %02i", info->long_deg, info->long_mins);         
             break;            
-        case SKIN_CMD_TEXT_ALT :
+        case SKIN_CMD_TEXT_ALT :             
             snprintf(buff_text,sizeof(buff_text),"%04i m", info->alt_cm / 100); 
             break;            
         case SKIN_CMD_TEXT_SPEED :
