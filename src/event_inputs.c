@@ -146,8 +146,8 @@ static void handle_key(DFBInputDeviceKeyIdentifier id){
     }
   } else {
     switch(id){
-      case DIKI_F10: /*menu*/ 
-        if (eng_ask_menu() != 0){
+      case DIKI_F10: /*menu*/        
+        if (eng_ask_menu() != 1){            
             is_selection_active = true;
             new_idx = selected_ctrl_idx;
         }        
@@ -338,18 +338,17 @@ void event_loop(void){
         //printf("ret : %d\n", ret);
         if ( ret > 0) {                         
           handle_key(key);          
-        } else {
-            usleep(TIMER_PERIOD_US);
+        } else {            
             #if 0
-            if (errno != EINTR) /*&& (errno != EAGAIN))*/{
-                fprintf(stderr, "spurious wakeup errno %d : %s\n", errno, strerror(errno));
-                usleep(TIMER_PERIOD_US);
-            }
+            if ((errno != EINTR) && (errno != EAGAIN)){
             #endif
+                //fprintf(stderr, "spurious wakeup errno %d : %s\n", errno, strerror(errno));
+                usleep(TIMER_PERIOD_US);
+            //}                        
         }
       }
     } else {
       handle_ts(&samp);
-    }   
-  }    
+    }
+  }
 }
