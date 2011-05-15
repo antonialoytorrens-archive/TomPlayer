@@ -1,5 +1,15 @@
 More informations on http://www.tomplayer.net
 
+May the 15st 2011, Tomplayer v0.240b5 (beta)
+Features :
+- A logging function in tomlog.txt file has been added (new config parameter : log_level) (http://sourceforge.net/apps/trac/tomplayer/ticket/30)
+- A way to display date on skin has been added (http://sourceforge.net/apps/trac/tomplayer/ticket/29)
+
+Bug correction :
+- A video slowness has been solved
+- An issue to display menu has been addressed (http://sourceforge.net/apps/trac/tomplayer/ticket/24)
+
+
 May the 1st 2011, Tomplayer v0.240b4 (beta)
 Features :
 - Add auto resume feature (ticket#1)
