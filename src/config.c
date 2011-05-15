@@ -63,7 +63,8 @@
 #define KEY_DIAPO_DELAY     "diapo_delay"
 #define KEY_INTERNAL_SPEAKER "int_speaker"
 #define KEY_VIDEO_PREVIEW "video_preview"
-#define KEY_AUTO_RESUME "auto_resume"
+#define KEY_AUTO_RESUME   "auto_resume"
+#define KEY_LOG_LEVEL     "log_level"
 
 /* Default timeout in seconds before turning OFF screen while playing audio if screen saver is active */
 #define SCREEN_SAVER_TO_S 6
@@ -76,7 +77,7 @@ extern int iniparser_set(dictionary * ini, char * entry, const char * val);
 #define iniparser_setstring iniparser_set
 
 /* Helper macro */
-#define SET_STRING(target, source) do {if (source != NULL) target = strdup(s);\
+#define SET_STRING(target, source) do {if (source != NULL) target = strdup(source);\
                                        if (target == NULL) goto load_error;} while(0)
 
 /* Main configuration structure */
@@ -99,6 +100,7 @@ struct tomplayer_config{
     enum config_int_speaker_type int_speaker; /*!<Internal speaker configuration*/
     int video_preview;                  /*!<Enable video preview*/    
     int auto_resume;                    /*!<Enable auto resume*/    
+    enum log_level log_level;           /*!<Log level*/
 };
 
 /* Current configuration object */ 
@@ -131,15 +133,15 @@ static bool load_config( struct tomplayer_config * conf ){
     char *s;
 
     PRINTD( "Loading main configuration\n");
-    memset( conf, 0, sizeof( struct tomplayer_config ) );
+    memset(conf, 0, sizeof(struct tomplayer_config));
     ini = iniparser_load(CONFIG_FILE);
     if (ini == NULL) {
-        PRINTDF( "Unable to load main configuration file <%s>\n", CONFIG_FILE );
+        PRINTDF("Unable to load main configuration file <%s>\n", CONFIG_FILE);
         return false ;
     }
 
     s = iniparser_getstring(ini, SECTION_GENERAL":"KEY_VIDEO_FILE_DIRECTORY, NULL);
-    SET_STRING(conf->video_folder, s);    
+    SET_STRING(conf->video_folder, s);
     if (stat(conf->video_folder, &folder_stats) != 0){
         free(conf->video_folder);
         SET_STRING(conf->video_folder,DEFAULT_FOLDER);
@@ -194,11 +196,12 @@ static bool load_config( struct tomplayer_config * conf ){
     SET_STRING(conf->video_skin_filename, s);        
     s = iniparser_getstring(ini, SECTION_AUDIO_SKIN":"KEY_SKIN_FILENAME, NULL);
     SET_STRING(conf->audio_skin_filename, s);
+    conf->log_level = iniparser_getint(ini, SECTION_GENERAL":"KEY_LOG_LEVEL, LOG_NONE);    
     
     conf->enable_small_text = iniparser_getint(ini, SECTION_GENERAL":"KEY_EN_SMALL_TEXT, 0);   
     iniparser_freedict(ini);
   
-    display_config( conf );    
+    display_config(conf);    
     return true;
 
 load_error:
@@ -297,6 +300,9 @@ const char *config_get_skin_filename(enum config_type type){
     }            
 }
 
+enum log_level config_get_log_level(void){
+    return config.log_level;
+}
 
 /* -- SET accessors -- */
 

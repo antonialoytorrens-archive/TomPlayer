@@ -30,7 +30,7 @@
 #ifndef __TOMPLAYER_CONFIG_H__
 #define __TOMPLAYER_CONFIG_H__
 #include <stdbool.h>
-
+#include "log.h"
 
 /** FIFO Where key inputs can be read from */
 #define KEY_INPUT_FIFO "/tmp/key_fifo"
@@ -79,6 +79,7 @@ bool         config_get_diapo_activation(void);
 bool         config_get_video_preview(void);
 enum config_int_speaker_type config_get_speaker(void);
 const struct diapo_config *config_get_diapo(void);
+enum log_level config_get_log_level(void);
 
 /* SET accessors */
 bool config_set_skin_filename(enum config_type type, const char * filename);
