@@ -141,7 +141,7 @@ static void scale(int screen_width, int screen_height){
     if (x_ratio > y_ratio){        
         iluScale(screen_width, ((int)((double)im_height/x_ratio)), 1);
     } else {
-        iluScale(((int)(double)(im_width/y_ratio)), screen_height, 1);
+        iluScale(((int)((double)im_width/y_ratio)), screen_height, 1);
     }    
 }
 
@@ -171,10 +171,8 @@ static void * diapo_thread(void *param){
        
     if (diapo_state.inv_axes){
         scale(diapo_state.screen_y, diapo_state.screen_x);
-        //iluScale(diapo_state.screen_y, diapo_state.screen_x,1);
     } else{
-        scale(diapo_state.screen_x, diapo_state.screen_y);
-        //iluScale(diapo_state.screen_x, diapo_state.screen_y,1);
+        scale(diapo_state.screen_x, diapo_state.screen_y);        
     }
     
     
