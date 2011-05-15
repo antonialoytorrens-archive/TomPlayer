@@ -74,6 +74,7 @@ enum skin_cmd{
     /* Misc */
     SKIN_CMD_CURRENT_POS    = 40,
     SKIN_CMD_REMAINING_TIME = 41,
+    SKIN_CMD_TEXT_DATE      = 42,
     SKIN_CMD_MAX_NB
 };
 

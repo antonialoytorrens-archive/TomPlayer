@@ -244,7 +244,7 @@ static void refresh_tags_infos(void){
     
     /* Handle coverart */    
     ctrl = skin_get_ctrl(SKIN_CMD_COVERART);
-    if (ctrl != NULL){        
+    if (ctrl != NULL){
         ILuint default_cover;
         int width, height;
         
@@ -289,7 +289,7 @@ static int track_get_string(char * buffer, size_t len, int time, bool is_hour){
 
 /* Percent param may appear as a redundant param but it is not : 
    It is handled as an independant params to set the cursor on progress bar
-   (the underlying issue is that mplayer may reports wrong pos for VBR streams)  */
+   (the underlying issue is that mplayer may reports wrong pos for VBR streams) */
 static void display_progress_bar(int current, int length, int percent)
 {
     /* Previous coord of progress bar cursor */
@@ -552,15 +552,24 @@ static void refresh_time(void){
     char buff_text[32];
     time_t curr_time;
     struct tm * ptm;   
-    const struct skin_control *ctrl;
+    const struct skin_control *ctrl_time, *ctrl_date;
 
-    ctrl = skin_get_ctrl(SKIN_CMD_TEXT_TIME);
-    if (ctrl != NULL){
+    ctrl_time = skin_get_ctrl(SKIN_CMD_TEXT_TIME);
+    ctrl_date = skin_get_ctrl(SKIN_CMD_TEXT_DATE);
+    if ((ctrl_time != NULL) ||
+        (ctrl_date != NULL)){
         time(&curr_time);
         ptm = localtime(&curr_time);
-        snprintf(buff_text, sizeof(buff_text), "%02d : %02d",ptm->tm_hour, ptm->tm_min);
-        display_txt_ctrl(ctrl, buff_text);
+        if (ctrl_time != NULL){
+            snprintf(buff_text, sizeof(buff_text), "%02d : %02d",ptm->tm_hour, ptm->tm_min);
+            display_txt_ctrl(ctrl_time, buff_text);
+        }               
+        if (ctrl_date != NULL){            
+            strftime(buff_text, sizeof(buff_text), "%F", ptm);
+            display_txt_ctrl(ctrl_date, buff_text);
+        }
     }
+    
     return;
 }
 
