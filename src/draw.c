@@ -164,6 +164,7 @@ void draw_RGB_buffer(unsigned char * buffer, int x, int y, int w, int h, bool tr
       sprintf(str, "RGB24 %d %d %d %d %d %d\n", w, h, x, y , 255, 0);        
       buffer_size = w*h*3;
     }
+    PRINTDF("Blitting menu - cmd :%s - buffer size : %d\n", str, buffer_size);
     playint_menu_write((unsigned char *)str, strlen(str));
     playint_menu_write(buffer, buffer_size);
   } else {    
@@ -310,6 +311,15 @@ void draw_img(ILuint img){
     ilCopyPixels(0, 0, 0, width, height, 1, IL_RGBA, IL_UNSIGNED_BYTE, buffer);
     draw_RGB_buffer(buffer, 0, 0, width, height, true);    
     free( buffer );
+}
+
+
+void draw_screen_clear(void){
+    int screen_width, screen_height;
+    
+    ws_get_size(&screen_width, &screen_height);    
+    memset(screen_buffer, 0, screen_width*screen_height*2);
+    refresh = true;
 }
 
 void draw_refresh(void){

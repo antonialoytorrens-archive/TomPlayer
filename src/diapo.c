@@ -80,10 +80,12 @@ static inline bool init_list(void){
   return true;
 }
 
-static void img_transition(ILuint cur ,ILuint next){
-  int init_bright;
+static void img_transition(ILuint next){
+  int init_bright = 0;
   int bright;
-
+  int im_width, im_height;
+  int x, y;
+      
   pwm_get_brightness(&init_bright);
   for (bright=init_bright; bright>=1; bright--) {
     pwm_set_brightness(bright);
@@ -93,7 +95,20 @@ static void img_transition(ILuint cur ,ILuint next){
       break;
    }
   }
-  draw_img(next);  
+  
+  draw_screen_clear();
+  ilBindImage(next);
+  im_width = ilGetInteger(IL_IMAGE_WIDTH);
+  im_height = ilGetInteger(IL_IMAGE_HEIGHT);
+  if (diapo_state.inv_axes){
+      x = (diapo_state.screen_y - im_width) / 2;
+      y = (diapo_state.screen_x - im_height) / 2; 
+  } else {
+      x = (diapo_state.screen_x - im_width) / 2;
+      y = (diapo_state.screen_y - im_height) / 2; 
+  }
+  draw_cursor(next, 0, x, y);
+      
   for (bright=1; bright<=init_bright; bright++) {
     pwm_set_brightness(bright);
     usleep(15000);
@@ -112,6 +127,22 @@ static inline void wait_next_cycle(int delay){
     if (pthread_mutex_timedlock(&diapo_state.mutex, &ts) == 0){
       pthread_mutex_unlock(&diapo_state.mutex);
     }
+}
+
+
+static void scale(int screen_width, int screen_height){
+    int im_width, im_height;
+    double x_ratio, y_ratio;
+    
+    im_width = ilGetInteger(IL_IMAGE_WIDTH);
+    im_height = ilGetInteger(IL_IMAGE_HEIGHT);
+    x_ratio = (double)im_width/screen_width;
+    y_ratio = (double)im_height/screen_height;
+    if (x_ratio > y_ratio){        
+        iluScale(screen_width, ((int)((double)im_height/x_ratio)), 1);
+    } else {
+        iluScale(((int)(double)(im_width/y_ratio)), screen_height, 1);
+    }    
 }
 
 static void * diapo_thread(void *param){
@@ -137,19 +168,23 @@ static void * diapo_thread(void *param){
     }} while ( (!no_file) && (!skin_load_bitmap(&next_image_id, next_file)) ) ;
     if (no_file) break;   
     loop = 0;
+       
     if (diapo_state.inv_axes){
-        iluScale(diapo_state.screen_y, diapo_state.screen_x,1);
+        scale(diapo_state.screen_y, diapo_state.screen_x);
+        //iluScale(diapo_state.screen_y, diapo_state.screen_x,1);
     } else{
-        iluScale(diapo_state.screen_x, diapo_state.screen_y,1);
+        scale(diapo_state.screen_x, diapo_state.screen_y);
+        //iluScale(diapo_state.screen_x, diapo_state.screen_y,1);
     }
+    
+    
     if (current_image_id != 0){
-      img_transition(current_image_id, next_image_id);
+      img_transition(next_image_id);
       ilDeleteImages( 1, &current_image_id);
+      wait_next_cycle(diapo_state.delay);
     }
     current_image_id = next_image_id;
-    next_image_id = 0;
-
-    wait_next_cycle(diapo_state.delay);
+    next_image_id = 0;    
   }
   if (current_image_id != 0){
     ilDeleteImages( 1, &current_image_id);

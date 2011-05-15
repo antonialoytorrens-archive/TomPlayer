@@ -41,6 +41,7 @@ void draw_RGB_buffer(unsigned char * buffer, int x, int y, int w, int h, bool tr
 void draw_img(ILuint img);
 void draw_text(const char * text, int x, int y, int w, int h, const struct font_color *color, int size);
 void draw_cursor(ILuint cursor_id, ILuint frame_id, int x, int y );
+void draw_screen_clear(void);
 void draw_refresh(void);
 
 #endif
