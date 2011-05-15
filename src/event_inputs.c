@@ -34,6 +34,7 @@
 #include <fcntl.h>
 #include <pthread.h>
 
+#include "log.h"
 #include "tslib.h"
 #include "debug.h"
 #include "engine.h"
@@ -253,19 +254,18 @@ void event_loop(void){
   char *tsdevice=NULL;
   struct ts_sample samp;
   int ts_samp, ret;
-  bool ts_available = true;
-  int input_fd;
+  bool ts_available = true;  
   DFBInputDeviceKeyIdentifier key;
   const struct skin_config * skin;
+  struct stat info_file;
+  int input_fd = -1;
   
   #define TIMER_PERIOD_US 100000
   const struct itimerval timer_value = {.it_interval = {0,TIMER_PERIOD_US},
                                         .it_value = {0,TIMER_PERIOD_US}
                                        };               
-
-  printf("Enter Main event loop\n");
   
-
+  log_write(LOG_INFO, "Enter Main event loop");
   if( (tsdevice = getenv("TSLIB_TSDEVICE")) != NULL ) {
     ts = ts_open(tsdevice,0);
     if ((ts == NULL) || (ts_config(ts) != 0)){
@@ -275,13 +275,16 @@ void event_loop(void){
   } else {
     ts_available = false;
   }
-  printf("Touchscreen availability : %d\n", ts_available);
+  
   /* FIXME force ts availability 
   ts_available = false;*/
-    
+  log_write(LOG_INFO, "Touchscreen availability : %d", ts_available);
+  
   /* Try to open tomplayer inputs FIFO */
-  input_fd = open(KEY_INPUT_FIFO,O_RDONLY);
-  printf("FIFO availability : %d\n", input_fd);   
+  if (stat(KEY_INPUT_FIFO, &info_file) == 0){
+    input_fd = open(KEY_INPUT_FIFO, O_RDONLY);  
+  }
+  log_write(LOG_INFO, "FIFO availability : %d", input_fd);   
 
   if (input_fd > 0){
     /* Purge FIFO events */
@@ -315,13 +318,14 @@ void event_loop(void){
       flags |= O_NONBLOCK;
       ret = fcntl(input_fd, F_SETFL, flags);      
       //printf("ret : %d - flags :%x \n", ret, flags);
-    } else {
-      /* No inputs available */
-      fprintf(stderr, "no inputs available...\n");
-      return;
     }
   } else {
     ts_samp = 0;      
+    if (input_fd < 0){
+      /* No inputs available */
+      log_write(LOG_ERROR, "No inputs available...");      
+      return;  
+    }
   }
   
   /* Main events loop */
@@ -338,17 +342,16 @@ void event_loop(void){
         //printf("ret : %d\n", ret);
         if ( ret > 0) {                         
           handle_key(key);          
-        } else {            
-            #if 0
-            if ((errno != EINTR) && (errno != EAGAIN)){
-            #endif
-                //fprintf(stderr, "spurious wakeup errno %d : %s\n", errno, strerror(errno));
+        } else {                        
+            if (errno != EINTR)/* && (errno != EAGAIN))*/{
+                log_write(LOG_ERROR, "Event spurious wakeup errno %d : %s\n", errno, strerror(errno));                
                 usleep(TIMER_PERIOD_US);
-            //}                        
+            }                        
         }
       }
     } else {
       handle_ts(&samp);
     }
   }
+  log_write(LOG_INFO, "Leaving events input loop");  
 }
