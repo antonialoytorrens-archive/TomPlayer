@@ -36,6 +36,7 @@
 #include <unistd.h>
 #include <signal.h>
 
+#include "log.h"
 #include "gps.h"
 #include "config.h"
 #include "resume.h"
@@ -285,6 +286,7 @@ static void * update_thread(void *val){
   int resume_pos = (int)val;
   char buffer_filename[200];
   
+  log_write(LOG_INFO, "Update thread is starting");
   while (playint_is_running()){
     if (playint_wait_output(UPDATE_PERIOD_MS) == 0){        
         playint_flush_stdout();
@@ -313,6 +315,8 @@ static void * update_thread(void *val){
             skin_display_refresh(SKIN_DISPLAY_NEW_TRACK);
           }
         }
+      } else {
+        log_write(LOG_WARNING, "Unable to retrieve current filename from mplayer");  
       }
     }
     
@@ -353,7 +357,7 @@ static void * update_thread(void *val){
     }
     
     /* FIXME Test for tomtom START 
-    snd_set_volume_db(30);*/
+    snd_set_volume_db(15);*/
     
     /* Handle power button*/
     if (power_is_off_button_pushed() == true){
@@ -362,7 +366,8 @@ static void * update_thread(void *val){
     
     draw_refresh();
   } /* End main loop */
-   
+  
+  log_write(LOG_INFO, "Update thread is leaving"); 
   /* Stop screen saver if active on exit */
   if (screen_saver_is_running()){   
     if (config_get_diapo_activation()){
@@ -377,8 +382,9 @@ static void * update_thread(void *val){
 
 
 static void *mplayer_thread(void *filename){
-    playint_run((char *)filename);        
-    printf("\nmplayer has exited\n"); 
+    log_write(LOG_INFO, "Launching mplayer");
+    playint_run((char *)filename);   
+    log_write(LOG_INFO, "Mplayer has exited");    
     pthread_exit(NULL);
 }
 
@@ -400,6 +406,9 @@ static int init(const char * mode){
         fprintf( stderr, "Error while loading config\n" );
         return -1;
     }
+    /* Initialize log module */
+    log_init();
+    log_write(LOG_INFO, "Tomplayer engine is initializing");
     
     /* Test current mode */
     is_video = false;
@@ -407,6 +416,7 @@ static int init(const char * mode){
     if (strncmp(mode, "VIDEO", 5) == 0)
       is_video = true;
     }
+    log_write(LOG_DEBUG, "Mode : %s", (is_video?"video":"audio"));
     
     /* Initialize GPS module */
     gps_init();
@@ -445,7 +455,7 @@ static int init(const char * mode){
     /* Initialize diaporama */
     if (config_get_diapo_activation()){
         if (diapo_init(config_get_diapo()) == false){
-            fprintf(stderr,"Diaporama initialization failed ...\n");      
+            log_write(LOG_ERROR, "Diaporama initialization failed");      
             config_toggle_enable_diapo();
         }
     }
@@ -459,10 +469,10 @@ static int init(const char * mode){
             !fm_set_freq(config_get_fm(CONFIG_FM_DEFAULT)) ||
             !fm_set_power(115) ||
             !fm_set_stereo(1)){
-        fprintf(stderr,"Error while activating FM transmitter\n");
+            log_write(LOG_ERROR, "Error while activating FM transmitter");        
         }
         if (config_get_speaker() == CONF_INT_SPEAKER_AUTO){
-        snd_mute_internal(true);
+            snd_mute_internal(true);
         }
     }
  
@@ -483,6 +493,7 @@ static void release(void){
     ilShutDown();
     font_release();    
     skin_release();
+    log_release();
     return;
 }
 
