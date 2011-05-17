@@ -553,11 +553,19 @@ static void refresh_time(void){
     time_t curr_time;
     struct tm * ptm;   
     const struct skin_control *ctrl_time, *ctrl_date;
+    const struct skin_control *ctrl_day, *ctrl_month;
+    const struct skin_control *ctrl_weekday;
 
     ctrl_time = skin_get_ctrl(SKIN_CMD_TEXT_TIME);
     ctrl_date = skin_get_ctrl(SKIN_CMD_TEXT_DATE);
+    ctrl_day  = skin_get_ctrl(SKIN_CMD_TEXT_DAY);
+    ctrl_month= skin_get_ctrl(SKIN_CMD_TEXT_MONTH);
+    ctrl_weekday = skin_get_ctrl(SKIN_CMD_TEXT_WEEKDAY);    
     if ((ctrl_time != NULL) ||
-        (ctrl_date != NULL)){
+        (ctrl_date != NULL) ||
+        (ctrl_day  != NULL) ||
+        (ctrl_month!= NULL) ||
+        (ctrl_weekday != NULL)){
         time(&curr_time);
         ptm = localtime(&curr_time);
         if (ctrl_time != NULL){
@@ -568,6 +576,18 @@ static void refresh_time(void){
             strftime(buff_text, sizeof(buff_text), "%F", ptm);
             display_txt_ctrl(ctrl_date, buff_text);
         }
+        if (ctrl_day  != NULL){
+            strftime(buff_text, sizeof(buff_text), "%d", ptm);
+            display_txt_ctrl(ctrl_date, buff_text);
+        }
+        if (ctrl_month  != NULL){
+            strftime(buff_text, sizeof(buff_text), "%B", ptm);
+            display_txt_ctrl(ctrl_date, buff_text);
+        }
+        if (ctrl_weekday != NULL){
+            strftime(buff_text, sizeof(buff_text), "%A", ptm);
+            display_txt_ctrl(ctrl_date, buff_text);
+        }    
     }
     
     return;

@@ -74,7 +74,10 @@ enum skin_cmd{
     /* Misc */
     SKIN_CMD_CURRENT_POS    = 40,
     SKIN_CMD_REMAINING_TIME = 41,
-    SKIN_CMD_TEXT_DATE      = 42,
+    SKIN_CMD_TEXT_DATE      = 42, /**< Date in ISO format  YY/MM/DD */
+    SKIN_CMD_TEXT_DAY       = 43, /**< Day of the month as a number */
+    SKIN_CMD_TEXT_MONTH     = 44, /**< Month name */
+    SKIN_CMD_TEXT_WEEKDAY   = 45, /**< Day of the week as a name */
     SKIN_CMD_MAX_NB
 };
 
