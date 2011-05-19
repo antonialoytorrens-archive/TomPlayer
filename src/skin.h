@@ -78,6 +78,8 @@ enum skin_cmd{
     SKIN_CMD_TEXT_DAY       = 43, /**< Day of the month as a number */
     SKIN_CMD_TEXT_MONTH     = 44, /**< Month name */
     SKIN_CMD_TEXT_WEEKDAY   = 45, /**< Day of the week as a name */
+    SKIN_CMD_TEXT_HOURS     = 46, /**< time Hours */
+    SKIN_CMD_TEXT_MINUTS    = 47, /**< time minuts */
     SKIN_CMD_MAX_NB
 };
 
