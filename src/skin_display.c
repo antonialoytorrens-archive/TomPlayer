@@ -586,11 +586,11 @@ static void refresh_time(void){
             display_txt_ctrl(ctrl_day, buff_text);
         }
         if (ctrl_month  != NULL){
-            strftime(buff_text, sizeof(buff_text), "%B", ptm);
+            strftime(buff_text, sizeof(buff_text), "%b", ptm);
             display_txt_ctrl(ctrl_month, buff_text);
         }
         if (ctrl_weekday != NULL){
-            strftime(buff_text, sizeof(buff_text), "%A", ptm);
+            strftime(buff_text, sizeof(buff_text), "%a", ptm);
             display_txt_ctrl(ctrl_weekday, buff_text);
         }    
          if (ctrl_hours != NULL){
