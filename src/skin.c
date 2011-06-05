@@ -75,6 +75,7 @@
 #define KEY_TEXT_CONTROL_Y          "y"
 #define KEY_TEXT_CONTROL_COLOR      "color"
 #define KEY_TEXT_CONTROL_SIZE       "size"
+#define KEY_TEXT_CONTROL_ALIGN      "align"
 
 /* Current skin configuration */
 static struct{
@@ -358,7 +359,10 @@ static bool load_skin_config(char * filename){
                 sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_TEXT_CONTROL_COLOR);
                 skin_conf->controls[i].params.text.color = iniparser_getint(ini, section_control, -1);
                 sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_TEXT_CONTROL_SIZE);
-                skin_conf->controls[i].params.text.size = iniparser_getint(ini, section_control, 12);                
+                skin_conf->controls[i].params.text.size = iniparser_getint(ini, section_control, 12);
+                sprintf( section_control, SECTION_CONTROL_FMT_STR, i, KEY_TEXT_CONTROL_ALIGN);
+                skin_conf->controls[i].params.text.align = iniparser_getint(ini, section_control, 0);
+                
                 break;
             default:
                 fprintf( stderr, "Type not defined correctly for %s\n", section_control );

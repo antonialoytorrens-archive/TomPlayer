@@ -191,6 +191,7 @@ static void display_txt_ctrl(const struct skin_control *ctrl, const char* string
     int text_width, text_height, orig;
     struct font_color color;        
     int screen_width, screen_height;
+    int x;
 
     if ((string == NULL) || (strlen(string) == 0)){
         return;
@@ -213,15 +214,28 @@ static void display_txt_ctrl(const struct skin_control *ctrl, const char* string
         }
         ws_get_size(&screen_width, &screen_height);
         
+        switch (ctrl->params.text.align){
+            case SKIN_TEXT_RIGHT:
+                x = ctrl->params.text.x - text_width;                
+                break;
+            case SKIN_TEXT_CENTER:
+                x = ctrl->params.text.x - (text_width / 2);                              
+                break;
+            default:
+                x = ctrl->params.text.x;
+                break;
+        }
+        if (x < 0) x = 0;
+        
         /* Truncate height and width if needed */
-        if ((text_width + ctrl->params.text.x) > screen_width){
-            text_width = screen_width - ctrl->params.text.x - 1;
+        if ((text_width + x) > screen_width){
+            text_width = screen_width - x - 1;
         }
         if ((text_height + ctrl->params.text.y) > screen_height){
             text_height = screen_height - ctrl->params.text.y -1;
         }
         draw_text(string, 
-                  ctrl->params.text.x, ctrl->params.text.y,
+                  x, ctrl->params.text.y,
                   text_width, text_height, &color, 
                   (ctrl->params.text.size != -1)?ctrl->params.text.size:0);
     }

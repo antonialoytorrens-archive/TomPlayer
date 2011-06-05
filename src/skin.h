@@ -97,6 +97,11 @@ enum skin_control_type {
     SKIN_CONTROL_TEXT          /*!<Text control */
 } ;
 
+enum skin_text_align_type {
+    SKIN_TEXT_LEFT = 0,
+    SKIN_TEXT_CENTER,
+    SKIN_TEXT_RIGHT,
+};
 
 /** Test skin descriptor */
 struct skin_text_control {
@@ -104,6 +109,8 @@ struct skin_text_control {
     int y;                 /*!<y upper left coordinate of the text */
     int size;              /*!<Font size, -1 for default */
     int color;             /*!<Text color, -1 for default */
+    enum skin_text_align_type align; /*!<Text alignment */
+    
 } ;
 
 /** Circular skin control coordinates */
