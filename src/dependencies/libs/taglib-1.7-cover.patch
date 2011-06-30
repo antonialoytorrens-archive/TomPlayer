@@ -1,0 +1,373 @@
+diff -Naur taglib-1.7/bindings/c/tag_c.cpp taglib-1.7_new/bindings/c/tag_c.cpp
+--- taglib-1.7/bindings/c/tag_c.cpp	2011-03-11 14:15:38.000000000 +0100
++++ taglib-1.7_new/bindings/c/tag_c.cpp	2011-07-01 01:43:19.000000000 +0200
+@@ -42,8 +42,232 @@
+ #include <string.h>
+ #include <id3v2framefactory.h>
+ 
++#include <stdint.h>
++#include<id3v2tag.h>//tag
++#include<id3v2frame.h>//frame
++
+ using namespace TagLib;
+ 
++
++/* Additionial stuff to enable easy coverart extraction from C code */
++
++
++/* Base64 decoding is taken from libb64 (which is public domain) */
++typedef enum
++{
++  step_a, step_b, step_c, step_d
++} base64_decodestep;
++
++typedef struct
++{
++  base64_decodestep step;
++  char plainchar;
++} base64_decodestate;
++
++static int base64_decode_value(char value_in)
++{
++  static const int decoding[] = {62,-1,-1,-1,63,52,53,54,55,56,57,58,59,60,61,-1,-1,-1,-2,-1,-1,-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,-1,-1,-1,-1,-1,-1,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51};
++  static const char decoding_size = sizeof(decoding)/sizeof(decoding[0]);
++  int value  = value_in;
++  value -= 43;
++  if (value < 0 || value > decoding_size) return -1;
++  return decoding[(int)value];
++}
++
++static void base64_init_decodestate(base64_decodestate* state_in)
++{
++  state_in->step = step_a;
++  state_in->plainchar = 0;
++}
++
++static int base64_decode_block(const char* code_in, const int length_in, char* plaintext_out, base64_decodestate* state_in)
++{
++  const char* codechar = code_in;
++  char* plainchar = plaintext_out;
++  int fragment;
++  
++  *plainchar = state_in->plainchar;
++  
++  switch (state_in->step)
++  {
++    while (1)
++    {
++  case step_a:
++      do {
++        if (codechar == code_in+length_in)
++        {
++          state_in->step = step_a;
++          state_in->plainchar = *plainchar;
++          return plainchar - plaintext_out;
++        }
++        fragment = base64_decode_value(*codechar++);
++      } while (fragment < 0);
++      *plainchar    = (fragment & 0x03f) << 2;
++  case step_b:
++      do {
++        if (codechar == code_in+length_in)
++        {
++          state_in->step = step_b;
++          state_in->plainchar = *plainchar;
++          return plainchar - plaintext_out;
++        }
++        fragment = base64_decode_value(*codechar++);
++      } while (fragment < 0);
++      *plainchar++ |= (fragment & 0x030) >> 4;
++      *plainchar    = (fragment & 0x00f) << 4;
++  case step_c:
++      do {
++        if (codechar == code_in+length_in)
++        {
++          state_in->step = step_c;
++          state_in->plainchar = *plainchar;
++          return plainchar - plaintext_out;
++        }
++        fragment = base64_decode_value(*codechar++);
++      } while (fragment < 0);
++      *plainchar++ |= (fragment & 0x03c) >> 2;
++      *plainchar    = (fragment & 0x003) << 6;
++  case step_d:
++      do {
++        if (codechar == code_in+length_in)
++        {
++          state_in->step = step_d;
++          state_in->plainchar = *plainchar;
++          return plainchar - plaintext_out;
++        }
++        fragment = base64_decode_value(*codechar++);
++      } while (fragment < 0);
++      *plainchar++   |= (fragment & 0x03f);
++    }
++  }
++  /* control should not reach here */
++  return plainchar - plaintext_out;
++}
++
++
++/** 32 bits endianess helper */
++static inline uint32_t endian32_swap(uint32_t val){    
++    uint32_t temp;
++    temp = ( val >> 24) | ((val & 0x00FF0000) >> 8) |  ((val & 0x0000FF00) << 8) | ((val & 0x000000FF) << 24); 
++    return temp;
++}
++
++
++static bool loadCoverArtFromXiphComment(TagLib::Ogg::XiphComment *xiphComment,  char *img, size_t *len){
++    #define META_HEADER_OVERHEAD 32
++    #define META_LEN_MIME_OFFS 4
++    bool result = false;
++    base64_decodestate state;
++    unsigned int len_in, mime_len, desc_len, header_len, tmp;
++        
++    if (xiphComment->contains("METADATA_BLOCK_PICTURE")){
++        TagLib::ByteVector coverArtData = xiphComment->fieldListMap()["METADATA_BLOCK_PICTURE"].front().data(TagLib::String::UTF8);
++        if (img == NULL){            
++            *len  =  ((coverArtData.size() * 3) + 3) / 4 ;
++        } else {
++            base64_init_decodestate(&state);
++            len_in = (*len * 4) / 3;
++            if (len_in > coverArtData.size())
++                len_in = coverArtData.size();
++            base64_decode_block(coverArtData.data(), len_in, img, &state);
++            /* Drop the FLAC METADATA BLOCK PICTURE header*/
++            memcpy(&tmp, &img[META_LEN_MIME_OFFS], sizeof(tmp));
++            /* *((uint32_t *)&img[META_LEN_MIME_OFFS])*/
++            mime_len = endian32_swap(tmp);            
++            /* *((uint32_t *)&img[META_LEN_MIME_OFFS + 4 + mime_len])*/
++            memcpy(&tmp, &img[META_LEN_MIME_OFFS + 4 + mime_len], sizeof(tmp));
++            desc_len = endian32_swap(tmp);            
++            header_len = mime_len + desc_len + META_HEADER_OVERHEAD;
++            memmove(img, img + header_len, *len - header_len);
++        }
++        result = true;
++    }
++    return result;
++}
++
++static bool loadCoverArtFromID3v2(TagLib::ID3v2::Tag *id3v2Tag, char *img, size_t *len){
++    bool result = false;
++    TagLib::ID3v2::FrameList frameList = id3v2Tag->frameList("APIC");
++  
++    if (!frameList.isEmpty()){
++        TagLib::ID3v2::AttachedPictureFrame *attachedPictureFrame = static_cast<TagLib::ID3v2::AttachedPictureFrame *>(frameList.front());
++        if (attachedPictureFrame->picture().size() > 0){
++            if (img != NULL){
++                if (attachedPictureFrame->picture().size() < *len){
++                    *len = attachedPictureFrame->picture().size(); 
++                }
++                memcpy(img, attachedPictureFrame->picture().data(), *len);
++            } else {
++                *len = attachedPictureFrame->picture().size();   
++            }
++            result = true;
++        }
++    }
++    return result;
++}
++
++static char * get_extension(char *filename){
++    char * pos;    
++    pos = rindex(filename,'.');  
++    if (pos != NULL){
++        pos++;
++    }
++    return pos;           
++}
++
++static bool find_artcover(TagLib_File * file, char *img, size_t *len){
++    char * extension;
++    bool result = false;
++    const char * filename = reinterpret_cast<TagLib::File *>(file)->name();
++
++    extension = get_extension((char *)filename);
++    if (extension != NULL){
++        if (strcmp(extension, "mp3") == 0){
++            TagLib::MPEG::File *f =  reinterpret_cast<MPEG::File *>(file);   
++            if (f->ID3v2Tag())
++                result = loadCoverArtFromID3v2(f->ID3v2Tag(), img, len);
++        }
++        // Check for a cover art image in Ogg Container in XiphComment
++        else if ((strcmp(extension, "ogg") == 0) ||
++                 (strcmp(extension, "oga") == 0)){                 
++            TagLib::Ogg::Vorbis::File *f = reinterpret_cast<TagLib::Ogg::Vorbis::File *>(file);   
++            result = f->tag() && loadCoverArtFromXiphComment(f->tag(), img, len);
++            if (!result){
++                TagLib::Ogg::FLAC::File *f = reinterpret_cast<TagLib::Ogg::FLAC::File *>(file);    
++                if (f->tag())
++                    result = loadCoverArtFromXiphComment(f->tag(), img, len);
++            }
++        }
++        // Check for a cover art image either via ID3v2 APIC frame or in XiphComment
++        else if (strcmp(extension, "flac") == 0){             
++            TagLib::FLAC::File *f = reinterpret_cast<TagLib::FLAC::File *>(file);          
++            List< TagLib::FLAC::Picture * > pictureList = f->pictureList();            
++            if (!pictureList.isEmpty()){
++                TagLib::FLAC::Picture *picture = pictureList.front();
++                unsigned int  size = picture->data().size();
++                
++                if (img != NULL){
++                    if (size < *len){
++                        *len = size; 
++                    }
++                    memcpy(img, picture->data().data(), *len);
++                } else {
++                    *len = size;
++                }
++                result = true;
++            }
++            if (!result)
++                result = f->ID3v2Tag() && loadCoverArtFromID3v2(f->ID3v2Tag(), img, len);
++            if (!result)
++                result = f->xiphComment() && loadCoverArtFromXiphComment(f->xiphComment(), img, len);        
++            
++         }
++    }
++    return result;
++}
++
++/* End of Additionial stuff to enable easy coverart extraction from C code */
++
+ static List<char *> strings;
+ static bool unicodeStrings = true;
+ static bool stringManagementEnabled = true;
+@@ -291,3 +515,25 @@
+ 
+   ID3v2::FrameFactory::instance()->setDefaultTextEncoding(type);
+ }
++
++
++/* Public Additionial stuff to enable easy coverart extraction from C code */
++/** Retrieve the size of the coverArt from audio file
++  *
++  * \returns The size in bytes of the first found cover or 0 if no cover is available
++  */
++int taglib_file_cover_size(TagLib_File *file){
++    size_t len;
++    if (find_artcover(file, NULL, &len)){
++        return len;
++    } else {
++        return 0;
++    }
++}
++
++/** Copy the covertArt in buffer 
++*/
++bool taglib_file_cover(TagLib_File *file, char * img, size_t len){
++    return find_artcover(file, img, &len);
++}
++
+diff -Naur taglib-1.7/bindings/c/tag_c.h taglib-1.7_new/bindings/c/tag_c.h
+--- taglib-1.7/bindings/c/tag_c.h	2011-03-11 14:15:38.000000000 +0100
++++ taglib-1.7_new/bindings/c/tag_c.h	2011-07-01 01:42:24.000000000 +0200
+@@ -21,6 +21,8 @@
+ 
+ #ifndef TAGLIB_TAG_C
+ #define TAGLIB_TAG_C
++#include <unistd.h>
++#include <stdbool.h>
+ 
+ /* Do not include this in the main TagLib documentation. */
+ #ifndef DO_NOT_DOCUMENT
+@@ -285,6 +287,12 @@
+ 
+ TAGLIB_C_EXPORT void taglib_id3v2_set_default_text_encoding(TagLib_ID3v2_Encoding encoding);
+ 
++/*******************************************************************************
++ * Covert art extraction functions
++ *******************************************************************************/
++TAGLIB_C_EXPORT int taglib_file_cover_size(TagLib_File *file);
++TAGLIB_C_EXPORT bool taglib_file_cover(TagLib_File *file, char * img, size_t len);
++    
+ #ifdef __cplusplus
+ }
+ #endif
+diff -Naur taglib-1.7/build/build.sh taglib-1.7_new/build/build.sh
+--- taglib-1.7/build/build.sh	1970-01-01 01:00:00.000000000 +0100
++++ taglib-1.7_new/build/build.sh	2011-07-01 01:42:24.000000000 +0200
+@@ -0,0 +1 @@
++cmake -DCMAKE_TOOLCHAIN_FILE=./cross.cmake ..
+diff -Naur taglib-1.7/build/cross.cmake taglib-1.7_new/build/cross.cmake
+--- taglib-1.7/build/cross.cmake	1970-01-01 01:00:00.000000000 +0100
++++ taglib-1.7_new/build/cross.cmake	2011-07-01 01:42:24.000000000 +0200
+@@ -0,0 +1,17 @@
++# this one is important
++SET(CMAKE_SYSTEM_NAME Linux)
++#this one not so much
++SET(CMAKE_SYSTEM_VERSION 1)
++
++# specify the cross compiler
++SET(CMAKE_C_COMPILER  /usr/local/cross/gcc-3.3.4_glibc-2.3.2/bin/arm-linux-gcc)
++SET(CMAKE_CXX_COMPILER /usr/local/cross/gcc-3.3.4_glibc-2.3.2/bin/arm-linux-g++)
++
++# where is the target environment 
++SET(CMAKE_FIND_ROOT_PATH   /usr/local/cross/gcc-3.3.4_glibc-2.3.2 /home/archives/space/prog/tomtom/snapshot/tomplayer/trunk/src/dependencies/build/usr/local/)
++
++# search for programs in the build host directories
++SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
++# for libraries and headers in the target directories
++SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
++SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+diff -Naur taglib-1.7/examples/tagreader_c.c taglib-1.7_new/examples/tagreader_c.c
+--- taglib-1.7/examples/tagreader_c.c	2011-03-11 14:15:38.000000000 +0100
++++ taglib-1.7_new/examples/tagreader_c.c	2011-07-01 01:42:24.000000000 +0200
+@@ -21,10 +21,17 @@
+  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  */
+-
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <strings.h>
++#include <stdlib.h>
++#include <unistd.h>
+ #include <stdio.h>
++
+ #include <tag_c.h>
+ 
++
+ #ifndef FALSE
+ #define FALSE 0
+ #endif
+@@ -37,7 +44,10 @@
+   TagLib_File *file;
+   TagLib_Tag *tag;
+   const TagLib_AudioProperties *properties;
+-
++  size_t cover_len;
++  char * buffer;
++  int fd;
++  
+   taglib_set_strings_unicode(FALSE);
+ 
+   for(i = 1; i < argc; i++) {
+@@ -72,7 +82,24 @@
+       printf("channels    - %i\n", taglib_audioproperties_channels(properties));
+       printf("length      - %i:%02i\n", minutes, seconds);
+     }
+-
++  
++    
++    cover_len = taglib_file_cover_size(file);
++    printf("-- COVER ART --\n");
++    if (cover_len > 0){
++        char picture_name [32];
++        sprintf(picture_name, "picture%02i.jpg", i);
++        printf("Cover has been found : Dumping in %s\n",picture_name);
++        buffer = (char *)malloc(cover_len);
++        taglib_file_cover(file, buffer, cover_len);
++        fd = creat(picture_name,0777);
++        write(fd, buffer, cover_len);
++        free(buffer);
++        close(fd);
++    } else {
++        printf("No cover found\n");
++    }
++    
+     taglib_tag_free_strings();
+     taglib_file_free(file);
+   }
