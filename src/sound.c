@@ -194,7 +194,12 @@ int snd_set_volume_db(unsigned int vol){
     return -1;
   }
   
-  res = ioctl (snd_fd,COOLSOUND_SET_VOLUME_dB, vol);
+  res = ioctl(snd_fd,COOLSOUND_SET_VOLUME_dB, vol);
+  /* FIXME pour tests sons 
+  ioctl(snd_fd,COOLSOUND_SET_VOLUME, 60);
+  ioctl(snd_fd,COOLSOUND_SET_VOLUME_INTERNAL, 60);
+  ioctl(snd_fd,COOLSOUND_SET_VOLUME_EXTERNAL, 60);*/
+  
   if ( res != 0){
     perror("Error while trying to  set volume db");
     return -1;
