@@ -13,48 +13,74 @@
 
 #include "config.h"
 
+/* FIXME Do not post in FIFO */
+//#define NOPOST
+/* Debug Logs */
+//#define DEBUG_LOG
+#undef DEBUG_LOG
+
+#ifdef NATIVE
+#define INIT_DEV 1
+#else
+#define INIT_DEV 0
+#endif 
+  
 int main(int argc, char ** argv ){
-  int fd_event, fifo_fd;
+  char input_dev[256];
+  int fd_event;
+  int fifo_fd = -1;
   struct input_event ev;
   int nb;
   DFBInputDeviceKeyIdentifier dfb_key;
-/*
-  FILE *log_file;
+  FILE *log_file = NULL;
+  int current_dev = INIT_DEV;
   
-  log_file = fopen("/media/sdcard/log/evts2.txt", "w+");
-  */
+#ifdef DEBUG_LOG 
+  log_file = fopen("/media/sdcard/tomplayer/evts2.txt", "a+");
+#endif
+  
   unlink(KEY_INPUT_FIFO);
   mkfifo(KEY_INPUT_FIFO, 0777);
+#ifndef NOPOST
   fifo_fd=open(KEY_INPUT_FIFO, O_WRONLY);
   if (fifo_fd < 0){
     printf("Error while opening " KEY_INPUT_FIFO "\n");
     exit(1);
-  }
-    
-  do {      
-#ifdef NATIVE
-    fd_event = open("/dev/input/event1", O_RDONLY);
-#else
-    fd_event = open("/dev/input/event0", O_RDONLY);
-#endif    
-    if (fd_event < 0){
-        printf("Error while opening /dev/input/event0 \n");
-        perror("evdev open");	
-        sleep(2);
-    }    
-	} while (fd_event < 0);
+  }  
+#endif
+  if (log_file != NULL)
+    fprintf(log_file,"Starting ...\n");
+  
   signal(SIGPIPE, SIG_IGN);
-    
-	while(1) {
-        dfb_key = 0;
+  fd_event = -1;
+  while(1) {
+     while (fd_event < 0) {
+        sprintf(input_dev, "/dev/input/event%i", current_dev);
+        fd_event = open(input_dev, O_RDONLY);
+        if (fd_event < 0){
+            if (log_file != NULL) {
+                fprintf(log_file,"Error while opening %s\n", input_dev);
+                fflush(log_file);
+            }
+            printf("Error while opening %s\n", input_dev);
+            sleep(1);
+            current_dev++;
+            if (current_dev > 9)
+                current_dev = INIT_DEV;
+        } else {
+		fprintf(log_file,"Opening %s OK\n", input_dev);
+                fflush(log_file);
+	}
+    }
+    dfb_key = 0;
     nb = read(fd_event, &ev, sizeof(struct input_event));  
-/*  printf ("Raw evt : type 0x%x code 0x%x value 0x%x\n", ev.type, ev.code, ev.value);
+    /*printf ("Raw evt : type 0x%x code 0x%x value 0x%x\n", ev.type, ev.code, ev.value);*/
     if (log_file != NULL){
       fprintf(log_file,"Raw evt : type 0x%x code 0x%x value 0x%x\n", ev.type, ev.code, ev.value);
       fflush(log_file);
-    }*/
+    }
     if (nb > 0) {
-    if (ev.value == 1 ) {
+    if (ev.value == 1) {
     /* button released*/
     switch (ev.code){
                 case KEY_UP :
@@ -106,20 +132,26 @@ int main(int argc, char ** argv ){
                     /* Unhandled key */
                     break;
             }            
-/*            printf ("Key read from remote : 0x%x\n",dfb_key);     
+/*            printf ("Key read from remote : 0x%x\n",dfb_key);     */
             if (log_file != NULL){
-              fprintf(log_file,"Key read from remote : 0x%x\n",dfb_key );
+              fprintf(log_file, "Key read from remote : 0x%x\n",dfb_key);
               fflush(log_file);
-            }*/            
-            if (dfb_key){
+            }
+            if ((dfb_key) && (fifo_fd>0)) {
                 write(fifo_fd, &dfb_key, sizeof(dfb_key));
             }
             
-		}
-		} else {
-		  printf("Read error : %i\n",nb);
-		}
+        }
+        } else {
+            //printf("Read error : %i\n",nb);
+            if (log_file != NULL){
+                fprintf(log_file,"Read error : %i\n",nb);
+                fflush(log_file);
+            }
+            close(fd_event);
+	    fd_event = -1;
+        }
     }
-	return 0;
+    return 0;
 }
 
