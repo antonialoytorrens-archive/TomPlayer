@@ -80,6 +80,7 @@ enum skin_cmd{
     SKIN_CMD_TEXT_WEEKDAY   = 45, /**< Day of the week as a name */
     SKIN_CMD_TEXT_HOURS     = 46, /**< time Hours */
     SKIN_CMD_TEXT_MINUTS    = 47, /**< time minuts */
+    SKIN_CMD_TEXT_DYEAR      = 48, /**< Year of the date (4digits) */
     SKIN_CMD_MAX_NB
 };
 

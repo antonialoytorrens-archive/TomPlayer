@@ -138,9 +138,9 @@ static void refresh_filename(void){
   const char *filename;
   const struct track_tags * tags;
   
-  /* No filename on video skin (legacy) */
+  /* No filename on video skin (legacy) 
   if (eng_get_mode() == MODE_VIDEO)
-      return;
+      return;*/
   /* Skin explicitly states not to display filename 
      (likely to be a recent skin which uses tags instead)*/
   if (skin_get_config()->display_filename == 0)
@@ -568,7 +568,7 @@ static void refresh_time(void){
     struct tm * ptm;   
     const struct skin_control *ctrl_time, *ctrl_date;
     const struct skin_control *ctrl_day, *ctrl_month;
-    const struct skin_control *ctrl_weekday;
+    const struct skin_control *ctrl_weekday, *ctrl_year;
     const struct skin_control *ctrl_hours, *ctrl_minuts;
     
     ctrl_time = skin_get_ctrl(SKIN_CMD_TEXT_TIME);
@@ -578,13 +578,15 @@ static void refresh_time(void){
     ctrl_weekday = skin_get_ctrl(SKIN_CMD_TEXT_WEEKDAY);    
     ctrl_hours = skin_get_ctrl(SKIN_CMD_TEXT_HOURS);
     ctrl_minuts = skin_get_ctrl(SKIN_CMD_TEXT_MINUTS);
+    ctrl_year = skin_get_ctrl(SKIN_CMD_TEXT_DYEAR);
     if ((ctrl_time != NULL) ||
         (ctrl_date != NULL) ||
         (ctrl_day  != NULL) ||
         (ctrl_month!= NULL) ||
         (ctrl_weekday != NULL)||
         (ctrl_hours   != NULL)||
-        (ctrl_minuts  != NULL)){
+        (ctrl_minuts  != NULL)||
+	(ctrl_year    != NULL)){
         time(&curr_time);
         ptm = localtime(&curr_time);
         if (ctrl_time != NULL){
@@ -607,7 +609,11 @@ static void refresh_time(void){
             strftime(buff_text, sizeof(buff_text), "%a", ptm);
             display_txt_ctrl(ctrl_weekday, buff_text);
         }    
-         if (ctrl_hours != NULL){
+        if (ctrl_year != NULL){
+            strftime(buff_text, sizeof(buff_text), "%Y", ptm);
+            display_txt_ctrl(ctrl_year, buff_text);
+        }
+        if (ctrl_hours != NULL){
             strftime(buff_text, sizeof(buff_text), "%H", ptm);
             display_txt_ctrl(ctrl_hours, buff_text);
         }

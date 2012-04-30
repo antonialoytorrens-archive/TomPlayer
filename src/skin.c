@@ -263,11 +263,13 @@ static void reset_skin_conf (void){
  */
 static bool load_skin_config(char * filename){
     dictionary * ini ;
+    int screen_width, screen_height;
     char section_control[512];
     int i,j;
     char * s;
     struct skin_config * skin_conf = &current_skin.config;
     bool ret = true;
+    
 
   
     ini = iniparser_load(filename);
@@ -282,10 +284,15 @@ static bool load_skin_config(char * filename){
         skin_conf->text_color = i;
         PRINTDF("Read txt color : 0x%x  \n",skin_conf->text_color);
     }
+    ws_get_size(&screen_width, &screen_height);
     skin_conf->text_x1 = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_X1, 0);
-    skin_conf->text_x2 = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_X2, 0);
-    skin_conf->text_y1 = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_Y1, 0);
-    skin_conf->text_y2 = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_Y2, 0);
+    skin_conf->text_x2 = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_X2, screen_width);    
+    skin_conf->text_y1 = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_Y1, (screen_height*45)/100);
+    skin_conf->text_y2 = iniparser_getint(ini, SECTION_GENERAL":"KEY_TEXT_Y2, (screen_height*55)/100);
+    log_write(LOG_DEBUG, "text_x1 : %d", skin_conf->text_x1);
+    log_write(LOG_DEBUG, "text_x2 : %d", skin_conf->text_x2);
+    log_write(LOG_DEBUG, "text_y1 : %d", skin_conf->text_y1);
+    log_write(LOG_DEBUG, "text_y2 : %d", skin_conf->text_y2);       
     skin_conf->r = iniparser_getint(ini, SECTION_GENERAL":"KEY_R_TRANSPARENCY, 0);
     skin_conf->g = iniparser_getint(ini, SECTION_GENERAL":"KEY_G_TRANSPARENCY, 0);
     skin_conf->b = iniparser_getint(ini, SECTION_GENERAL":"KEY_B_TRANSPARENCY, 0);
