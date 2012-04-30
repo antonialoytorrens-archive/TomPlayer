@@ -400,7 +400,12 @@ static bool load_skin_config(char * filename){
         if ((skin_conf->controls[i].cmd >= 0) &&
             (skin_conf->controls[i].cmd < SKIN_CMD_MAX_NB)){
             current_skin.cmd2idx[skin_conf->controls[i].cmd] = i;
+            
         }        
+        /* If an entry of explicit tile control is present then old filename should not be displayed */
+        if (current_skin.cmd2idx[SKIN_CMD_TEXT_TITLE] != -1) {
+             skin_conf->display_filename = 0;   
+        }
     }
     
 error:
