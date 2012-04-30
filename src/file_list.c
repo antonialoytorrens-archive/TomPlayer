@@ -81,9 +81,9 @@ static int fl_find_pos(struct file_list *fl, const char * filename, bool is_fold
   int ret_cmp = 1;
   *find= false;
 
-  if (is_folder){
+  if (!is_folder){
     i = fl->entries_number-1;
-    while  ((i>=0) && (fl->is_folder[i])){ 
+    while  ((i>=0) && (!fl->is_folder[i])){ 
       ret_cmp = strcmp(fl->filenames[i],filename);
       if (ret_cmp<=0)
         break;
@@ -92,7 +92,7 @@ static int fl_find_pos(struct file_list *fl, const char * filename, bool is_fold
   } else{
     i = 0 ;
     
-    while  ((i<fl->entries_number) && (!fl->is_folder[i])){ 
+    while  ((i<fl->entries_number) && (fl->is_folder[i])){ 
       ret_cmp = strcmp(fl->filenames[i],filename);
       if ( ret_cmp >= 0)
         break;
@@ -100,7 +100,7 @@ static int fl_find_pos(struct file_list *fl, const char * filename, bool is_fold
     }
   }
   
-  if (is_folder){  
+  if (!is_folder){  
       i++;  
   }
 
