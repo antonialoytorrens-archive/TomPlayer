@@ -1306,6 +1306,11 @@ static void play_audio_video(struct gui_control *ctrl, enum gui_event_type type,
             DFBColor color = {255,255,50,50};
             message_box("No file selected !", 24, &color, "./res/font/decker.ttf");
         } else {
+            char buffer[256];
+            int res;
+            res = snprintf(buffer, sizeof(buffer), "cp -f %s %s", RESUME_VOLATILE_PLAYLIST, RESUME_FULL_PLAYLIST_FILENAME(ctrl->cb_param?MODE_VIDEO:MODE_AUDIO));
+            if ((res > 0) && (res < sizeof(buffer)))
+                system(buffer);
             setup_engine(RESUME_VOLATILE_PLAYLIST, 0, ctrl->cb_param);
             quit = true;
         }
