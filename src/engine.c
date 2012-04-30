@@ -80,6 +80,7 @@ static struct {
   bool initialized;
   struct video_settings video;
   struct audio_settings audio;
+  struct general_settings gen;
 }settings;
 
 /* Mutex to prevent animation thread to interact badly with standard update thread */
@@ -105,7 +106,11 @@ static void quit(){
 static void settings_init(){
     struct video_settings v_settings;
     struct audio_settings a_settings;
-
+    
+    if (resume_get_general_settings(&settings.gen) == 0) {
+        pwm_set_brightness(settings.gen.brightness);
+    }
+    
     if (state.current_mode == MODE_AUDIO){                
         if (resume_get_audio_settings(&a_settings) == 0){
             settings.audio = a_settings;
@@ -125,7 +130,8 @@ static void settings_init(){
 static void settings_update(){
     struct video_settings v_settings;
     struct audio_settings a_settings;
-    
+
+    pwm_set_brightness(settings.gen.brightness);
     if (state.current_mode == MODE_AUDIO){
         if (settings.initialized){
             playint_set_audio_settings(&settings.audio);            
@@ -357,7 +363,9 @@ static void * update_thread(void *val){
     }
     
     /* FIXME Test for tomtom START 
-    snd_set_volume_db(15);*/
+    snd_set_volume_db(15);
+    snd_mute_internal(false);   
+    snd_mute_external(false);  */
     
     /* Handle power button*/
     if (power_is_off_button_pushed() == true){
@@ -517,7 +525,11 @@ static void play(char * filename, int pos){
     /* Handle input events */
     event_loop();
     
+    
     /* Save settings to resume file */
+    if (pwm_get_brightness(&settings.gen.brightness) == 0) {
+        resume_set_general_settings(&settings.gen);
+    }
     if (state.current_mode == MODE_VIDEO){
         resume_set_video_settings(&settings.video);
     } else {
@@ -527,10 +539,18 @@ static void play(char * filename, int pos){
        (as opposed to an end of playlist exit) */
     if (state.quit_asked)
         resume_save_playslist(state.current_mode, track_get_current_filename());
+    else {
+        resume_restore_playslist(state.current_mode); 
+        resume_write_pos(state.current_mode, 0);
+    }
     
     /* Wait for everyone termination */
+    /* FIXME Comment out to bypass bug freeze in 0.240b4 and 0.240b5 */
+    /*
     pthread_join(up_tid, NULL);
     pthread_join(anim_tid, NULL);        
+    */
+    sleep(2);
 }
 
 
@@ -594,13 +614,11 @@ void eng_handle_cmd(int cmd, int p)
 
             update_settings = true;
             break;
-        case SKIN_CMD_LIGHT_PLUS:            
-            playint_bright(5);
-            update_settings = true;
+        case SKIN_CMD_LIGHT_PLUS:
+            eng_brightness(5);
             break;
         case SKIN_CMD_LIGHT_MOINS:
-            playint_bright(-5);
-            update_settings = true;
+            eng_brightness(-5);
             break;
         case SKIN_CMD_DELAY_PLUS:
             playint_delay(0.1);            
@@ -718,6 +736,12 @@ int eng_select_ctrl(const struct skin_control * ctrl, bool state){
 
 enum eng_mode eng_get_mode(void){
     return state.current_mode;
+}
+
+/* Change brightness settings */
+void eng_brightness(int delta) {
+    pwm_modify_brightness (delta);
+    pwm_get_brightness(&settings.gen.brightness);
 }
 
 int main( int argc, char *argv[] ){ 

@@ -43,6 +43,7 @@
 #include "window.h"
 #include "gps.h"
 #include "resume.h"
+#include "pwm.h"
 
 static IDirectFB	      *dfb;
 static IDirectFBDisplayLayer  *layer;   
@@ -112,6 +113,22 @@ static bool init_resources( int argc, char *argv[] ) {
         return true;
 }
 
+
+static void init_settings(void) {
+    struct general_settings settings;
+
+    if (resume_get_general_settings(&settings) == 0) {
+        pwm_set_brightness(settings.brightness);
+    }
+}
+
+static void save_settings(void) {
+    struct general_settings settings;
+
+    if (pwm_get_brightness(&settings.brightness) == 0) {    
+        resume_set_general_settings(&settings);
+    }
+}
 
 /** Dispatch a touch screen event to the control selected or to the skin
  *
@@ -200,6 +217,7 @@ int main( int argc, char *argv[] ){
       }    
     }
   
+    init_settings();
   
     /* Initialize GPS module */
     gps_init();
@@ -233,6 +251,9 @@ int main( int argc, char *argv[] ){
               }
         }
     }
+    
+    save_settings();
+    
     /*FIXME proper release of directfb may hang...
       Pb seems to appear from time to time when releasing directfb layer : i have not found the root of this pb */
 #ifndef NATIVE

@@ -48,6 +48,7 @@ extern int iniparser_set(dictionary * ini, char * entry, char * val);
 #define RESUME_AUDIO_SECTION_KEY "RESUME AUDIO"
 #define RESUME_VIDEO_SETTINGS_SECTION_KEY "VIDEO SETTINGS"
 #define RESUME_AUDIO_SETTINGS_SECTION_KEY "AUDIO SETTINGS"
+#define RESUME_GENERAL_SETTINGS_SECTION_KEY "GENERAL SETTINGS"
 #define RESUME_FILENAME_KEY "file"
 #define RESUME_POS_KEY "pos"
 #define RESUME_CONTRAST_KEY "contrast"
@@ -75,7 +76,7 @@ static inline char * RESUME_SECTION_KEY_GET(enum eng_mode x){
  */
 int resume_file_init(enum eng_mode mode){  
 	dictionary * ini ;
-  char ini_path[100];
+        char ini_path[100];
 	FILE * fp;
 	int ret = 0;  
   
@@ -91,21 +92,21 @@ int resume_file_init(enum eng_mode mode){
 		ret = -1;
 		goto error;
 	}  
-	iniparser_setstring( ini, RESUME_SECTION_KEY_GET(mode), NULL );
-  snprintf(ini_path, sizeof(ini_path), "%s:%s", RESUME_SECTION_KEY_GET(mode), RESUME_FILENAME_KEY);
-  ini_path[sizeof(ini_path)-1] = 0;
-	iniparser_setstring( ini, ini_path, RESUME_PLAYLIST_FILENAME(mode));
-  snprintf(ini_path, sizeof(ini_path), "%s:%s", RESUME_SECTION_KEY_GET(mode), RESUME_POS_KEY);
-  ini_path[sizeof(ini_path)-1] = 0;
-	iniparser_setstring( ini, ini_path, "-1" );
+	iniparser_setstring(ini, RESUME_SECTION_KEY_GET(mode), NULL);
+  
+        snprintf(ini_path, sizeof(ini_path), "%s:%s", RESUME_SECTION_KEY_GET(mode), RESUME_FILENAME_KEY);
+        ini_path[sizeof(ini_path)-1] = 0;
+        iniparser_setstring(ini, ini_path, RESUME_PLAYLIST_FILENAME(mode));
+        
+        snprintf(ini_path, sizeof(ini_path), "%s:%s", RESUME_SECTION_KEY_GET(mode), RESUME_POS_KEY);
+        ini_path[sizeof(ini_path)-1] = 0;
+        iniparser_setstring(ini, ini_path, "-1");
 
-	iniparser_dump_ini( ini, fp );
-
-	fclose( fp );
+        iniparser_dump_ini( ini, fp );
+        fclose( fp );
 
 error:
 	iniparser_freedict(ini);
-
 	return ret;
 }
 
@@ -221,35 +222,53 @@ error:
 }
 
 
+int resume_get_general_settings(struct general_settings * settings) {
+    dictionary * ini ;
+    int res = 0;
+    int i;
 
-/** Read video settings from resume file
+    ini = iniparser_load(RESUME_FILENAME);
+    if( ini == NULL ){
+            PRINTDF( "Warning : Unable to load resume file <%s>\n", RESUME_FILENAME );
+            return -1;
+    }
+
+    i = iniparser_getint(ini, RESUME_GENERAL_SETTINGS_SECTION_KEY":"RESUME_BRIGHTNESS_KEY, -1);
+    if (i < 0) {
+        PRINTD( "Warning : Unable to get brightness from resume file - Setting to max\n");
+	settings->brightness = 100;       
+    } else 
+        settings->brightness = i;
+
+    iniparser_freedict(ini);
+    return res;
+}
+
+/** Read audio settings from resume file
  *
  * \param settings read settings
  *
  * \return 0  on success, -1 on failure
  */
 int resume_get_audio_settings(struct audio_settings * settings){
-	dictionary * ini ;
-	int res = 0;
-	int i;
+    dictionary * ini ;
+    int res = 0;
+    int i;
 
-	ini = iniparser_load(RESUME_FILENAME);
-	if( ini == NULL ){
-		PRINTDF( "Warning : Unable to load resume file <%s>\n", RESUME_FILENAME );
-		return -1;
-	}
+    ini = iniparser_load(RESUME_FILENAME);
+    if( ini == NULL ){
+            PRINTDF( "Warning : Unable to load resume file <%s>\n", RESUME_FILENAME );
+            return -1;
+    }
 
-	i = iniparser_getint(ini, RESUME_AUDIO_SETTINGS_SECTION_KEY":"RESUME_VOLUME_KEY, -1);
-	if( i < 0 ){
-		PRINTD( "Warning : Unable to get volume from resume file\n");
-		res = -1;
-		goto out_audio_settings;
-	}
-	else settings->volume = i;
+    i = iniparser_getint(ini, RESUME_AUDIO_SETTINGS_SECTION_KEY":"RESUME_VOLUME_KEY, -1);
+    if (i < 0) {
+            PRINTD( "Warning : Unable to get volume from resume file\n");
+            res = -1;
+    } else 
+            settings->volume = i;
 
-
-out_audio_settings:
-	iniparser_freedict(ini);
+    iniparser_freedict(ini);
     return res;
 }
 
@@ -272,19 +291,19 @@ int resume_get_video_settings(struct video_settings * settings) {
 	}
 
 
-	i = iniparser_getint(ini, RESUME_VIDEO_SETTINGS_SECTION_KEY":"RESUME_CONTRAST_KEY, -1);
-	if( i < 0 ){
+	i = iniparser_getint(ini, RESUME_VIDEO_SETTINGS_SECTION_KEY":"RESUME_CONTRAST_KEY, -1000);
+	if( i == -1000) {
 		res = -1;
 		goto out_video_settings;
 	}
 	else settings->contrast = i;
 
-	i = iniparser_getint(ini, RESUME_VIDEO_SETTINGS_SECTION_KEY":"RESUME_BRIGHTNESS_KEY, -1);
+/*	i = iniparser_getint(ini, RESUME_VIDEO_SETTINGS_SECTION_KEY":"RESUME_BRIGHTNESS_KEY, -1);
 	if( i < 0 ){
 		res = -1;
 		goto out_video_settings;
 	}
-	else settings->brightness = i;
+	else settings->brightness = i;*/
 
 	i = iniparser_getint(ini, RESUME_VIDEO_SETTINGS_SECTION_KEY":"RESUME_VOLUME_KEY, -1);
 	if( i < 0 ){
@@ -312,6 +331,40 @@ out_video_settings:
 	iniparser_freedict(ini);
 	return res;
 }
+
+
+
+int resume_set_general_settings(const struct general_settings * settings){
+    char buffer[256];
+    dictionary * ini ;
+    FILE * fp;
+    int ret = 0;
+
+    ini = iniparser_load(RESUME_FILENAME);
+    if( ini == NULL ){
+            PRINTDF( "Unable to load resume file <%s>\n", RESUME_FILENAME );
+            return -1;
+    }
+
+    iniparser_setstring( ini, RESUME_GENERAL_SETTINGS_SECTION_KEY, NULL );
+    snprintf(buffer,sizeof(buffer),"%i",settings->brightness);
+    iniparser_setstring( ini, RESUME_GENERAL_SETTINGS_SECTION_KEY":"RESUME_BRIGHTNESS_KEY, buffer );
+
+    fp = fopen(RESUME_FILENAME, "w+");
+    if (fp == NULL) {
+        PRINTDF("Unable to create resume file <%s>\n", RESUME_FILENAME);
+        ret = -1;
+        goto error;
+    }
+
+    iniparser_dump_ini( ini, fp );
+    fclose( fp );
+
+ error:
+    iniparser_freedict(ini);
+    return ret;
+}
+
 
 /**
  * \fn int resume_set_audio_settings(const struct audio_settings * settings)
@@ -378,9 +431,9 @@ int resume_set_video_settings(const struct video_settings * settings) {
 	snprintf(buffer,sizeof(buffer),"%i",settings->contrast);
 	iniparser_setstring( ini, 	RESUME_VIDEO_SETTINGS_SECTION_KEY":"RESUME_CONTRAST_KEY, buffer );
 
-    snprintf(buffer,sizeof(buffer),"%i",settings->brightness);
+/*    snprintf(buffer,sizeof(buffer),"%i",settings->brightness);
 	iniparser_setstring( ini, 	RESUME_VIDEO_SETTINGS_SECTION_KEY":"RESUME_BRIGHTNESS_KEY, buffer );
-
+*/
 	snprintf(buffer,sizeof(buffer),"%i",settings->volume);
 	iniparser_setstring( ini, 	RESUME_VIDEO_SETTINGS_SECTION_KEY":"RESUME_VOLUME_KEY, buffer );
 
@@ -437,4 +490,14 @@ int resume_save_playslist(enum eng_mode mode, const char * current_filename){
   } else {
     return -1;
   }
+}
+
+int resume_restore_playslist(enum eng_mode mode) {
+    char buffer[256];
+    int res ;
+    
+    res = snprintf(buffer, sizeof(buffer), "cp -f %s %s", RESUME_FULL_PLAYLIST_FILENAME(mode), RESUME_PLAYLIST_FILENAME(mode));
+    if ((res > 0) && (res < sizeof(buffer)))
+        return system(buffer);
+    return -1;        
 }

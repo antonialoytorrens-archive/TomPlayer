@@ -461,10 +461,8 @@ int playint_get_audio_settings(struct audio_settings * settings){
  */
 int playint_get_video_settings( struct video_settings * settings){
   int res = 0;
-
-  res  = send_command_wait_int(" get_property brightness\n", &settings->brightness);
-  //fprintf(stderr,"lumi : %i\n res :%i\n",settings->brightness,res);
-  res |= send_command_wait_int(" get_property contrast\n", &settings->contrast);
+  
+  res = send_command_wait_int(" get_property contrast\n", &settings->contrast);
   //fprintf(stderr,"contrast : %i\n res :%i\n",settings->contrast,res);
   res |= send_command_wait_float(" get_property audio_delay\n", &settings->audio_delay);
   //fprintf(stderr,"delay : %f\n res :%i\n",settings->audio_delay,res);
@@ -494,8 +492,6 @@ void playint_set_video_settings(const struct video_settings * settings){
   snprintf(buffer, sizeof(buffer),"audio_delay  %f 1\n",settings->audio_delay);
   send_command(buffer);
   snprintf(buffer, sizeof(buffer),"contrast  %i 1\n",settings->contrast);
-  send_command(buffer);
-  snprintf(buffer, sizeof(buffer),"brightness  %i 1\n",settings->brightness);
   send_command(buffer);
   snprintf(buffer, sizeof(buffer),"volume  %i 1\n",settings->volume);
   send_command(buffer);

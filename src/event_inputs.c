@@ -123,10 +123,10 @@ static void handle_key(DFBInputDeviceKeyIdentifier id){
             new_idx = get_ctrl(selected_ctrl_idx, +1);          
         break;   
       case DIKI_KP_MINUS: /*top left*/
-        pwm_modify_brightness(-5);
+        eng_brightness(-5);
         break;
       case DIKI_KP_PLUS:  /*top right*/
-        pwm_modify_brightness(5);
+        eng_brightness(5);
         break;  
       case DIKI_DOWN :
       case DIKI_UP : 
@@ -176,10 +176,10 @@ static void handle_key(DFBInputDeviceKeyIdentifier id){
         pwm_modify_brightness(5);
         break;  
       case DIKI_DOWN :
-        eng_handle_cmd(SKIN_CMD_NEXT,-1);  
+          eng_handle_cmd(SKIN_CMD_NEXT,-1);
         break;
       case DIKI_UP : 
-        eng_handle_cmd(SKIN_CMD_PREVIOUS,-1);  
+          eng_handle_cmd(SKIN_CMD_PREVIOUS,-1);          
         break;
       case DIKI_ENTER :
         eng_handle_cmd(SKIN_CMD_PAUSE,-1);  
@@ -276,8 +276,8 @@ void event_loop(void){
     ts_available = false;
   }
   
-  /* FIXME force ts availability 
-  ts_available = false;*/
+  /* FIXME force ts availability */
+  ts_available = true;
   log_write(LOG_INFO, "Touchscreen availability : %d", ts_available);
   
   /* Try to open tomplayer inputs FIFO */
@@ -342,7 +342,9 @@ void event_loop(void){
         //printf("ret : %d\n", ret);
         if ( ret > 0) {                         
           handle_key(key);          
-        } else {                        
+        } else {      
+            /* FIXME test deco teleco */
+            usleep(TIMER_PERIOD_US);
             if (errno != EINTR)/* && (errno != EAGAIN))*/{
                 log_write(LOG_ERROR, "Event spurious wakeup errno %d : %s\n", errno, strerror(errno));                
                 usleep(TIMER_PERIOD_US);

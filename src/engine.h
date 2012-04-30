@@ -36,5 +36,6 @@ int  eng_ask_menu(void);
 void eng_handle_cmd(int cmd, int p);
 int  eng_select_ctrl(const struct skin_control * ctrl, bool state);
 enum eng_mode eng_get_mode(void);
+void eng_brightness(int delta);
 
 #endif /* __ENGINE_H__ */
