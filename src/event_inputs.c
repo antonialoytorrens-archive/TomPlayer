@@ -277,7 +277,7 @@ void event_loop(void){
   }
   
   /* FIXME force ts availability */
-  ts_available = true;
+  ts_available = false;
   log_write(LOG_INFO, "Touchscreen availability : %d", ts_available);
   
   /* Try to open tomplayer inputs FIFO */
