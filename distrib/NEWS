@@ -8,6 +8,7 @@ Features :
 - Enable to display filename on skin video (http://sourceforge.net/apps/trac/tomplayer/ticket/45)
 - Brightness is now a global settings is is applied in the GUI and while playing audio/video (http://sourceforge.net/apps/trac/tomplayer/ticket/40)
 - BT remote reassociatoin after time out (20 minutes of inactivity) (http://sourceforge.net/apps/trac/tomplayer/ticket/33)
+- Add skin controls : 4 digits year (#48) and track number (#38)
 - Solve an issue with coverarts in Flac audio files
 - Push some new skins / skin improvements
 And all I forget but have been pushed in sources during the last year...
