@@ -1,5 +1,18 @@
 More informations on http://www.tomplayer.net
 
+Note : version 0.240 is for CARMINAT only.
+
+May the 1st 2012, Tomplayer v0.240b6 (beta)
+Features :
+- Main change : Integrated version with navcore both for stick joystick and BT remote  (http://sourceforge.net/apps/trac/tomplayer/ticket/17)
+- Enable to display filename on skin video (http://sourceforge.net/apps/trac/tomplayer/ticket/45)
+- Brightness is now a global settings is is applied in the GUI and while playing audio/video (http://sourceforge.net/apps/trac/tomplayer/ticket/40)
+- BT remote reassociatoin after time out (20 minutes of inactivity) (http://sourceforge.net/apps/trac/tomplayer/ticket/33)
+- Solve an issue with coverarts in Flac audio files
+- Push some new skins / skin improvements
+And all I forget but have been pushed in sources during the last year...
+
+
 May the 15st 2011, Tomplayer v0.240b5 (beta)
 Features :
 - A logging function in tomlog.txt file has been added (new config parameter : log_level) (http://sourceforge.net/apps/trac/tomplayer/ticket/30)
