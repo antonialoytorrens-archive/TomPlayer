@@ -40,6 +40,9 @@
 #define O_NOCTTY 0
 #endif
 
+/* Flag to dump raw data on stdout */
+#undef DUMP_RAW
+
 #define DEFAULT_FRONTEND "/tmp/interceptty"
 
 struct sockaddr_in inet_resolve(const char *sockname);
@@ -472,8 +475,10 @@ void dumpbuff_carminat(int dir, unsigned char *buf, int buflen)
 	int start = 0;
 	int end = 0;
 
-	/* FIXME raw log everything !
-	dumpbuff_raw(dir,buf,buflen);*/
+	/* raw log everything !*/
+#ifdef DUMP_RAW
+	dumpbuff_raw(dir,buf,buflen);
+#endif
 	//Only parses frame from CAN to Soft
 	if(!dir)
 	{
@@ -1060,8 +1065,6 @@ int main (int argc, char *argv[])
 			break;
 		case 'o':
 			outfilename=strdup(optarg);
-/*			if ( (outfile = fopen(outfilename,"w")) == NULL)
-				errorf("Couldn't open output file '%s' for write: %s\n",outfilename,strerror(errno));*/
 			break;
 
 		case 'V':
