@@ -70,7 +70,8 @@ enum skin_cmd{
     SKIN_CMD_TEXT_YEAR      = 34,
     SKIN_CMD_TEXT_COMMENT   = 35,
     SKIN_CMD_TEXT_GENRE     = 36,
-    SKIN_CMD_COVERART       = 37,       
+    SKIN_CMD_COVERART       = 37,
+    SKIN_CMD_TEXT_TRACK_NB  = 38,
     /* Misc */
     SKIN_CMD_CURRENT_POS    = 40,
     SKIN_CMD_REMAINING_TIME = 41,
@@ -82,10 +83,11 @@ enum skin_cmd{
     SKIN_CMD_TEXT_MINUTS    = 47, /**< time minuts */
     SKIN_CMD_TEXT_DYEAR      = 48, /**< Year of the date (4digits) */
     SKIN_CMD_MAX_NB
+    
 };
 
 #define SKIN_CMD_TAGS_FIRST  SKIN_CMD_TEXT_ARTIST
-#define SKIN_CMD_TAGS_LAST   SKIN_CMD_TEXT_GENRE
+#define SKIN_CMD_TAGS_LAST   SKIN_CMD_TEXT_TRACK_NB
 #define SKIN_CMD_GPS_FIRST   SKIN_CMD_TEXT_LAT 
 #define SKIN_CMD_GPS_LAST    SKIN_CMD_TEXT_SPEED
 

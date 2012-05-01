@@ -181,7 +181,9 @@ static const char *get_string_tag_ctrl(const struct track_tags * tags, enum skin
         case SKIN_CMD_TEXT_COMMENT :
             return tags->comment;
         case SKIN_CMD_TEXT_GENRE :
-            return tags->genre;           
+            return tags->genre;    
+        case SKIN_CMD_TEXT_TRACK_NB :
+            return tags->nb;
         default :
             return NULL;
     }
@@ -252,7 +254,7 @@ static void refresh_tags_infos(void){
     /* Handle text tags */
     for (cmd = SKIN_CMD_TAGS_FIRST; cmd <= SKIN_CMD_TAGS_LAST; cmd++){
         ctrl = skin_get_ctrl(cmd);
-        if (ctrl != NULL)
+        if ((ctrl != NULL) && (cmd != SKIN_CMD_COVERART))
             display_txt_ctrl(ctrl, get_string_tag_ctrl(tags, cmd));
     }
     

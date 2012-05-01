@@ -99,6 +99,12 @@ bool track_update(const char * filename){
             current_tags.track[0] = 0;
         }
         current_tags.genre = taglib_tag_genre(tag);
+        if (taglib_tag_track(tag) > 0) {
+            snprintf(current_tags.nb, sizeof(current_tags.nb), "%02d", taglib_tag_track(tag));
+            current_tags.nb[sizeof(current_tags.nb) -1] = 0;    
+        } else {
+            current_tags.nb[0] = 0;
+        }
     }
     properties = taglib_file_audioproperties(current_file);
     if(properties != NULL) {

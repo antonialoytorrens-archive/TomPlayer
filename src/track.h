@@ -32,6 +32,7 @@
 #include <IL/ilu.h>
 
 struct track_tags{
+      char nb[4];
       const char * title;
       const char * artist;
       const char * album;
