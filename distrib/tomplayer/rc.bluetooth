@@ -1,8 +1,9 @@
 #!/bin/sh
 #_rc.bluetooth: Loads Bluetooth modules and starts associated programs.
 
+
 die() {
-  echo "ERROR: $1" >> $LOGFILE
+  echo "ERROR: $1" 
   exit 1
 }
 
@@ -35,7 +36,7 @@ elif test "$1" = "suspend"; then
   echo "not started">/var/run/bt_status
   exit 0;
 else
-  echo "* Starting Bluetooth" >> $LOGFILE
+  echo "* Starting Bluetooth" 
 
   if ! sed "s/@DEVNAME@/${hw_btname}/;s/@DEVCLASS@/${hw_btclass}/" /etc/bluetooth/hcid.conf.template > /etc/bluetooth/hcid.conf; then
     die "unable to setup hcid config file"
@@ -80,7 +81,8 @@ if ! hciconfig ${btif} up; then
 fi
 
 #Launch hidd server to handle Remote controler
-/bin/hidd --server -n > /media/sdcard/log/bthid.txt 2>&1 &
+/bin/hidd --server
+# -n> /media/sdcard/tomplayer/bthid.txt  2>&1 & 
 
 echo "started">/var/run/bt_status
 
