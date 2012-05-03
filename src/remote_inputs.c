@@ -68,8 +68,10 @@ int main(int argc, char ** argv ){
             if (current_dev > 9)
                 current_dev = INIT_DEV;
         } else {
+		if (log_file != NULL) {
 		fprintf(log_file,"Opening %s OK\n", input_dev);
                 fflush(log_file);
+		}
 	}
     }
     dfb_key = 0;
