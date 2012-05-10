@@ -33,7 +33,10 @@
 #include <stdbool.h>
 #include <ft2build.h>
 #include FT_FREETYPE_H
+#include FT_CACHE_H
+#include FT_CACHE_MANAGER_H
 
+#include "log.h"
 #include "font.h"
 
 /* FIXME hardcoded font */
@@ -43,84 +46,109 @@
 static struct{
     /* FT objects instanciated on init */
     FT_Library    library;
+    FTC_Manager   cache_manager;
+    FTC_SBitCache sbits_cache;
     FT_Face       face;
+    
     /* height and width of currently drawn string */
     int height, width;
     /* RGBA image buffer*/
     unsigned char * image;
+    /* Default and current Font sizes */
     int default_size;
-}state;
+    int size;
+} state;
 
-static bool draw_bitmap( const struct font_color * color,
-                  FT_Bitmap*  bitmap,
-                  int     x,
-                  int     y){
+static bool draw_bitmap(const struct font_color * color,
+                        FTC_SBit sbit,
+                        int x, int y)
+{
 
   FT_Int  i, j, p, q;
-  FT_Int  x_max = x + bitmap->width;
-  FT_Int  y_max = y + bitmap->rows ;
- 
-  for ( i = x, p = 0; i < x_max; i++, p++ )
-  {
-    for ( j = y, q = 0; j < y_max; j++, q++ )
-    {
+  FT_Int  x_max = x + sbit->width;
+  FT_Int  y_max = y + sbit->height;
+
+//  log_write(LOG_DEBUG, "draw_bitmap  %i %i %i %i",x, x_max, y, y_max);
+
+  for (i = x, p = 0; i < x_max; i++, p++) {
+    for (j = y, q = 0; j < y_max; j++, q++) {
           state.image[(4*((j*state.width) + i)) + 0] = color->r;
           state.image[(4*((j*state.width) + i)) + 1] = color->g;
           state.image[(4*((j*state.width) + i)) + 2] = color->b;
-          state.image[(4*((j*state.width) + i)) + 3] = bitmap->buffer[ q * bitmap->width + p] ; 
+          state.image[(4*((j*state.width) + i)) + 3] = sbit->buffer[ q * sbit->width + p] ; 
     }
   }
   return true;
 }
 
-bool  font_get_size(const char * text, int * width, int * height, int * orig){
+
+/* FIXME Only one face is used for now... */
+static FT_Error face_requester( FTC_FaceID  face_id,
+                     FT_Library  lib,
+                     FT_Pointer  request_data,
+                     FT_Face*    aface )
+{ 
+  *aface = state.face;
+  return 0;
+}
+  
+  
+bool  font_get_size(const char * text, int * width, int * height, int * orig)
+{
   int n;
   int num_chars;
   FT_Vector pen;
   FT_Error  error;
-  FT_GlyphSlot  slot;
   int up, down, max_up, max_down;
-
+  FTC_SBit sbit;
+  FTC_ImageTypeRec im_type;
+  FT_UInt index;
+  
+  im_type.flags = FT_LOAD_TARGET_NORMAL;  
+  im_type.face_id = &state;  
+  im_type.width =  state.size;
+  im_type.height = state.size;
+  
   max_up = max_down = *orig = 0;
   num_chars = strlen(text);
-  pen.x = 0 * 64;
-  pen.y = 0 * 64;
-  slot = state.face->glyph;
+  pen.x = 0;
+  pen.y = 0;
   *height = 0;
 
-  for ( n = 0; n < num_chars; n++ ){
-    /* load glyph image into the slot (erase previous one) */
-    error = FT_Load_Char( state.face, text[n], FT_LOAD_RENDER );
-    if ( error ){
-      return false;
-    }
+  for (n = 0; n < num_chars; n++) {
+    index = FT_Get_Char_Index(state.face, text[n]);
+    error = FTC_SBitCache_Lookup(state.sbits_cache,
+                                 &im_type,                                       
+                                 index,
+                                 &sbit,
+                                 NULL);
+     //log_write(LOG_DEBUG, " xadv :%i - yadv : %i - h :%i top :%i", sbit->xadvance, sbit->yadvance, sbit->height, sbit->top);
+
     /* increment pen position */
-    pen.x += slot->advance.x;
-    pen.y += slot->advance.y;
-    up = slot->metrics.horiBearingY/64;
-    down = slot->metrics.height/64 - slot->metrics.horiBearingY/64;
+    pen.x += sbit->xadvance;
+    pen.y += sbit->yadvance;
+    up = sbit->top;
+    down =  sbit->height - sbit->top;    
     if (up > max_up)
       max_up = up;
     if (down > max_down){ 
       max_down = down;
       *orig = down;
     }
-
     if (*height < (max_up+max_down)){
         *height = (max_up+max_down) ;
     }
   }
 
-  /* FIXME size is dalse Find why - by the time add a constant */
-  *width  = pen.x / 64 + 5;
-  
+  *width  = pen.x;
+  //log_write(LOG_DEBUG, "height : %i - width : %i - orig %i", *height, *width, *orig);
   return true;
 }
 
 
 
-void font_release(void){
-  if (state.face != NULL){
+void font_release(void) {
+  if (state.face != NULL) {
     FT_Done_Face(state.face);
     state.face = NULL;
   }
@@ -134,10 +162,13 @@ void font_release(void){
 /**
  * \warning The caller will have to free image_buffer
  */
-bool font_draw(const struct font_color * color,  const char * text, unsigned char ** image_buffer, int * w, int *h){
+bool font_draw(const struct font_color *color,  const char *text, unsigned char **image_buffer, int *w, int *h)
+{
+  FTC_SBit sbit;
+  FTC_ImageTypeRec im_type;
+  FT_UInt index;
   FT_Vector pen;
   FT_Error  error;
-  FT_GlyphSlot  slot;
   int num_chars;
   int orig;
   int n;
@@ -156,59 +187,70 @@ bool font_draw(const struct font_color * color,  const char * text, unsigned cha
   *image_buffer = state.image;
 
   num_chars = strlen(text);
-  slot = state.face->glyph;
+  pen.x = 0;
+  pen.y = 0;
 
-  /* the pen position in 26.6 cartesian space coordinates
-     relative to the upper left corner  */
-  pen.x = 0 * 64;
-  pen.y = 0 * 64;
-
-  for ( n = 0; n < num_chars; n++ )
-  {
-
-    /* load glyph image into the slot (erase previous one) */
-    error = FT_Load_Char(state.face, text[n], FT_LOAD_RENDER);
-    if ( error )
-      continue;                 /* ignore errors */
-
-    /* now, draw to our target surface (convert position) */
+  im_type.face_id = &state;
+  im_type.width = state.size; 
+  im_type.height = state.size;
+  im_type.flags = FT_LOAD_TARGET_NORMAL;
+  
+  for (n = 0; n < num_chars; n++) {
+    index = FT_Get_Char_Index(state.face, text[n]);         
+    error = FTC_SBitCache_Lookup(state.sbits_cache,
+                                 &im_type,                                       
+                                 index,
+                                 &sbit,
+                                 NULL);
+    //log_write(LOG_DEBUG, "err : %i size : %i for index %i - sbit :%x - xadvance : %i left %i top %i", error, state.size, index, sbit, sbit->xadvance, sbit->left, sbit->top );
+    /* now, draw to our target surface (convert position) */    
     draw_bitmap( color,
-                 &slot->bitmap,
-                 pen.x / 64 /*slot->bitmap_left*/,
-                 state.height - slot->bitmap_top - orig);
-
+                 sbit,
+                 pen.x + sbit->left,
+                 state.height - sbit->top - orig);
     /* increment pen position */
-    pen.x += slot->advance.x;
-    pen.y += slot->advance.y;
+    pen.x += sbit->xadvance; //slot->advance.x;
+    pen.y += sbit->yadvance; //slot->advance.y;
   }
   state.image = NULL;
   return true;
 }
 
 
-bool font_init(int size){
+bool font_init(int size)
+{
   FT_Error  error;
 
   /* Prevent multiple init without release */
   if (state.library != NULL)
     return false;
 
-  error = FT_Init_FreeType( &state.library );              /* initialize library */
-  /* error handling omitted */
-  error = FT_New_Face( state.library, FONT_FILENAME, 0, &state.face ); /* create face object */
-  /* error handling omitted */
-  /* set character size : use size ptt at 100dpi */
-  error = FT_Set_Char_Size(state.face, size * 64, 0, 100, 0 );  
-  state.default_size = size;
+  /* FIXME error handling omitted */
   
+  /* Initialize library */
+  error = FT_Init_FreeType(&state.library);              
+  /* Load font */
+  error |= FT_New_Face(state.library, FONT_FILENAME, 0, &state.face); 
+  /* Initialize cache */
+  error |= FTC_Manager_New(state.library, 0, 0, 0,
+                          face_requester, 0, &state.cache_manager);
+  error |= FTC_SBitCache_New(state.cache_manager, &state.sbits_cache);  
+  log_write(LOG_DEBUG, __FILE__ ":Font module initialized : %i", error);
+  
+  state.default_size = size;
+  state.size = size;
   return true;
 }
 
 
-int font_change_size(int size){
-    return FT_Set_Char_Size(state.face, size * 64, 0, 100, 0 );  
+int font_change_size(int size)
+{    
+    state.size = size;    
+    return 0;
 }
 
-int font_restore_default_size(void){
-    return FT_Set_Char_Size(state.face, state.default_size * 64, 0, 100, 0 );  
+int font_restore_default_size(void)
+{
+    state.size = state.default_size;
+    return 0;
 }
