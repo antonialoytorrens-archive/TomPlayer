@@ -1,0 +1,57 @@
+# General configuration file for TomPlayer
+#
+# Warning this file has been renamed from tomplayer.ini to tomplaye.ini in version since v0.240b1
+
+[general]
+
+# Define the extension to be filtered in the file browser as a POSIX extended regular expression
+filter_video=^.*\.(mpeg|mpg|avi|mkv|flv)$ 
+filter_audio=^.*\.(mp3|ogg|aac|flac)$
+
+# Define the directory location of multimedia files Without trailing slash ('/')
+video_dir=/media/sdcard/video
+audio_dir=/media/sdcard/audio
+
+# audio screen saver Time out (in seconds) - 0 To disable screen saver
+screen_saver_to = 15
+enable_screen_saver = 1
+
+#If you want to use FM transmitter set this value to the expected frequency (in HZ)
+#For instace to emit on 107.4Mhz , enter 
+#fm_transmitter=107400000
+fm_transmitter=87000000
+enable_fm_transmitter=0
+#FM Recall 1 
+fm_transmitter1=100399997
+#FM Recall 2 
+fm_transmitter2=92499999
+#internal speaker configuration
+# 0 = Auto mute
+# 1 = Always mute
+# 2 = Never mute
+int_speaker=2
+# Set to 0 to desable video preview in file selector
+video_preview=1
+
+
+#Diaporama config 
+#diapo_enabled = 1 for diaporama
+#diapo_enabled = 2 for carminat screen saver (clock and GPS informations)
+diapo_enabled=2
+diapo_filter=^.*\.(gif|png|jpg|bmp)$
+diapo_delay=5
+diapo_path=/media/sdcard/photos/
+
+# Small text in file selector
+enable_small_text=0
+
+# Logging (0=None - 1=Errors - 2=warning - 3=info - 4=debug - 5=verbose)
+log_level = 3
+
+
+[video_skin]
+filename=./skins/video/claudio_allcmds.zip
+
+[audio_skin]
+filename=./skins/audio/audio_caesar.zip
+

@@ -1,0 +1,11 @@
+vo=fbdev
+ao=aa,cool,oss
+noaspect=1
+noconsolecontrols=1
+framedrop=yes
+af=volume=-5
+font=/tmp/decker.ttf
+subfont-text-scale=4
+ac=mad
+
+
