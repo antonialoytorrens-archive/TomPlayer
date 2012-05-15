@@ -97,11 +97,12 @@ static void refresh_osd(void){
     unsigned char *buffer;
     struct font_color color;
             
-    if (osd_request.new){
-        if (osd.buffer != NULL){
+    if (osd_request.new) {
+        if (osd.buffer != NULL) {
             osd_clear();
-        } else {
-            if (osd_request.txt){
+        }
+        //} else {
+            if (osd_request.txt) {
                 color.r = 0xFF;
                 color.g = 0xFF;
                 color.b = 0xFF;
@@ -110,10 +111,10 @@ static void refresh_osd(void){
                 free(osd_request.txt);
             }
             memset(&osd_request, 0, sizeof(osd_request));
-        }
+        //}
     }
-    if (osd.time_limit != 0){
-        if (time(NULL) >= osd.time_limit){
+    if (osd.time_limit != 0) {
+        if (time(NULL) >= osd.time_limit) {
             osd_clear();            
         }
     }
