@@ -31,9 +31,9 @@
 
 struct gps_data{
     int seq;    /**< sequence number (added by GPS module to detect refreshed data) */
-    unsigned short int lat_deg;
+    short int lat_deg;
     unsigned short int lat_mins;
-    unsigned short int long_deg;
+    short int long_deg;
     unsigned short int long_mins;
     unsigned int alt_cm;
     unsigned int sat_id_list;

@@ -71,8 +71,8 @@ struct geodetic_nav_data{
     uint8_t minuts;
     uint16_t msecs;
     uint32_t sat_id_list;
-    uint32_t latitude;
-    uint32_t longitude;
+    int32_t latitude;
+    int32_t longitude;
     uint32_t alt_ellips;
     uint32_t altitude;
     uint8_t map_daturn;
@@ -155,9 +155,9 @@ static void handle_msg(unsigned char * buffer, int len ){
     /* Extract values from geodetic msg */
     pthread_mutex_lock(&gps_state.data_mutex);
     gps_state.data.seq += 1;
-    gps_state.data.lat_deg = endian32_swap(msg->latitude) / 10000000;
+    gps_state.data.lat_deg = ((int32_t)endian32_swap(msg->latitude)) / 10000000;
     gps_state.data.lat_mins = ((endian32_swap(msg->latitude) * 60) / 10000000 ) % 60;     
-    gps_state.data.long_deg = endian32_swap(msg->longitude) / 10000000;    
+    gps_state.data.long_deg =((int32_t)endian32_swap(msg->longitude)) / 10000000;    
     gps_state.data.long_mins = ((endian32_swap(msg->longitude) * 60) / 10000000 ) % 60;     
     gps_state.data.alt_cm = endian32_swap(msg->altitude);
     gps_state.data.sat_id_list = endian32_swap(msg->sat_id_list);
