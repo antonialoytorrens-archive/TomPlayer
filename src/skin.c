@@ -36,6 +36,7 @@
 #include "debug.h"
 #include "skin.h"
 
+#define SKIN_MAX 2
 #define CONF_FILENAME "/tmp/skin.conf"
 #define SKIN_CONFIG_NAME "skin.conf"
 #define WS_SKIN_CONFIG_NAME "ws_skin.conf"
@@ -77,14 +78,18 @@
 #define KEY_TEXT_CONTROL_SIZE       "size"
 #define KEY_TEXT_CONTROL_ALIGN      "align"
 
-/* Current skin configuration */
-static struct{
+
+struct skin_t{
     struct skin_config config;      /*!< skin configuration */
     int cmd2idx[SKIN_CMD_MAX_NB];   /*!< Function --> ctrl index table */
     ILuint bitmap;                  /*!< DevIL background bitmap */
     int progress_bar_index;         /*!< index of progress bar object in controls table*/    
     ILuint bitmaps[MAX_SKIN_CONTROLS]; /*!< DevIL imgs associated to the controls */
-} current_skin;
+} ;
+
+/* Current skin configuration */
+static struct skin_t skins[SKIN_MAX];
+static struct skin_t *current_skin;
 
 static const char * cmd_labels[SKIN_CMD_MAX_NB] = { "EXIT      ",
                                                     "PAUSE     ",
@@ -140,21 +145,29 @@ static void control_sort(struct skin_control *array, int length)  {
     }
 } 
 
-static void expand_bitmaps(const struct skin_config * skin_conf){
+static void resize_bitmaps(const struct skin_config * skin_conf){
 #ifdef WITH_DEVIL
   int i, frame_id;
   int new_w, new_h;
 
-  ilBindImage(current_skin.bitmap);
-  iluScale(WS_XMAX,WS_YMAX, 1);
+  ilBindImage(current_skin->bitmap);
+  if (ws_probe())
+    iluScale(WS_XMAX,WS_YMAX, 1);
+  else
+    iluScale(WS_NOXL_XMAX, WS_NOXL_YMAX, 1);
   
   for( i = 0; i < skin_conf->nb; i++ ){
-      if(current_skin.bitmaps[i] != 0 ){
-          ilBindImage(current_skin.bitmaps[i]);
+      if(current_skin->bitmaps[i] != 0 ){
+          ilBindImage(current_skin->bitmaps[i]);
           frame_id = 0;
-          new_w = ((int)(ilGetInteger(IL_IMAGE_WIDTH) *(1.0 * WS_XMAX ) / WS_NOXL_XMAX));
-          new_h = ((int)(ilGetInteger(IL_IMAGE_HEIGHT)*(1.0 * WS_YMAX ) / WS_NOXL_YMAX));
-          PRINTDF("%i - new w : %i new h : %i - num im :%i - num mipmaps : %i \n ", i, new_w,new_h, ilGetInteger(IL_NUM_IMAGES),ilGetInteger(IL_NUM_MIPMAPS));        
+          if (ws_probe()) {
+            new_w = ((int)(ilGetInteger(IL_IMAGE_WIDTH) *(1.0 * WS_XMAX ) / WS_NOXL_XMAX));
+            new_h = ((int)(ilGetInteger(IL_IMAGE_HEIGHT)*(1.0 * WS_YMAX ) / WS_NOXL_YMAX));
+          } else {
+            new_w = ((int)(ilGetInteger(IL_IMAGE_WIDTH) * (1.0 * WS_NOXL_XMAX) / WS_XMAX ));
+            new_h = ((int)(ilGetInteger(IL_IMAGE_HEIGHT)*(1.0 * WS_NOXL_YMAX) / WS_YMAX));
+          }
+          log_write(LOG_INFO, "%i - new w : %i new h : %i - num im :%i - num mipmaps : %i \n ", i, new_w,new_h, ilGetInteger(IL_NUM_IMAGES),ilGetInteger(IL_NUM_MIPMAPS));
           if  (skin_conf->controls[i].cmd != SKIN_CMD_BATTERY_STATUS){
                   /* Scale animation seems to crash so exclude battery icons */
                   iluScale(new_w,new_h,1);
@@ -165,36 +178,36 @@ static void expand_bitmaps(const struct skin_config * skin_conf){
 }
 
 
-/** Expand configuration to fit in a widescreen
+/** resize configuration to fit in a widescreen
  *
- * \param conf configuration to be expanded
+ * \param conf configuration to be resized
  */
-static void expand_config( struct skin_config * conf ){
+static void resize_config(struct skin_config * conf) {
 	int i;
 
-	EXPAND_X(conf->text_x1);
-	EXPAND_X(conf->text_x2);
-	EXPAND_Y(conf->text_y1);
-	EXPAND_Y(conf->text_y2);
+	RESIZE_X(conf->text_x1);
+	RESIZE_X(conf->text_x2);
+	RESIZE_Y(conf->text_y1);
+	RESIZE_Y(conf->text_y2);
 
 	for( i = 0; i < conf->nb; i++){
 		switch( conf->controls[i].type ){
 			case SKIN_CONTROL_CIRCULAR:
-				EXPAND_X(conf->controls[i].params.circ_icon.x);
-				EXPAND_Y(conf->controls[i].params.circ_icon.y);
-				EXPAND_Y(conf->controls[i].params.circ_icon.r);
+				RESIZE_X(conf->controls[i].params.circ_icon.x);
+				RESIZE_Y(conf->controls[i].params.circ_icon.y);
+				RESIZE_Y(conf->controls[i].params.circ_icon.r);
 				break;
 			case SKIN_CONTROL_RECTANGULAR:
 			case SKIN_CONTROL_PROGRESS_X:
 			case SKIN_CONTROL_PROGRESS_Y:
-				EXPAND_X(conf->controls[i].params.rect_icon.x1);
-				EXPAND_X(conf->controls[i].params.rect_icon.x2);
-				EXPAND_Y(conf->controls[i].params.rect_icon.y1);
-				EXPAND_Y(conf->controls[i].params.rect_icon.y2);
+				RESIZE_X(conf->controls[i].params.rect_icon.x1);
+				RESIZE_X(conf->controls[i].params.rect_icon.x2);
+				RESIZE_Y(conf->controls[i].params.rect_icon.y1);
+				RESIZE_Y(conf->controls[i].params.rect_icon.y2);
 				break;
       case SKIN_CONTROL_TEXT : 
-        EXPAND_X(conf->controls[i].params.text.x);
-        EXPAND_Y(conf->controls[i].params.text.y);          
+        RESIZE_X(conf->controls[i].params.text.x);
+        RESIZE_Y(conf->controls[i].params.text.y);          
         break;
 		}
 	}
@@ -247,11 +260,11 @@ static bool unzip_file( struct zip * fp_zip, char * filename_in, char * filename
  */
 static void reset_skin_conf (void){
   int i;  
-  memset(&current_skin, 0, sizeof(current_skin));  
+  memset(current_skin, 0, sizeof(*current_skin));  
   for( i = 0; i < SKIN_CMD_MAX_NB; i++ ){
-    current_skin.cmd2idx[i] = -1;
+    current_skin->cmd2idx[i] = -1;
   }
-  current_skin.progress_bar_index = -1;
+  current_skin->progress_bar_index = -1;
 }
 
 /** Load a skin configuration
@@ -267,7 +280,7 @@ static bool load_skin_config(char * filename){
     char section_control[512];
     int i,j;
     char * s;
-    struct skin_config * skin_conf = &current_skin.config;
+    struct skin_config * skin_conf = &current_skin->config;
     bool ret = true;
     
 
@@ -394,16 +407,16 @@ static bool load_skin_config(char * filename){
         /* Special case of progress bar for now - FIXME : generic handling - */
         if ((skin_conf->controls[i].type == SKIN_CONTROL_PROGRESS_X) ||
             (skin_conf->controls[i].type == SKIN_CONTROL_PROGRESS_Y)){
-            current_skin.progress_bar_index = i;
+            current_skin->progress_bar_index = i;
         }
         /* Fill table cmd -> skin index */
         if ((skin_conf->controls[i].cmd >= 0) &&
             (skin_conf->controls[i].cmd < SKIN_CMD_MAX_NB)){
-            current_skin.cmd2idx[skin_conf->controls[i].cmd] = i;
+            current_skin->cmd2idx[skin_conf->controls[i].cmd] = i;
             
         }        
         /* If an entry of explicit tile control is present then old filename should not be displayed */
-        if (current_skin.cmd2idx[SKIN_CMD_TEXT_TITLE] != -1) {
+        if (current_skin->cmd2idx[SKIN_CMD_TEXT_TITLE] != -1) {
              skin_conf->display_filename = 0;   
         }
     }
@@ -420,14 +433,14 @@ error:
  */
 bool skin_release(void){
     int i;    
-    struct skin_config * skin_conf = &current_skin.config;
+    struct skin_config * skin_conf = &current_skin->config;
 #ifdef WITH_DEVIL       
     /* Unload different bitmap of the skin */
-    if (current_skin.bitmap) 
-        ilDeleteImages(1, &current_skin.bitmap);
+    if (current_skin->bitmap) 
+        ilDeleteImages(1, &current_skin->bitmap);
     for(i = 0; i < skin_conf->nb; i++)
-        if (current_skin.bitmaps[i]) 
-            ilDeleteImages(1, &current_skin.bitmaps[i]);
+        if (current_skin->bitmaps[i]) 
+            ilDeleteImages(1, &current_skin->bitmaps[i]);
 #endif
     for(i = 0; i < skin_conf->nb; i++){
         free(skin_conf->controls[i].bitmap_filename);
@@ -449,14 +462,17 @@ bool skin_release(void){
 bool skin_init(const char * filename, bool load_bitmaps ){
   int ws;
   int error;
-  int expand_conf = false;
+  int resize_conf = false;
   struct zip * fp_zip;
   int return_code = false;
   int i;
   char cmd[200];
-  struct skin_config * skin_conf = &current_skin.config;  
+  struct skin_config * skin_conf;
   
   error = 0;
+  /* FIXME */
+  current_skin = &skins[0];
+  skin_conf = &current_skin->config;  
   ws = ws_probe();
   reset_skin_conf();  
   
@@ -465,37 +481,41 @@ bool skin_init(const char * filename, bool load_bitmaps ){
   fp_zip = zip_open( filename, ZIP_CHECKCONS, &error );
 
   if( error != 0 || fp_zip == NULL ){
-      fprintf( stderr, "Unable to load zip file <%s> (%d)\n" , filename, error );
+      log_write(LOG_ERROR, "Unable to load zip file <%s> (%d)\n" , filename, error );
       return false;
   }
 
   /* Loading of config file */
   if( ws ){
     if( unzip_file( fp_zip, WS_SKIN_CONFIG_NAME, CONF_FILENAME ) == false ){
-      fprintf( stderr, "No widescreen config in zip file <%s>\n", filename );
+      log_write(LOG_ERROR, "No widescreen config in zip file <%s>", filename );
       if( unzip_file( fp_zip, SKIN_CONFIG_NAME, CONF_FILENAME ) == false ){
-        fprintf( stderr, "Error while unzipping <%s>\n", SKIN_CONFIG_NAME );
+        log_write(LOG_ERROR, "Error while unzipping <%s>", SKIN_CONFIG_NAME );
         goto error;
       }
-      expand_conf = true;
+      resize_conf = true;
     }
   }
   else{
-    if( unzip_file( fp_zip, SKIN_CONFIG_NAME, CONF_FILENAME ) == false ){
-      fprintf( stderr, "Error while unzipping <%s>\n", SKIN_CONFIG_NAME );
-      goto error;
+    if (unzip_file(fp_zip, SKIN_CONFIG_NAME, CONF_FILENAME ) == false) {
+      log_write(LOG_WARNING, "No small screen config in zip file <%s>", filename);
+      if (unzip_file(fp_zip, WS_SKIN_CONFIG_NAME, CONF_FILENAME ) == false) {
+        log_write(LOG_ERROR,"Error while unzipping <%s>\n", SKIN_CONFIG_NAME);        
+        goto error;
+      }
+      resize_conf = true;
     }
   }
   sprintf( cmd, "dos2unix %s", CONF_FILENAME );
   system( cmd );
   
-  if( load_skin_config(CONF_FILENAME) == false ){
+  if (load_skin_config(CONF_FILENAME) == false) {
     fprintf( stderr, "Error while loading config file <%s>\n", CONF_FILENAME );
     goto error;
   }
 
-  if( expand_conf == true ) expand_config( skin_conf );
-
+  if (resize_conf == true) resize_config(skin_conf);
+  
         if( unzip_file( fp_zip, skin_conf->bitmap_filename, ZIP_SKIN_BITMAP_FILENAME ) == false ){
                 fprintf( stderr, "Error while unzipping <%s>\n", skin_conf->bitmap_filename );
                 goto error;
@@ -503,21 +523,21 @@ bool skin_init(const char * filename, bool load_bitmaps ){
 
         if (load_bitmaps){  
           /* Loading of different bitmap of the skin */
-          skin_load_bitmap(&current_skin.bitmap, ZIP_SKIN_BITMAP_FILENAME);
+          skin_load_bitmap(&current_skin->bitmap, ZIP_SKIN_BITMAP_FILENAME);
           for( i = 0; i < skin_conf->nb; i++ ){
               if(skin_conf->controls[i].bitmap_filename != NULL){
                   if (unzip_file(fp_zip, skin_conf->controls[i].bitmap_filename, ZIP_SKIN_BITMAP_FILENAME) == false){
                           fprintf(stderr, "Error while unzipping <%s>\n", skin_conf->controls[i].bitmap_filename);
                           goto error;
                   }
-                  skin_load_bitmap(&current_skin.bitmaps[i], ZIP_SKIN_BITMAP_FILENAME);
-                  PRINTDF("Loading %s - Image id :%i\n",skin_conf->controls[i].bitmap_filename, current_skin.bitmaps[i]);
+                  skin_load_bitmap(&current_skin->bitmaps[i], ZIP_SKIN_BITMAP_FILENAME);
+                  PRINTDF("Loading %s - Image id :%i\n",skin_conf->controls[i].bitmap_filename, current_skin->bitmaps[i]);
               } else{
-                  current_skin.bitmaps[i] = 0;
+                  current_skin->bitmaps[i] = 0;
               }
           }
-          if( expand_conf == true ){
-            expand_bitmaps(skin_conf);
+          if (resize_conf == true) {
+            resize_bitmaps(skin_conf);
           }
         }
 
@@ -556,42 +576,42 @@ struct skin_rectangular_shape skin_ctrl_get_zone(const struct skin_control *ctrl
 }
 
 ILuint skin_get_background(void){
-    return current_skin.bitmap;
+    return current_skin->bitmap;
 }
 
 ILuint skin_get_img(enum skin_cmd cmd){
-    if (current_skin.cmd2idx[cmd] == -1) 
+    if (current_skin->cmd2idx[cmd] == -1) 
         return 0;    
-    return current_skin.bitmaps[current_skin.cmd2idx[cmd]];
+    return current_skin->bitmaps[current_skin->cmd2idx[cmd]];
 }
 
 ILuint skin_get_pb_img(void){
-    if (current_skin.progress_bar_index == -1)
+    if (current_skin->progress_bar_index == -1)
         return 0;
-    return current_skin.bitmaps[current_skin.progress_bar_index];
+    return current_skin->bitmaps[current_skin->progress_bar_index];
 }
 
 
 const struct skin_control* skin_get_ctrl(enum skin_cmd cmd){
-    if (current_skin.cmd2idx[cmd] == -1) 
+    if (current_skin->cmd2idx[cmd] == -1) 
         return NULL;
-    return &current_skin.config.controls[current_skin.cmd2idx[cmd]];
+    return &current_skin->config.controls[current_skin->cmd2idx[cmd]];
 }
 
 const struct skin_config *skin_get_config(void){
-    return &current_skin.config;
+    return &current_skin->config;
 }
 
 const struct skin_control *skin_get_pb(void){
-    if (current_skin.progress_bar_index == -1)
+    if (current_skin->progress_bar_index == -1)
         return NULL;
-    return &current_skin.config.controls[current_skin.progress_bar_index];
+    return &current_skin->config.controls[current_skin->progress_bar_index];
 }
 
 enum skin_cmd skin_get_cmd_from_xy(int x, int y, int * p){
     enum skin_cmd cmd;
     int i, distance;
-    const struct skin_config * c = &current_skin.config;
+    const struct skin_config * c = &current_skin->config;
 
     *p = -1;
    

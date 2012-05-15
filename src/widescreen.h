@@ -55,20 +55,10 @@
  */
 #define WS_NOXL_XMAX 320
 
-/**
- * \def EXPAND
- */
-#define EXPAND(a,b,c) (a) = (a) * (1.0 * b) /c
-
-/**
- * \def EXPAND_X
- */
-#define EXPAND_X(a) EXPAND(a, ws_probe()?WS_XMAX:WS_NOXL_XMAX, WS_NOXL_XMAX )
-
-/**
- * \def EXPAND_Y
- */
-#define EXPAND_Y(a) EXPAND(a, ws_probe()?WS_YMAX:WS_NOXL_YMAX, WS_NOXL_YMAX )
+/* Macros to switch from WS to normal and vice versa */
+#define RESIZE(a,b,c) (a) = (a) * (1.0 * b) /c
+#define RESIZE_X(a) RESIZE(a, ws_probe()?WS_XMAX:WS_NOXL_XMAX, ws_probe()?WS_NOXL_XMAX:WS_XMAX)
+#define RESIZE_Y(a) RESIZE(a, ws_probe()?WS_YMAX:WS_NOXL_YMAX, ws_probe()?WS_NOXL_YMAX:WS_YMAX)
 
 /**
  * \def WS_FILENAME_PREFIX
