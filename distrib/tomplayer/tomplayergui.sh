@@ -9,6 +9,16 @@ TOMPLAYER_DIR=`pwd`
 export LIB_TOMPLAYER=${TOMPLAYER_DIR}/lib
 export CONF_TOMPLAYER=${TOMPLAYER_DIR}/conf
 
+# Remote_inputs is required for Bluetooth remote to work...
+# For now disable on non carminat TT as it hangs on exit...
+#killall -9 remote_inputs
+#./remote_inputs &
+
+#Set timezone : GMT+1 by default as most tomplayer users are in this TZ
+# Note that the setting below is daylight saving active...
+export TZ=CEST-2
+
+
 echo "Killing ttn..."
 killall -9 mplayer
 killall -9 ttn
@@ -29,10 +39,9 @@ killall -9 refresh_wdg
 ./create_symlinks.sh
 ln -sf  $TOMPLAYER_DIR/res/font/decker.ttf /tmp/
 
-
 #convert in UNIX text format the used configuration file
-cp -f conf/tomplayer.ini /tmp/tomplayer.ini
-dos2unix /tmp/tomplayer.ini
+cp -f conf/tomplaye.ini /tmp/tomplaye.ini
+dos2unix /tmp/tomplaye.ini
 
 # Test whether /dev/ts is handled by a driver or not
 echo -n "" >> /dev/ts
