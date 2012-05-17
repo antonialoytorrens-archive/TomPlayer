@@ -46,6 +46,7 @@
 #include "skin.h"
 #include "play_int.h"
 
+/* FIXME indexer par skin */
 static int selected_ctrl_idx;
 
 static bool ctrl_is_selectable (enum skin_cmd type){
@@ -98,6 +99,7 @@ static int get_ctrl(int idx, int step){
 
 
 static void handle_key(DFBInputDeviceKeyIdentifier id){
+  /* FIXME remplacer boolean par ID de la skin */
   static bool is_selection_active = false;
   int new_idx = -1;  
   const struct skin_config * skin = skin_get_config();  
@@ -276,8 +278,11 @@ void event_loop(void){
     ts_available = false;
   }
   
-  /* FIXME force ts availability */
-  ts_available = false;
+  /* Quick and dirty trick : Only carminat TT use a path which begins with /media */
+  if (strstr(config_get_skin_filename(MODE_AUDIO), "/media") == config_get_skin_filename(MODE_AUDIO))
+    ts_available = false;
+  else 
+    ts_available = true;
   log_write(LOG_INFO, "Touchscreen availability : %d", ts_available);
   
   /* Try to open tomplayer inputs FIFO */
