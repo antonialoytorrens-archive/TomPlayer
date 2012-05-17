@@ -362,9 +362,9 @@ static void * update_thread(void *val){
       }
     }
     
-    /* FIXME Test for tomtom START 
+    /* FIXME Test for tomtom START */
     snd_set_volume_db(15);
-    snd_mute_internal(false);   
+/*    snd_mute_internal(false);   
     snd_mute_external(false);  */
     
     /* Handle power button*/
