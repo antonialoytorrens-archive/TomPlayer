@@ -1,5 +1,18 @@
 More informations on http://www.tomplayer.net
 
+May the 17th, Tomplayer v0.300beta1
+Features :
+- Merge all new carminat features from carminat specific 0.240 version
+- Auto resize ws skins so that we can handle the cases where only ws skins are available (http://sourceforge.net/apps/trac/tomplayer/ticket/47 & http://sourceforge.net/apps/trac/tomplayer/ticket/36)
+
+Bug correction :
+- Handle correctly negative values for GPS coordinates
+- First workaround for sound issue on tomtom start (http://sourceforge.net/apps/trac/tomplayer/ticket/5)
+- Improve OSD responsiness on audio skin (http://sourceforge.net/apps/trac/tomplayer/ticket/28)
+
+Known Restriction :
+- The GPS works only with integrated version (not with the standalone version) for now.
+
 Note : version 0.240 is for CARMINAT only.
 
 May the 1st 2012, Tomplayer v0.240b6 (beta)
