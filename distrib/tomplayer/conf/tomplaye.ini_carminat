@@ -48,6 +48,8 @@ enable_small_text=0
 # Logging (0=None - 1=Errors - 2=warning - 3=info - 4=debug - 5=verbose)
 log_level = 3
 
+# Use mph instead of km/h on skins
+use_miles = 0
 
 [video_skin]
 filename=./skins/video/claudio_allcmds.zip
