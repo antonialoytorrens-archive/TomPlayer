@@ -30,6 +30,7 @@
 #include <tag_c.h>
 
 #include "engine.h"
+#include "log.h"
 #include "track.h"
 
 static TagLib_File *current_file;
@@ -63,6 +64,7 @@ bool track_update(const char * filename){
   size_t cover_len;
   char * buffer;  
   
+  log_write(LOG_DEBUG, "Track update");
   /* Release current */
   track_release();
  
@@ -85,6 +87,9 @@ bool track_update(const char * filename){
         current_tags.title = taglib_tag_title(tag);
         current_tags.artist = taglib_tag_artist(tag);
         current_tags.album =  taglib_tag_album(tag);
+        log_write(LOG_DEBUG, "Track - title : %s", current_tags.title);
+        log_write(LOG_DEBUG, "Track - artist : %s", current_tags.artist);
+        log_write(LOG_DEBUG, "Track - album : %s", current_tags.album);
         if (taglib_tag_year(tag) > 0){
             snprintf(current_tags.year, sizeof(current_tags.year), "%d", taglib_tag_year(tag));    
             current_tags.year[sizeof(current_tags.year)-1] = 0;
@@ -105,6 +110,7 @@ bool track_update(const char * filename){
         } else {
             current_tags.nb[0] = 0;
         }
+
     }
     properties = taglib_file_audioproperties(current_file);
     if(properties != NULL) {
@@ -115,13 +121,15 @@ bool track_update(const char * filename){
     }    
     cover_len = taglib_file_cover_size(current_file);
     if (cover_len > 0){
+        log_write(LOG_DEBUG, "Track - coverart available. Length :%d", cover_len);
         buffer = (char *)malloc(cover_len);
         taglib_file_cover(current_file, buffer, cover_len);
         ilGenImages(1, &current_tags.coverart);
         ilBindImage(current_tags.coverart);
         if (!ilLoadL(IL_TYPE_UNKNOWN, buffer, cover_len)){
+            log_write(LOG_ERROR, "Track - Error while loading coverart");
             ilDeleteImages( 1, &current_tags.coverart);
-            current_tags.coverart = 0;
+            current_tags.coverart = 0;            
         }    
         free(buffer);
     }

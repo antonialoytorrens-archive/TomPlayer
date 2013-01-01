@@ -116,7 +116,7 @@ bool  font_get_size(const char * text, int * width, int * height, int * orig)
   *height = 0;
 
   for (n = 0; n < num_chars; n++) {
-    index = FT_Get_Char_Index(state.face, text[n]);
+    index = FT_Get_Char_Index(state.face, tolower(text[n]));
     error = FTC_SBitCache_Lookup(state.sbits_cache,
                                  &im_type,                                       
                                  index,
@@ -196,7 +196,7 @@ bool font_draw(const struct font_color *color,  const char *text, unsigned char 
   im_type.flags = FT_LOAD_TARGET_NORMAL;
   
   for (n = 0; n < num_chars; n++) {
-    index = FT_Get_Char_Index(state.face, text[n]);         
+    index = FT_Get_Char_Index(state.face, tolower(text[n]));         
     error = FTC_SBitCache_Lookup(state.sbits_cache,
                                  &im_type,                                       
                                  index,

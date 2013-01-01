@@ -237,6 +237,7 @@ static void display_txt_ctrl(const struct skin_control *ctrl, const char* string
         if ((text_height + ctrl->params.text.y) > screen_height){
             text_height = screen_height - ctrl->params.text.y -1;
         }
+//        log_write(LOG_VERBOSE, "display_txt_ctrl : x %d - y %d - w : %d - h %d - text_size : %d - string : %s", x, ctrl->params.text.y, text_width, text_height, ctrl->params.text.size, string);
         draw_text(string, 
                   x, ctrl->params.text.y,
                   text_width, text_height, &color, 
@@ -255,12 +256,14 @@ static void refresh_tags_infos(void){
     /* Handle text tags */
     for (cmd = SKIN_CMD_TAGS_FIRST; cmd <= SKIN_CMD_TAGS_LAST; cmd++){
         ctrl = skin_get_ctrl(cmd);
-        if ((ctrl != NULL) && (cmd != SKIN_CMD_COVERART))
+        if ((ctrl != NULL) && (cmd != SKIN_CMD_COVERART)) {
             display_txt_ctrl(ctrl, get_string_tag_ctrl(tags, cmd));
+        }
     }
-    
+
     /* Handle coverart */    
     ctrl = skin_get_ctrl(SKIN_CMD_COVERART);
+
     if (ctrl != NULL){
         ILuint default_cover;
         int width, height;
@@ -281,6 +284,8 @@ static void refresh_tags_infos(void){
             }
         }
     }
+
+
     
 }
 
