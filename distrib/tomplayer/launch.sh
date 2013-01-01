@@ -7,7 +7,7 @@ LOG=/dev/null
 
 if [ -f /media/sdcard/tomplayer/boot.txt ] ; then
 
-/media/sdcard/tomplayer/rc.bluetooth
+/media/sdcard/tomplayer/bt_tom.sh
 /media/sdcard/tomplayer/tomplayergui.sh
 TOM_EXIT=$?
 if [ $TOM_EXIT -ne 51 ] ; then
@@ -20,8 +20,7 @@ else
 
 start_ttn
 /media/sdcard/tomplayer/waitkey.sh &
-/etc/rc.bluetooth 
-/media/sdcard/tomplayer/logbt.sh &
+/media/sdcard/tomplayer/rc.bluetooth
 
 fi
 

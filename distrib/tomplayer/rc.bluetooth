@@ -1,9 +1,14 @@
 #!/bin/sh
 #_rc.bluetooth: Loads Bluetooth modules and starts associated programs.
-
+#LOG=/media/sdcard/tomplayer/test_BT.txt
+#if [ ! -e $LOG ] ; then
+#echo "creating file" > $LOG
+#fi
+LOG=/dev/null
 
 die() {
-  echo "ERROR: $1" 
+  echo "ERROR: $1" >>  $LOG
+  sync
   exit 1
 }
 
@@ -14,43 +19,53 @@ btif="hci0"
 btmulaw="0"
 
 echo "">/var/run/bt_status
-
-if test "${hw_bluetooth}" = "0"; then
-  echo "* NOT starting Bluetooth " 
-  echo "not started">/var/run/bt_status
-  exit 0
-fi
+echo "`date` rc.bluetooth script launched : $*" >> $LOG
 
 if test "$1" = "resume"; then
-  echo "* Resuming Bluetooth";
+  echo "*`date` Resuming Bluetooth" >> $LOG
 elif test "$1" = "suspend"; then
-  echo "* Suspending Bluetooth"
+  echo "*`date` Suspending Bluetooth" >> $LOG
   if test "${hw_btusb}" = "0"; then
     hciconfig ${btif} down
     pid=$(pidof hciattach|awk '{print $NF}')
     if [ -n "$pid" ]; then
       kill ${pid}
       wait ${pid}
+      echo "`date` hciattach killed" >> $LOG
+    else
+      echo "`date` hciattach is not runnnig" >> $LOG    
     fi
   fi
   echo "not started">/var/run/bt_status
   exit 0;
 else
-  echo "* Starting Bluetooth" 
+  echo "*`date` Starting Bluetooth" >> $LOG    
 
+pidof hcid
+RES=$?
+if [ $RES -ne 0 ] ; then
   if ! sed "s/@DEVNAME@/${hw_btname}/;s/@DEVCLASS@/${hw_btclass}/" /etc/bluetooth/hcid.conf.template > /etc/bluetooth/hcid.conf; then
     die "unable to setup hcid config file"
   fi
-
-  if ! /media/sdcard/tomplayer/hcid; then
-    die "hcid failed"
-  fi
-
+  echo "Patching link_key symlink" >> $LOG
+  cp /mnt/flash/link_key /media/sdcard/tomplayer/back_lnk
+  cd /etc/bluetooth
+  rm -f link_key
+  ln -s  /mnt/flash/link_key link_key  
+  ls -l >> $LOG
+  cd -
+  
+  /media/sdcard/tomplayer/hcid -n 2>> $LOG &
+    
   if ! sdpd; then
     die "sdpd failed"
   fi
 fi
+fi
 
+pidof hciattach
+RES=$?
+if [ $RES -ne 0 ] ; then  
 if test "${hw_btusb}" != "0"; then
   if ! insmod ohci-hcd.ko; then
     die "insmod ohci-hcd failed" 
@@ -80,9 +95,43 @@ if ! hciconfig ${btif} up; then
   die "hciconfig failed"
 fi
 
-#Launch hidd server to handle Remote controler
-/bin/hidd --server
-# -n> /media/sdcard/tomplayer/bthid.txt  2>&1 & 
+else
+ hciconfig >> $LOG
+ echo "hciattach already launched exiting..." >> $LOG
+ sync
+ exit 0
+fi
+
+echo "hci up and running ?" >> $LOG
+hciconfig >> $LOG
+sync
+
+# todo: check voice over USB
+if test "${btmulaw}" != "0" && ! hciconfig ${btif} voice 0x014c; then
+  die "hciconfig voice failed"
+fi
+
+if test "$1" != "resume"; then
+  if test "${hw_handsfree}" != "0" && ! sdptool add hf; then
+    echo "warning: failed to call sdptool add hf"  >> $LOG
+  fi
+
+  if test "${hw_headsetgw}" != "0" && ! sdptool add hsagw; then
+    echo "warning: failed to call sdptool add hsagw"  >> $LOG
+  fi
+
+  if test "${hw_a2dp}" != "0" && ! sdptool add a2src; then
+    echo "warning: failed to call sdptool add a2src"  >> $LOG
+  fi
+
+  blueserver.a /var/run/bluesock &
+
+  btserver &
+  
+  /media/sdcard/tomplayer/logbt.sh &  
+  
+fi
+echo "`date` end of rc.bluetooth" >> $LOG  
 
 echo "started">/var/run/bt_status
 
