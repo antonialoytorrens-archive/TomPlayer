@@ -65,6 +65,7 @@
 #define KEY_VIDEO_PREVIEW "video_preview"
 #define KEY_AUTO_RESUME   "auto_resume"
 #define KEY_LOG_LEVEL     "log_level"
+#define KEY_MILES     "use_miles"
 
 /* Default timeout in seconds before turning OFF screen while playing audio if screen saver is active */
 #define SCREEN_SAVER_TO_S 6
@@ -101,6 +102,7 @@ struct tomplayer_config{
     int video_preview;                  /*!<Enable video preview*/    
     int auto_resume;                    /*!<Enable auto resume*/    
     enum log_level log_level;           /*!<Log level*/
+    int use_miles;			/*!<Use miles/hour instead of Km/h*/
 };
 
 /* Current configuration object */ 
@@ -199,6 +201,8 @@ static bool load_config( struct tomplayer_config * conf ){
     conf->log_level = iniparser_getint(ini, SECTION_GENERAL":"KEY_LOG_LEVEL, LOG_NONE);    
     
     conf->enable_small_text = iniparser_getint(ini, SECTION_GENERAL":"KEY_EN_SMALL_TEXT, 0);   
+    conf->use_miles = iniparser_getint(ini, SECTION_GENERAL":"KEY_MILES, 0);   
+    
     iniparser_freedict(ini);
   
     display_config(conf);    
@@ -240,6 +244,10 @@ bool config_get_fm_activation(void){
 
 bool config_get_small_text_activation(void){
     return config.enable_small_text;
+}
+
+bool config_get_use_miles(void){
+    return config.use_miles;
 }
 
 bool config_get_auto_resume(void){
@@ -414,6 +422,8 @@ bool config_toggle_small_text_state(void){
   }
   return true;
 }
+
+
 
 
 bool config_toggle_enable_diapo(void){

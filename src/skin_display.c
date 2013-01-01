@@ -546,7 +546,10 @@ static const char *get_string_gps_ctrl(struct gps_data *info, enum skin_cmd cmd)
             snprintf(buff_text,sizeof(buff_text),"%04i m", info->alt_cm / 100); 
             break;            
         case SKIN_CMD_TEXT_SPEED :
-            snprintf(buff_text,sizeof(buff_text),"%03i km/h", info->speed_kmh);
+            if (config_get_use_miles())
+                snprintf(buff_text,sizeof(buff_text),"%03i mph", (info->speed_kmh * 621) / 1000);
+            else
+                snprintf(buff_text,sizeof(buff_text),"%03i km/h", info->speed_kmh);
             break;
         default :
             return NULL;

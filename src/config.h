@@ -80,6 +80,7 @@ bool         config_get_video_preview(void);
 enum config_int_speaker_type config_get_speaker(void);
 const struct diapo_config *config_get_diapo(void);
 enum log_level config_get_log_level(void);
+bool config_get_use_miles(void);
 
 /* SET accessors */
 bool config_set_skin_filename(enum config_type type, const char * filename);

@@ -278,7 +278,10 @@ void clock_thread(void){
     y += text_height + 15;
     
     /* Display speed */    
-    snprintf(buff_text,sizeof(buff_text),"%03i km/h", info.speed_kmh);
+    if (config_get_use_miles())
+        snprintf(buff_text,sizeof(buff_text),"%03i mph", (info.speed_kmh * 621) / 1000);
+    else
+        snprintf(buff_text,sizeof(buff_text),"%03i km/h", info.speed_kmh);
     font_change_size(40);      
     font_get_size(buff_text, &text_width, &text_height, &orig);
     draw_string(img_id, buff_text, (diapo_state.screen_x - text_width) / 2, 
