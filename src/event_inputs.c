@@ -279,7 +279,8 @@ void event_loop(void){
   }
   
   /* Quick and dirty trick : Only carminat TT use a path which begins with /media */
-  if (strstr(config_get_skin_filename(MODE_AUDIO), "/media") == config_get_skin_filename(MODE_AUDIO))
+ 
+  if (strstr( config_get_folder(CONFIG_AUDIO), "/media") ==  config_get_folder(CONFIG_AUDIO))
     ts_available = false;
   else 
     ts_available = true;

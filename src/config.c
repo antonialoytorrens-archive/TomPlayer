@@ -505,6 +505,8 @@ bool config_save(void){
     iniparser_setstring(ini, SECTION_GENERAL":"KEY_EN_SMALL_TEXT, buffer);
     snprintf(buffer, sizeof(buffer),"%i",conf->auto_resume);
     iniparser_setstring(ini, SECTION_GENERAL":"KEY_AUTO_RESUME, buffer);
+    snprintf(buffer, sizeof(buffer),"%i",conf->use_miles); 
+    iniparser_setstring(ini, SECTION_GENERAL":"KEY_MILES, buffer);
     iniparser_dump_ini( ini, fp );
     fclose( fp );    
     system("cp -f " CONFIG_FILE " ./conf/tomplaye.ini");    
