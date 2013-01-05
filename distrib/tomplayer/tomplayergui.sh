@@ -88,10 +88,12 @@ fi
 # Tomplayer / start_engine loop 
 END_ASKED=0
 NO_SPLASH=
+FIRST_LAUNCH="--first-launch"
 while [  $END_ASKED -eq 0 ]; do 
 rm /tmp/start_engine.sh
-./tomplayer --dfb:no-vt $NO_SPLASH
+./tomplayer --dfb:no-vt $NO_SPLASH $FIRST_LAUNCH
 RES_TOMPLAYER=$?
+FIRST_LAUNCH=
 sync
 ./splash_screen res/background/wait
 if [ -f /tmp/start_engine.sh ] ; then 
