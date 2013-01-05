@@ -187,11 +187,13 @@ void setup_engine(const char * path, int pos, bool is_video){
 
 /** Everything begins here ;-)  */
 int main( int argc, char *argv[] ){
-  bool splash_wanted = true ;
+  static bool splash_wanted = true ;
+  static bool first_launch = false;
   bool power_off_asked = false;
   
-  struct option long_options[] ={               
+  static struct option long_options[] = {               
                {"no-splash", no_argument,(int *)&splash_wanted, 0},
+               {"first-launch", no_argument,(int *)&first_launch, true},
                {0, 0, 0, 0}
                };
  
@@ -201,7 +203,10 @@ int main( int argc, char *argv[] ){
   DFBInputEvent evt;
 
   /* Parse arguments */
-  while ((c = getopt_long (argc, argv, "",long_options, &option_index)) != -1);
+  
+  do {
+    c = getopt_long(argc, argv, "",long_options, &option_index);
+  } while (c != -1);
 
   /* Load tomplayer configuration file */
   if(config_init() == false){
@@ -209,7 +214,7 @@ int main( int argc, char *argv[] ){
     exit(1);
   }
   if (init_resources( argc, argv ) == true){
-    if ((splash_wanted) && 
+    if ((first_launch) && 
       (config_get_auto_resume())){
       if (auto_resume() == 0){
         release_resources();
