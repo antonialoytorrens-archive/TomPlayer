@@ -65,19 +65,32 @@ static bool draw_bitmap(const struct font_color * color,
 {
 
   FT_Int  i, j, p, q;
-  FT_Int  x_max = x + sbit->width;
-  FT_Int  y_max = y + sbit->height;
+  FT_Int  x_max;
+  FT_Int  y_max;
+  int index;
+  
+  if (x < 0) {
+    x = 0;
+  }
+  x_max = x + sbit->width;
+  y_max = y + sbit->height;
+//  printf("draw_bitmap  %i %i %i %i %i %p %p\n",x, x_max, y, y_max, state.width, state.image, color);
+
 
 //  log_write(LOG_DEBUG, "draw_bitmap  %i %i %i %i",x, x_max, y, y_max);
 
+
   for (i = x, p = 0; i < x_max; i++, p++) {
     for (j = y, q = 0; j < y_max; j++, q++) {
-          state.image[(4*((j*state.width) + i)) + 0] = color->r;
-          state.image[(4*((j*state.width) + i)) + 1] = color->g;
-          state.image[(4*((j*state.width) + i)) + 2] = color->b;
-          state.image[(4*((j*state.width) + i)) + 3] = sbit->buffer[ q * sbit->width + p] ; 
+          index = 4 * ((j * state.width) + i);
+          /*printf("index : %d\n", index);*/
+          state.image[index + 0] = color->r;
+          state.image[index + 1] = color->g;
+          state.image[index + 2] = color->b;
+          state.image[index + 3] = sbit->buffer[ q * sbit->width + p];
     }
   }
+
   return true;
 }
 
@@ -116,7 +129,7 @@ bool  font_get_size(const char * text, int * width, int * height, int * orig)
   *height = 0;
 
   for (n = 0; n < num_chars; n++) {
-    index = FT_Get_Char_Index(state.face, tolower(text[n]));
+    index = FT_Get_Char_Index(state.face, text[n]);
     error = FTC_SBitCache_Lookup(state.sbits_cache,
                                  &im_type,                                       
                                  index,
@@ -196,14 +209,18 @@ bool font_draw(const struct font_color *color,  const char *text, unsigned char 
   im_type.flags = FT_LOAD_TARGET_NORMAL;
   
   for (n = 0; n < num_chars; n++) {
-    index = FT_Get_Char_Index(state.face, tolower(text[n]));         
+    index = FT_Get_Char_Index(state.face, text[n]);  
+    //printf("char : %c - index : %d\n", text[n], index);    
     error = FTC_SBitCache_Lookup(state.sbits_cache,
                                  &im_type,                                       
                                  index,
                                  &sbit,
                                  NULL);
+    /*printf("FTC_SBitCache_Lookup : error %d - left : %d - sbit->xadvance : %d - sbit->yadvance : %d - sbit->top : %d - sbit->height : %d\n", 
+            error, sbit->left, sbit->xadvance, sbit->yadvance,  sbit->top,  sbit->height);*/
     //log_write(LOG_DEBUG, "err : %i size : %i for index %i - sbit :%x - xadvance : %i left %i top %i", error, state.size, index, sbit, sbit->xadvance, sbit->left, sbit->top );
     /* now, draw to our target surface (convert position) */    
+    
     draw_bitmap( color,
                  sbit,
                  pen.x + sbit->left,
