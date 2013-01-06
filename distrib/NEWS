@@ -1,16 +1,16 @@
 More informations on http://www.tomplayer.net
 
-January the 2nd 2013, Tomplayer 0.240 Official release.
-For Carminat ONLY
+January the 7th 2013, Tomplayer 0.240 Official release.
+Warning : 0.240 is for Carminat ONLY
 Features :
 - Add use_miles to desplay speed as mph instead of km/h
 
 Bugs correction :
 - Fully working Bluetooth (for BT remote)
 - Solve a bug which crashs tomplayer when displaying specific tags (upcase mostly)
+- Solve a bad mplayer configuration which prevented to play FLAC files properly
 
-Warning : For installation note on carminat, see : TBD 
-
+For installation note on carminat, see : http://www.tomplayer.net/forum/viewtopic.php?f=21&t=2332
 
 May the 17th, Tomplayer v0.300beta1
 Features :
