@@ -41,6 +41,7 @@
 
 /* FIXME hardcoded font */
 #define FONT_FILENAME "res/font/decker.ttf" 
+#define max(a,b) ((a>b)?a:b)
 
 /* state module variables */
 static struct{
@@ -74,7 +75,7 @@ static bool draw_bitmap(const struct font_color * color,
   }
   x_max = x + sbit->width;
   y_max = y + sbit->height;
-//  printf("draw_bitmap  %i %i %i %i %i %p %p\n",x, x_max, y, y_max, state.width, state.image, color);
+  //printf("draw_bitmap  %i %i %i %i %i %p %p\n",x, x_max, y, y_max, state.width, state.image, color);
 
 
 //  log_write(LOG_DEBUG, "draw_bitmap  %i %i %i %i",x, x_max, y, y_max);
@@ -138,7 +139,7 @@ bool  font_get_size(const char * text, int * width, int * height, int * orig)
      //log_write(LOG_DEBUG, " xadv :%i - yadv : %i - h :%i top :%i", sbit->xadvance, sbit->yadvance, sbit->height, sbit->top);
 
     /* increment pen position */
-    pen.x += sbit->xadvance;
+    pen.x += max(sbit->xadvance, (sbit->left + sbit->width));
     pen.y += sbit->yadvance;
     up = sbit->top;
     down =  sbit->height - sbit->top;    
@@ -216,9 +217,8 @@ bool font_draw(const struct font_color *color,  const char *text, unsigned char 
                                  index,
                                  &sbit,
                                  NULL);
-    /*printf("FTC_SBitCache_Lookup : error %d - left : %d - sbit->xadvance : %d - sbit->yadvance : %d - sbit->top : %d - sbit->height : %d\n", 
-            error, sbit->left, sbit->xadvance, sbit->yadvance,  sbit->top,  sbit->height);*/
     //log_write(LOG_DEBUG, "err : %i size : %i for index %i - sbit :%x - xadvance : %i left %i top %i", error, state.size, index, sbit, sbit->xadvance, sbit->left, sbit->top );
+    //printf("err : %i size : %i for index %i - sbit :%x - xadvance : %i left %i top %i width : %i \n", error, state.size, index, sbit, sbit->xadvance, sbit->left, sbit->top, sbit->width );
     /* now, draw to our target surface (convert position) */    
     
     draw_bitmap( color,
